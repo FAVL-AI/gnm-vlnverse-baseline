@@ -231,7 +231,11 @@ def main() -> None:
     parser.add_argument("--ckpt", required=True)
     parser.add_argument("--cfg", default="configs/gnm/gnm_base.yaml")
     parser.add_argument("--data-root", default="datasets/vlntube")
-    parser.add_argument("--split", default="val")
+    parser.add_argument("--split", default="val", help="Legacy mode: train and evaluate on the same split.")
+    parser.add_argument("--train-split", default=None)
+    parser.add_argument("--eval-split", default=None)
+    parser.add_argument("--max-train-trajectories", type=int, default=0)
+    parser.add_argument("--max-eval-trajectories", type=int, default=0)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--prob-threshold", type=float, default=0.5)
     parser.add_argument("--stable-k", type=int, default=3)
@@ -270,11 +274,22 @@ def main() -> None:
         track="A",
     )
 
-    split_dir = data_root / args.split
-    traj_dirs = sorted(d for d in split_dir.iterdir() if d.is_dir())
+    train_split = args.train_split or args.split
+    eval_split = args.eval_split or args.split
+
+    train_dir = data_root / train_split
+    eval_dir = data_root / eval_split
+
+    train_traj_dirs = sorted(d for d in train_dir.iterdir() if d.is_dir())
+    eval_traj_dirs = sorted(d for d in eval_dir.iterdir() if d.is_dir())
+
+    if args.max_train_trajectories > 0:
+        train_traj_dirs = train_traj_dirs[: args.max_train_trajectories]
+    if args.max_eval_trajectories > 0:
+        eval_traj_dirs = eval_traj_dirs[: args.max_eval_trajectories]
 
     trace_rows: list[dict] = []
-    for traj_dir in traj_dirs:
+    for traj_dir in train_traj_dirs:
         trace_rows.extend(build_trace_rows(evaluator, traj_dir, window=args.window))
 
     X = np.stack([r["x"] for r in trace_rows], axis=0)
@@ -293,7 +308,7 @@ def main() -> None:
             args.stable_k,
             args.window,
         )
-        for traj_dir in traj_dirs
+        for traj_dir in eval_traj_dirs
     ]
 
     summary = summarise(rollout_rows)
@@ -344,15 +359,19 @@ def main() -> None:
         "prob_threshold": args.prob_threshold,
         "stable_k": args.stable_k,
         "window": args.window,
+        "train_split": train_split,
+        "eval_split": eval_split,
+        "train_episodes": len(train_traj_dirs),
+        "eval_episodes": len(eval_traj_dirs),
         "training_samples": int(len(y)),
         "positive_stop_labels": int(y.sum()),
     }
     coef_json.write_text(json.dumps(coef, indent=2))
 
     md = [
-        "# Learned Stop Head — Track A",
+        "# Learned Stop Head — Track A Train/Eval Protocol",
         "",
-        "This experiment trains a lightweight logistic stop head from runtime GNM traces.",
+        "This experiment trains a lightweight logistic stop head on training trajectories and evaluates it on held-out validation trajectories.",
         "",
         "Stop decisions use only runtime signals: `dist_pred`, waypoint norm, rolling means, and short-term trends.",
         "Ground truth geometry is used only to create training labels and compute final metrics.",
@@ -363,8 +382,12 @@ def main() -> None:
         "|---|---:|---:|---:|---:|---:|---:|---:|",
         f"| learned_logistic_stop_head | {summary['episodes']} | {summary['SR_percent']:.1f}% | {summary['OSR_percent']:.1f}% | {summary['NE_m']:.2f} | {summary['TL_m']:.2f} | {summary['stop_fired']} | {mean_stop or 'n/a'} |",
         "",
-        "## Training labels",
+        "## Train/evaluation protocol",
         "",
+        f"- Train split: {train_split}",
+        f"- Eval split: {eval_split}",
+        f"- Train episodes: {len(train_traj_dirs)}",
+        f"- Eval episodes: {len(eval_traj_dirs)}",
         f"- Training samples: {int(len(y))}",
         f"- Positive stop labels: {int(y.sum())}",
         "- Label definition: simulated robot is within 3.0m of the goal.",
