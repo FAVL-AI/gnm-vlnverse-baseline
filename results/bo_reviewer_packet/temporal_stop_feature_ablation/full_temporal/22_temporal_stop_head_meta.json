@@ -1,0 +1,23 @@
+{
+  "train_split": "train",
+  "eval_split": "val",
+  "train_episodes": 238,
+  "eval_episodes": 15,
+  "training_samples": 12421,
+  "positive_stop_labels": 2568,
+  "seq_len": 8,
+  "window": 3,
+  "feature_set": "full_temporal",
+  "feature_dim": 6,
+  "feature_columns": [
+    "dist_pred",
+    "wp_norm",
+    "dist_mean",
+    "wp_mean",
+    "dist_trend",
+    "wp_trend"
+  ],
+  "stable_k": 3,
+  "epochs": 120,
+  "best_threshold": 0.5
+}
