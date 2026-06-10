@@ -1,0 +1,19 @@
+Checkpoint:   best.pt
+global_step:  1067  (~epoch 44/200)
+best_val_loss:0.5022
+weights:      live
+
+───────────────────────────────────────────────────────
+ Distance head probe  (real val samples, n=64)
+───────────────────────────────────────────────────────
+  dist_pred_mean    0.3555
+  dist_pred_std     0.0651
+  dist_pred_range   [0.2095, 0.6147]
+  dist_target_mean  0.4680
+  dist_target_range [0.0500, 1.0000]
+  pred_target_corr  +0.0229  (healthy: >0.3)
+  stop_threshold    0.15
+  collapse_count    0/64  (0%)
+  verdict           COLLAPSED
+───────────────────────────────────────────────────────
+
