@@ -174,3 +174,33 @@ Expected behaviour:
 - The window remains open until interrupted with `Ctrl+C`.
 
 The full photorealistic VLNVerse USD scene replay remains optional and environment-dependent.
+## Track A Stop-Policy Improvement Result
+
+Beyond the reproduced GNM-VLNVerse baseline, this repository includes a staged stop-policy study showing that Track A performance is limited by stopping reliability.
+
+Baseline Track A reaches:
+
+* SR: 20.0%
+* OSR: 46.7%
+* NE: 6.51m
+
+This gap shows that the agent often enters the goal region but fails to stop successfully.
+
+The strongest deployable held-out method in this repository is a temporal neural stop head trained on Track A train trajectories and evaluated on held-out Track A validation episodes. It uses only runtime GNM signals and derived temporal features.
+
+| Method                     | Protocol        |        SR |   OSR |   NE (m) |
+| -------------------------- | --------------- | --------: | ----: | -------: |
+| GNM baseline               | val             |     20.0% | 46.7% |     6.51 |
+| Hand-tuned waypoint gate   | val             |     26.7% | 26.7% |     5.34 |
+| Logistic stop head         | train → val     |     20.0% | 46.7% |     6.51 |
+| Temporal neural stop head  | train → val     | **33.3%** | 33.3% | **4.47** |
+| Geometry-aware oracle stop | diagnostic only |     46.7% | 46.7% |     3.79 |
+
+The temporal neural stop head improves deployable held-out SR from 20.0% to 33.3%, outperforming scalar thresholds, hand-tuned waypoint stopping, and logistic calibration while using only runtime GNM signals.
+
+Key files:
+
+* `results/bo_reviewer_packet/00_tracka_reviewer_summary.md`
+* `results/bo_reviewer_packet/23_paper_results_table.md`
+* `results/bo_reviewer_packet/temporal_stop_head/22_temporal_stop_head.md`
+* `scripts/gnm/train_temporal_stop_head.py`
