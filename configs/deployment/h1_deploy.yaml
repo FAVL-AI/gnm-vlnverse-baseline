@@ -1,0 +1,47 @@
+# H1 Hardware Deployment Configuration — Fleet-Safe-VLA-OS
+deployment:
+  robot: h1
+  control_hz: 50.0
+  latency_ms: 20.0
+
+  policy:
+    path: deployed/h1_policy.onnx
+    obs_dim: 45
+    action_dim: 18
+    device: cpu           # or cuda:0 if available on robot
+
+  safety:
+    # Low-level (robot-lab SafetyFilter)
+    max_tilt_rad: 0.8
+    min_base_height_m: 0.5
+    max_torque_nm: 300.0
+    torque_ramp_steps: 50  # 1s at 50 Hz
+    emergency_damping_kd: 5.0
+
+    # CBF mid-level
+    cbf_enabled: true
+    cbf_max_tilt_rad: 0.7
+    cbf_gamma: 1.0
+
+    # Startup sequence
+    startup_hold_s: 2.0   # hold position before accepting commands
+
+  state_estimation:
+    imu_alpha: 0.98
+    imu_hz: 100.0
+    use_kinematic_height: true
+
+  latency_compensation:
+    strategy: constant_extrapolation
+    adaptive: true
+
+  ros2:
+    joint_states_topic: /joint_states
+    imu_topic: /imu/data
+    cmd_topic: /joint_group_effort_controller/commands
+    safety_status_topic: /fleet_safe/safety_status
+
+  fleet:
+    robot_id: 0
+    fleet_size: 1
+    web_viewer_port: 8080

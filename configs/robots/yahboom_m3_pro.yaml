@@ -1,0 +1,99 @@
+robot_id: yahboom_m3_pro
+name: Yahboom ROSMASTER M3 Pro
+description: >
+  Yahboom ROSMASTER M3 Pro — ROS 2 Humble mecanum-wheel mobile robot with
+  depth camera, AI vision, and mobile manipulation hardware.
+  Target platform for all FleetSafe-VLN experiments (real and simulated).
+
+type: mecanum_mobile_base
+
+# ── Control modes (phased rollout) ──────────────────────────────────────────
+control:
+  phase1: forward_yaw        # GNM local navigation: forward + rotation only
+  phase2: full_mecanum       # Full 3-DOF: vx, vy, wz
+
+kinematics:
+  wheel_base_m: 0.23
+  max_vx: 0.30               # m/s forward
+  max_vy: 0.20               # m/s lateral (phase2 only)
+  max_vz: 0.0
+  max_wz: 0.70               # rad/s yaw
+  acceleration_limit: 0.5    # m/s²
+  deceleration_limit: 1.0
+
+# ── ROS 2 topic mapping ───────────────────────────────────────────────────────
+# Default (no namespace) — used in Isaac Sim and initial real-robot bringup
+ros2_topics:
+  rgb: /camera/image_raw
+  depth: /camera/depth/image_raw
+  odom: /odom
+  tf: /tf
+  cmd_vel: /cmd_vel
+  scan: /scan
+  imu: /imu/data
+
+# Namespaced topics — enable when running with multiple robots or if
+# real Yahboom bringup uses the /m3pro namespace
+# ros2_topics:
+#   rgb: /m3pro/camera/image_raw
+#   depth: /m3pro/camera/depth/image_raw
+#   odom: /m3pro/odom
+#   tf: /tf
+#   cmd_vel: /m3pro/cmd_vel
+#   scan: /m3pro/scan
+#   imu: /m3pro/imu/data
+
+ros2:
+  namespace: /m3pro
+  tf_base_frame: base_footprint
+  tf_map_frame: map
+
+# ── Sensors ──────────────────────────────────────────────────────────────────
+sensors:
+  camera:
+    width: 640
+    height: 480
+    fov_deg: 87.0
+    hz: 30
+  depth:
+    width: 640
+    height: 480
+    fov_deg: 87.0
+    hz: 30
+    max_range_m: 5.0
+  lidar:
+    range_m: 8.0
+    fov_deg: 360
+    hz: 10
+  imu:
+    hz: 100
+  odometry:
+    hz: 50
+
+# ── Safety parameters ─────────────────────────────────────────────────────────
+safety:
+  d_safe_m: 0.50
+  estop_dist_m: 0.30
+  min_human_distance_m: 0.80
+  max_speed_near_humans: 0.15
+  cbf_alpha: 1.0
+  estop_topic: /estop
+  watchdog_timeout_s: 0.5
+  max_tilt_deg: 15.0
+
+# ── Isaac Sim configuration ────────────────────────────────────────────────
+isaac_sim:
+  description: >
+    In Isaac Sim, use either:
+      (A) Yahboom M3 Pro digital twin — import URDF/CAD and convert to USD.
+      (B) Yahboom-compatible simulated base — same topic interface, mecanum
+          or differential geometry, RGB + depth cameras, odom, TF, /cmd_vel.
+    Do NOT substitute TurtleBot3, JetBot, Carter, or other robots.
+  usd_path: assets/robots/yahboom_m3_pro/yahboom_m3_pro.usd
+  urdf_path: assets/robots/yahboom_m3_pro/yahboom_m3_pro.urdf
+
+# ── Sim-to-real transfer ──────────────────────────────────────────────────────
+sim2real:
+  domain_randomization: configs/domain_randomization/yahboom_physics.yaml
+  latency_compensation_ms: 80
+  onnx_model_dir: dist/onnx

@@ -1,0 +1,54 @@
+# Domain Randomization Configuration — Fleet-Safe-VLA-OS
+domain_rand:
+  enabled: true
+
+  # Mass randomization (torso)
+  body_mass:
+    enabled: true
+    body: torso_link
+    range_kg: [-2.0, 2.0]
+    mode: add
+
+  # Center of mass shift
+  com_shift:
+    enabled: true
+    body: torso_link
+    range_m: [-0.05, 0.05]
+    mode: add
+
+  # Motor strength (actuator gains)
+  motor_strength:
+    enabled: true
+    range: [0.9, 1.1]
+    mode: scale
+
+  # Ground friction
+  friction:
+    enabled: true
+    range: [0.3, 1.5]
+    mode: set
+
+  # Payload shift (fleet-specific)
+  payload:
+    enabled: true
+    body: torso_link
+    range_kg: [0.0, 5.0]
+    mode: add
+
+  # Push disturbances
+  push:
+    enabled: true
+    interval_s: [10.0, 15.0]
+    velocity_range: [-0.5, 0.5]
+
+  # Latency simulation (sim2real gap)
+  latency:
+    enabled: true
+    range_ms: [0.0, 40.0]
+
+  # Observation noise (scales default noise by this factor)
+  obs_noise:
+    ang_vel_scale: 1.0
+    proj_grav_scale: 1.0
+    joint_pos_scale: 1.0
+    joint_vel_scale: 1.0

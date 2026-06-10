@@ -1,0 +1,66 @@
+# GNM Ablation A1b: MobileNet baseline + EMA only (no AMP)
+# ─────────────────────────────────────────────────────────────────────────────
+# Purpose: isolate whether AMP (BF16) caused A1's calibration bias.
+#
+# A1 post-mortem: dist_pred biased low (mean=0.102, collapse_count=59/64).
+# Two candidates:
+#   AMP (BF16)      — reduced precision may reduce implicit regularisation and
+#                     cause the dist head to favour low-magnitude outputs
+#   EMA decay=0.9999 — half-life ~6931 steps; 4850 steps (50 epochs) < 1 half-life,
+#                      so EMA shadow weights are still pulled toward initialization
+#
+# A1b removes AMP, keeps EMA.
+# If A1b is healthy → AMP was the culprit.
+# If A1b is also biased → EMA decay is too slow for 50-epoch training.
+#
+# Exactly one change from A1: use_amp removed (was true)
+# ─────────────────────────────────────────────────────────────────────────────
+
+model:
+  context_size: 5
+  goal_conditioned: true
+  action_dim: 2
+  hidden_dim: 256
+  encoder: mobilenet
+  out_dim: 512
+  pretrained: true
+
+data:
+  data_root: datasets/vlntube
+  image_size: [96, 96]
+  max_goal_dist: 20
+  action_std: [0.115528, 0.115528]
+  augment: true
+  num_workers: 4
+  pin_memory: true
+
+training:
+  epochs: 50
+  batch_size: 128
+  lr: 1e-4
+  weight_decay: 1e-4
+  warmup_frac: 0.05
+  max_grad_norm: 1.0
+  action_weight: 0.5
+  loss_type: mse
+  patience: 10
+  seed: 42
+  ema_decay: 0.9999  # EMA kept — shadow weights used at eval
+  # no AMP (removed vs A1)
+
+checkpoint:
+  output_dir: checkpoints/gnm_ablation_a1b
+  log_every: 50
+
+wandb:
+  project: fleetsafe-gnm-vlnverse
+  entity: null
+  name: gnm_ablation_a1b
+  tags: [gnm, track_A, ablation, mobilenet, ema, no_amp]
+  notes: "A1b: MobileNet + EMA only (no AMP) — isolates BF16 vs EMA half-life as cause of A1 bias"
+
+evaluation:
+  success_threshold: 3.0
+  stop_threshold: 0.15
+  max_steps: 500
+  track: A

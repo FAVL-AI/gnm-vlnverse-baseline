@@ -1,0 +1,13 @@
+# GNM-VLNVerse Baseline — default dependencies
+# ─────────────────────────────────────────────────────────────────────────────
+# Install with:  pip install -r requirements.txt
+#
+# This file covers the proof/review pipeline (dataset validation, dashboard
+# export, manual test-drive dry-runs, test suite).  No GPU or PyTorch required.
+#
+# For training and inference, install PyTorch separately according to your
+# Python/CUDA version, then install requirements-ml.txt.
+# See:  https://pytorch.org/get-started/locally/
+# ─────────────────────────────────────────────────────────────────────────────
+
+-r requirements-demo.txt

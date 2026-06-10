@@ -1,0 +1,85 @@
+# GNM LoRA Sweep Configuration  (Track C)
+# ─────────────────────────────────────────────────────────────────────────────
+# Defines a Weights & Biases sweep over LoRA rank, alpha, and learning rate.
+#
+# What is a hyperparameter sweep?
+#   Instead of guessing the best rank=8 or rank=16, we run ALL of them
+#   automatically and W&B picks the winner.  Think of it like trying every
+#   possible recipe and keeping the one that tastes best.
+#
+# How to launch:
+#   wandb sweep configs/gnm/lora_sweep.yaml          # creates sweep on W&B
+#   wandb agent <entity>/<project>/<sweep_id>         # start a worker
+#
+# Or run each combination manually:
+#   python scripts/gnm/05_train_lora.py lora.rank=4  lora.alpha=8  training.lr=5e-5
+#   python scripts/gnm/05_train_lora.py lora.rank=8  lora.alpha=16 training.lr=5e-5
+#   python scripts/gnm/05_train_lora.py lora.rank=16 lora.alpha=32 training.lr=3e-5
+#
+# Why these values?
+#   rank=4  → fewest new parameters, fast, might underfit
+#   rank=16 → more expressiveness, can overfit on small VLNTube data
+#   alpha/rank = 2 is a safe default (from the LoRA paper)
+#   LR 3e-5 is smaller than base training (1e-4) because the base is already
+#   converged — a large LR would destroy those weights.
+# ─────────────────────────────────────────────────────────────────────────────
+
+program: scripts/gnm/05_train_lora.py
+method:  bayes          # Bayesian optimization — smarter than random grid search
+metric:
+  name: val/loss_action
+  goal: minimize
+
+parameters:
+  # ── LoRA rank ──────────────────────────────────────────────────────────────
+  lora.rank:
+    values: [4, 8, 16]
+
+  # ── LoRA alpha (scaling factor = alpha / rank) ────────────────────────────
+  lora.alpha:
+    values: [8, 16, 32]
+
+  # ── LoRA dropout (regularisation) ─────────────────────────────────────────
+  lora.dropout:
+    values: [0.0, 0.05, 0.1]
+
+  # ── Learning rate ─────────────────────────────────────────────────────────
+  training.lr:
+    distribution: log_uniform_values
+    min: 1e-5
+    max: 1e-4
+
+  # ── Which layers to apply LoRA to ─────────────────────────────────────────
+  # "heads_only" = only train prediction heads (fastest, least flexible)
+  # "encoder_proj" = also LoRA the encoder projection layer
+  # "full_encoder" = LoRA every Linear layer in encoder (most flexible)
+  lora.target:
+    values: [heads_only, encoder_proj, full_encoder]
+
+  # ── Training epochs (fewer for sweep — full training uses 50) ─────────────
+  training.epochs:
+    value: 20
+
+  # ── Batch size ─────────────────────────────────────────────────────────────
+  training.batch_size:
+    value: 64
+
+  # ── Freeze base encoder during LoRA fine-tuning? ─────────────────────────
+  lora.freeze_base:
+    values: [true, false]
+
+# ── Base config (overridden by sweep params above) ────────────────────────────
+command:
+  - ${env}
+  - python
+  - ${program}
+  - --cfg
+  - configs/gnm/gnm_base.yaml
+  - ${args}
+
+# ── W&B settings ──────────────────────────────────────────────────────────────
+project: fleetsafe-gnm-vlnverse
+entity:  null           # set to your W&B username/team
+name:    lora_sweep_track_C
+tags:    [lora, track_C, vlnverse, sweep]
+notes:   "LoRA rank/alpha/target sweep for Track C adaptation"

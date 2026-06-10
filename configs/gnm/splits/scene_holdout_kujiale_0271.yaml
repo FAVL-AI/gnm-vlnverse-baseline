@@ -1,0 +1,40 @@
+# configs/gnm/splits/scene_holdout_kujiale_0271.yaml
+#
+# Scene-level generalisation split for the General Navigation Model.
+#
+# Motivation
+# ──────────
+# The standard VLNVerse split (238 train / 15 val) holds out trajectory
+# instances but all four scenes appear in both splits.  This config defines a
+# stricter split that holds out an entire scene (kujiale_0271) from training
+# so we can measure cross-scene generalisation.
+#
+# Split
+# ──────
+# train_scenes:  kujiale_0092, kujiale_0203, kujiale_0118
+# test_scene:    kujiale_0271         (completely unseen during training)
+#
+# The model must navigate in a new apartment floor-plan it never saw
+# during training.  This is a significantly harder test than trajectory-
+# level hold-out.
+#
+# Status (2026-06-05)
+# ──────────────────
+# Config prepared and data-count verified (check_scene_holdout_split.py).
+# Full training run pending — use gnm_base.yaml with scene_filter below.
+# ─────────────────────────────────────────────────────────────────────────────
+
+split:
+  train_scenes:
+    - kujiale_0092
+    - kujiale_0203
+    - kujiale_0118
+  test_scenes:
+    - kujiale_0271
+
+  reason: >
+    Hold out kujiale_0271 entirely from training to measure generalisation
+    to an unseen floor-plan.  All other experimental settings (batch size,
+    learning rate, epochs) follow gnm_base.yaml.
+
+  status: config_ready_run_pending

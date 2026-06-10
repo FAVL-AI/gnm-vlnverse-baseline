@@ -1,0 +1,34 @@
+{
+  "indexed_at": "2026-05-31T17:41:20.957544+00:00",
+  "source": "VLNVerse",
+  "datasets": {
+    "data_root": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/datasets/vlnverse",
+    "exists": true,
+    "scene_files": 1,
+    "preview_images": 0,
+    "preview_paths": [],
+    "metadata_files": 1,
+    "trajectory_files": 0,
+    "instruction_files": 0,
+    "dataset_files": 0,
+    "total_images": 0,
+    "sample_instructions": [],
+    "sample_trajectories": []
+  },
+  "summary": {
+    "data_available": true,
+    "scene_count": 1,
+    "preview_count": 0,
+    "instruction_count": 0,
+    "trajectory_count": 0,
+    "total_images": 0
+  },
+  "reference": {
+    "project": "VLNVerse",
+    "hf_datasets": "https://huggingface.co/datasets",
+    "note": "VLNVerse is used as a benchmark/data reference. FleetSafe extends it with Yahboom M3 Pro, GNM/ViNT/NoMaD, CBF-QP safety shield, and ROS 2 / Isaac Sim bridge."
+  },
+  "next_actions": [
+    "Data present. Refresh: python -m fleetsafe_vln.benchmark.vlnverse_indexer"
+  ]
+}

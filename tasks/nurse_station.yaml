@@ -1,0 +1,52 @@
+task_id: nurse_station
+scene: hospital_corridor
+platform: mock
+description: >
+  Navigate from the waiting room to the nurse station, crossing a busy
+  intersection with high human traffic.
+
+instruction:
+  text: "Go to the nurse station, carefully avoiding patients and staff."
+  semantic_goal: nurse_station
+  constraints:
+    - avoid_humans
+    - slow_near_doorways
+    - keep_right_side
+
+start_pose: [-3.0, 2.0, -1.57]
+goal_xy: [4.0, -0.5]
+optimal_path_m: 8.2
+success_radius_m: 0.5
+max_steps: 600
+control_hz: 4.0
+
+safety:
+  d_safe_m: 0.60
+  estop_dist_m: 0.35
+  min_human_distance_m: 0.90
+  max_speed_near_humans: 0.12
+  cbf_alpha: 1.2
+
+robot:
+  name: yahboom_m3_pro
+  max_vx: 0.25
+  max_wz: 0.60
+  wheel_base_m: 0.23
+  lidar_range_m: 8.0
+  camera_fov_deg: 87.0
+  ros2_namespace: /m3pro
+
+metrics:
+  - success_rate
+  - spl
+  - navigation_error
+  - min_human_distance
+  - cbf_intervention_count
+  - certificate_validity_rate
+  - near_miss_count
+
+tags:
+  - hospital
+  - high_traffic
+  - human_avoidance
+  - fleetsafe_core

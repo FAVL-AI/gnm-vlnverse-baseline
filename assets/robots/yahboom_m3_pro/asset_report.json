@@ -1,0 +1,34 @@
+{
+  "robot": "Yahboom ROSMASTER M3 Pro",
+  "generated_at": "2026-05-31T15:13:09.769912+00:00",
+  "clone_root": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/external/yahboom/ROSMASTER-M3",
+  "clone_exists": true,
+  "assets": {
+    "urdf_count": 5,
+    "xacro_count": 1,
+    "stl_count": 0,
+    "dae_count": 0,
+    "obj_count": 0,
+    "usd_count": 0
+  },
+  "has_urdf": true,
+  "has_mesh": false,
+  "has_usd": false,
+  "best_urdf": "/home/favl/robotics/Fleet-Safe-VLA-OS/fleet_safe_vla/robots/yahboom/m3pro/urdf/yahboom_m3pro.urdf",
+  "canonical_urdf": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/assets/robots/yahboom_m3_pro/yahboom_m3pro.urdf",
+  "source": "local Fleet-Safe-VLA-OS assets",
+  "source_m3pro_dir": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/assets/robots/yahboom_m3_pro/source_m3pro",
+  "generated_usd": null,
+  "status": "urdf_found",
+  "urdf_files": [
+    "/home/favl/robotics/Fleet-Safe-VLA-OS/fleet_safe_vla/robots/yahboom/m3pro/urdf/yahboom_m3pro.urdf"
+  ],
+  "xacro_files": [
+    "/home/favl/robotics/Fleet-Safe-VLA-OS/ros2_ws/src/fleet_safe_description/urdf/h1.urdf.xacro"
+  ],
+  "usd_files": [],
+  "debug_assets": {
+    "yahboom_x3_usd": null,
+    "note": "yahboom_x3.usd is a related/debug asset \u2014 not M3 Pro final evidence"
+  }
+}

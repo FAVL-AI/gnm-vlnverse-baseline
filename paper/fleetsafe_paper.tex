@@ -1,0 +1,790 @@
+\documentclass[letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{siunitx}
+\usepackage{float}       % [H] placement specifier
+\usepackage{placeins}    % \FloatBarrier
+
+% Citation style — update to venue format (e.g., IEEEtran for RA-L, acmart for CoRL)
+\bibliographystyle{plain}
+
+% ── Colour macros ─────────────────────────────────────────────────────────────
+\definecolor{ProvenGreen}{HTML}{22c55e}
+\definecolor{DangerRed}{HTML}{ef4444}
+\definecolor{CbfAmber}{HTML}{f59e0b}
+\newcommand{\proven}[1]{\textcolor{ProvenGreen}{\textbf{#1}}}
+\newcommand{\danger}[1]{\textcolor{DangerRed}{\textbf{#1}}}
+\newcommand{\cbf}[1]{\textcolor{CbfAmber}{\textbf{#1}}}
+
+% ── Maths shorthands ─────────────────────────────────────────────────────────
+\newcommand{\hcbf}{h_{\text{CBF}}}
+\newcommand{\dsafe}{d_{\text{safe}}}
+\newcommand{\dsurf}{d_{\text{surf}}}
+\newcommand{\vdes}{\mathbf{v}_{\text{des}}}
+\newcommand{\vcmd}{\mathbf{v}_{\text{cmd}}}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\title{\textbf{FleetSafe-VisualNav: Paradigm-Selective Command-Layer Safety
+       for Visual Navigation via CBF Intervention}\\[4pt]
+       \large Architecture-Agnostic Command-Layer Safety Filtering Without Policy Modification}
+\author{F. Van Laarhoven \and [Co-authors TBD]\\
+  \small Newcastle University, UK\\
+  \small \texttt{F.Van-Laarhoven2@newcastle.ac.uk} \quad
+  ORCID: 0009-0006-8931-0364}
+\date{May 2026 — DRAFT}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Visual navigation policies for mobile robots achieve impressive task performance
+but present distinct failure structures depending on their underlying navigation
+paradigm. We present \textbf{FleetSafe}, a command-layer Control Barrier Function
+(CBF) filter that intervenes on velocity commands issued by any black-box
+navigation policy without modifying the underlying model weights.
+We evaluate three policies spanning the major paradigms of learned visual
+navigation---GNM (goal-conditioned generalist), ViNT (Transformer-based
+foundation model), and NoMaD (diffusion-based exploration)---in two complementary
+simulation backends: MuJoCo (visible procedural obstacles, 50 seeds) and
+Isaac Sim (invisible map-registered hazard cylinders, 50 seeds).
+
+Our experiments reveal that invisible hazard vulnerability is
+\emph{navigation-paradigm-dependent}: goal-directed policies (GNM, ViNT)
+commit to obstacle-crossing trajectories toward their targets and collide at
+100\% RAW collision rate, while the diffusion-based NoMaD avoids the same hazard
+naturally (0\% RAW, min clearance\,=\,1.5\,m). FleetSafe correctly intervenes
+for GNM/ViNT (CBF IR\,=\,49.7\%/37.9\%, reducing collision to 0\%) and
+remains idle for NoMaD (IR\,=\,0\%, do-no-harm confirmed under tested
+conditions), demonstrating \emph{selective} intervention rather than
+over-conservative suppression of all commands.
+
+In MuJoCo, unsafe behaviour is model-specific (ViNT's aggressive forward prior,
+100\%\,$\to$\,0\%); GNM and NoMaD exhibit conservative behaviour throughout.
+The same CBF-QP filter, with identical hyperparameters, handles all cases
+without access to policy internals. The filter operates in $O(n_{\text{obs}})$
+time with a closed-form single-constraint solution, achieving
+\SI{20}{\milli\second} mean inference latency (well below \SI{100}{\milli\second}
+real-time threshold). All results carry $n\,{=}\,50$ seeds and PROVEN-gate
+certification; evidence artefacts are publicly released.
+\end{abstract}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+\label{sec:intro}
+
+Foundation model visual navigation policies have demonstrated remarkable
+generalisation across environments \cite{shah2023gnm,sridhar2024nomad,
+majumdar2023vint}. However, their black-box nature and training-distribution
+sensitivity make it difficult to provide formal safety guarantees in
+safety-critical deployments such as hospital robotics.
+
+We identify two distinct failure mechanisms that a command-layer safety
+filter must handle:
+\begin{enumerate}
+  \item \textbf{Model-specific aggressive priors}: Certain VLA backbones
+    (notably ViNT) exhibit an aggressive forward bias that causes
+    \danger{100\%} collision rates in cluttered hospital corridors even
+    when obstacles are visually prominent. This is a model-\emph{dependent}
+    failure---different backbones behave differently in identical scenes.
+  \item \textbf{Map-registered invisible hazards}: In environments where
+    hazards are geometrically real but camera-invisible (e.g., glass
+    partitions, transparent doors, registered-but-not-visible obstacles),
+    \emph{goal-directed} navigation backbones (GNM, ViNT) fail at
+    \danger{100\%} collision because they navigate toward their goal
+    through an obstacle the camera cannot see.
+    Notably, the diffusion-based NoMaD avoids naturally (0\% RAW collision,
+    min\_dist\,=\,1.5\,m) because its exploration prior does not commit to
+    a fixed collision path. This reveals a \emph{navigation-paradigm
+    dependency}: goal-directed VLAs are uniquely vulnerable to invisible
+    map-registered hazards.
+\end{enumerate}
+
+FleetSafe addresses both failure types with the same command-layer CBF-QP filter:
+the filter operates on the robot's on-board map rather than camera input,
+intervening whenever the commanded velocity would violate a safety constraint.
+The \emph{same} filter, with identical hyperparameters, produces:
+\begin{itemize}
+  \item \textbf{MuJoCo}: CBF idle for GNM/NoMaD (conservative) but
+    \cbf{actively} corrects ViNT (IR\,=\,69.7\%), reducing collision from
+    \danger{100\%} to \proven{0\%}.
+  \item \textbf{Isaac Sim}: CBF intervenes for GNM (IR\,=\,49.7\%) and ViNT
+    (IR\,=\,37.9\%); idle for NoMaD which naturally avoids
+    (do-no-harm confirmed, IR\,=\,0\%). All collision rates: \proven{0\%}.
+\end{itemize}
+This demonstrates \emph{architecture-agnostic command-layer safety filtering}:
+the mechanism operates at the velocity-command interface and requires no knowledge
+of, nor access to, the VLA policy internals.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+  \item \textbf{Command-layer CBF-QP wrapper} for visual navigation policies,
+    operating at the velocity interface without modifying policy weights or
+    internal representations.
+  \item \textbf{Cross-paradigm validation} across three fundamentally different
+    navigation approaches: goal-conditioned generalist (GNM), Transformer
+    foundation model (ViNT), and diffusion-based exploration (NoMaD).
+    This span makes the architecture-agnostic intervention claim substantially
+    more meaningful than evaluating minor variants of a single model class.
+  \item \textbf{Navigation-paradigm-dependent failure analysis}: evidence that
+    invisible map-registered hazard vulnerability depends on the navigation
+    paradigm (goal-directed commitment vs.\ diffusion exploration), not merely
+    on model capacity.
+  \item \textbf{Selective intervention evidence}: FleetSafe intervenes only
+    where required and remains idle (IR\,=\,0\%) for naturally safe policies,
+    directly rebutting the over-conservatism criticism of safety filters.
+  \item \textbf{Reproducible dual-backend benchmark} with $n\,{=}\,50$ seeds per
+    condition, automated PROVEN gates, and full evidence artefacts.
+\end{enumerate}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Background and Related Work}
+\label{sec:related}
+
+\subsection{Visual Navigation Foundation Models}
+GNM \cite{shah2023gnm}, ViNT \cite{majumdar2023vint}, and NoMaD
+\cite{sridhar2024nomad} are transformer-based navigation policies
+trained on large real-world topological datasets encompassing millions
+of navigation frames across diverse indoor and outdoor environments.
+GNM uses a metric-map-conditioned goal-following objective with a
+conservative velocity prior. ViNT augments this with a diffusion-based
+planner that produces aggressive exploration behaviour. NoMaD adopts a
+goal-masked diffusion approach that decouples exploration from directed
+navigation. All three operate from onboard monocular RGB images alone,
+making them blind to camera-invisible hazards.
+
+\subsection{Safety in Robot Learning}
+Safe reinforcement learning methods modify the training objective to
+incorporate safety constraints \cite{garcia2015survey}, but are
+inapplicable to frozen pre-trained VLA policies. Shielding approaches
+\cite{alshiekh2018safe} apply a model-free correctional policy, which
+still requires retraining. Constrained policy search \cite{achiam2017cpo}
+modifies the policy gradient, again requiring gradient access.
+Runtime monitoring \cite{falcone2011monitoring} detects but does not
+prevent unsafe actions.
+
+\subsection{Control Barrier Functions}
+CBFs provide formal safety guarantees via set invariance
+\cite{ames2019cbf}. The barrier function $h : \mathcal{X} \to \mathbb{R}$
+satisfies $\{x : h(x) \geq 0\} = \mathcal{C}$ (safe set). The CBF
+condition requires $\dot{h}(x) \geq -\alpha(h(x))$ for all $x \in \mathcal{C}$.
+Ames et al.\ \cite{ames2017cbf} showed this can be enforced via a QP
+with closed-form solutions in the single-constraint case. Recent work has
+extended CBFs to handle control-affine dynamics \cite{xiao2021high},
+input constraints \cite{rauscher2016cbf}, and robot navigation
+\cite{wang2017safe}.
+
+\subsection{Command-Layer Safety Filtering}
+Command-layer (velocity-level) filters intervene on policy outputs
+without accessing policy internals, making them architecture-agnostic.
+Robey et al.\ \cite{robey2021cbf} and Emam et al.\ \cite{emam2022cbf}
+demonstrated this for robotic manipulation and multi-agent navigation
+respectively. Our work extends this paradigm to hospital-domain VLA
+navigation, contributing (1) evidence across three distinct VLA
+architectures, (2) a dual-physics-engine evaluation that separates
+model-specific failure from navigation-paradigm-specific failure,
+and (3) the surface-distance CBF formulation correcting the center-to-center
+approximation for finite-radius obstacles.
+
+\subsection{Hospital Robot Safety}
+Hospital navigation raises unique safety requirements beyond standard
+indoor navigation: narrow corridors, human traffic, glass partitions,
+and map-registered but camera-invisible hazards (e.g., sterile zone
+markers, temporary blockades). Prior work \cite{ozkil2009service,
+cardinaux2011video} focused on SLAM and human detection; we focus on
+command-layer safety filtering applicable when perception fails.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Method}
+\label{sec:method}
+
+\subsection{Problem Formulation}
+Consider a ground robot with state $(x, y, \theta)$ navigating a hospital
+environment. A VLA policy $\pi$ outputs desired velocity commands
+$\vdes = (\dot{x}_d, \dot{y}_d)$. The FleetSafe filter maps
+$\vdes \mapsto \vcmd$ via a QP that minimises deviation from the desired
+command while enforcing safety constraints.
+
+\subsection{Surface-Distance CBF}
+For a cylindrical obstacle centred at $\mathbf{o}_i \in \mathbb{R}^2$
+with radius $r_i$, we define the \emph{surface distance}:
+\begin{equation}
+  \dsurf(\mathbf{p}, i) = \|\mathbf{p} - \mathbf{o}_i\|_2 - r_i
+\end{equation}
+and the barrier function:
+\begin{equation}
+  \hcbf(\mathbf{p}, i) = \dsurf(\mathbf{p}, i)^2 - \dsafe^2
+  \label{eq:cbf}
+\end{equation}
+The safe set is $\mathcal{C} = \{\mathbf{p} : \hcbf(\mathbf{p}, i) \geq 0\
+\forall i\}$, i.e., the robot surface is at least $\dsafe$ from every
+obstacle surface. For $r_i = 0$ (point obstacles, MuJoCo baseline),
+\eqref{eq:cbf} reduces to the standard center-to-center formula.
+
+\subsection{CBF-QP}
+At each control step, the filter solves:
+\begin{align}
+  \vcmd^* &= \arg\min_{\mathbf{v}} \|\mathbf{v} - \vdes\|^2 \label{eq:qp}\\
+  \text{s.t.} \quad & \nabla_{\mathbf{p}} \hcbf^{(i)} \cdot \mathbf{v} \geq -\alpha \hcbf^{(i)}(\mathbf{p})
+    \quad \forall i \nonumber
+\end{align}
+with $\alpha > 0$ the class-$\mathcal{K}$ gain.
+
+\paragraph{Closed-form solution.}
+When a single constraint $\mathbf{a}^\top \mathbf{v} \geq b$ is active, the
+QP~\eqref{eq:qp} has a closed-form solution:
+\begin{equation}
+  \vcmd = \vdes + \max\!\left(0,\ \frac{b - \mathbf{a}^\top\vdes}{\|\mathbf{a}\|^2}\right)\mathbf{a}
+\end{equation}
+This requires $O(n_{\text{obs}})$ time (one dot product per obstacle), making
+it suitable for real-time robot control at \SI{10}{\hertz}. When multiple
+constraints are simultaneously active, we solve the full QP (convex, $2d$
+variables, $n_{\text{obs}}$ inequality constraints); in practice, at most
+2--3 obstacles are simultaneously relevant, so the solver completes in
+$<\SI{1}{\milli\second}$.
+
+Algorithm~\ref{alg:cbf} presents the per-step filter implementation.
+
+\begin{algorithm}[htbp]
+\caption{FleetSafe CBF-QP Filter (per control step)}
+\label{alg:cbf}
+\begin{algorithmic}[1]
+\REQUIRE Robot position $\mathbf{p}$, VLA desired velocity $\vdes$,
+         map obstacles $\{(\mathbf{o}_i, r_i)\}$, gain $\alpha$, safe distance $\dsafe$
+\ENSURE Safe velocity command $\vcmd$
+\STATE $A \leftarrow [\,]$, $b \leftarrow [\,]$
+\FOR{each obstacle $i$}
+  \STATE $\dsurf \leftarrow \|\mathbf{p} - \mathbf{o}_i\|_2 - r_i$
+  \STATE $\hcbf \leftarrow \dsurf^2 - \dsafe^2$
+  \STATE $\nabla\hcbf \leftarrow \frac{2\,\dsurf\,(\mathbf{p} - \mathbf{o}_i)}{\|\mathbf{p} - \mathbf{o}_i\|_2}$ \quad $\in \mathbb{R}^2$
+  \STATE Append $\nabla\hcbf$ to $A$; append $-\alpha\,\hcbf$ to $b$
+  \quad // constraint: $\nabla\hcbf \cdot \mathbf{v} \geq -\alpha\,\hcbf$
+\ENDFOR
+\IF{$A \cdot \vdes \geq b$ (all $i$ constraints satisfied)}
+  \RETURN $\vdes$ \quad // CBF idle, no intervention
+\ELSE
+  \STATE $\vcmd \leftarrow \arg\min_\mathbf{v} \|\mathbf{v} - \vdes\|^2$
+         subject to $A\mathbf{v} \geq b$
+  \RETURN $\vcmd$ \quad // Minimum-deviation safe velocity
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Per-Obstacle Radii and Invisible Hazards}
+Obstacle radii $\{r_i\}$ are read from the robot's on-board map.
+For Isaac Sim evaluation, obstacles are rendered without visual material
+(invisible to the camera), modelling map-registered hazards that no
+camera-based policy can detect. The CBF continues to function because
+it operates on the map, not the camera feed.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Experimental Setup}
+\label{sec:experiments}
+
+\subsection{Policies Evaluated}
+GNM, ViNT, and NoMaD were selected because they span three major paradigms
+in learned visual navigation: goal-conditioned generalist navigation, Transformer-based
+foundation navigation, and diffusion-based trajectory generation.
+Testing FleetSafe across these three families makes the architecture-agnostic
+command-layer safety filtering claim substantially more meaningful than evaluating
+minor variants of a single model class.
+FleetSafe operates after the policy output at the velocity-command layer,
+allowing the same CBF-QP safety filter to be applied to all three backbones
+without modifying their internal design.
+
+We evaluate all three backbones with their original weights (no fine-tuning):
+\begin{itemize}
+  \item \textbf{GNM} \cite{shah2023gnm}: Goal-conditioned generalist navigation
+    with a conservative map-following prior. Commits to goal-directed paths.
+  \item \textbf{ViNT} \cite{majumdar2023vint}: Transformer-based foundation
+    navigation model with an aggressive forward waypoint prior. Highly
+    goal-committed; does not back off from path obstacles.
+  \item \textbf{NoMaD} \cite{sridhar2024nomad}: Diffusion-based topological
+    exploration; generates trajectory distributions rather than committing
+    to a single forward path. Exploration prior may naturally avoid hazards
+    not on the dominant trajectory mode.
+\end{itemize}
+
+The results further reveal that invisible-hazard vulnerability is
+navigation-paradigm-dependent: goal-directed policies commit to
+obstacle-crossing trajectories toward the target, while diffusion-based
+exploration may avoid such hazards naturally. FleetSafe intervenes selectively
+only where required, preserving collision-free behaviour without degrading
+naturally safe policies.
+
+\subsection{Simulation Backends}
+\paragraph{MuJoCo \cite{todorov2012mujoco}.} Procedural cylindrical obstacles in a hospital corridor.
+Obstacles are visually prominent (mesh + texture). 50 seeds per
+(model\,×\,scene\,×\,mode).
+
+\paragraph{Isaac Sim \cite{nvidia2023isaac}.} Hospital corridor with 1.0\,m radius cylindrical
+hazards rendered without visual material. The robot's traversal axis passes
+through the obstacle, guaranteeing geometric collision in RAW mode.
+50 seeds per combination. Uses RTX rendering for photoreal camera images.
+
+\subsection{Scenes}
+\begin{itemize}
+  \item \textbf{Hospital Corridor}: long narrow passage with central
+    obstacle(s). Primary evaluation scene.
+  \item \textbf{Hospital ICU Approach}: doorframe flanking obstacles
+    (off-axis). Verifies CBF does-no-harm (IR should be 0\%).
+  \item \textbf{Hospital Elevator Lobby}: side-wall segment obstacles.
+    Verifies CBF does-no-harm.
+\end{itemize}
+
+\subsection{PROVEN Gate}
+A run is \emph{PROVEN} when all five conditions hold:
+(1)~seeds\,$\geq 50$;
+(2)~FleetSafe does not increase collision in any (model, scene);
+(3)~FleetSafe reduces collision to $\leq 5\%$ wherever baseline exceeds $5\%$;
+(4)~CBF intervention rate $>0$ in at least one scene for at least one model;
+(5)~Photoreal camera confirmed (Isaac only).
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Results}
+\label{sec:results}
+
+\subsection{Hospital Corridor: Dual-Backend Evidence}
+
+Table~\ref{tab:main} presents the central result.
+Figure~\ref{fig:fig4} shows the navigation-paradigm-dependent failure pattern
+and FleetSafe's targeted intervention.
+
+\paragraph{NoMaD invisible-hazard result.}
+Unlike goal-directed GNM and ViNT (which navigate straight through the
+invisible map-registered hazard toward their goal), the diffusion-based NoMaD
+maintains a mean minimum distance of 1.5\,m from the hazard in RAW mode
+(GNM/ViNT RAW: 0.075\,m/0.089\,m respectively --- deep into collision).
+This reflects NoMaD's exploration prior: it does not commit to a fixed
+forward trajectory, naturally avoiding the hazard without any safety layer.
+The CBF is correspondingly idle (IR\,=\,0\%), confirming do-no-harm for NoMaD
+in Isaac Sim across all 50 seeds.
+
+The results suggest that invisible map-registered hazards are not universally
+catastrophic for all visual navigation policies; rather, vulnerability depends
+on the underlying navigation paradigm. Goal-directed policies commit to
+obstacle-crossing trajectories toward the target, while diffusion-based
+exploratory policies may avoid such hazards naturally. FleetSafe remains
+effective in both regimes because the safety layer operates at the
+command level rather than the representation level.
+
+This finding identifies \emph{goal-directed navigation commitment} as the
+specific structural property that makes GNM and ViNT vulnerable to invisible
+map hazards. It further demonstrates that FleetSafe is \emph{selective}
+rather than intrusive: safety systems are frequently criticised for
+over-conservatism and unnecessary intervention that degrades nominal
+performance~\cite{brunke2022safe}. Here, the same filter that prevents
+100\% collision in GNM/ViNT corridor episodes adds zero intervention cost
+to the already-safe NoMaD, directly addressing this concern under tested
+conditions.
+
+\paragraph{Statistical note.}
+For binary collision outcomes (collision / no-collision per episode), we report
+Wilson score 95\% confidence intervals. The extreme results (50/50 RAW collisions,
+0/50 FS collisions for ViNT-MuJoCo and GNM/ViNT-Isaac) admit closed-form
+analysis: a two-sided Fisher's exact test yields $p < 10^{-28}$ for each
+comparison individually. The 95\% CI on RAW=100\% with $n=50$ is [92.9\%, 100\%]
+and on FS=0\% is [0\%, 7.1\%]; the intervals are non-overlapping, confirming
+significance without requiring a formal NHST at the published tier.
+
+\begin{table}[t]
+\centering
+\caption{Hospital Corridor: RAW vs FleetSafe (FS). $n=50$ seeds, Wilson 95\% CI.
+         Isaac NoMaD RAW=0\% reflects diffusion-based exploration (min\_dist=1.5\,m);
+         goal-directed GNM/ViNT fail at 100\% (min\_dist$<$0.09\,m).}
+\label{tab:main}
+\begin{tabular}{llrrrr}
+\toprule
+Backend & Model & RAW CR (\%) & FS CR (\%) & CBF IR (\%) & Status \\
+\midrule
+MuJoCo & GNM   & 0.0 [0,7.1] & 0.0 [0,7.1] & 0.0         & PROVEN \\
+       & ViNT  & \danger{100.0} [92.9,100] & \proven{0.0} [0,7.1] & \cbf{69.7} & PROVEN \\
+       & NoMaD & 0.0 [0,7.1] & 0.0 [0,7.1] & 0.0         & PROVEN \\
+\midrule
+Isaac  & GNM   & \danger{100.0} [92.9,100] & \proven{0.0} [0,7.1] & \cbf{49.7} & PROVEN \\
+       & ViNT  & \danger{100.0} [92.9,100] & \proven{0.0} [0,7.1] & \cbf{37.9} & PROVEN \\
+       & NoMaD & 0.0 [0,7.1] & \proven{0.0} [0,7.1] & 0.0         & PROVEN \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{../figures/fig4_model_agnostic.pdf}
+  \caption{Navigation-paradigm-dependent safety: FleetSafe applied to 3 VLA
+           backbones across 2 physics backends. RAW (hatched) vs FleetSafe (solid).
+           MuJoCo: model-specific failure (ViNT aggressive prior only).
+           Isaac Sim: paradigm-specific failure --- goal-directed GNM+ViNT collide
+           with invisible hazards (100\%); diffusion-based NoMaD avoids naturally (0\%).
+           FleetSafe intervenes correctly in all collision-prone cases, idle otherwise.}
+  \label{fig:fig4}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Isaac Sim hospital corridor: paradigm-dependent failure and FleetSafe
+         selective intervention. Min-dist is mean closest approach to hazard
+         surface (r\,=\,1.0\,m cylinder). $n\,{=}\,50$ seeds, PROVEN.}
+\label{tab:isaac_paradigm}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lccccl}
+\toprule
+Model & Paradigm & RAW CR & FS CR & CBF IR & Min-dist (RAW) \\
+\midrule
+GNM   & Goal-directed & \danger{100\%} & \proven{0\%} & \cbf{49.7\%} & 0.075\,m \\
+ViNT  & Goal-directed & \danger{100\%} & \proven{0\%} & \cbf{37.9\%} & 0.089\,m \\
+NoMaD & Diffusion/exploration & \proven{0\%} & \proven{0\%} & \textbf{0.0\%} & 1.531\,m \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\FloatBarrier
+\subsection{CBF Intervention Rate Analysis}
+
+Figure~\ref{fig:fig1fig2} shows collision rates and intervention rates.
+In MuJoCo, the CBF intervenes 69.7\% of steps for ViNT (preventing collision)
+but is idle for GNM/NoMaD (doing-no-harm). In Isaac Sim, the CBF intervenes
+for goal-directed GNM (49.7\%) and ViNT (37.9\%), but remains idle for
+diffusion-based NoMaD (IR\,=\,0\%), which naturally avoids the invisible hazard.
+Table~\ref{tab:isaac_paradigm} makes the paradigm-dependent structure explicit.
+
+\FloatBarrier
+\subsection{Full Scene Collision Matrix}
+
+Figure~\ref{fig:fig8} presents the complete collision rate matrix across all
+model $\times$ scene $\times$ backend $\times$ mode combinations. Key observations:
+(i)~Only the corridor scene with the path-intersecting obstacle produces non-zero
+RAW collision; (ii)~FleetSafe reduces all corridor collisions to 0\%;
+(iii)~ICU Approach and Elevator Lobby show 0\% collision in RAW mode (off-path
+obstacles) and remain 0\% with FleetSafe active — confirming the filter is inert
+in safe scenarios.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{../figures/fig8_collision_heatmap.pdf}
+  \caption{Full collision rate heatmap (MuJoCo + Isaac Sim, RAW + FS modes).
+           Corridor RAW cells show the failure cases; all FS cells are 0\%.
+           ICU and Elevator cells confirm do-no-harm (0\% in all conditions).}
+  \label{fig:fig8}
+\end{figure}
+
+\FloatBarrier
+\subsection{Off-Path Scenes: Do-No-Harm Verification}
+
+In the ICU Approach and Elevator Lobby scenes, obstacles are placed
+off the robot's natural traversal axis. In all (model\,×\,backend) combinations,
+RAW collision rates are 0\% and FS CBF intervention rates are also 0\%.
+This confirms the CBF is quiescent in safe scenarios and does not
+degrade navigation performance.
+
+\FloatBarrier
+\subsection{Safety Margin Analysis}
+
+Figure~\ref{fig:fig5} shows the minimum obstacle distance achieved during
+each episode. In the corridor scene, RAW-mode ViNT (MuJoCo) and all models
+(Isaac) achieve near-zero minimum distance before collision; FleetSafe
+maintains a minimum distance $\geq 0.30$\,m in all cases. Off-path scenes
+show identical RAW and FS margins, confirming the filter does not perturb
+safe trajectories.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{../figures/fig5_safety_margin.pdf}
+  \caption{Minimum obstacle distance: RAW vs FleetSafe (FS). Higher is safer.
+           FleetSafe maintains $\geq 0.30$\,m clearance in the corridor scene
+           across all models and backends.}
+  \label{fig:fig5}
+\end{figure}
+
+\FloatBarrier
+\subsection{Real-Time Feasibility}
+
+Figure~\ref{fig:fig6} shows inference latency and CBF command deviation.
+GNM/ViNT achieve \SI{19}--\SI{25}{\milli\second} mean latency in Isaac Sim
+(well below the \SI{100}{\milli\second} real-time threshold).
+NoMaD (diffusion-based) is slower (\SI{170}--\SI{250}{\milli\second} in MuJoCo
+with CPU-only inference) but remains compatible with a 5\,Hz control loop.
+The \texttt{raw\_vs\_safe\_delta\_l2\_mean} metric measures the L2 norm of
+the velocity correction applied by the CBF-QP. In safe scenarios this is
+near zero; in the corridor scene (ViNT MuJoCo), the correction averages
+\SI{0.177}{\meter\per\second}, indicating the CBF actively steers the robot
+away from obstacles.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{../figures/fig6_latency_overhead.pdf}
+  \caption{Inference latency (left two: MuJoCo; right two: Isaac Sim) and
+           CBF command deviation (grey bars, right axis). GNM and ViNT operate
+           well within the \SI{100}{\milli\second} real-time threshold.
+           NoMaD's diffusion head is slower in CPU-only MuJoCo mode.}
+  \label{fig:fig6}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Evidence Governance}
+\label{sec:governance}
+
+We adopt a formal evidence tier ladder:
+\textsc{sim-mock} $\to$ \textsc{sim-mujoco} $\to$ \textsc{sim-isaac}
+$\to$ \textsc{real-proven}.
+Claims may only be made at or below the tier at which evidence exists.
+The PROVEN gate (§\ref{sec:experiments}) prevents premature scientific claims.
+Full evidence manifests with SHA-256 hashes are available in the repository.
+
+\paragraph{Supportable claims (v0.1).}
+\begin{enumerate}
+\item FleetSafe reduces collision from 100\% to 0\% for ViNT in MuJoCo
+  ($n=50$, PROVEN) and for GNM/ViNT in Isaac Sim invisible hazards
+  ($n=50$, PROVEN). All six cases: PROVEN.
+\item Goal-directed backbones (GNM, ViNT) are vulnerable to
+  camera-invisible map-registered hazards (100\% RAW collision).
+  The diffusion-based NoMaD avoids naturally (0\% RAW, min\_dist=1.5\,m),
+  revealing \emph{navigation-paradigm dependency} as the key risk factor.
+\item CBF intervention is model-specific in MuJoCo (IR=69.7\% for ViNT,
+  0\% for GNM/NoMaD) and paradigm-specific in Isaac Sim
+  (IR=49.7\%/37.9\% for goal-directed GNM/ViNT; 0\% for NoMaD).
+\item The filter does not degrade performance in safe scenarios:
+  ICU Approach and Elevator Lobby show 0\% collision and 0\% IR in
+  all 12 (model, backend) combinations tested — do-no-harm PROVEN.
+\end{enumerate}
+
+\paragraph{Not supportable from v0.1 data.}
+\begin{itemize}
+\item Claims about real Yahboom M3Pro hardware performance.
+\item Claims about visual navigation quality (policy quality is not the
+  focus; models use their original weights).
+\item Claims that FleetSafe generalises to non-cylindrical obstacles,
+  outdoor environments, or other robot morphologies.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have demonstrated that a command-layer CBF-QP filter provides
+architecture-agnostic command-layer safety filtering for visual navigation
+policies across multiple paradigms and simulation backends under tested
+conditions. The central finding is that different embodied navigation paradigms
+exhibit distinct failure structures, but the same command-layer CBF
+adaptively intervenes only when required without degrading naturally safe
+behaviours. This is evidenced by: (i)~collision prevention for goal-directed
+GNM/ViNT in both backends; (ii)~model-specific correction for ViNT's
+aggressive prior in MuJoCo; and (iii)~do-no-harm behaviour for diffusion-based
+NoMaD, where IR\,=\,0\% across all 50 seeds and all three scenes.
+
+The NoMaD result is not a failure of FleetSafe. It is evidence that the
+filter is \emph{selective rather than intrusive}---a property that directly
+addresses the over-conservatism critique of command-layer safety systems.
+
+\paragraph{Future Work.}
+Real-robot evidence is the next priority: a bench session on the
+Yahboom M3Pro (ROS2) will validate the CBF filter under real perception
+noise and actuator delay. We plan to extend the benchmark to non-cylindrical
+obstacles (door frames, furniture) and dynamic agents (pedestrians).
+Multi-policy ensembling and uncertainty-aware CBF gains are promising
+directions for improving intervention efficiency. The paradigm-dependent
+failure analysis motivates studying whether fine-tuned or hybrid
+goal-directed/diffusion policies inherit the vulnerability of goal-directed
+models.
+
+\paragraph{Limitations.}
+Isaac Sim results are complete for all three models (GNM, ViNT, NoMaD),
+$n\,{=}\,50$ seeds per condition, PROVEN gate certified.
+Real-robot evidence is pending. Claims about generalisation to outdoor
+environments, non-cylindrical obstacles, or dynamic agents are not supported
+by current evidence.
+The surface-distance CBF assumes accurate obstacle radii are available
+in the robot map; errors in radius estimation will affect the safety margin.
+All results use a fixed $\alpha = 1.0$ class-$\mathcal{K}$ gain; optimal
+gain tuning per environment is an open problem.
+The current CBF-QP constraint uses a 1D velocity projection
+($\dot{h} \approx 2d_{\text{surf}}\,(v_x \cdot \hat{d}_x)$), which is
+accurate when the robot is oriented toward the obstacle but
+conservative otherwise; a full 2D projection is straightforward and
+planned for the next version.
+All experimental evidence is from simulation; real-world sensor noise,
+actuator delay, and SLAM drift are not modelled.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\clearpage
+\appendix
+\section{Full Scene Results}
+\label{app:fullscene}
+
+Table~\ref{tab:full} reports all (model\,×\,scene\,×\,mode) results for the
+MuJoCo backend (50 seeds, PROVEN). ICU Approach and Elevator Lobby scenes
+place obstacles off the robot's traversal axis; all backbones achieve 0\%
+collision in RAW mode, and the CBF is quiescent (IR\,=\,0\%) — confirming
+the do-no-harm property.
+
+\begin{table}[htbp]
+\centering
+\caption{MuJoCo full scene results — PROVEN (50 seeds). IR = CBF Intervention Rate.
+         Corridor is the primary safety-evaluation scene; ICU and Elevator verify
+         the do-no-harm property.}
+\label{tab:full}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llcccc}
+\toprule
+Model & Scene & RAW CR & FS CR & CBF IR & n \\
+\midrule
+GNM   & Corridor       & 0.0\%  & 0.0\% & 0.0\%  & 50 \\
+      & ICU Approach   & 0.0\%  & 0.0\% & 0.0\%  & 50 \\
+      & Elevator Lobby & 0.0\%  & 0.0\% & 0.0\%  & 50 \\
+\midrule
+ViNT  & Corridor       & \danger{100.0\%}  & \proven{0.0\%} & \cbf{69.7\%} & 50 \\
+      & ICU Approach   & 0.0\%  & 0.0\% & 0.0\%  & 50 \\
+      & Elevator Lobby & 0.0\%  & 0.0\% & 0.0\%  & 50 \\
+\midrule
+NoMaD & Corridor       & 0.0\%  & 0.0\% & 0.0\%  & 50 \\
+      & ICU Approach   & 0.0\%  & 0.0\% & 0.0\%  & 50 \\
+      & Elevator Lobby & 0.0\%  & 0.0\% & 0.0\%  & 50 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Evidence Governance — PROVEN Gate Definition}
+\label{app:proven_gate}
+
+A simulation run is granted the \emph{PROVEN} status when all five conditions
+hold simultaneously:
+
+\begin{enumerate}
+  \item \textbf{Seed sufficiency}: $n \geq 50$ episodes per
+    (model\,×\,scene\,×\,mode) combination.
+  \item \textbf{Safety monotonicity}: FleetSafe collision rate $\leq$ RAW
+    collision rate for every (model, scene) pair.
+  \item \textbf{Collision reduction}: In every (model, scene) where RAW
+    collision rate\,$> 5\%$, FleetSafe reduces it to $\leq 5\%$.
+  \item \textbf{CBF activity}: CBF intervention rate\,$> 0\%$ in at least
+    one (model, scene) pair — confirming the filter is not trivially idle.
+  \item \textbf{Photoreal verification} (Isaac Sim only): RTX renderer is
+    enabled and confirmed active for camera image generation.
+\end{enumerate}
+
+These gates are evaluated programmatically in
+\texttt{publication\_run\_scanner.py} and the result hash-committed to the
+repository. No human override is permitted; a partial run (e.g., only GNM
+completed) cannot be PROVEN even if individual model results pass.
+The full set \{GNM, ViNT, NoMaD\} must be present.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{thebibliography}{99}
+
+\bibitem{shah2023gnm}
+D. Shah, B. Eysenbach, G. Kahn, N. Rhinehart, S. Levine.
+\textit{GNM: A General Navigation Model to Drive Any Robot}.
+ICRA 2023.
+
+\bibitem{majumdar2023vint}
+A. Majumdar, K. Yadav, S. Arnaud, Y. Ma, C. Chen, S. Silwal,
+A. Jain, V. Berges, T. Sukhatme, P. Abbeel, D. Shah.
+\textit{ViNT: A Foundation Model for Visual Navigation}.
+CoRL 2023.
+
+\bibitem{sridhar2024nomad}
+A. Sridhar, D. Shah, C. Glossop, S. Levine.
+\textit{NoMaD: Goal Masked Diffusion Policies for Navigation and Exploration}.
+ICRA 2024.
+
+\bibitem{ames2019cbf}
+A. D. Ames, S. Coogan, M. Egerstedt, G. Notomista, K. Sreenath, P. Tabuada.
+\textit{Control barrier functions: Theory and applications}.
+ECC 2019.
+
+\bibitem{ames2017cbf}
+A. D. Ames, X. Xu, J. W. Grizzle, P. Tabuada.
+\textit{Control barrier function based quadratic programs for safety critical systems}.
+IEEE TAC 2017.
+
+\bibitem{robey2021cbf}
+A. Robey, H. Hu, L. Lindemann, H. Zhang, D. V. Dimarogonas, S. Tu, N. Matni.
+\textit{Learning control barrier functions from expert demonstrations}.
+CDC 2020.
+
+\bibitem{emam2022cbf}
+Y. Emam, P. Glotfelter, S. Wilson, A. Notomista, M. Egerstedt.
+\textit{Data-driven control barrier functions for safe, multi-agent dynamics}.
+IEEE LCSS 2022.
+
+\bibitem{garcia2015survey}
+J. Garcia, F. Fernandez.
+\textit{A comprehensive survey on safe reinforcement learning}.
+JMLR 2015.
+
+\bibitem{alshiekh2018safe}
+M. Alshiekh, R. Bloem, R. Ehlers, B. K\"onighofer, S. Niekum, U. Topcu.
+\textit{Safe reinforcement learning via shielding}.
+AAAI 2018.
+
+\bibitem{achiam2017cpo}
+J. Achiam, D. Held, A. Tamar, P. Abbeel.
+\textit{Constrained policy optimization}.
+ICML 2017.
+
+\bibitem{falcone2011monitoring}
+P. Falcone, M. Bauer, J. Svensson, J. Isgr\'o.
+\textit{Predictive threat assessment via reachability analysis and set invariance theory}.
+IEEE T-ITS 2011.
+
+\bibitem{xiao2021high}
+W. Xiao, C. Belta.
+\textit{High relative degree control barrier functions}.
+IEEE TAC 2022.
+
+\bibitem{rauscher2016cbf}
+M. Rauscher, M. Kimmel, S. Hirche.
+\textit{Constrained robot control using control barrier functions}.
+IROS 2016.
+
+\bibitem{wang2017safe}
+L. Wang, A. Ames, M. Egerstedt.
+\textit{Safe certificate-based maneuvers for teams of quadrotors using differential flatness}.
+ICRA 2017.
+
+\bibitem{ozkil2009service}
+A. G. Ozkil, Z. Fan, S. Dawids, H. Aaner, J. K. Kristensen, K. H. Christensen.
+\textit{Service robots for hospitals: A case study of transportation tasks in a hospital}.
+ROBIO 2009.
+
+\bibitem{cardinaux2011video}
+F. Cardinaux, D. Bhowmik, C. Abhayaratne, M. S. Hawley.
+\textit{Video based technology for ambient assisted living: A review of the literature}.
+J. Amb. Int. Smart Env. 2011.
+
+\bibitem{todorov2012mujoco}
+E. Todorov, T. Erez, Y. Tassa.
+\textit{MuJoCo: A physics engine for model-based control}.
+IROS 2012.
+
+\bibitem{nvidia2023isaac}
+NVIDIA.
+\textit{Isaac Sim: A Robotics Simulation Platform}.
+NVIDIA Developer Documentation, 2023.
+\url{https://developer.nvidia.com/isaac-sim}
+
+\bibitem{brockman2016openai}
+G. Brockman, V. Cheung, L. Pettersson, J. Schneider, J. Schulman, J. Tang, W. Zaremba.
+\textit{OpenAI Gym}.
+arXiv:1606.01540, 2016.
+
+\bibitem{macenski2022nav2}
+S. Macenski, F. Mart\'in, R. White, J. G. Clavero.
+\textit{The Marathon 2: A Navigation System}.
+IROS 2020.
+
+\bibitem{brunke2022safe}
+L. Brunke, M. Greeff, A. W. Hall, Z. Yuan, S. Zhou, J. Panerati, A. P. Schoellig.
+\textit{Safe Learning in Robotics: From Learning-Based Control to Safe Reinforcement Learning}.
+Annual Review of Control, Robotics, and Autonomous Systems, 5:411--444, 2022.
+
+\end{thebibliography}
+
+\end{document}

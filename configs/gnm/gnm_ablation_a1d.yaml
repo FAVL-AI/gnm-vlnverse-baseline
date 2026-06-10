@@ -1,0 +1,63 @@
+# GNM Ablation A1d: MobileNet + EMA (decay=0.999) + no AMP
+# ─────────────────────────────────────────────────────────────────────────────
+# Purpose: fix the EMA half-life problem discovered in A1 and A1b.
+#
+# Root cause (confirmed by probing A1b live vs EMA weights):
+#   ema_decay=0.9999 → half-life = ln(2)/(1-0.9999) = 6931 optimizer steps
+#   50 epochs × 97 steps/epoch = 4850 steps < 6931 → EMA never converges
+#   Live model weights are HEALTHY at epoch 13 (mean=0.355, collapse=0/64)
+#   EMA shadow weights are BROKEN (mean=0.033, collapse=64/64, near init)
+#
+# Fix: ema_decay=0.999 → half-life = 693 steps
+#   50 epochs = 4850 steps = 7 half-lives → EMA fully converged by epoch ~7
+#
+# Compared to A1b: same config, only ema_decay 0.9999 → 0.999
+# ─────────────────────────────────────────────────────────────────────────────
+
+model:
+  context_size: 5
+  goal_conditioned: true
+  action_dim: 2
+  hidden_dim: 256
+  encoder: mobilenet
+  out_dim: 512
+  pretrained: true
+
+data:
+  data_root: datasets/vlntube
+  image_size: [96, 96]
+  max_goal_dist: 20
+  action_std: [0.115528, 0.115528]
+  augment: true
+  num_workers: 4
+  pin_memory: true
+
+training:
+  epochs: 50
+  batch_size: 128
+  lr: 1e-4
+  weight_decay: 1e-4
+  warmup_frac: 0.05
+  max_grad_norm: 1.0
+  action_weight: 0.5
+  loss_type: mse
+  patience: 10
+  seed: 42
+  ema_decay: 0.999   # 10× faster than 0.9999 — half-life=693 steps, converges by epoch 7
+
+checkpoint:
+  output_dir: checkpoints/gnm_ablation_a1d
+  log_every: 50
+
+wandb:
+  project: fleetsafe-gnm-vlnverse
+  entity: null
+  name: gnm_ablation_a1d
+  tags: [gnm, track_A, ablation, mobilenet, ema_fast]
+  notes: "A1d: MobileNet + ema_decay=0.999 (10x faster) — fixes EMA half-life underconvergence from A1/A1b"
+
+evaluation:
+  success_threshold: 3.0
+  stop_threshold: 0.15
+  max_steps: 500
+  track: A

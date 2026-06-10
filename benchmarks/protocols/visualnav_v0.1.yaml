@@ -1,0 +1,171 @@
+# FleetSafe VisualNav Benchmark Protocol — v0.1
+# This file is immutable once published. To change the protocol, create visualnav_v0.2.yaml.
+# Every benchmark artifact must record the protocol_file path that produced it.
+
+protocol_version: "0.1.0"
+protocol_frozen: true
+protocol_created: "2026-05-15"
+
+# ── Models ────────────────────────────────────────────────────────────────────
+models:
+  - id: gnm
+    class: fleet_safe_vla.integrations.visualnav_transformer.gnm_adapter.GNMAdapter
+    checkpoint_env: VISUALNAV_GNM_CHECKPOINT
+  - id: vint
+    class: fleet_safe_vla.integrations.visualnav_transformer.vint_adapter.ViNTAdapter
+    checkpoint_env: VISUALNAV_VINT_CHECKPOINT
+  - id: nomad
+    class: fleet_safe_vla.integrations.visualnav_transformer.nomad_adapter.NoMaDAdapter
+    checkpoint_env: VISUALNAV_NOMAD_CHECKPOINT
+
+# ── Evaluation modes ──────────────────────────────────────────────────────────
+modes:
+  - id: baseline
+    fleetsafe: false
+    description: "Nominal policy output; no safety filter applied."
+  - id: fleetsafe
+    fleetsafe: true
+    description: "Policy output passed through CBF-QP safety layer."
+
+# ── Backends ──────────────────────────────────────────────────────────────────
+backends:
+  - id: mock
+    publication_allowed: false
+    label: "ENGINEERING_ONLY — not publication evidence"
+    description: >
+      2-D holonomic integrator with no physics. Use for CI and pipeline testing only.
+      Results MUST NOT appear in publication tables.
+  - id: mujoco
+    publication_allowed: true
+    description: "MuJoCo 3.x with M3Pro MJCF. Primary publication backend."
+  - id: isaaclab
+    publication_allowed: false
+    status: pending
+    description: >
+      Isaac Lab GPU backend. Not yet implemented (gate-failed).
+      Will become publication-allowed when implementation passes all gates.
+
+# ── Canonical scenes ──────────────────────────────────────────────────────────
+scenes:
+  - id: straight_corridor
+    scene_version: "0.1.0"
+    description: "10 m straight corridor, no obstacles."
+  - id: cluttered_static
+    scene_version: "0.1.0"
+    description: "Corridor with 4 static circular obstacles."
+  - id: narrow_passage
+    scene_version: "0.1.0"
+    description: "0.8 m gap between two large obstacles."
+  - id: dynamic_obstacle
+    scene_version: "0.1.0"
+    description: "Single dynamic agent crossing the robot path."
+
+# ── Seed policies ─────────────────────────────────────────────────────────────
+seed_modes:
+  smoke:
+    n_seeds: 1
+    seeds: [0]
+    purpose: "Quick end-to-end sanity check. Not for any published numbers."
+  dev:
+    n_seeds: 10
+    seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    purpose: "Development iteration. Not for publication."
+  paper:
+    n_seeds: 50
+    seeds: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49]
+    purpose: "Publication-grade. Minimum required for any claim in a paper."
+
+# ── Episode parameters ────────────────────────────────────────────────────────
+episode:
+  max_episode_steps: 500
+  control_hz: 4.0
+  goal_tolerance_m: 0.20
+  collision_threshold_m: 0.10
+  near_violation_threshold_m: 0.45
+  safety_margin_m: 0.30
+  v_max: 0.3
+  vy_max: 0.3
+  w_max: 0.7
+
+# ── Robot ─────────────────────────────────────────────────────────────────────
+robot:
+  id: yahboom_m3pro
+  drive: holonomic_mecanum
+  dof: 3
+  radius_m: 0.15
+
+# ── Safety filter ─────────────────────────────────────────────────────────────
+safety_filter:
+  type: cbf_qp
+  safety_margin_m: 0.30
+  estop_margin_m: 0.10
+  buffer_epsilon_m: 0.01
+  class: fleet_safe_vla.integrations.visualnav_transformer.fleetsafe_wrapper.FleetSafeWrapper
+
+# ── Logging requirements (every episode MUST produce these files) ─────────────
+required_episode_files:
+  - episode.json
+  - trajectory.csv
+  - actions.csv
+  - safety_events.jsonl
+  - metrics.json
+  - scene_graphs.jsonl
+  - explanation_log.jsonl
+  - counterfactuals.jsonl
+  - audit_trail.json
+
+required_episode_json_keys:
+  - model
+  - backend
+  - seed
+  - scene
+  - success
+  - steps
+
+required_actions_csv_columns:
+  - step
+  - raw_vx
+  - raw_vy
+  - raw_wz
+  - safe_vx
+  - safe_vy
+  - safe_wz
+  - delta_l2
+  - intervened
+  - min_dist_m
+
+required_metadata_yaml_keys:
+  - run_id
+  - model
+  - backend
+  - benchmark_version
+  - protocol_version
+  - sceneset_version
+  - metricset_version
+  - git_commit
+
+# ── Exclusion rules ───────────────────────────────────────────────────────────
+excluded_from_publication:
+  - condition: "backend == 'mock'"
+    reason: >
+      Mock backend uses a non-physics 2-D integrator. Metrics are systematically
+      different from MuJoCo/Isaac. Including mock results in publication tables
+      would misrepresent navigation quality.
+  - condition: "n_seeds < 50"
+    reason: >
+      Statistical power is insufficient below 50 seeds for paired comparisons
+      at alpha=0.05 with the effect sizes typical in this domain.
+  - condition: "transparency_status != 'PASS'"
+    reason: >
+      The transparency contract must pass before any episode contributes to
+      a publication claim. Episodes with missing artifacts or unlabelled mock
+      runs are not considered valid evidence.
+
+# ── Statistical requirements ──────────────────────────────────────────────────
+statistics:
+  bootstrap_ci_iterations: 10000
+  bootstrap_ci_alpha: 0.05
+  wilcoxon_alpha: 0.05
+  bonferroni_correction: true
+  min_effect_size_reportable: 0.2
+  effect_size_metric: cohens_d

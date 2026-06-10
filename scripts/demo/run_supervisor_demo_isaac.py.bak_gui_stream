@@ -1,0 +1,623 @@
+#!/usr/bin/env python3
+"""
+FleetSafe Live Supervisor Demo — real Isaac Sim + GNM / ViNT + CBF-QP safety filter.
+
+Architecture
+------------
+  Isaac Sim camera  ──►  GNM / ViNT adapter  ──►  u_nom
+                                                      │
+                                           YahboomCBFFilter (CBF-QP)
+                                                      │
+                                                  u_safe ──► Isaac Sim robot
+
+Telemetry: one JSON object per control step written to stdout.
+The command-center backend reads stdout and broadcasts to the frontend via WebSocket.
+
+Two modes
+---------
+  --mock      No Isaac required. Runs a kinematic corridor sim with synthetic
+              camera images. Use this for UI testing / rapid iteration.
+
+  (default)   Full Isaac AppLauncher — real physics, real Isaac Sim camera,
+              real GNM / ViNT model inference. Requires:
+                conda activate isaac
+                python scripts/demo/run_supervisor_demo_isaac.py --model vint
+
+Usage
+-----
+  # Mock mode (instant startup, no Isaac):
+  python scripts/demo/run_supervisor_demo_isaac.py --mock --model vint
+
+  # Real Isaac Sim:
+  conda activate isaac
+  python scripts/demo/run_supervisor_demo_isaac.py \\
+      --model vint \\
+      --scene hospital_corridor
+
+  # Real Isaac, FleetSafe off (shows unfiltered navigation):
+  python scripts/demo/run_supervisor_demo_isaac.py \\
+      --model vint --no-fleetsafe
+
+AppLauncher note
+----------------
+Isaac Sim's AppLauncher must be initialised BEFORE any isaaclab or omni import.
+This script follows the same pattern as run_visualnav_benchmark_isaac.py.
+"""
+from __future__ import annotations
+
+import argparse
+import base64
+import io
+import json
+import math
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+
+# ── Repo root ─────────────────────────────────────────────────────────────────
+
+_REPO = Path(__file__).resolve().parents[2]
+if str(_REPO) not in sys.path:
+    sys.path.insert(0, str(_REPO))
+
+# ── Checkpoint registry ───────────────────────────────────────────────────────
+
+_VNT = _REPO / "third_party" / "visualnav-transformer" / "model_weights"
+_CHECKPOINTS: dict[str, Path] = {
+    "gnm":   _VNT / "gnm"   / "gnm.pth",
+    "vint":  _VNT / "vint"  / "vint.pth",
+    "nomad": _VNT / "nomad" / "nomad.pth",
+}
+
+# ── stdout telemetry helpers ──────────────────────────────────────────────────
+
+def emit(obj: dict) -> None:
+    """Write one JSON line to stdout and flush immediately."""
+    print(json.dumps(obj), flush=True)
+
+
+def status(state: str, msg: str) -> None:
+    emit({"type": "status", "state": state, "msg": msg})
+
+
+# ── Camera image utilities ────────────────────────────────────────────────────
+
+def _rgb_to_jpeg_b64(rgb: np.ndarray, quality: int = 72) -> str:
+    """Encode (H, W, 3) uint8 RGB → data-URI base64 JPEG."""
+    try:
+        from PIL import Image
+        buf = io.BytesIO()
+        Image.fromarray(rgb.astype(np.uint8)).save(buf, format="JPEG", quality=quality)
+        return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+    except Exception:
+        return ""
+
+
+def _zone(min_dist_m: float, d_safe: float) -> str:
+    if min_dist_m > d_safe * 1.5:
+        return "GREEN"
+    if min_dist_m > d_safe:
+        return "AMBER"
+    return "RED"
+
+
+# ── Argument parsing ──────────────────────────────────────────────────────────
+# parse_known_args so Isaac's own AppLauncher flags pass through unmodified.
+
+def _parse_args() -> tuple[argparse.Namespace, list[str]]:
+    p = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        add_help=False,
+    )
+    p.add_argument("--model",      default="vint",
+                   choices=["gnm", "vint", "nomad", "mock"],
+                   help="Navigation model. 'mock' skips Isaac.")
+    p.add_argument("--scene",      default="hospital_corridor",
+                   help="Scene name from hospital_scenes.SCENES")
+    p.add_argument("--fleetsafe",  action=argparse.BooleanOptionalAction, default=True,
+                   help="Enable FleetSafe CBF-QP filter (default: on)")
+    p.add_argument("--mock",       action="store_true",
+                   help="Skip Isaac; run kinematic mock sim")
+    p.add_argument("--headless",   action=argparse.BooleanOptionalAction, default=False,
+                   help="Suppress the Isaac Sim desktop window (default: window is shown)")
+    p.add_argument("--stream",     action="store_true", default=False,
+                   help="Also enable WebRTC livestream at http://localhost:49100")
+    p.add_argument("--max-steps",  type=int, default=200)
+    p.add_argument("--seed",       type=int, default=0)
+    p.add_argument("--checkpoint", default=None,
+                   help="Override checkpoint path")
+    p.add_argument("--control-hz", type=float, default=4.0)
+    p.add_argument("--v-max",      type=float, default=0.3,
+                   help="Max forward velocity (m/s)")
+    p.add_argument("--w-max",      type=float, default=0.7,
+                   help="Max angular rate (rad/s)")
+    p.add_argument("--d-safe",     type=float, default=0.50,
+                   help="CBF safety margin (m) — conservative for demo")
+    p.add_argument("--estop-dist", type=float, default=0.30,
+                   help="Hard emergency-stop distance (m)")
+    return p.parse_known_args()
+
+
+# ── Mock simulation ───────────────────────────────────────────────────────────
+
+def _make_topdown_image(
+    robot_x: float, robot_y: float, robot_yaw: float,
+    obs_xy: np.ndarray, obs_r: np.ndarray,
+    goal: np.ndarray,
+    waypoints: list,
+    d_safe: float,
+    img_w: int = 320, img_h: int = 240,
+) -> str:
+    """Render a top-down corridor view. Returns data-URI or empty string."""
+    try:
+        from PIL import Image, ImageDraw
+
+        x_min, x_max = -4.0,  6.0
+        y_min, y_max = -2.0,  2.0
+
+        def world_to_px(wx: float, wy: float) -> tuple[int, int]:
+            px = int((wx - x_min) / (x_max - x_min) * img_w)
+            py = int((1.0 - (wy - y_min) / (y_max - y_min)) * img_h)
+            return px, py
+
+        img = Image.new("RGB", (img_w, img_h), (30, 30, 30))
+        draw = ImageDraw.Draw(img)
+
+        # Corridor floor
+        cx0, cy0 = world_to_px(x_min, -1.5)
+        cx1, cy1 = world_to_px(x_max,  2.0)
+        draw.rectangle([min(cx0, cx1), min(cy0, cy1), max(cx0, cx1), max(cy0, cy1)],
+                       fill=(60, 55, 50))
+
+        # Goal
+        gx, gy = world_to_px(goal[0], goal[1])
+        draw.ellipse([gx - 8, gy - 8, gx + 8, gy + 8], fill=(0, 200, 80))
+
+        # Obstacles + safety ring
+        for (ox, oy), r in zip(obs_xy, obs_r):
+            px, py = world_to_px(ox, oy)
+            scale = img_w / (x_max - x_min)
+            pr = max(3, int(r * scale))
+            ds_px = max(3, int(d_safe * scale))
+            draw.ellipse([px - ds_px, py - ds_px, px + ds_px, py + ds_px],
+                         outline=(255, 160, 0), width=1)
+            draw.ellipse([px - pr, py - pr, px + pr, py + pr], fill=(220, 50, 50))
+
+        # Waypoints
+        for wx, wy in waypoints[:4]:
+            wpx, wpy = world_to_px(robot_x + wx, robot_y + wy)
+            draw.ellipse([wpx - 3, wpy - 3, wpx + 3, wpy + 3], fill=(0, 180, 255))
+
+        # Robot arrow
+        rx, ry = world_to_px(robot_x, robot_y)
+        ax = int(rx + 12 * math.cos(robot_yaw))
+        ay = int(ry - 12 * math.sin(robot_yaw))
+        draw.ellipse([rx - 7, ry - 7, rx + 7, ry + 7], fill=(80, 160, 255))
+        draw.line([rx, ry, ax, ay], fill=(255, 255, 255), width=2)
+
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=80)
+        return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+    except Exception:
+        return ""
+
+
+def _run_mock(args: argparse.Namespace) -> None:
+    """Kinematic corridor sim — no Isaac required."""
+    from fleet_safe_vla.benchmarks.hospital_scenes import SCENES, get_scene_config
+    scene = get_scene_config(args.scene)
+
+    status("starting", f"mock mode | scene={args.scene} model={args.model}")
+
+    obs_xy = np.array(scene.obstacle_positions, dtype=np.float64)
+    obs_r  = np.array(scene.obstacle_radii,     dtype=np.float64)
+    goal   = np.array(scene.goal_xy,            dtype=np.float64)
+
+    x, y, yaw = float(scene.start_xy[0]), float(scene.start_xy[1]), 0.0
+    d_safe     = args.d_safe
+    estop      = args.estop_dist
+    dt         = 1.0 / args.control_hz
+
+    interventions = 0
+    collision     = False
+    goal_reached  = False
+
+    status("running", "mock episode started")
+
+    for step in range(args.max_steps):
+        t0 = time.perf_counter()
+        robot_xy = np.array([x, y])
+
+        # Surface distances to all obstacles
+        dists = np.linalg.norm(obs_xy - robot_xy, axis=1) - obs_r if len(obs_r) else np.array([99.0])
+        min_dist = float(np.min(dists))
+
+        # Nominal proportional controller toward goal
+        goal_angle = math.atan2(goal[1] - y, goal[0] - x)
+        angle_err  = math.atan2(math.sin(goal_angle - yaw), math.cos(goal_angle - yaw))
+        u_nom_vx   = float(args.v_max * max(0.0, math.cos(angle_err)))
+        u_nom_wz   = float(min(args.w_max, max(-args.w_max, 1.5 * angle_err)))
+
+        # Projected waypoints (robot frame)
+        waypoints: list[list[float]] = [
+            [round(u_nom_vx * dt * (i + 1), 3), round(u_nom_wz * dt * (i + 1) * 0.1, 3)]
+            for i in range(3)
+        ]
+
+        # CBF safety filter (simplified analytic version for mock)
+        intervened = False
+        if args.fleetsafe:
+            if min_dist < estop:
+                u_safe_vx, u_safe_wz = 0.0, u_nom_wz
+                intervened = True
+                interventions += 1
+            elif min_dist < d_safe:
+                scale = (min_dist - estop) / max(1e-6, d_safe - estop)
+                u_safe_vx = u_nom_vx * max(0.0, scale)
+                u_safe_wz = u_nom_wz
+                if abs(u_safe_vx - u_nom_vx) > 0.02:
+                    intervened = True
+                    interventions += 1
+            else:
+                u_safe_vx, u_safe_wz = u_nom_vx, u_nom_wz
+        else:
+            u_safe_vx, u_safe_wz = u_nom_vx, u_nom_wz
+
+        # Kinematic integration
+        x   += u_safe_vx * math.cos(yaw) * dt
+        y   += u_safe_vx * math.sin(yaw) * dt
+        yaw += u_safe_wz * dt
+
+        inference_ms = (time.perf_counter() - t0) * 1000.0
+
+        # Re-compute distances after move
+        robot_xy = np.array([x, y])
+        dists    = np.linalg.norm(obs_xy - robot_xy, axis=1) - obs_r if len(obs_r) else np.array([99.0])
+        min_dist = float(np.min(dists))
+
+        dist_to_goal = float(np.linalg.norm(goal - robot_xy))
+        collision    = min_dist < -0.05
+        goal_reached = dist_to_goal < 0.30
+
+        camera_b64 = _make_topdown_image(
+            x, y, yaw, obs_xy, obs_r, goal, waypoints, d_safe,
+        )
+
+        emit({
+            "type": "frame",
+            "step": step,
+            "model": args.model,
+            "fleetsafe_on": args.fleetsafe,
+            "robot_x":   round(x, 4),
+            "robot_y":   round(y, 4),
+            "robot_yaw": round(yaw, 4),
+            "raw_vx": round(u_nom_vx, 4),  "raw_vy": 0.0,  "raw_wz": round(u_nom_wz, 4),
+            "safe_vx": round(u_safe_vx, 4), "safe_vy": 0.0, "safe_wz": round(u_safe_wz, 4),
+            "intervened":          intervened,
+            "min_dist_m":          round(min_dist, 4),
+            "h_min":               round(min_dist ** 2 - d_safe ** 2, 4),
+            "cbf_zone":            _zone(min_dist, d_safe),
+            "intervention_count":  interventions,
+            "waypoints":           waypoints,
+            "inference_ms":        round(inference_ms, 2),
+            "cbf_ms":              0.1,
+            "collision":           collision,
+            "goal_reached":        goal_reached,
+            "dist_to_goal":        round(dist_to_goal, 4),
+            "camera_b64":          camera_b64,
+        })
+
+        if collision or goal_reached:
+            break
+
+        time.sleep(max(0.0, dt - inference_ms / 1000.0))
+
+    emit({
+        "type": "done",
+        "collision": collision,
+        "steps": step + 1,
+        "summary": {
+            "intervention_rate": round(interventions / max(1, step + 1), 3),
+            "collision": collision,
+            "goal_reached": goal_reached,
+        },
+    })
+
+
+# ── Isaac Sim episode ─────────────────────────────────────────────────────────
+
+def _run_isaac(args: argparse.Namespace) -> None:
+    """Full Isaac Lab episode — called after AppLauncher is up."""
+
+    # All downstream imports happen HERE, after AppLauncher.
+    from fleet_safe_vla.benchmarks.hospital_scenes import SCENES, get_scene_config
+    from fleet_safe_vla.envs.isaaclab.yahboom.m3pro_nav_env import IsaacNavBenchmarkEnv
+    from fleet_safe_vla.integrations.visualnav_transformer.isaac_obs_adapter import (
+        IsaacCameraObsAdapter,
+    )
+    from fleet_safe_vla.fleet_safety.yahboom_cbf import YahboomCBFConfig
+    from fleet_safe_vla.integrations.visualnav_transformer.fleetsafe_wrapper import (
+        FleetSafeWrapper,
+    )
+
+    scene = get_scene_config(args.scene)
+
+    # ── Build adapter ─────────────────────────────────────────────────────────
+    if args.model == "gnm":
+        from fleet_safe_vla.integrations.visualnav_transformer.gnm_adapter import GNMAdapter
+        adapter = GNMAdapter()
+    elif args.model == "vint":
+        from fleet_safe_vla.integrations.visualnav_transformer.vint_adapter import ViNTAdapter
+        adapter = ViNTAdapter()
+    elif args.model == "nomad":
+        from fleet_safe_vla.integrations.visualnav_transformer.nomad_adapter import NoMaDAdapter
+        adapter = NoMaDAdapter()
+    else:
+        # "mock" — straight-line adapter, no checkpoint
+        from fleet_safe_vla.integrations.visualnav_transformer.base_adapter import (
+            BaseVisualNavAdapter, ActionOutput,
+        )
+
+        class _MockAdapter(BaseVisualNavAdapter):
+            model_name = "mock"
+            image_size = (85, 64)
+            context_size = 5
+            def load_checkpoint(self, _path): pass
+            def preprocess_observation(self, obs_imgs, goal_img): return {}
+            def predict_action(self, _pre):
+                return ActionOutput(
+                    waypoints=np.array([[0.075, 0.0]]),
+                    goal_reached=False,
+                    raw_output={},
+                    inference_ms=1.0,
+                )
+        adapter = _MockAdapter()
+
+    if args.model != "mock":
+        ckpt = Path(args.checkpoint) if args.checkpoint else _CHECKPOINTS.get(args.model)
+        if ckpt is None or not ckpt.exists():
+            emit({"type": "error", "msg": f"Checkpoint not found: {ckpt}"})
+            return
+        status("loading", f"loading {args.model} from {ckpt.name}")
+        try:
+            adapter.load_checkpoint(ckpt)
+        except Exception as exc:
+            emit({"type": "error", "msg": f"Failed to load checkpoint: {exc}"})
+            return
+
+    img_w, img_h   = getattr(adapter, "image_size", (85, 64))
+    ctx_size        = getattr(adapter, "context_size", 5)
+
+    # ── Build Isaac env ───────────────────────────────────────────────────────
+    status("starting", f"launching Isaac env | scene={args.scene}")
+
+    obs_positions_world = [np.array(p, dtype=np.float64) for p in scene.obstacle_positions]
+    obs_radii           = list(scene.obstacle_radii)
+
+    try:
+        env = IsaacNavBenchmarkEnv(
+            fixed_positions    = scene.obstacle_positions,
+            obstacle_radii     = obs_radii,
+            scene_name         = args.scene,
+            max_episode_steps  = args.max_steps,
+            control_hz         = args.control_hz,
+            seed               = args.seed,
+        )
+    except Exception as exc:
+        emit({"type": "error", "msg": f"IsaacNavBenchmarkEnv failed: {exc}"})
+        return
+
+    env.reset(seed=args.seed)
+    env.teleport_to(scene.start_xy[0], scene.start_xy[1], yaw=0.0)
+    has_cam = env.setup_camera(img_w, img_h)
+
+    # Camera observation adapter
+    cam_adapter = IsaacCameraObsAdapter(image_size=(img_w, img_h), context_size=ctx_size)
+    cam_adapter.set_goal_image(IsaacCameraObsAdapter.make_checkerboard_goal(img_w, img_h))
+
+    # ── FleetSafe wrapper with conservative demo parameters ───────────────────
+    # smoothing=0.2 is critical — default 0.7 is too slow to stop for demo safety.
+    cbf_cfg = YahboomCBFConfig(
+        d_safe_m      = args.d_safe,
+        estop_dist_m  = args.estop_dist,
+        max_linear_ms = args.v_max,
+        smoothing     = 0.2,    # Low smoothing = fast reaction (important for demo)
+        alpha         = 2.0,    # Stronger CBF decay keeps robot away from barrier
+    )
+
+    wrapper: FleetSafeWrapper | None = None
+    if args.fleetsafe:
+        wrapper = FleetSafeWrapper(
+            adapter,
+            cbf_config  = cbf_cfg,
+            v_max       = args.v_max,
+            w_max       = args.w_max,
+            control_hz  = args.control_hz,
+        )
+
+    goal_xy       = np.array(scene.goal_xy, dtype=np.float64)
+    interventions = 0
+    collision     = False
+    goal_reached  = False
+    min_dist      = 99.0
+
+    status("running", f"{args.model} + FleetSafe={args.fleetsafe} | {args.scene}")
+
+    for step in range(args.max_steps):
+        t0 = time.perf_counter()
+
+        # Camera frame
+        frame_rgb = (
+            env.get_rgb_frame() if has_cam
+            else IsaacCameraObsAdapter.make_random_obs(img_w, img_h, seed=args.seed + step)
+        )
+        cam_adapter.push_frame(frame_rgb)
+        obs_imgs, goal_img = cam_adapter.get_context()
+        preprocessed = adapter.preprocess_observation(obs_imgs, goal_img)
+
+        # Robot state
+        robot_pose = env.get_robot_pose()          # (x, y, yaw)
+        robot_xy   = np.array(robot_pose[:2], dtype=np.float64)
+        obs_vec    = getattr(env, "_last_obs", np.zeros(47, dtype=np.float32))
+
+        if wrapper is not None:
+            # FleetSafe path — pass world-frame obstacle positions + robot_xy explicitly
+            step_res = wrapper.step(
+                preprocessed,
+                obs_vec,
+                obs_positions_world,
+                robot_xy      = robot_xy,
+                obstacle_radii = obs_radii,
+            )
+            raw  = step_res.raw_cmd_vel
+            safe = step_res.safe_cmd_vel
+            intervened  = step_res.intervened
+            min_dist    = step_res.min_dist_m
+            cbf_ms      = max(0.0, step_res.total_ms - (step_res.action_output.inference_ms
+                                                         if step_res.action_output else 0.0))
+            inference_ms = step_res.action_output.inference_ms if step_res.action_output else 0.0
+            wps_raw = step_res.action_output.waypoints if step_res.action_output else None
+            if intervened:
+                interventions += 1
+        else:
+            # No FleetSafe — raw model only
+            t_inf  = time.perf_counter()
+            action = adapter.predict_action(preprocessed)
+            raw    = adapter.action_to_cmd_vel(
+                action, v_max=args.v_max, w_max=args.w_max, control_hz=args.control_hz,
+            )
+            safe   = raw
+            inference_ms = (time.perf_counter() - t_inf) * 1000.0
+            cbf_ms       = 0.0
+            intervened   = False
+            wps_raw      = action.waypoints if action else None
+            # Compute min_dist for telemetry
+            if obs_positions_world:
+                min_dist = min(
+                    float(np.linalg.norm(robot_xy - p)) - r
+                    for p, r in zip(obs_positions_world, obs_radii)
+                )
+
+        # Step physics
+        _, _, terminated, truncated, info = env.step(
+            np.array([safe.vx, safe.wz], dtype=np.float32)
+        )
+
+        dist_to_goal = float(np.linalg.norm(goal_xy - robot_xy))
+        collision    = info.get("collision", min_dist < -0.02)
+        goal_reached = dist_to_goal < 0.30 or info.get("success", False)
+
+        # Waypoints: take first 4, convert to serialisable list
+        waypoints: list[list[float]] = []
+        if wps_raw is not None and len(wps_raw) > 0:
+            for wp in wps_raw[:4]:
+                waypoints.append([round(float(wp[0]), 3), round(float(wp[1]), 3)])
+
+        camera_b64 = _rgb_to_jpeg_b64(frame_rgb) if has_cam else ""
+
+        emit({
+            "type": "frame",
+            "step": step,
+            "model": args.model,
+            "fleetsafe_on": args.fleetsafe,
+            "robot_x":   round(float(robot_pose[0]), 4),
+            "robot_y":   round(float(robot_pose[1]), 4),
+            "robot_yaw": round(float(robot_pose[2]), 4),
+            "raw_vx":  round(float(raw.vx),  4),
+            "raw_vy":  round(float(raw.vy),  4),
+            "raw_wz":  round(float(raw.wz),  4),
+            "safe_vx": round(float(safe.vx), 4),
+            "safe_vy": round(float(safe.vy), 4),
+            "safe_wz": round(float(safe.wz), 4),
+            "intervened":         intervened,
+            "min_dist_m":         round(float(min_dist), 4),
+            "h_min":              round(float(min_dist) ** 2 - args.d_safe ** 2, 4),
+            "cbf_zone":           _zone(float(min_dist), args.d_safe),
+            "intervention_count": interventions,
+            "waypoints":          waypoints,
+            "inference_ms":       round(float(inference_ms), 2),
+            "cbf_ms":             round(float(cbf_ms), 2),
+            "collision":          collision,
+            "goal_reached":       goal_reached,
+            "dist_to_goal":       round(float(dist_to_goal), 4),
+            "camera_b64":         camera_b64,
+        })
+
+        if collision or goal_reached or terminated or truncated:
+            break
+
+    env.close()
+
+    emit({
+        "type": "done",
+        "collision": collision,
+        "steps": step + 1,
+        "summary": {
+            "intervention_rate": round(interventions / max(1, step + 1), 3),
+            "collision":    collision,
+            "goal_reached": goal_reached,
+            "min_dist_m":   round(float(min_dist), 4),
+        },
+    })
+
+
+# ── Entry point ───────────────────────────────────────────────────────────────
+
+def main() -> int:
+    args, extra_isaac_args = _parse_args()
+
+    # Mock mode: no Isaac needed
+    if args.mock or args.model == "mock":
+        args.mock = True
+        _run_mock(args)
+        return 0
+
+    # Isaac mode: AppLauncher MUST be first
+    try:
+        from isaaclab.app import AppLauncher
+    except ImportError:
+        emit({
+            "type": "error",
+            "msg": (
+                "isaaclab not found. Activate the isaac conda environment:\n"
+                "  conda activate isaac\n"
+                "  python scripts/demo/run_supervisor_demo_isaac.py --model vint"
+            ),
+        })
+        return 1
+
+    # headless=False (default): full Isaac Sim GUI window opens on desktop
+    # headless=True + stream: WebRTC only at http://localhost:49100
+    # headless=False + stream: GUI window AND WebRTC
+    livestream = 1 if args.stream else 0
+    launcher_cfg = {"headless": args.headless, "livestream": livestream}
+    _orig_argv = sys.argv[:]
+    sys.argv   = [sys.argv[0]] + extra_isaac_args
+    if not args.headless:
+        status("info", "Isaac Sim GUI window will open on desktop")
+    if args.stream:
+        status("info", "WebRTC stream also available at http://localhost:49100")
+    try:
+        launcher = AppLauncher(launcher_cfg)
+        app      = launcher.app   # noqa: F841 — keep alive
+    except Exception as exc:
+        emit({"type": "error", "msg": f"AppLauncher failed: {exc}"})
+        return 1
+    finally:
+        sys.argv = _orig_argv
+
+    try:
+        _run_isaac(args)
+    except Exception as exc:
+        import traceback
+        emit({"type": "error", "msg": f"{exc}\n{traceback.format_exc()}"})
+        return 1
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

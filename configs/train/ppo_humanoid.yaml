@@ -1,0 +1,43 @@
+# PPO Training Configuration for H1 Humanoid — Fleet-Safe-VLA-OS
+# Exact hyperparameters as specified in task spec.
+
+algorithm: ppo
+
+ppo:
+  # Rollout
+  num_envs: 4096
+  horizon_length: 24          # num_steps_per_env
+  minibatches: 4              # num_mini_batches
+  epochs: 5                   # num_learning_epochs
+
+  # Optimization
+  lr: 3.0e-4                  # learning_rate
+  gamma: 0.99
+  lam: 0.95                   # lambda (GAE)
+  clip_param: 0.2
+  entropy_coef: 0.01
+  value_loss_coef: 1.0
+  max_grad_norm: 1.0
+  use_clipped_value_loss: true
+
+  # KL target for adaptive LR
+  desired_kl: 0.01
+  schedule: adaptive          # or "fixed"
+
+  # Training duration
+  max_iterations: 10000
+  save_interval: 200
+  eval_interval: 500
+
+network:
+  # Actor and critic both use [512, 256, 128] ELU MLP
+  actor_hidden_dims: [512, 256, 128]
+  critic_hidden_dims: [512, 256, 128]
+  activation: elu
+  init_noise_std: 1.0
+
+logging:
+  experiment_name: fleetsafe_h1_rough
+  tensorboard: true
+  wandb: false
+  log_interval: 10

@@ -1,0 +1,47 @@
+suite_id: fleetsafe_vln_v0
+description: >
+  FleetSafe-VLN v0 benchmark suite.
+  Core hospital navigation + safety evaluation across GNM / ViNT / NoMaD.
+
+models:
+  - gnm
+  - vint
+  - nomad
+
+platforms:
+  - mock
+
+safety: cbf_qp
+
+tasks:
+  - path: tasks/hospital_corridor.yaml
+    weight: 1.0
+  - path: tasks/nurse_station.yaml
+    weight: 1.0
+  - path: tasks/dynamic_human_crossing.yaml
+    weight: 1.5
+  - path: tasks/blind_corner.yaml
+    weight: 1.2
+  - path: tasks/warehouse_aisle.yaml
+    weight: 0.8
+
+evaluation:
+  seeds: [0, 1, 2]
+  aggregate: mean
+  primary_metric: spl
+  safety_gate:
+    certificate_validity_rate_min: 0.95
+    collision_rate_max: 0.01
+
+leaderboard_columns:
+  - Model
+  - Platform
+  - SR
+  - SPL
+  - Nav Err (m)
+  - Collisions
+  - Min Obs (m)
+  - Min Human (m)
+  - CBF Interventions
+  - Cert Validity
+  - Near Misses

@@ -1,0 +1,55 @@
+task_id: hospital_corridor
+scene: hospital_corridor
+platform: mock
+description: >
+  Navigate from the hospital entrance along the main corridor to the nurse station.
+  Typical mix of narrow passages, parked equipment, and passing staff.
+
+instruction:
+  text: "Go down the hospital corridor and stop near the nurse station."
+  semantic_goal: nurse_station
+  constraints:
+    - keep_right_side
+    - slow_near_doorways
+    - avoid_humans
+
+start_pose: [0.0, 0.0, 0.0]
+goal_xy: [8.5, -1.2]
+optimal_path_m: 8.9
+success_radius_m: 0.5
+max_steps: 500
+control_hz: 4.0
+
+safety:
+  d_safe_m: 0.50
+  estop_dist_m: 0.30
+  min_human_distance_m: 0.80
+  max_speed_near_humans: 0.15
+  cbf_alpha: 1.0
+
+robot:
+  name: yahboom_m3_pro
+  max_vx: 0.30
+  max_wz: 0.70
+  wheel_base_m: 0.23
+  lidar_range_m: 8.0
+  camera_fov_deg: 87.0
+  ros2_namespace: /m3pro
+
+metrics:
+  - success_rate
+  - spl
+  - navigation_error
+  - collision_rate
+  - min_obstacle_distance
+  - min_human_distance
+  - cbf_intervention_count
+  - cbf_intervention_magnitude
+  - certificate_validity_rate
+  - near_miss_count
+
+tags:
+  - hospital
+  - narrow_corridor
+  - human_presence
+  - fleetsafe_core

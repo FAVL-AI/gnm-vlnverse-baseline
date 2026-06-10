@@ -1,0 +1,122 @@
+# configs/custom_vln_office/tasks.yaml
+# Navigation episodes for CustomVLN-Office
+# Independent of VLNVerse — uses only Isaac Sim primitives and assets.
+#
+# Office floor plan: 16 m × 10 m
+#   x: 0..16,  y: 0..10
+#   Entrance corridor: x=0..4
+#   Open office A:     x=4..10, y=0..5
+#   Open office B:     x=10..16, y=0..5
+#   Meeting area:      x=4..10, y=5..10
+#   Hallway:           x=10..16, y=5..10
+
+scene_id: custom_vln_office
+scene_file: assets/custom_vln_office/custom_vln_office.usd
+goal_radius: 2.0
+split_train: [cvlo_ep001, cvlo_ep002, cvlo_ep003, cvlo_ep004, cvlo_ep005, cvlo_ep006]
+split_val:   [cvlo_ep007, cvlo_ep008]
+
+episodes:
+
+  - episode_id: cvlo_ep001
+    split: train
+    instruction: "Navigate from the entrance to the first desk area in the open office."
+    start_pose: {x: 2.0, y: 5.0, yaw_deg: -90.0}
+    goal_pose:  {x: 5.5, y: 1.5, yaw_deg: -90.0}
+    waypoints:
+      - {x: 2.0, y: 5.0}
+      - {x: 3.0, y: 4.0}
+      - {x: 4.5, y: 3.0}
+      - {x: 5.5, y: 1.5}
+    goal_frame_index: ~
+
+  - episode_id: cvlo_ep002
+    split: train
+    instruction: "Move through the open office and reach the meeting room table."
+    start_pose: {x: 8.5, y: 1.5, yaw_deg: 90.0}
+    goal_pose:  {x: 7.0, y: 8.0, yaw_deg: 90.0}
+    waypoints:
+      - {x: 8.5, y: 1.5}
+      - {x: 8.0, y: 3.0}
+      - {x: 7.5, y: 5.5}
+      - {x: 7.0, y: 8.0}
+    goal_frame_index: ~
+
+  - episode_id: cvlo_ep003
+    split: train
+    instruction: "Walk through the entire office from the entrance to the end of the hallway."
+    start_pose: {x: 2.0, y: 5.0, yaw_deg: 0.0}
+    goal_pose:  {x: 14.0, y: 8.0, yaw_deg: 0.0}
+    waypoints:
+      - {x: 2.0, y: 5.0}
+      - {x: 5.0, y: 6.0}
+      - {x: 8.0, y: 7.0}
+      - {x: 11.0, y: 7.5}
+      - {x: 14.0, y: 8.0}
+    goal_frame_index: ~
+
+  - episode_id: cvlo_ep004
+    split: train
+    instruction: "Leave the meeting room and navigate to the back office desk."
+    start_pose: {x: 7.0, y: 8.0, yaw_deg: -90.0}
+    goal_pose:  {x: 12.0, y: 1.5, yaw_deg: -90.0}
+    waypoints:
+      - {x: 7.0, y: 8.0}
+      - {x: 9.0, y: 6.5}
+      - {x: 11.0, y: 4.0}
+      - {x: 12.0, y: 2.5}
+      - {x: 12.0, y: 1.5}
+    goal_frame_index: ~
+
+  - episode_id: cvlo_ep005
+    split: train
+    instruction: "Start near the first desk and navigate past the open office to the cabinet in the hallway."
+    start_pose: {x: 5.5, y: 1.5, yaw_deg: 0.0}
+    goal_pose:  {x: 15.2, y: 7.0, yaw_deg: 90.0}
+    waypoints:
+      - {x: 5.5, y: 1.5}
+      - {x: 8.0, y: 2.5}
+      - {x: 11.0, y: 3.5}
+      - {x: 13.5, y: 5.5}
+      - {x: 15.2, y: 7.0}
+    goal_frame_index: ~
+
+  - episode_id: cvlo_ep006
+    split: train
+    instruction: "Walk back from the end of the hallway to the office entrance."
+    start_pose: {x: 14.0, y: 8.0, yaw_deg: 180.0}
+    goal_pose:  {x: 2.0, y: 5.0, yaw_deg: 180.0}
+    waypoints:
+      - {x: 14.0, y: 8.0}
+      - {x: 11.0, y: 7.5}
+      - {x: 8.0, y: 7.0}
+      - {x: 5.0, y: 6.0}
+      - {x: 2.0, y: 5.0}
+    goal_frame_index: ~
+
+  - episode_id: cvlo_ep007
+    split: val
+    instruction: "Navigate from the back office desk to the meeting table."
+    start_pose: {x: 12.0, y: 1.5, yaw_deg: 90.0}
+    goal_pose:  {x: 7.0, y: 8.0, yaw_deg: 90.0}
+    waypoints:
+      - {x: 12.0, y: 1.5}
+      - {x: 10.0, y: 2.5}
+      - {x: 9.0, y: 4.5}
+      - {x: 8.0, y: 6.5}
+      - {x: 7.0, y: 8.0}
+    goal_frame_index: ~
+
+  - episode_id: cvlo_ep008
+    split: val
+    instruction: "Go from the entrance through the open office to the shelf at the far wall."
+    start_pose: {x: 2.0, y: 5.0, yaw_deg: 0.0}
+    goal_pose:  {x: 15.0, y: 2.5, yaw_deg: -90.0}
+    waypoints:
+      - {x: 2.0, y: 5.0}
+      - {x: 4.5, y: 4.0}
+      - {x: 7.5, y: 3.0}
+      - {x: 11.0, y: 2.5}
+      - {x: 13.0, y: 2.5}
+      - {x: 15.0, y: 2.5}
+    goal_frame_index: ~

@@ -1,0 +1,26 @@
+\begin{table}[t]
+\centering
+\caption{FleetSafe-VisualNav Benchmark: Hospital-Class Scenarios.
+  All metrics are mean $\pm$ 95\% bootstrap CI over 40 episodes $\times$ 4 scenes.
+  SPL = Success Weighted by Path Length \citep{Anderson2018}.
+  $\downarrow$ = lower is better; $\uparrow$ = higher is better.}
+\label{tab:fleetsafe_benchmark}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccccccc}
+\toprule
+\textbf{Condition} & \textbf{Success}$\uparrow$ & \textbf{Collision}$\downarrow$ & \textbf{SPL}$\uparrow$ & \textbf{Min Dist (m)}$\uparrow$ & \textbf{Interv.\%}$\uparrow$ & \textbf{Infer. (ms)}$\downarrow$ & \textbf{CBF (ms)}$\downarrow$ \\
+\midrule
+\textbf{GNM} & 22.5\% \scriptsize{[10–35]} & 47.5\% \scriptsize{[32–62]} & 0.225 \scriptsize{[0.10–0.35]} & 0.457 & —\% & 0.1 & — \\
+\textbf{GNM + FleetSafe} & 0.0\% \scriptsize{[0–0]} & 0.0\% \scriptsize{[0–0]} & 0.000 \scriptsize{[0.00–0.00]} & 0.785 & 57.0\% & 0.1 & 0.39 \\
+\midrule
+\textbf{VINT} & 22.5\% \scriptsize{[10–35]} & 47.5\% \scriptsize{[32–62]} & 0.225 \scriptsize{[0.10–0.35]} & 0.457 & —\% & 0.1 & — \\
+\textbf{VINT + FleetSafe} & 0.0\% \scriptsize{[0–0]} & 0.0\% \scriptsize{[0–0]} & 0.000 \scriptsize{[0.00–0.00]} & 0.785 & 57.0\% & 0.1 & 0.38 \\
+\midrule
+\multicolumn{8}{l}{\textit{Literature baselines (reported numbers; different evaluation setup)}} \\
+\textit{GNM (Shah 2023, indoor corridors)} & 45\% & — & — & — & — & — & — \\
+\textit{ViNT (Shah 2023, novel environments)} & 52\% & — & — & — & — & — & — \\
+\textit{NoMaD (Sridhar 2023)} & — & — & — & — & — & — & — \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

@@ -1,0 +1,19 @@
+# Fleet-Safe Web Viewer Container
+FROM python:3.11-slim AS web-base
+
+LABEL maintainer="frankleroyvan@gmail.com"
+
+RUN pip install --no-cache-dir \
+    fastapi>=0.111 \
+    uvicorn[standard]>=0.30 \
+    websockets>=12 \
+    numpy>=1.26
+
+COPY . /workspace
+WORKDIR /workspace
+
+ENV PYTHONPATH=/workspace:$PYTHONPATH
+
+EXPOSE 8080
+
+CMD ["python", "web/robot_web_viewer/app.py", "--host", "0.0.0.0", "--port", "8080"]

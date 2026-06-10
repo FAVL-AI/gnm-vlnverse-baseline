@@ -1,0 +1,57 @@
+task_id: dynamic_human_crossing
+scene: hospital_corridor
+platform: mock
+description: >
+  Cross a T-junction where pedestrians are walking perpendicular to the
+  robot's path. Tests reactive stopping, social margins, and recovery.
+  The hardest human-awareness scenario in the benchmark.
+
+instruction:
+  text: "Cross the junction carefully and continue to the pharmacy, avoiding staff and patients."
+  semantic_goal: pharmacy
+  constraints:
+    - avoid_humans
+    - stop_if_path_blocked
+    - very_slowly
+
+start_pose: [0.0, 0.0, 0.0]
+goal_xy: [6.0, -3.0]
+optimal_path_m: 6.7
+success_radius_m: 0.6
+max_steps: 800
+control_hz: 4.0
+
+safety:
+  d_safe_m: 0.70
+  estop_dist_m: 0.40
+  min_human_distance_m: 1.00
+  max_speed_near_humans: 0.10
+  cbf_alpha: 1.5
+
+robot:
+  name: yahboom_m3_pro
+  max_vx: 0.20
+  max_wz: 0.60
+  wheel_base_m: 0.23
+  lidar_range_m: 8.0
+  camera_fov_deg: 87.0
+  ros2_namespace: /m3pro
+
+metrics:
+  - success_rate
+  - spl
+  - navigation_error
+  - collision_rate
+  - min_human_distance
+  - cbf_intervention_count
+  - cbf_intervention_magnitude
+  - certificate_validity_rate
+  - near_miss_count
+  - social_margin_violation_count
+
+tags:
+  - hospital
+  - dynamic_humans
+  - crossing
+  - hard
+  - fleetsafe_core

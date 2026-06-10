@@ -1,0 +1,348 @@
+{
+  "config": {
+    "worlds": [
+      "hospital",
+      "warehouse",
+      "hunav_cafe"
+    ],
+    "models": [
+      "gnm",
+      "vint"
+    ],
+    "fleetsafe": true,
+    "mode": "mock",
+    "num_episodes": 20,
+    "seed": 42,
+    "d_safe": 0.5,
+    "estop": 0.3,
+    "v_max": 0.3
+  },
+  "results": {
+    "hospital|gnm|baseline": {
+      "n_episodes": 20,
+      "success_rate": 0.15,
+      "success_rate_ci95": [
+        0.0,
+        0.3
+      ],
+      "collision_rate": 0.0,
+      "collision_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "timeout_rate": 0.85,
+      "spl": 0.0225328611299691,
+      "spl_ci95": [
+        0.0,
+        0.05197922813570917
+      ],
+      "mean_path_length_m": 30.32787401421616,
+      "mean_path_deviation_m": 0.8755152921468188,
+      "mean_min_dist_obs_m": 4.730130634822094,
+      "mean_min_dist_people_m": 0.9625573450327561,
+      "mean_time_to_goal_s": 136.5,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 10.002376452300352,
+      "mean_cbf_ms": 3.782747088353135e-05
+    },
+    "hospital|gnm|fleetsafe": {
+      "n_episodes": 20,
+      "success_rate": 0.0,
+      "success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "collision_rate": 0.0,
+      "collision_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "timeout_rate": 1.0,
+      "spl": 0.0,
+      "spl_ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_path_length_m": 0.0,
+      "mean_path_deviation_m": 1.0671993622594145,
+      "mean_min_dist_obs_m": 5.046524263583028,
+      "mean_min_dist_people_m": 0.9471792896053353,
+      "mean_time_to_goal_s": 0.0,
+      "intervention_rate": 0.04608333333333333,
+      "mean_inference_ms": 10.002645233403504,
+      "mean_cbf_ms": 0.01176336356244671
+    },
+    "hospital|vint|baseline": {
+      "n_episodes": 20,
+      "success_rate": 0.15,
+      "success_rate_ci95": [
+        0.0,
+        0.3
+      ],
+      "collision_rate": 0.0,
+      "collision_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "timeout_rate": 0.85,
+      "spl": 0.0225328611299691,
+      "spl_ci95": [
+        0.0,
+        0.050830681171283365
+      ],
+      "mean_path_length_m": 30.32787401421616,
+      "mean_path_deviation_m": 0.8755152921468188,
+      "mean_min_dist_obs_m": 4.730130634822094,
+      "mean_min_dist_people_m": 0.9625573450327561,
+      "mean_time_to_goal_s": 136.5,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 30.002520439419374,
+      "mean_cbf_ms": 3.9678510236519805e-05
+    },
+    "hospital|vint|fleetsafe": {
+      "n_episodes": 20,
+      "success_rate": 0.0,
+      "success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "collision_rate": 0.0,
+      "collision_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "timeout_rate": 1.0,
+      "spl": 0.0,
+      "spl_ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_path_length_m": 0.0,
+      "mean_path_deviation_m": 1.0671993622594145,
+      "mean_min_dist_obs_m": 5.046524263583028,
+      "mean_min_dist_people_m": 0.9471792896053353,
+      "mean_time_to_goal_s": 0.0,
+      "intervention_rate": 0.04608333333333333,
+      "mean_inference_ms": 30.002604217093904,
+      "mean_cbf_ms": 0.011657123337499797
+    },
+    "warehouse|gnm|baseline": {
+      "n_episodes": 20,
+      "success_rate": 0.0,
+      "success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "collision_rate": 0.1,
+      "collision_rate_ci95": [
+        0.0,
+        0.25
+      ],
+      "timeout_rate": 0.9,
+      "spl": 0.0,
+      "spl_ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_path_length_m": 0.0,
+      "mean_path_deviation_m": 0.7312622288148101,
+      "mean_min_dist_obs_m": 2.2134491474516973,
+      "mean_min_dist_people_m": null,
+      "mean_time_to_goal_s": 0.0,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 10.00229837601849,
+      "mean_cbf_ms": 3.663352496611575e-05
+    },
+    "warehouse|gnm|fleetsafe": {
+      "n_episodes": 20,
+      "success_rate": 0.05,
+      "success_rate_ci95": [
+        0.0,
+        0.15
+      ],
+      "collision_rate": 0.0,
+      "collision_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "timeout_rate": 0.95,
+      "spl": 0.007835660742683753,
+      "spl_ci95": [
+        0.0,
+        0.02350698222805126
+      ],
+      "mean_path_length_m": 22.281920589506626,
+      "mean_path_deviation_m": 0.6387608992613318,
+      "mean_min_dist_obs_m": 2.2764862144653364,
+      "mean_min_dist_people_m": null,
+      "mean_time_to_goal_s": 81.75,
+      "intervention_rate": 0.18791666666666668,
+      "mean_inference_ms": 10.002691494576156,
+      "mean_cbf_ms": 0.08332610820791761
+    },
+    "warehouse|vint|baseline": {
+      "n_episodes": 20,
+      "success_rate": 0.0,
+      "success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "collision_rate": 0.1,
+      "collision_rate_ci95": [
+        0.0,
+        0.25
+      ],
+      "timeout_rate": 0.9,
+      "spl": 0.0,
+      "spl_ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_path_length_m": 0.0,
+      "mean_path_deviation_m": 0.7312622288148101,
+      "mean_min_dist_obs_m": 2.2134491474516973,
+      "mean_min_dist_people_m": null,
+      "mean_time_to_goal_s": 0.0,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 30.002278468299966,
+      "mean_cbf_ms": 3.592084006716808e-05
+    },
+    "warehouse|vint|fleetsafe": {
+      "n_episodes": 20,
+      "success_rate": 0.05,
+      "success_rate_ci95": [
+        0.0,
+        0.15
+      ],
+      "collision_rate": 0.0,
+      "collision_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "timeout_rate": 0.95,
+      "spl": 0.007835660742683753,
+      "spl_ci95": [
+        0.0,
+        0.02350698222805126
+      ],
+      "mean_path_length_m": 22.281920589506626,
+      "mean_path_deviation_m": 0.6387608992613318,
+      "mean_min_dist_obs_m": 2.2764862144653364,
+      "mean_min_dist_people_m": null,
+      "mean_time_to_goal_s": 81.75,
+      "intervention_rate": 0.18791666666666668,
+      "mean_inference_ms": 30.002714259385407,
+      "mean_cbf_ms": 0.08322560730301604
+    },
+    "hunav_cafe|gnm|baseline": {
+      "n_episodes": 20,
+      "success_rate": 0.05,
+      "success_rate_ci95": [
+        0.0,
+        0.15
+      ],
+      "collision_rate": 0.25,
+      "collision_rate_ci95": [
+        0.1,
+        0.45
+      ],
+      "timeout_rate": 0.7,
+      "spl": 0.0043030638722098445,
+      "spl_ci95": [
+        0.0,
+        0.012909191616629534
+      ],
+      "mean_path_length_m": 38.90168969835954,
+      "mean_path_deviation_m": 1.1829488018183105,
+      "mean_min_dist_obs_m": 1.3256703385208843,
+      "mean_min_dist_people_m": 0.35800481465516876,
+      "mean_time_to_goal_s": 131.5,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 10.002476383233578,
+      "mean_cbf_ms": 3.9646077377032176e-05
+    },
+    "hunav_cafe|gnm|fleetsafe": {
+      "n_episodes": 20,
+      "success_rate": 0.1,
+      "success_rate_ci95": [
+        0.0,
+        0.25
+      ],
+      "collision_rate": 0.0,
+      "collision_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "timeout_rate": 0.9,
+      "spl": 0.021660029998758306,
+      "spl_ci95": [
+        0.0,
+        0.05669530382870473
+      ],
+      "mean_path_length_m": 25.578764640260488,
+      "mean_path_deviation_m": 1.058385493881511,
+      "mean_min_dist_obs_m": 1.4961565726550208,
+      "mean_min_dist_people_m": 0.40225022929050425,
+      "mean_time_to_goal_s": 90.375,
+      "intervention_rate": 0.22233333333333333,
+      "mean_inference_ms": 10.002675957820605,
+      "mean_cbf_ms": 0.09656449891262611
+    },
+    "hunav_cafe|vint|baseline": {
+      "n_episodes": 20,
+      "success_rate": 0.05,
+      "success_rate_ci95": [
+        0.0,
+        0.15
+      ],
+      "collision_rate": 0.25,
+      "collision_rate_ci95": [
+        0.1,
+        0.45
+      ],
+      "timeout_rate": 0.7,
+      "spl": 0.0043030638722098445,
+      "spl_ci95": [
+        0.0,
+        0.012909191616629534
+      ],
+      "mean_path_length_m": 38.90168969835954,
+      "mean_path_deviation_m": 1.1829488018183105,
+      "mean_min_dist_obs_m": 1.3256703385208843,
+      "mean_min_dist_people_m": 0.35800481465516876,
+      "mean_time_to_goal_s": 131.5,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 30.002247283343177,
+      "mean_cbf_ms": 3.646543394354141e-05
+    },
+    "hunav_cafe|vint|fleetsafe": {
+      "n_episodes": 20,
+      "success_rate": 0.1,
+      "success_rate_ci95": [
+        0.0,
+        0.25
+      ],
+      "collision_rate": 0.0,
+      "collision_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "timeout_rate": 0.9,
+      "spl": 0.021660029998758306,
+      "spl_ci95": [
+        0.0,
+        0.054846577898030414
+      ],
+      "mean_path_length_m": 25.578764640260488,
+      "mean_path_deviation_m": 1.058385493881511,
+      "mean_min_dist_obs_m": 1.4961565726550208,
+      "mean_min_dist_people_m": 0.40225022929050425,
+      "mean_time_to_goal_s": 90.375,
+      "intervention_rate": 0.22233333333333333,
+      "mean_inference_ms": 30.002695743493632,
+      "mean_cbf_ms": 0.09563900416093393
+    }
+  },
+  "elapsed_s": 8.79,
+  "timestamp": "2026-05-23T05:04:49.859576+00:00"
+}

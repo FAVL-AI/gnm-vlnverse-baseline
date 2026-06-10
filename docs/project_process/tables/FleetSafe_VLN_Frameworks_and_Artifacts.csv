@@ -1,0 +1,12 @@
+name,expanded_description,role,example_location
+ROS 2,Robot Operating System 2 middleware,"Nodes, topics, publishers, subscribers, Quality of Service","/scan0, /scan1, /odom_raw, /cmd_vel, /fleetsafe/*"
+rclpy,ROS 2 Python client library,Controller node implementation,scripts/real_robot/run_vln_m3pro.py
+micro-ROS,ROS 2 support for microcontrollers,Bridge between embedded robot controller and ROS 2 graph,~/mircoROS_agent/install/setup.bash
+Yahboom ROSMASTER M3Pro,Real robot platform,Embodied sensor/action platform,"Jetson Orin NX, Tmini LiDAR pair, Dabai camera"
+GNM,General Navigation Model,Nominal visual navigation backbone,"Used as one candidate policy, not as safety authority"
+ViNT,Visual Navigation Transformer,Foundation visual navigation backbone,Used as a nominal model candidate
+NoMaD,Goal-Masked Diffusion navigation model,Diffusion-style nominal navigation backbone,Used as a nominal model candidate
+CBF-QP,Control Barrier Function Quadratic Program,Safety filter that clips nominal actions,u_nom -> u_safe
+JSONL,JavaScript Object Notation Lines,Append-only trace and certificate evidence,"vln_trace_m3pro.jsonl, vln_certificates_m3pro.jsonl"
+HDF5,Hierarchical Data Format version 5,Dataset format for multimodal episodes,observations/actions/language/safety groups
+Isaac Sim,NVIDIA robotics simulation platform,Planned digital twin validation,Future simulation proof before live motion

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!--
+  H1 Humanoid URDF for ROS2 packages (fleet_safe_description).
+  This is a symlink-compatible copy of the main asset URDF.
+  See fleet_safe_vla/assets/robots/urdf/h1.urdf.xacro for the full model.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="h1">
+  <xacro:include filename="$(find fleet_safe_description)/urdf/h1_base.urdf.xacro"/>
+</robot>

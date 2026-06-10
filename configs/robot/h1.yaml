@@ -1,0 +1,106 @@
+# H1 Robot Configuration — Fleet-Safe-VLA-OS
+robot:
+  name: h1
+  model: "Unitree H1"
+  version: "1.0"
+
+  # Physical properties
+  mass_kg: 47.0
+  height_m: 1.8
+  payload_capacity_kg: 30.0
+  n_dof: 18
+
+  # Joint order (actuator index 0-17)
+  joint_names:
+    - left_hip_yaw
+    - left_hip_roll
+    - left_hip_pitch
+    - left_knee
+    - left_ankle
+    - right_hip_yaw
+    - right_hip_roll
+    - right_hip_pitch
+    - right_knee
+    - right_ankle
+    - left_shoulder_pitch
+    - left_shoulder_roll
+    - left_elbow
+    - left_wrist
+    - right_shoulder_pitch
+    - right_shoulder_roll
+    - right_elbow
+    - right_wrist
+
+  # Joint limits (radians)
+  joint_limits:
+    left_hip_yaw:         [-0.785, 0.785]
+    left_hip_roll:        [-0.523, 0.523]
+    left_hip_pitch:       [-1.57,  1.57]
+    left_knee:            [-0.087, 2.443]
+    left_ankle:           [-0.785, 0.785]
+    right_hip_yaw:        [-0.785, 0.785]
+    right_hip_roll:       [-0.523, 0.523]
+    right_hip_pitch:      [-1.57,  1.57]
+    right_knee:           [-0.087, 2.443]
+    right_ankle:          [-0.785, 0.785]
+    left_shoulder_pitch:  [-3.14,  3.14]
+    left_shoulder_roll:   [-1.57,  1.57]
+    left_elbow:           [-1.57,  1.57]
+    left_wrist:           [-1.57,  1.57]
+    right_shoulder_pitch: [-3.14,  3.14]
+    right_shoulder_roll:  [-1.57,  1.57]
+    right_elbow:          [-1.57,  1.57]
+    right_wrist:          [-1.57,  1.57]
+
+  # Torque limits (Nm)
+  torque_limits:
+    hip:      200.0
+    knee:     300.0
+    ankle:    40.0
+    shoulder: 40.0
+    elbow:    40.0
+    wrist:    10.0
+
+  # Default standing pose (radians)
+  default_joint_pos:
+    left_hip_yaw:    0.0
+    left_hip_roll:   0.0
+    left_hip_pitch:  -0.4
+    left_knee:       0.8
+    left_ankle:      -0.4
+    right_hip_yaw:   0.0
+    right_hip_roll:  0.0
+    right_hip_pitch: -0.4
+    right_knee:      0.8
+    right_ankle:     -0.4
+
+  # PD control gains
+  kp:
+    hip:      200.0
+    knee:     300.0
+    ankle:    40.0
+    shoulder: 40.0
+    elbow:    40.0
+    wrist:    10.0
+
+  kd:
+    hip:      5.0
+    knee:     8.0
+    ankle:    1.0
+    shoulder: 1.0
+    elbow:    1.0
+    wrist:    0.5
+
+  # Kinematics
+  kinematics:
+    thigh_length_m: 0.35
+    shank_length_m: 0.35
+    ankle_height_m: 0.06
+    hip_width_m:    0.18
+
+  # Observation space
+  obs_dim: 45
+  action_dim: 18
+  control_hz: 50.0
+  physics_hz: 200.0
+  control_decimation: 4

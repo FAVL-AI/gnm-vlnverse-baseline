@@ -1,0 +1,7 @@
+{
+  "status": "already_exists",
+  "urdf_exists": true,
+  "usd_exists": true,
+  "usd_path": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/assets/robots/yahboom_m3_pro/yahboom_m3pro.usd",
+  "generated_at": "2026-05-31T18:14:10.070912+00:00"
+}

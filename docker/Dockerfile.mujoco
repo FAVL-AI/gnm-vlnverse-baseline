@@ -1,0 +1,34 @@
+# Fleet-Safe MuJoCo Environment Container (no GPU needed)
+FROM python:3.11-slim AS mujoco-base
+
+LABEL maintainer="frankleroyvan@gmail.com"
+LABEL description="Fleet-Safe-VLA-OS MuJoCo CPU-only environment for CI"
+
+# System deps for MuJoCo software rendering
+RUN apt-get update && apt-get install -y \
+    libosmesa6-dev \
+    libgl1-mesa-glx \
+    libglfw3 \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python deps
+RUN pip install --no-cache-dir \
+    mujoco>=3.2 \
+    numpy>=1.26 \
+    scipy>=1.13 \
+    gymnasium>=0.29
+
+COPY . /workspace
+WORKDIR /workspace
+
+# Install fleet-safe (no Isaac Lab)
+RUN pip install --no-cache-dir -e . --no-deps || true
+
+# Install robot-lab (standalone)
+RUN pip install --no-cache-dir numpy scipy || true
+
+ENV PYTHONPATH=/workspace:$PYTHONPATH
+ENV MUJOCO_GL=osmesa
+
+CMD ["bash", "scripts/mujoco/smoke_test.sh"]

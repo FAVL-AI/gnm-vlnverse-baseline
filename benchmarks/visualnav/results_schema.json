@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fleetsafe.ai/schemas/visualnav_benchmark_result.json",
+  "title": "FleetSafe VisualNav Benchmark Result",
+  "description": "Schema for a single benchmark run (one model, one mode) across multiple episodes.",
+  "type": "object",
+  "required": ["model", "fleetsafe", "timestamp", "config", "episodes", "aggregate"],
+  "properties": {
+    "model": {
+      "type": "string",
+      "enum": ["gnm", "vint", "nomad", "mock"],
+      "description": "Model name."
+    },
+    "fleetsafe": {
+      "type": "boolean",
+      "description": "True if FleetSafe CBF-QP wrapper was active."
+    },
+    "timestamp": {
+      "type": "number",
+      "description": "Unix timestamp of run start."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "v_max":  {"type": "number"},
+        "w_max":  {"type": "number"},
+        "robot":  {"type": "string", "enum": ["m3pro", "x3"]},
+        "seeds":  {"type": "array", "items": {"type": "integer"}}
+      }
+    },
+    "episodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["model_name", "fleetsafe", "scene", "seed", "success"],
+        "properties": {
+          "model_name":           {"type": "string"},
+          "fleetsafe":            {"type": "boolean"},
+          "scene":                {"type": "string"},
+          "seed":                 {"type": "integer"},
+          "start_xy":             {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+          "goal_xy":              {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+          "success":              {"type": "boolean"},
+          "collision":            {"type": "boolean"},
+          "near_violation_count": {"type": "integer", "minimum": 0},
+          "min_obstacle_dist_m":  {"type": "number"},
+          "intervention_count":   {"type": "integer", "minimum": 0},
+          "time_to_goal_s":       {"type": "number", "minimum": 0},
+          "path_length_m":        {"type": "number", "minimum": 0},
+          "smoothness":           {"type": "number", "minimum": 0,
+                                   "description": "Mean |Δcmd_vel| per step."},
+          "stuck_count":          {"type": "integer", "minimum": 0},
+          "recovery_success":     {"type": "boolean"},
+          "mean_latency_ms":      {"type": "number"},
+          "fps":                  {"type": "number"},
+          "raw_cmd_log":          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "vx": {"type": "number"}, "vy": {"type": "number"}, "wz": {"type": "number"}
+              }
+            }
+          },
+          "safe_cmd_log":         {"$ref": "#/properties/episodes/items/properties/raw_cmd_log"},
+          "delta_cmd_log":        {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "dvx": {"type": "number"}, "dvy": {"type": "number"}, "dwz": {"type": "number"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "aggregate": {
+      "type": "object",
+      "description": "Episode-level metrics averaged across all episodes in this run.",
+      "properties": {
+        "n_episodes":                   {"type": "integer"},
+        "success_rate":                 {"type": "number", "minimum": 0, "maximum": 1},
+        "collision_rate":               {"type": "number", "minimum": 0, "maximum": 1},
+        "mean_path_length_m":           {"type": "number"},
+        "mean_smoothness":              {"type": "number"},
+        "mean_stuck_count":             {"type": "number"},
+        "mean_intervention_count":      {"type": "number"},
+        "mean_near_violation_count":    {"type": "number"},
+        "mean_min_obstacle_dist_m":     {"type": "number"},
+        "mean_latency_ms":              {"type": "number"},
+        "mean_fps":                     {"type": "number"}
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+# Fleet-Safe ROS2 + Gazebo Container
+FROM ros:humble-ros-base AS ros2-base
+
+LABEL maintainer="frankleroyvan@gmail.com"
+
+# Install Gazebo Harmonic + ros2_control
+RUN apt-get update && apt-get install -y \
+    ros-humble-ros-gz \
+    ros-humble-ros2-control \
+    ros-humble-ros2-controllers \
+    ros-humble-xacro \
+    ros-humble-joint-state-publisher \
+    ros-humble-joint-state-publisher-gui \
+    ros-humble-rviz2 \
+    python3-pip \
+    python3-colcon-common-extensions \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python deps
+RUN pip3 install mujoco>=3.2 numpy scipy fastapi uvicorn
+
+COPY . /workspace
+WORKDIR /workspace
+
+ENV PYTHONPATH=/workspace:$PYTHONPATH

@@ -1,0 +1,30 @@
+{
+  "default_profile": "hospital",
+  "zones": [
+    {
+      "name": "icu",
+      "profile": "icu",
+      "vertices": [[-10, 2], [-2, 2], [-2, 8], [-10, 8]]
+    },
+    {
+      "name": "nurse_station",
+      "profile": "hospital",
+      "vertices": [[-2, 2], [2, 2], [2, 8], [-2, 8]]
+    },
+    {
+      "name": "pharmacy",
+      "profile": "pharmacy",
+      "vertices": [[2, 2], [10, 2], [10, 8], [2, 8]]
+    },
+    {
+      "name": "emergency_corridor",
+      "profile": "emergency_corridor",
+      "vertices": [[-10, -1.5], [10, -1.5], [10, 2], [-10, 2]]
+    },
+    {
+      "name": "waiting_room",
+      "profile": "waiting_room",
+      "vertices": [[-10, -8], [10, -8], [10, -1.5], [-10, -1.5]]
+    }
+  ]
+}

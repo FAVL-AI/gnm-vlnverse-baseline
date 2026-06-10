@@ -1,0 +1,182 @@
+<!-- Yahboom RosMaster X3 — MuJoCo MJCF
+     Differential-drive robot for navigation/safety benchmarks.
+     Matching geometry to URDF.
+
+     VLN perception contract
+     -----------------------
+     The navigation policy (GNM / ViNT / NoMaD) receives ONLY the robot's
+     egocentric forward-facing camera view (camera named "camera").
+     Global state (odometry, obstacle positions) is used exclusively by the
+     CBF-QP safety filter — it never reaches the navigation model.
+-->
+<mujoco model="yahboom_x3">
+
+  <compiler angle="radian" meshdir="." autolimits="true"/>
+
+  <option timestep="0.004" gravity="0 0 -9.81" integrator="implicitfast" iterations="50" solver="Newton"/>
+
+  <default>
+    <joint damping="0.5" frictionloss="0.02"/>
+    <geom friction="0.8 0.005 0.0001" condim="3" contype="1" conaffinity="1"/>
+    <motor ctrlrange="-10 10" ctrllimited="true" gear="1"/>
+  </default>
+
+  <asset>
+    <!-- Floor — vinyl tile checker pattern (hospital corridor) -->
+    <texture name="floor_tex" type="2d" builtin="checker"
+             width="512" height="512" rgb1="0.72 0.70 0.66" rgb2="0.80 0.78 0.74"/>
+    <material name="floor_mat" texture="floor_tex" texrepeat="8 8" reflectance="0.08"/>
+
+    <!-- Corridor walls — painted concrete / CMU block -->
+    <texture name="wall_tex" type="2d" builtin="flat"
+             width="64" height="64" rgb1="0.74 0.72 0.68"/>
+    <material name="wall_mat" texture="wall_tex" reflectance="0.04"/>
+
+    <!-- Ceiling — acoustic tile -->
+    <texture name="ceil_tex" type="2d" builtin="flat"
+             width="64" height="64" rgb1="0.84 0.83 0.81"/>
+    <material name="ceil_mat" texture="ceil_tex" reflectance="0.12"/>
+
+    <!-- Person / obstacle material -->
+    <material name="person_mat" rgba="0.25 0.45 0.75 1.0"/>
+
+    <material name="chassis_mat" rgba="0.2 0.2 0.2 1.0"/>
+    <material name="wheel_mat"   rgba="0.05 0.05 0.05 1.0"/>
+    <material name="lidar_mat"   rgba="0.0 0.3 0.8 1.0"/>
+  </asset>
+
+  <worldbody>
+
+    <!-- ── Ambient + directional lighting (fluorescent ceiling) ──────────────── -->
+    <light name="ambient"    pos="0 0 3"  dir="0 0 -1" diffuse="0.7 0.7 0.7"
+           specular="0.1 0.1 0.1" castshadow="false" directional="true"/>
+    <light name="strip_0"    pos="0  0 2.5" dir="0 0 -1" diffuse="0.5 0.5 0.45"
+           specular="0.05 0.05 0.05" castshadow="false"/>
+    <light name="strip_1"    pos="3  0 2.5" dir="0 0 -1" diffuse="0.4 0.4 0.35"
+           specular="0.03 0.03 0.03" castshadow="false"/>
+    <light name="strip_2"    pos="-3 0 2.5" dir="0 0 -1" diffuse="0.4 0.4 0.35"
+           specular="0.03 0.03 0.03" castshadow="false"/>
+
+    <!-- ── Floor ──────────────────────────────────────────────────────────────── -->
+    <geom name="floor" type="plane" size="12 3 0.1" material="floor_mat"
+          contype="1" conaffinity="1"/>
+
+    <!-- ── Hospital corridor walls (contype=0: visual only, no robot collision) ─ -->
+    <!-- Left wall (y = +1.5 m) -->
+    <geom name="wall_left"  type="box" size="12 0.05 1.25"
+          pos="0  1.5 1.25" material="wall_mat"
+          contype="0" conaffinity="0"/>
+    <!-- Right wall (y = -1.5 m) -->
+    <geom name="wall_right" type="box" size="12 0.05 1.25"
+          pos="0 -1.5 1.25" material="wall_mat"
+          contype="0" conaffinity="0"/>
+    <!-- Ceiling -->
+    <geom name="ceiling"    type="box" size="12 3 0.05"
+          pos="0 0 2.55" material="ceil_mat"
+          contype="0" conaffinity="0"/>
+
+    <!-- ── Robot body ──────────────────────────────────────────────────────────── -->
+    <body name="base_link" pos="0 0 0.048">
+      <freejoint name="root"/>
+      <inertial mass="1.8" pos="0 0 0.04" diaginertia="0.010 0.014 0.020"/>
+
+      <!-- Chassis -->
+      <geom name="chassis" type="box" size="0.14 0.11 0.04"
+            pos="0 0 0.04" material="chassis_mat"/>
+
+      <!-- IMU site -->
+      <site name="imu" pos="0 0 0.05" size="0.005"/>
+
+      <!-- Camera site (ray-casting reference — kept for sensor use) -->
+      <site name="camera_site" pos="0.10 0 0.082" euler="0 0 0" size="0.004"/>
+
+      <!--
+        Forward-facing egocentric camera — THE observation input for GNM/ViNT/NoMaD.
+
+        Position: 0.10 m forward, 0.082 m above base_link centre.
+        Matches URDF camera_joint: xyz="0.100 0.0 0.082" from base_link.
+        Camera height above floor: 0.048 (body offset) + 0.082 = 0.130 m.
+
+        Orientation (xyaxes):
+          camera-x = (0, -1, 0) = robot right (-Y in ROS frame)
+          camera-y = (0,  0, 1) = robot up (+Z)
+          camera-z = cross(x,y) = (-1, 0, 0) = robot -X
+          look direction = -camera-z = robot +X (FORWARD)
+
+        fovy=62°: matches the M3Pro USB camera horizontal FOV.
+
+        IMPORTANT: render_mujoco(cam_name="camera") renders from THIS camera.
+        Never render from the free spectator camera for nav model input.
+      -->
+      <camera name="camera" pos="0.10 0 0.082"
+              xyaxes="0 -1 0 0 0 1" fovy="62"/>
+
+      <!-- LiDAR site -->
+      <site name="lidar" pos="0 0 0.105" size="0.01"/>
+      <geom name="lidar_body" type="cylinder" size="0.038 0.02"
+            pos="0 0 0.105" material="lidar_mat"/>
+
+      <!-- Left wheel -->
+      <body name="left_wheel_link" pos="0 0.1225 0">
+        <joint name="left_wheel_joint" type="hinge"
+               axis="0 1 0" limited="false" damping="0.001"/>
+        <inertial mass="0.12" pos="0 0 0" diaginertia="0.00014 0.00014 0.00024"/>
+        <geom name="left_wheel" type="cylinder" size="0.048 0.0125"
+              euler="1.5708 0 0" material="wheel_mat"/>
+      </body>
+
+      <!-- Right wheel -->
+      <body name="right_wheel_link" pos="0 -0.1225 0">
+        <joint name="right_wheel_joint" type="hinge"
+               axis="0 1 0" limited="false" damping="0.001"/>
+        <inertial mass="0.12" pos="0 0 0" diaginertia="0.00014 0.00014 0.00024"/>
+        <geom name="right_wheel" type="cylinder" size="0.048 0.0125"
+              euler="1.5708 0 0" material="wheel_mat"/>
+      </body>
+
+      <!-- Front caster (fixed ball) -->
+      <geom name="caster_front" type="sphere" size="0.018"
+            pos="0.10 0 -0.030" friction="0.01 0.001 0.0001"/>
+
+      <!-- Rear caster -->
+      <geom name="caster_rear" type="sphere" size="0.018"
+            pos="-0.10 0 -0.030" friction="0.01 0.001 0.0001"/>
+
+    </body> <!-- base_link -->
+
+    <!-- ── Dynamic obstacle placeholders (repositioned each episode) ─────────── -->
+    <!-- obs_0 … obs_9: tall cylinders representing people/wheelchairs.          -->
+    <!-- obstacle_env.py moves these via model.geom_pos before each episode.     -->
+    <geom name="obs_0" type="cylinder" size="0.10 0.80" pos="99 0 0.80" material="person_mat" contype="1" conaffinity="1"/>
+    <geom name="obs_1" type="cylinder" size="0.10 0.80" pos="99 0 0.80" material="person_mat" contype="1" conaffinity="1"/>
+    <geom name="obs_2" type="cylinder" size="0.10 0.80" pos="99 0 0.80" material="person_mat" contype="1" conaffinity="1"/>
+    <geom name="obs_3" type="cylinder" size="0.10 0.80" pos="99 0 0.80" material="person_mat" contype="1" conaffinity="1"/>
+    <geom name="obs_4" type="cylinder" size="0.10 0.80" pos="99 0 0.80" material="person_mat" contype="1" conaffinity="1"/>
+    <geom name="obs_5" type="cylinder" size="0.10 0.80" pos="99 0 0.80" material="person_mat" contype="1" conaffinity="1"/>
+    <geom name="obs_6" type="cylinder" size="0.10 0.80" pos="99 0 0.80" material="person_mat" contype="1" conaffinity="1"/>
+    <geom name="obs_7" type="cylinder" size="0.10 0.80" pos="99 0 0.80" material="person_mat" contype="1" conaffinity="1"/>
+    <geom name="obs_8" type="cylinder" size="0.10 0.80" pos="99 0 0.80" material="person_mat" contype="1" conaffinity="1"/>
+    <geom name="obs_9" type="cylinder" size="0.10 0.80" pos="99 0 0.80" material="person_mat" contype="1" conaffinity="1"/>
+
+  </worldbody>
+
+  <actuator>
+    <!-- Wheel velocity control (rad/s) -->
+    <velocity name="left_wheel_vel"  joint="left_wheel_joint"  kv="0.05" ctrlrange="-15 15"/>
+    <velocity name="right_wheel_vel" joint="right_wheel_joint" kv="0.05" ctrlrange="-15 15"/>
+  </actuator>
+
+  <sensor>
+    <!-- IMU -->
+    <accelerometer name="accel" site="imu"/>
+    <gyro          name="gyro"  site="imu"/>
+    <framequat     name="orientation" objtype="site" objname="imu"/>
+
+    <!-- Wheel encoders -->
+    <jointpos  name="left_wheel_pos"  joint="left_wheel_joint"/>
+    <jointpos  name="right_wheel_pos" joint="right_wheel_joint"/>
+    <jointvel  name="left_wheel_vel_sensor"  joint="left_wheel_joint"/>
+    <jointvel  name="right_wheel_vel_sensor" joint="right_wheel_joint"/>
+  </sensor>
+
+</mujoco>

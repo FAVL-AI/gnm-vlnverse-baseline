@@ -1,0 +1,71 @@
+{
+  "generated_at": "20260521T172636Z",
+  "scenario": "cluttered_navigation",
+  "description": "Sinusoidal path through the canonical cluttered_static obstacle field. Tests that both backends report matching obstacle distances and near-violation events.",
+  "obstacle_positions": [
+    [
+      0.5,
+      1.0
+    ],
+    [
+      -1.0,
+      2.0
+    ],
+    [
+      1.5,
+      0.0
+    ],
+    [
+      -0.5,
+      -1.0
+    ],
+    [
+      2.0,
+      1.5
+    ],
+    [
+      -2.0,
+      -0.5
+    ],
+    [
+      0.0,
+      2.5
+    ],
+    [
+      1.0,
+      -1.5
+    ]
+  ],
+  "start_xy": [
+    -2.0,
+    -2.0
+  ],
+  "start_yaw": 0.0,
+  "n_steps_requested": 30,
+  "control_hz": 4.0,
+  "near_miss_m": 0.35,
+  "obs_radius_m": 0.1,
+  "metrics": {
+    "final_xy_error_m": 0.0,
+    "trajectory_rmse_m": 0.0,
+    "path_length_mujoco_m": 1.5,
+    "path_length_isaac_m": 1.5,
+    "path_length_delta_pct": 0.0,
+    "min_obs_dist_mujoco_m": 0.728,
+    "min_obs_dist_isaac_m": 0.728,
+    "min_obstacle_distance_delta_m": 0.0,
+    "first_collision_step_mujoco": null,
+    "first_collision_step_isaac": null,
+    "collision_agreement": true,
+    "near_violation_agreement": 1.0
+  },
+  "thresholds": {
+    "trajectory_rmse_m": 0.2,
+    "path_length_delta_pct": 10.0,
+    "near_violation_agreement": 0.8
+  },
+  "n_steps_mujoco": 31,
+  "n_steps_isaac": 31,
+  "passed": true,
+  "fail_reasons": []
+}

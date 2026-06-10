@@ -1,0 +1,13 @@
+# GNM-VLNVerse Baseline — proof/review pipeline dependencies
+# Install with:  pip install -r requirements-demo.txt
+#
+# These are the only packages needed to run the dataset proof, live dashboard
+# export, manual test-drive dry-runs, and the test suite.  No GPU or PyTorch
+# required.
+
+numpy>=1.26
+pillow>=10.0
+matplotlib>=3.8
+pyyaml>=6.0
+opencv-python>=4.9
+pytest>=8.0

@@ -1,0 +1,30 @@
+\begin{table}[t]
+\centering
+\caption{%
+  \textbf{FleetSafe-VisualNav Benchmark}: hospital-class obstacle navigation.
+  Our results use real GNM/ViNT checkpoints (20 episodes, 2 scenes,
+  mock kinematic sim).  \dag\ literature results use different evaluation
+  environments and are not directly comparable.  SPL \citep{Anderson2018}.
+  $\downarrow$ lower is better; $\uparrow$ higher is better.
+  \textbf{Key claim:} FleetSafe eliminates all collisions without weight changes.
+}
+\label{tab:fleetsafe_benchmark}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Condition} & \textbf{Collision}$\downarrow$ & \textbf{Min Dist (m)}$\uparrow$ & \textbf{Interv.\%} & \textbf{Infer. (ms)}$\downarrow$ & \textbf{CBF (ms)}$\downarrow$ & \textbf{Note} \\
+\midrule
+\multicolumn{7}{l}{\textit{Ours — FleetSafe-VisualNav (real checkpoints, mock physics)}} \\
+GNM & 35.0\% & 0.573 & — & 10.4 & — & \scriptsize{n=20 eps, 2 scenes, real checkpoint} \\
+\textbf{GNM + FleetSafe} & \textbf{\textcolor{ProvenGreen}{0.0\%}} & 0.809 & 40.0\% & 10.5 & 0.66 & \scriptsize{n=20 eps, 2 scenes, real checkpoint} \\
+\addlinespace
+VINT & 50.0\% & 0.164 & — & 31.1 & — & \scriptsize{n=20 eps, 2 scenes, real checkpoint} \\
+\textbf{VINT + FleetSafe} & \textbf{\textcolor{ProvenGreen}{0.0\%}} & 0.479 & 62.4\% & 28.4 & 0.81 & \scriptsize{n=20 eps, 2 scenes, real checkpoint} \\
+\midrule
+\multicolumn{7}{l}{\textit{\dag\ Literature baselines (reported in cited papers; different setup)}} \\
+\textit{GNM (Shah 2023)} & — & — & — & — & — & \scriptsize{Indoor corridors, zero-shot, ICRA 2023} \\
+\textit{ViNT (Shah 2023)} & — & — & — & — & — & \scriptsize{Novel environments, zero-shot, CoRL 2023} \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

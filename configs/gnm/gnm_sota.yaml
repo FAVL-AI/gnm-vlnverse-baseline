@@ -1,0 +1,77 @@
+# GNM SOTA Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# Best-known training configuration for GNM on VLNVerse/VLNTube data.
+#
+# Differences from gnm_base.yaml:
+#   encoder       : efficientnet (better accuracy/compute than mobilenet)
+#   hidden_dim    : 512 (wider heads)
+#   epochs        : 200 (full training)
+#   batch_size    : 256 (RTX 4080 SUPER, 16 GB)
+#   use_amp       : true (mixed precision — ~1.5× speedup, lower VRAM)
+#   grad_accum    : 2 (effective batch 512 with grad accumulation)
+#   ema_decay     : 0.9999 (EMA weights → better final model, no extra cost)
+#   encoder_lr_scale: 0.1 (discriminative LR — 10× lower for encoder)
+#   warmup_frac   : 0.03 (longer effective warmup with accumulation)
+#   action_weight : 0.6 (slightly higher weight on action vs distance)
+#   loss_type     : huber (more robust to outlier waypoints)
+#   augment       : true with stronger settings
+#
+# Reproducibility:
+#   Isaac Sim: 5.1.0 (pip, conda env 'isaac')
+#   USD source: Eyz/VLNVerse_scene (start_result_navigation.usd)
+#   Scenes: kujiale_0092/0203/0118/0271 (238 fine_train, 15 fine_val episodes)
+# ─────────────────────────────────────────────────────────────────────────────
+
+model:
+  context_size: 5
+  goal_conditioned: true
+  action_dim: 2
+  hidden_dim: 512         # wider than baseline (256)
+  encoder: efficientnet   # B0: better accuracy than mobilenet, similar speed
+  out_dim: 512
+  pretrained: true
+
+data:
+  data_root: datasets/vlntube
+  image_size: [96, 96]
+  max_goal_dist: 20
+  action_std: [0.115528, 0.115528]  # from 03_compute_action_std.py on 238 fine_train episodes
+  augment: true
+  num_workers: 6
+  pin_memory: true
+
+training:
+  epochs: 200
+  batch_size: 256
+  lr: 2e-4                    # higher base LR — scaled down for encoder by encoder_lr_scale
+  weight_decay: 1e-4
+  warmup_frac: 0.03
+  max_grad_norm: 1.0
+  action_weight: 0.6          # slightly favour action accuracy over distance
+  loss_type: huber            # robust to outlier waypoints from GPS noise
+  huber_delta: 1.0
+  patience: 20                # more patience for 200-epoch run
+  seed: 42
+
+  # ── SOTA additions ──────────────────────────────────────────────────────────
+  use_amp: true               # mixed precision (BF16 on Ampere GPUs)
+  grad_accum_steps: 2         # accumulate 2 steps → effective batch 512
+  ema_decay: 0.9999           # EMA of model weights → better val performance
+  encoder_lr_scale: 0.1       # discriminative LR: encoder gets lr × 0.1
+
+checkpoint:
+  output_dir: checkpoints/gnm_sota
+  log_every: 50
+
+wandb:
+  project: fleetsafe-gnm-vlnverse
+  entity: null
+  name: gnm_sota_track_A
+  tags: [gnm, track_A, vlnverse, efficientnet, amp, ema, sota]
+  notes: "SOTA GNM on VLNVerse — EfficientNet, AMP, EMA, discriminative LR"
+
+evaluation:
+  success_threshold: 3.0
+  stop_threshold: 0.15
+  max_steps: 500
+  track: A

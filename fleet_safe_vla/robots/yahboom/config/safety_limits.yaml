@@ -1,0 +1,28 @@
+# Safety limits for Yahboom RosMaster X3
+# These are hard limits — the safety layer will never command beyond these.
+
+hard_limits:
+  max_linear_speed_ms: 0.5
+  max_angular_speed_rads: 1.0
+  max_linear_accel_ms2: 1.0        # m/s²
+  max_angular_accel_rads2: 2.0     # rad/s²
+  min_obstacle_distance_m: 0.30
+
+soft_limits:
+  preferred_max_speed_ms: 0.35
+  preferred_max_angular_rads: 0.8
+  slow_zone_distance_m: 0.50       # begin deceleration here
+
+cbf:
+  alpha: 1.0                        # CBF decay rate — higher = more conservative
+  gamma: 0.9                        # Safety margin multiplier
+
+emergency_stop:
+  trigger_distance_m: 0.15          # robot stops below this distance
+  recovery_wait_s: 2.0              # hold before re-enabling motion
+  max_recovery_attempts: 3
+
+velocity_filter:
+  deadband_linear_ms: 0.01          # ignore commands below this
+  deadband_angular_rads: 0.02
+  smoothing_alpha: 0.7              # exponential smoothing coefficient

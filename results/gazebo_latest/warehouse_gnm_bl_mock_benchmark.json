@@ -1,0 +1,635 @@
+{
+  "world": "warehouse",
+  "model": "gnm",
+  "fleetsafe": false,
+  "sim_mode": "mock",
+  "aggregate": {
+    "n_episodes": 20,
+    "success_rate": 0.0,
+    "success_rate_ci95": [
+      0.0,
+      0.0
+    ],
+    "collision_rate": 0.1,
+    "collision_rate_ci95": [
+      0.0,
+      0.25
+    ],
+    "timeout_rate": 0.9,
+    "spl": 0.0,
+    "spl_ci95": [
+      0.0,
+      0.0
+    ],
+    "mean_path_length_m": 0.0,
+    "mean_path_deviation_m": 0.7312622288148101,
+    "mean_min_dist_obs_m": 2.2134491474516973,
+    "mean_min_dist_people_m": null,
+    "mean_time_to_goal_s": 0.0,
+    "intervention_rate": 0.0,
+    "mean_inference_ms": 10.00229837601849,
+    "mean_cbf_ms": 3.663352496611575e-05
+  },
+  "episodes": [
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 0,
+      "seed": 4201389,
+      "start_xy": [
+        -5.849613421989913,
+        -0.55227681247022
+      ],
+      "goal_xy": [
+        1.299774223101105,
+        -4.555054510253904
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.000000000000306,
+      "optimal_path_m": 8.193654434844964,
+      "path_deviation_m": 0.7220554317866753,
+      "min_dist_obs_m": 1.436720049204954,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.00228016714876,
+      "cbf_ms": 3.60530490676562e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 1,
+      "seed": 4201390,
+      "start_xy": [
+        1.8003582065534935,
+        -1.1311538427180547
+      ],
+      "goal_xy": [
+        -4.539981513346924,
+        2.240962727302117
+      ],
+      "success": false,
+      "collision": true,
+      "timeout": false,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 1.1249999999999996,
+      "optimal_path_m": 7.18130057340253,
+      "path_deviation_m": 0.5211041435301909,
+      "min_dist_obs_m": -0.04012149197886883,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 6,
+      "cbf_interventions": 0,
+      "total_steps": 15,
+      "inference_ms": 10.002507624837259,
+      "cbf_ms": 4.420677820841471e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 2,
+      "seed": 4201391,
+      "start_xy": [
+        -2.6797052319798045,
+        6.853873066738222
+      ],
+      "goal_xy": [
+        -3.206570766530601,
+        -3.6892043764231603
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 5.221001662140227,
+      "optimal_path_m": 10.556233668501084,
+      "path_deviation_m": 0.06253782951365143,
+      "min_dist_obs_m": 4.269682446594845,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002234359853901,
+      "cbf_ms": 3.4978147596120834e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 3,
+      "seed": 4201392,
+      "start_xy": [
+        3.7192149537280326,
+        -2.0374377824564833
+      ],
+      "goal_xy": [
+        -6.415237087728416,
+        -4.498450709833342
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.00000000000029,
+      "optimal_path_m": 10.428983786030967,
+      "path_deviation_m": 0.5250685585075979,
+      "min_dist_obs_m": 2.1977364971878903,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002252354752272,
+      "cbf_ms": 3.490247763693333e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 4,
+      "seed": 4201393,
+      "start_xy": [
+        5.840486496084324,
+        -0.498769201756069
+      ],
+      "goal_xy": [
+        3.455670446041493,
+        2.3176974764808165
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.00000000000031,
+      "optimal_path_m": 3.6905056756711008,
+      "path_deviation_m": 0.43332478635206734,
+      "min_dist_obs_m": 3.0495266240086236,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002242045399422,
+      "cbf_ms": 3.571466853221258e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 5,
+      "seed": 4201394,
+      "start_xy": [
+        -3.8216787060323334,
+        5.060677681533662
+      ],
+      "goal_xy": [
+        4.464679752189072,
+        -1.4037338511790818
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.00000000000031,
+      "optimal_path_m": 10.509631437990913,
+      "path_deviation_m": 0.598541248365741,
+      "min_dist_obs_m": 2.7743689890302385,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002254497764321,
+      "cbf_ms": 3.656411233047644e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 6,
+      "seed": 4201395,
+      "start_xy": [
+        5.056533544163232,
+        -0.1968330900298838
+      ],
+      "goal_xy": [
+        -2.462402230058265,
+        -4.264207531676276
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.00000000000031,
+      "optimal_path_m": 8.548563038629716,
+      "path_deviation_m": 0.5008290237453875,
+      "min_dist_obs_m": 2.3272735204823887,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.00225227578388,
+      "cbf_ms": 3.5431391249100365e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 7,
+      "seed": 4201396,
+      "start_xy": [
+        -5.193465116974442,
+        -3.7845526196442068
+      ],
+      "goal_xy": [
+        -1.7935894374059211,
+        -4.580800883909957
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.00000000000015,
+      "optimal_path_m": 3.4918714086958778,
+      "path_deviation_m": 2.6477692850606496,
+      "min_dist_obs_m": 2.657471245872128,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002239131523917,
+      "cbf_ms": 3.6483979783952236e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 8,
+      "seed": 4201397,
+      "start_xy": [
+        -4.06196506988818,
+        4.936763536044456
+      ],
+      "goal_xy": [
+        1.6428880310244907,
+        2.3255989071343297
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 44.99110142703497,
+      "optimal_path_m": 6.2740361508573,
+      "path_deviation_m": 0.75604746348029,
+      "min_dist_obs_m": 1.2716617199852647,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.00216010628113,
+      "cbf_ms": 3.448338247835636e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 9,
+      "seed": 4201398,
+      "start_xy": [
+        -1.2618309824953071,
+        -1.3718523225507102
+      ],
+      "goal_xy": [
+        -2.553711774821002,
+        6.2710267016137085
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 28.278086247904614,
+      "optimal_path_m": 7.751293811976973,
+      "path_deviation_m": 3.160432046659104,
+      "min_dist_obs_m": 0.051306796832714,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 35,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002227256967066,
+      "cbf_ms": 3.5102517964939274e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 10,
+      "seed": 4201399,
+      "start_xy": [
+        -3.1040714694762106,
+        0.436030035821676
+      ],
+      "goal_xy": [
+        -1.6160715305169289,
+        -5.537091203192677
+      ],
+      "success": false,
+      "collision": true,
+      "timeout": false,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 0.8743789279584888,
+      "optimal_path_m": 6.155673899282449,
+      "path_deviation_m": 0.46125001797851833,
+      "min_dist_obs_m": -0.005340512703262579,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 11,
+      "cbf_interventions": 0,
+      "total_steps": 20,
+      "inference_ms": 10.003078987356275,
+      "cbf_ms": 4.88420482724905e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 11,
+      "seed": 4201400,
+      "start_xy": [
+        5.7473432912796,
+        -6.157082674734499
+      ],
+      "goal_xy": [
+        -2.45325183108079,
+        -4.8456647430528506
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.000000000000334,
+      "optimal_path_m": 8.304792432831611,
+      "path_deviation_m": 0.4817541991477567,
+      "min_dist_obs_m": 5.555004298468643,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002302961268773,
+      "cbf_ms": 3.669857202718655e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 12,
+      "seed": 4201401,
+      "start_xy": [
+        -0.4054206871696042,
+        5.011414379190056
+      ],
+      "goal_xy": [
+        0.7537315834882419,
+        -6.608312030367388
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 9.87611668065692,
+      "optimal_path_m": 11.677400216638032,
+      "path_deviation_m": 0.06992921649775116,
+      "min_dist_obs_m": 1.376832191544496,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002290281505944,
+      "cbf_ms": 3.586562039951483e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 13,
+      "seed": 4201402,
+      "start_xy": [
+        6.103515784955855,
+        1.6678205423169938
+      ],
+      "goal_xy": [
+        3.5131455177861604,
+        -5.997500080221304
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 32.27284825615525,
+      "optimal_path_m": 8.091177810884378,
+      "path_deviation_m": 0.22523415363417285,
+      "min_dist_obs_m": 2.744456932212561,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002211829802642,
+      "cbf_ms": 3.5066817266245685e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 14,
+      "seed": 4201403,
+      "start_xy": [
+        5.378236918918704,
+        -4.850453973593171
+      ],
+      "goal_xy": [
+        5.725677058087875,
+        5.066459202497347
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 4.332282641331379,
+      "optimal_path_m": 9.922997611227345,
+      "path_deviation_m": 0.4355598830694429,
+      "min_dist_obs_m": 5.3876719547110765,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002249146734053,
+      "cbf_ms": 3.540946636348963e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 15,
+      "seed": 4201404,
+      "start_xy": [
+        3.068178089865805,
+        2.903559417170193
+      ],
+      "goal_xy": [
+        2.924144517506603,
+        6.066143140549057
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 4.766084982819436,
+      "optimal_path_m": 3.165861885387212,
+      "path_deviation_m": 0.2041223638509643,
+      "min_dist_obs_m": 1.7227785905396011,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002242963334234,
+      "cbf_ms": 3.4752883948385715e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 16,
+      "seed": 4201405,
+      "start_xy": [
+        -4.688254865738646,
+        -1.6750473160279258
+      ],
+      "goal_xy": [
+        -0.5686559291171465,
+        1.980973063753087
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.00000000000029,
+      "optimal_path_m": 5.507956101494191,
+      "path_deviation_m": 0.5520061429795907,
+      "min_dist_obs_m": 1.1319459102083287,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002241179851504,
+      "cbf_ms": 3.599057284494241e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 17,
+      "seed": 4201406,
+      "start_xy": [
+        4.132953791470621,
+        -2.958162312140714
+      ],
+      "goal_xy": [
+        -2.4735573515559066,
+        -4.1270446465709085
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.00000000000033,
+      "optimal_path_m": 6.709118824009354,
+      "path_deviation_m": 1.4665116338849267,
+      "min_dist_obs_m": 2.501542851731682,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002277379001802,
+      "cbf_ms": 3.51521885022521e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 18,
+      "seed": 4201407,
+      "start_xy": [
+        -5.36908740101567,
+        -4.719709910897863
+      ],
+      "goal_xy": [
+        1.028210432121904,
+        1.7437465053276568
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 42.483381965932985,
+      "optimal_path_m": 9.094046866511825,
+      "path_deviation_m": 0.5490936099388332,
+      "min_dist_obs_m": 3.6856656431870736,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002252097280385,
+      "cbf_ms": 3.503577318042517e-05
+    },
+    {
+      "world": "warehouse",
+      "model": "gnm",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 19,
+      "seed": 4201408,
+      "start_xy": [
+        -1.057342932143328,
+        3.1190470984443284
+      ],
+      "goal_xy": [
+        2.3951511389644295,
+        -4.690183805191451
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 28.75093073208469,
+      "optimal_path_m": 8.538372363473867,
+      "path_deviation_m": 0.25207353831288853,
+      "min_dist_obs_m": 0.1727986919135711,
+      "min_dist_people_m": Infinity,
+      "n_near_misses": 164,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002170873922296,
+      "cbf_ms": 3.593605166922013e-05
+    }
+  ]
+}

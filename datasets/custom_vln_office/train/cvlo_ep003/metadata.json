@@ -1,0 +1,25 @@
+{
+  "episode_id": "cvlo_ep003",
+  "scene_id": "custom_vln_office",
+  "split": "train",
+  "instruction": "Walk through the entire office from the entrance to the end of the hallway.",
+  "start_pos": [
+    2.0,
+    5.0
+  ],
+  "start_yaw": 0.3218,
+  "goal_pos": [
+    14.0,
+    8.0
+  ],
+  "goal_yaw": 0.1651,
+  "n_steps": 41,
+  "path_length_m": 12.4073,
+  "goal_radius_m": 2.0,
+  "source": "collect_custom_vln_office_data.py --dry-run",
+  "isaac_assets_used": false,
+  "vlnverse_assets_used": false,
+  "gnm_input": "current RGB frame + goal RGB frame",
+  "gnm_output": "local waypoint (delta_x, delta_y) in robot frame",
+  "label_source": "derived from consecutive trajectory poses (traj_data.pkl)"
+}

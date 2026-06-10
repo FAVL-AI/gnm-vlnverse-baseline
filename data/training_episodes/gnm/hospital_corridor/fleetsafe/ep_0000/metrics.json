@@ -1,0 +1,20 @@
+{
+  "model": "gnm",
+  "scene": "hospital_corridor",
+  "seed": 0,
+  "fleetsafe": true,
+  "success": false,
+  "collision": false,
+  "steps": 300,
+  "path_length_m": 22.325,
+  "time_s": 454.606,
+  "min_obstacle_dist_m": 1.2098,
+  "intervention_count": 0,
+  "intervention_rate": 0.0,
+  "dist_to_goal_final": 10.8346,
+  "image_size": [
+    85,
+    64
+  ],
+  "context_size": 5
+}

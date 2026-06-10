@@ -1,0 +1,85 @@
+task_id: VLNVerse_hospital_scene
+scene: hospital_corridor
+platform: mock
+description: >
+  VLNVerse-style multi-model comparison on the hospital corridor scene.
+  Runs baseline (no safety) vs FleetSafe (cbf_qp) on the same navigation
+  instruction, producing a side-by-side trajectory and safety metrics report.
+
+instruction:
+  text: "Navigate down the hospital corridor and stop at the nurse station."
+  semantic_goal: nurse_station
+  source: VLNVerse
+  constraints:
+    - keep_right_side
+    - slow_near_doorways
+    - avoid_humans
+    - maintain_safe_distance
+
+start_pose: [0.0, 0.0, 0.0]
+goal_xy: [8.5, -1.2]
+optimal_path_m: 8.9
+success_radius_m: 0.5
+max_steps: 500
+control_hz: 4.0
+
+safety:
+  d_safe_m: 0.50
+  estop_dist_m: 0.30
+  min_human_distance_m: 0.80
+  max_speed_near_humans: 0.15
+  cbf_alpha: 1.0
+
+robot:
+  name: yahboom_m3_pro
+  max_vx: 0.30
+  max_wz: 0.70
+  wheel_base_m: 0.23
+  lidar_range_m: 8.0
+  camera_fov_deg: 87.0
+  ros2_namespace: /m3pro
+
+# VLNVerse comparison configs — run all, compare in dashboard
+comparison_configs:
+  - id: baseline
+    model: gnm
+    safety: none
+    label: "GNM Baseline (no safety)"
+    color: "#f59e0b"
+  - id: fleetsafe_log
+    model: gnm
+    safety: log_only
+    label: "GNM + FleetSafe (log only)"
+    color: "#60a5fa"
+  - id: fleetsafe_cbf
+    model: gnm
+    safety: cbf_qp
+    label: "GNM + FleetSafe (CBF-QP)"
+    color: "#22c55e"
+
+metrics:
+  - success_rate
+  - spl
+  - navigation_error
+  - collision_rate
+  - min_obstacle_distance
+  - min_human_distance
+  - cbf_intervention_count
+  - cbf_intervention_magnitude
+  - certificate_validity_rate
+  - near_miss_count
+  - inference_latency_ms
+
+tags:
+  - hospital
+  - vlnverse
+  - multi_model_comparison
+  - fleetsafe_core
+  - narrow_corridor
+  - human_presence
+
+evidence:
+  capture_screenshots: true
+  capture_trajectories: true
+  capture_safety_certs: true
+  output_dir: runs/vlnverse_evidence

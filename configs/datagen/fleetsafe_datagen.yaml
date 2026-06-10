@@ -1,0 +1,47 @@
+datagen_id: fleetsafe_datagen_v0
+description: >
+  FleetSafe-DataForge dataset generation config.
+  Produces safe trajectories, scene graphs, instructions, and
+  safety certificate logs for all core scenes.
+
+scenes:
+  - scene_id: hospital_corridor
+    usd_path: IsaacLabAssets/hospital/hospital_corridor.usd
+    start_points:
+      - [0.0, 0.0]
+      - [-3.0, 2.0]
+      - [2.0, -1.5]
+    goal_points:
+      - [8.5, -1.2]
+      - [4.0, -0.5]
+    n_trajectories: 20
+
+  - scene_id: warehouse_aisle
+    usd_path: IsaacLabAssets/warehouse/warehouse_aisle.usd
+    start_points:
+      - [0.0, 0.0]
+    goal_points:
+      - [12.0, 0.0]
+    n_trajectories: 10
+
+safety:
+  d_safe_m: 0.50
+  estop_dist_m: 0.30
+  cbf_alpha: 1.0
+
+instructions:
+  n_fine: 3
+  n_coarse: 2
+  n_constrained: 2
+  use_vlntube: false
+
+export:
+  formats:
+    - fleetsafe_jsonl
+    - vln_r2r
+  output_dir: data/fleetsafe_datagen_v0
+
+rgb_rendering:
+  enabled: false
+  width: 320
+  height: 240

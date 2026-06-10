@@ -1,0 +1,61 @@
+# Locomotion Task Configuration — Fleet-Safe-VLA-OS
+task:
+  name: FleetSafe-H1-RoughLocomotion-v0
+  robot: h1
+  simulator: isaaclab
+
+  episode:
+    length_s: 20.0
+    n_envs: 4096
+
+  commands:
+    base_velocity:
+      lin_vel_x: [-0.5, 1.5]   # m/s
+      lin_vel_y: [-0.3, 0.3]
+      ang_vel_z: [-1.0, 1.0]   # rad/s
+      rel_standing_envs: 0.1
+
+  rewards:
+    # Layer 1: Primary
+    track_lin_vel_xy: 1.5
+    track_ang_vel_z:  1.0
+    upright:         -2.0
+    alive:            0.5
+    termination:   -200.0
+
+    # Layer 2: Gait
+    feet_air_time:    0.5
+    alternating_contact: 0.25
+    foot_clearance:   0.1
+    no_slip:         -0.3
+    no_stumble:      -1.0
+
+    # Layer 3: Smoothness
+    joint_torques:   -2.5e-5
+    action_rate:     -0.01
+    joint_accel:     -2.5e-7
+    base_ang_vel_xy: -0.05
+
+    # Layer 4: Safety
+    ankle_joint_limits: -2.0
+    knee_hyperextension: -1.0
+    excessive_contact_force: -1e-3
+
+  terminations:
+    base_height_threshold_m: 0.5
+    bad_orientation_limit_rad: 0.8
+
+  terrain:
+    type: rough
+    n_levels: 8
+    n_cols: 10
+    curriculum: true
+
+  domain_randomization:
+    mass_range_kg: [-2.0, 2.0]
+    com_range_m:   [-0.05, 0.05]
+    friction_range: [0.3, 1.5]
+    motor_strength_range: [0.9, 1.1]
+    push_interval_s: [10.0, 15.0]
+    push_velocity_range: [-0.5, 0.5]
+    payload_range_kg: [0.0, 5.0]

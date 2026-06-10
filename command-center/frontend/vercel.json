@@ -1,0 +1,9 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "env": {
+    "NEXT_PUBLIC_DEPLOYMENT_MODE": "public_readonly",
+    "NEXT_PUBLIC_PROJECT_NAME": "FleetSafe VLA",
+    "NEXT_PUBLIC_API_MODE": "static"
+  }
+}

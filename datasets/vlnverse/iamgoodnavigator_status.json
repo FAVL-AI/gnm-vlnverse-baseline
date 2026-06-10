@@ -1,0 +1,16 @@
+{
+  "source": "IAmGoodNavigator",
+  "indexed_at": "2026-05-31T15:01:46.768682+00:00",
+  "root": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/external/IAmGoodNavigator",
+  "root_exists": true,
+  "demo_py_exists": true,
+  "download_sh_exists": true,
+  "fine_episodes": 10,
+  "coarse_episodes": 10,
+  "ready": true,
+  "data_downloaded": true,
+  "download_command": "bash /home/favl/robotics/FleetSafe-VisualNav-Benchmark/external/IAmGoodNavigator/download.sh",
+  "run_episode_command": "bash scripts/run_iamgoodnavigator_episode.sh fine 0",
+  "missing": [],
+  "camera_note": "In Isaac Sim: Perspective \u2192 Cameras \u2192 FloatingCamera for first-person view"
+}

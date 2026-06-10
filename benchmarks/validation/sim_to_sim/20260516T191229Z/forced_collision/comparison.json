@@ -1,0 +1,44 @@
+{
+  "generated_at": "20260516T191229Z",
+  "scenario": "forced_collision",
+  "description": "Robot driven straight into a single obstacle at (0.8, 0.0). Collision must occur at step 10 in both backends. Tests collision detection agreement.",
+  "obstacle_positions": [
+    [
+      0.8,
+      0.0
+    ]
+  ],
+  "start_xy": [
+    0.0,
+    0.0
+  ],
+  "start_yaw": 0.0,
+  "n_steps_requested": 15,
+  "control_hz": 4.0,
+  "near_miss_m": 0.35,
+  "obs_radius_m": 0.1,
+  "metrics": {
+    "final_xy_error_m": 0.0,
+    "trajectory_rmse_m": 0.0,
+    "path_length_mujoco_m": 0.75,
+    "path_length_isaac_m": 0.75,
+    "path_length_delta_pct": 0.0,
+    "min_obs_dist_mujoco_m": -0.05,
+    "min_obs_dist_isaac_m": -0.05,
+    "min_obstacle_distance_delta_m": 0.0,
+    "first_collision_step_mujoco": 10,
+    "first_collision_step_isaac": 10,
+    "collision_agreement": true,
+    "near_violation_agreement": 1.0
+  },
+  "thresholds": {
+    "collision_agreement": true,
+    "near_violation_agreement": 0.8
+  },
+  "n_steps_mujoco": 11,
+  "n_steps_isaac": 0,
+  "passed": false,
+  "fail_reasons": [
+    "Isaac backend not run \u2014 re-run with --with-isaac"
+  ]
+}

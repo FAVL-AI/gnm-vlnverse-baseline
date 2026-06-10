@@ -1,0 +1,26 @@
+\begin{table}[t]
+\centering
+\setlength{\tabcolsep}{4pt}
+\caption{Cross-Simulator Navigation Performance (FleetSafe CBF vs Baseline)}
+\label{tab:unified_benchmark}
+\begin{tabular}{llcccccc}
+\toprule
+Simulator & Model & Condition & Success$\uparrow$ & Collision$\downarrow$ & Time (s)$\downarrow$ & Deviation (m)$\downarrow$ & SPL$\uparrow$ \\
+\midrule
+Gazebo & GNM & Baseline & 60.0\% & \textcolor{red!70!black}{35.0\%} & 14.9 & 0.282 & 0.492 \\
+ & GNM & FleetSafe & \textcolor{green!60!black}{80.0\%} & \textcolor{green!60!black}{0.0\%} & 14.6 & 0.214 & 0.661 \\
+\addlinespace
+ & VINT & Baseline & 10.0\% & \textcolor{red!70!black}{40.0\%} & 12.6 & 0.315 & 0.080 \\
+ & VINT & FleetSafe & \textcolor{green!60!black}{65.0\%} & \textcolor{green!60!black}{0.0\%} & 13.1 & 0.217 & 0.558 \\
+\addlinespace
+Isaac & GNM & Baseline & 65.0\% & \textcolor{red!70!black}{30.0\%} & 13.5 & 0.187 & 0.546 \\
+ & GNM & FleetSafe & \textcolor{green!60!black}{95.0\%} & \textcolor{green!60!black}{0.0\%} & 13.5 & 0.146 & 0.805 \\
+\addlinespace
+ & VINT & Baseline & 20.0\% & \textcolor{red!70!black}{40.0\%} & 11.3 & 0.200 & 0.163 \\
+ & VINT & FleetSafe & \textcolor{green!60!black}{70.0\%} & \textcolor{green!60!black}{0.0\%} & 12.7 & 0.141 & 0.617 \\
+\addlinespace
+\midrule
+\multicolumn{8}{l}{\small FleetSafe: CBF-QP filter applied at inference time; Baseline: model output used directly.} \\
+\bottomrule
+\end{tabular}
+\end{table}

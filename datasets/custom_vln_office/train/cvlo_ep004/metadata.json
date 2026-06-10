@@ -1,0 +1,25 @@
+{
+  "episode_id": "cvlo_ep004",
+  "scene_id": "custom_vln_office",
+  "split": "train",
+  "instruction": "Leave the meeting room and navigate to the back office desk.",
+  "start_pos": [
+    7.0,
+    8.0
+  ],
+  "start_yaw": -0.6435,
+  "goal_pos": [
+    12.0,
+    1.5
+  ],
+  "goal_yaw": -1.5708,
+  "n_steps": 41,
+  "path_length_m": 8.5043,
+  "goal_radius_m": 2.0,
+  "source": "collect_custom_vln_office_data.py --dry-run",
+  "isaac_assets_used": false,
+  "vlnverse_assets_used": false,
+  "gnm_input": "current RGB frame + goal RGB frame",
+  "gnm_output": "local waypoint (delta_x, delta_y) in robot frame",
+  "label_source": "derived from consecutive trajectory poses (traj_data.pkl)"
+}

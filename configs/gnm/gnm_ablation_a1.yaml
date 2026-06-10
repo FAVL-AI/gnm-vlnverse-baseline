@@ -1,0 +1,66 @@
+# GNM Ablation A1: Baseline MobileNet architecture + AMP + EMA only
+# ─────────────────────────────────────────────────────────────────────────────
+# Purpose: test whether AMP and EMA improve navigation metrics over baseline
+# without any architectural change.
+#
+# History:
+#   gnm_base   MobileNet hidden=256 mse no_AMP no_EMA  → SR=20% OSR=46.7% WORKS
+#   gnm_sota v1 EffNet   hidden=512 huber AMP EMA       → dist collapsed
+#   gnm_sota v2 EffNet   hidden=512 mse   AMP EMA       → dist negative
+#   A3          EffNet   hidden=256 mse   no_AMP no_EMA  → dist exploded (val_loss=5903)
+#
+# A1 hypothesis: AMP + EMA on the stable MobileNet baseline improves metrics
+# without touching encoder or head architecture.
+#
+# Exactly two changes from gnm_base.yaml: use_amp=true, ema_decay=0.9999
+# ─────────────────────────────────────────────────────────────────────────────
+
+model:
+  context_size: 5
+  goal_conditioned: true
+  action_dim: 2
+  hidden_dim: 256
+  encoder: mobilenet
+  out_dim: 512
+  pretrained: true
+
+data:
+  data_root: datasets/vlntube
+  image_size: [96, 96]
+  max_goal_dist: 20
+  action_std: [0.115528, 0.115528]
+  augment: true
+  num_workers: 4
+  pin_memory: true
+
+training:
+  epochs: 50
+  batch_size: 128
+  lr: 1e-4
+  weight_decay: 1e-4
+  warmup_frac: 0.05
+  max_grad_norm: 1.0
+  action_weight: 0.5
+  loss_type: mse
+  patience: 10
+  seed: 42
+  use_amp: true       # ← added vs gnm_base (BF16 mixed precision)
+  ema_decay: 0.9999   # ← added vs gnm_base (EMA shadow weights)
+  # no grad_accum, no discriminative LR, no encoder change
+
+checkpoint:
+  output_dir: checkpoints/gnm_ablation_a1
+  log_every: 50
+
+wandb:
+  project: fleetsafe-gnm-vlnverse
+  entity: null
+  name: gnm_ablation_a1
+  tags: [gnm, track_A, ablation, mobilenet, amp, ema]
+  notes: "A1 ablation: MobileNet baseline + AMP + EMA — tests training improvements without encoder change"
+
+evaluation:
+  success_threshold: 3.0
+  stop_threshold: 0.15
+  max_steps: 500
+  track: A

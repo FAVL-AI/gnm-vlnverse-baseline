@@ -1,0 +1,48 @@
+{
+  "discovery_mode": "dry_run",
+  "assets_found": [],
+  "n_assets_found": 0,
+  "use_primitives_fallback": true,
+  "primitive_fallback_plan": {
+    "floor": "UsdGeom.Mesh / Cube (grey, scaled)",
+    "wall": "UsdGeom.Cube (white, scaled)",
+    "desk": "UsdGeom.Cube (brown, 1.5\u00d70.8\u00d70.75 m)",
+    "chair": "UsdGeom.Cube (dark grey, 0.5\u00d70.5\u00d70.9 m)",
+    "cabinet": "UsdGeom.Cube (grey, 0.6\u00d71.2\u00d71.8 m)",
+    "plant": "UsdGeom.Sphere (green, r=0.3 m)",
+    "shelf": "UsdGeom.Cube (beige, 0.4\u00d72.0\u00d71.8 m)",
+    "meeting_table": "UsdGeom.Cube (wood-brown, 2.5\u00d71.5\u00d70.75 m)",
+    "partition_wall": "UsdGeom.Cube (cream, 0.1\u00d72.0\u00d71.5 m)",
+    "light": "UsdLux.RectLight",
+    "camera": "UsdGeom.Camera"
+  },
+  "search_keywords": [
+    "office",
+    "room",
+    "chair",
+    "table",
+    "desk",
+    "cabinet",
+    "door",
+    "shelf",
+    "plant",
+    "hallway",
+    "warehouse"
+  ],
+  "candidate_roots_checked": [
+    "omniverse://localhost/NVIDIA/Assets/Isaac/",
+    "omniverse://localhost/NVIDIA/Assets/DigitalTwin/",
+    "omniverse://localhost/Library/",
+    "${ISAAC_PATH}/Props/",
+    "${ISAAC_PATH}/Environments/",
+    "/home/favl/.local/share/ov/pkg/isaac-sim-4.5.0/Assets/",
+    "/opt/isaac-sim/Assets/",
+    "/isaac-sim/Assets/"
+  ],
+  "warnings": [
+    "No local Isaac Sim USD assets found",
+    "Nucleus probe skipped (dry-run mode)",
+    "Isaac Core API skipped (dry-run mode)"
+  ],
+  "note": "CustomVLN-Office uses Isaac Sim assets where available, falling back to USD primitives. No VLNVerse assets are used."
+}

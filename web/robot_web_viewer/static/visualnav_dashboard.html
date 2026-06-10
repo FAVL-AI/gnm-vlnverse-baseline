@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>FleetSafe × VisualNav Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body   { margin: 0; background: #1a1a2e; color: #eee; font-family: monospace; font-size: 13px; }
+  #header { padding: 10px 20px; background: #16213e; border-bottom: 1px solid #0f3460;
+            display: flex; align-items: center; gap: 20px; }
+  #header h2 { margin: 0; color: #00d4ff; }
+  .badge  { padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+  .badge-gnm   { background: #0f3460; color: #6bcfff; }
+  .badge-vint  { background: #0f3460; color: #ffd166; }
+  .badge-nomad { background: #0f3460; color: #06d6a0; }
+  .badge-safe  { background: #06d6a0; color: #1a1a2e; }
+  .badge-base  { background: #555; color: #eee; }
+
+  #toolbar { padding: 8px 20px; background: #16213e; border-bottom: 1px solid #0f3460;
+             display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  .ctrl-group { display: flex; align-items: center; gap: 8px; }
+  label { color: #aaa; }
+  select, button {
+    background: #0f3460; color: #eee; border: 1px solid #00d4ff;
+    padding: 3px 10px; border-radius: 4px; cursor: pointer; font-family: monospace;
+  }
+  select:focus, button:focus { outline: none; border-color: #6bcfff; }
+  button:hover { background: #00d4ff; color: #1a1a2e; }
+  .toggle-safe { border-color: #06d6a0; }
+  .toggle-safe.active { background: #06d6a0; color: #1a1a2e; }
+
+  #main { display: grid; grid-template-columns: 1fr 320px; height: calc(100vh - 90px); }
+  #canvas-panel { display: flex; flex-direction: column; gap: 0; }
+  #pose-canvas  { flex: 1; width: 100%; display: block; }
+  #obs-row      { display: grid; grid-template-columns: 1fr 1fr; background: #111; }
+  .obs-panel    { padding: 8px; border-right: 1px solid #0f3460; }
+  .obs-panel h4 { margin: 0 0 4px; color: #aaa; font-size: 11px; }
+  canvas.obs-img { width: 100%; border: 1px solid #0f3460; }
+
+  #sidebar { background: #16213e; border-left: 1px solid #0f3460;
+             overflow-y: auto; padding: 12px; }
+  .section  { margin-bottom: 18px; }
+  .section h3 { margin: 0 0 8px; color: #00d4ff; font-size: 12px;
+                border-bottom: 1px solid #0f3460; padding-bottom: 4px; }
+
+  .metric-row { display: flex; justify-content: space-between; padding: 3px 0;
+                border-bottom: 1px solid #0f346044; }
+  .metric-key { color: #888; }
+  .metric-val { color: #eee; font-weight: bold; }
+  .metric-val.good    { color: #06d6a0; }
+  .metric-val.warn    { color: #ffd166; }
+  .metric-val.danger  { color: #ff6b6b; }
+
+  .cmd-bar { margin: 4px 0; }
+  .cmd-bar-label { color: #888; font-size: 11px; }
+  .bar-track { height: 10px; background: #0f3460; border-radius: 5px; overflow: hidden; }
+  .bar-fill  { height: 100%; border-radius: 5px; transition: width 0.1s; }
+  .bar-vx    { background: #00d4ff; }
+  .bar-vy    { background: #ffd166; }
+  .bar-wz    { background: #ff9f43; }
+  .bar-safe  { background: #06d6a0; }
+
+  #intervention-log { max-height: 120px; overflow-y: auto; font-size: 11px; }
+  .log-entry { padding: 2px 4px; border-bottom: 1px solid #0f3460; }
+  .log-entry.intervened { color: #ffd166; }
+  .log-entry.estop      { color: #ff6b6b; }
+
+  table.metrics-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .metrics-table th { background: #0f3460; color: #00d4ff; padding: 4px 6px; text-align: left; }
+  .metrics-table td { padding: 3px 6px; border-bottom: 1px solid #0f3460; }
+  .metrics-table tr:hover td { background: rgba(0,212,255,0.05); }
+
+  #run-status { padding: 3px 8px; background: #0f3460; border-radius: 4px;
+                font-size: 11px; color: #888; }
+  #run-status.running { color: #06d6a0; }
+  #run-status.failed  { color: #ff6b6b; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h2>FleetSafe × VisualNav</h2>
+  <span id="model-badge" class="badge badge-gnm">GNM</span>
+  <span id="safety-badge" class="badge badge-base">Baseline</span>
+  <span id="run-status">ready</span>
+</div>
+
+<div id="toolbar">
+  <div class="ctrl-group">
+    <label>Model</label>
+    <select id="model-sel">
+      <option value="gnm">GNM</option>
+      <option value="vint">ViNT</option>
+      <option value="nomad">NoMaD</option>
+    </select>
+  </div>
+  <div class="ctrl-group">
+    <label>Safety</label>
+    <button id="safety-toggle" class="toggle-safe">FleetSafe OFF</button>
+  </div>
+  <div class="ctrl-group">
+    <label>Gate</label>
+    <button id="validate-btn">Validate Gates</button>
+  </div>
+  <div class="ctrl-group">
+    <label>Run</label>
+    <button id="run-btn">Run Smoke Test</button>
+  </div>
+  <div class="ctrl-group">
+    <label>Report</label>
+    <button id="report-btn">Export HTML</button>
+  </div>
+</div>
+
+<div id="main">
+  <!-- Pose trail canvas + observation panels -->
+  <div id="canvas-panel">
+    <canvas id="pose-canvas"></canvas>
+    <div id="obs-row">
+      <div class="obs-panel">
+        <h4>Current Observation (latest frame)</h4>
+        <canvas class="obs-img" id="obs-canvas" width="160" height="120"></canvas>
+      </div>
+      <div class="obs-panel">
+        <h4>Goal Image</h4>
+        <canvas class="obs-img" id="goal-canvas" width="160" height="120"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+
+    <!-- cmd_vel bars -->
+    <div class="section">
+      <h3>cmd_vel</h3>
+      <div id="raw-cmd">
+        <div class="cmd-bar-label">Raw (policy): vx <span id="raw-vx">0.000</span></div>
+        <div class="bar-track"><div class="bar-fill bar-vx" id="bar-raw-vx" style="width:50%"></div></div>
+        <div class="cmd-bar-label">Raw: vy <span id="raw-vy">0.000</span></div>
+        <div class="bar-track"><div class="bar-fill bar-vy" id="bar-raw-vy" style="width:50%"></div></div>
+        <div class="cmd-bar-label">Raw: wz <span id="raw-wz">0.000</span></div>
+        <div class="bar-track"><div class="bar-fill bar-wz" id="bar-raw-wz" style="width:50%"></div></div>
+      </div>
+      <hr style="border-color:#0f3460;margin:6px 0">
+      <div id="safe-cmd">
+        <div class="cmd-bar-label">Safe: vx <span id="safe-vx">0.000</span></div>
+        <div class="bar-track"><div class="bar-fill bar-safe" id="bar-safe-vx" style="width:50%"></div></div>
+        <div class="cmd-bar-label">Safe: vy <span id="safe-vy">0.000</span></div>
+        <div class="bar-track"><div class="bar-fill bar-safe" id="bar-safe-vy" style="width:50%"></div></div>
+        <div class="cmd-bar-label">Safe: wz <span id="safe-wz">0.000</span></div>
+        <div class="bar-track"><div class="bar-fill bar-safe" id="bar-safe-wz" style="width:50%"></div></div>
+      </div>
+    </div>
+
+    <!-- Action detail -->
+    <div class="section">
+      <h3>Action Output</h3>
+      <div class="metric-row"><span class="metric-key">model</span>
+        <span class="metric-val" id="action-model">—</span></div>
+      <div class="metric-row"><span class="metric-key">goal_distance</span>
+        <span class="metric-val" id="action-dist">—</span></div>
+      <div class="metric-row"><span class="metric-key">goal_reached</span>
+        <span class="metric-val" id="action-reached">—</span></div>
+      <div class="metric-row"><span class="metric-key">waypoints[0]</span>
+        <span class="metric-val" id="action-wp0">—</span></div>
+      <div class="metric-row"><span class="metric-key">inference_ms</span>
+        <span class="metric-val" id="action-lat">—</span></div>
+    </div>
+
+    <!-- Safety metrics -->
+    <div class="section">
+      <h3>Safety (this episode)</h3>
+      <div class="metric-row"><span class="metric-key">FleetSafe</span>
+        <span class="metric-val" id="fs-enabled">—</span></div>
+      <div class="metric-row"><span class="metric-key">interventions</span>
+        <span class="metric-val" id="fs-interv">0</span></div>
+      <div class="metric-row"><span class="metric-key">e-stops</span>
+        <span class="metric-val" id="fs-estop">0</span></div>
+      <div class="metric-row"><span class="metric-key">min_dist_m</span>
+        <span class="metric-val" id="fs-dist">inf</span></div>
+      <div class="metric-row"><span class="metric-key">intervention_rate</span>
+        <span class="metric-val" id="fs-rate">—</span></div>
+    </div>
+
+    <!-- Intervention log -->
+    <div class="section">
+      <h3>Intervention Log (last 20)</h3>
+      <div id="intervention-log"></div>
+    </div>
+
+    <!-- Episode metrics -->
+    <div class="section">
+      <h3>Episode Metrics</h3>
+      <div class="metric-row"><span class="metric-key">success</span>
+        <span class="metric-val" id="ep-success">—</span></div>
+      <div class="metric-row"><span class="metric-key">collision</span>
+        <span class="metric-val" id="ep-collision">—</span></div>
+      <div class="metric-row"><span class="metric-key">path_length_m</span>
+        <span class="metric-val" id="ep-path">—</span></div>
+      <div class="metric-row"><span class="metric-key">near_violations</span>
+        <span class="metric-val" id="ep-nearv">0</span></div>
+      <div class="metric-row"><span class="metric-key">steps</span>
+        <span class="metric-val" id="ep-steps">0</span></div>
+    </div>
+
+    <!-- Benchmark results table -->
+    <div class="section">
+      <h3>Benchmark Results (last run)</h3>
+      <table class="metrics-table" id="results-table">
+        <thead><tr>
+          <th>Model</th><th>FS</th><th>Succ%</th>
+          <th>Col%</th><th>Interv</th><th>ms</th>
+        </tr></thead>
+        <tbody id="results-body">
+          <tr><td colspan="6" style="color:#555">No runs yet — click Run Smoke Test</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Gate status -->
+    <div class="section">
+      <h3>Reproduction Gates</h3>
+      <div id="gate-status">
+        <div class="metric-row"><span class="metric-key">Gate 0: upstream</span>
+          <span class="metric-val" id="gate-0">?</span></div>
+        <div class="metric-row"><span class="metric-key">Gate 1: checkpoints</span>
+          <span class="metric-val" id="gate-1">?</span></div>
+        <div class="metric-row"><span class="metric-key">Gate 2: inference</span>
+          <span class="metric-val" id="gate-2">?</span></div>
+        <div class="metric-row"><span class="metric-key">Gate 3: camera adapter</span>
+          <span class="metric-val" id="gate-3">?</span></div>
+        <div class="metric-row"><span class="metric-key">Gate 4: sim cmd_vel</span>
+          <span class="metric-val" id="gate-4">?</span></div>
+        <div class="metric-row"><span class="metric-key">Gate 5: fleetsafe</span>
+          <span class="metric-val" id="gate-5">?</span></div>
+        <div class="metric-row"><span class="metric-key">Gate 6: report</span>
+          <span class="metric-val" id="gate-6">?</span></div>
+      </div>
+    </div>
+
+  </div> <!-- sidebar -->
+</div> <!-- main -->
+
+<script>
+'use strict';
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let state = {
+  model: 'gnm',
+  fleetsafe: false,
+  step: 0,
+  robotPose: { x: 0, y: 0, yaw: 0 },
+  goalXY: { x: 2.0, y: 0.0 },
+  poseTrail: [],
+  rawCmd: { vx: 0, vy: 0, wz: 0 },
+  safeCmd: { vx: 0, vy: 0, wz: 0 },
+  action: { model: '—', dist: '—', reached: false, wp0: [0,0], latency: 0 },
+  safety: { enabled: false, interv: 0, estop: 0, minDist: Infinity, rate: 0 },
+  episode: { success: false, collision: false, path: 0, nearv: 0, steps: 0 },
+  logs: [],
+  running: false,
+};
+
+// ── Canvas setup ─────────────────────────────────────────────────────────────
+const poseCanvas = document.getElementById('pose-canvas');
+const poseCtx    = poseCanvas.getContext('2d');
+
+function resizeCanvas() {
+  const panel = document.getElementById('canvas-panel');
+  const rowH  = 200;
+  poseCanvas.width  = panel.clientWidth;
+  poseCanvas.height = panel.clientHeight - rowH;
+}
+window.addEventListener('resize', () => { resizeCanvas(); drawPose(); });
+resizeCanvas();
+
+// ── Model / safety toggles ────────────────────────────────────────────────────
+const modelSel = document.getElementById('model-sel');
+const safeBtn  = document.getElementById('safety-toggle');
+const modelBadge  = document.getElementById('model-badge');
+const safetyBadge = document.getElementById('safety-badge');
+
+modelSel.addEventListener('change', () => {
+  state.model = modelSel.value;
+  modelBadge.textContent = state.model.toUpperCase();
+  modelBadge.className = `badge badge-${state.model}`;
+  checkGates();
+});
+
+safeBtn.addEventListener('click', () => {
+  state.fleetsafe = !state.fleetsafe;
+  safeBtn.textContent  = state.fleetsafe ? 'FleetSafe ON' : 'FleetSafe OFF';
+  safeBtn.className    = state.fleetsafe ? 'toggle-safe active' : 'toggle-safe';
+  safetyBadge.textContent = state.fleetsafe ? 'FleetSafe' : 'Baseline';
+  safetyBadge.className   = state.fleetsafe ? 'badge badge-safe' : 'badge badge-base';
+  document.getElementById('fs-enabled').textContent = state.fleetsafe ? 'YES' : 'NO';
+});
+
+// ── Gate validation via API ───────────────────────────────────────────────────
+async function checkGates() {
+  try {
+    const resp = await fetch('/api/visualnav/gates');
+    if (!resp.ok) return;
+    const data = await resp.json();
+    data.gates.forEach(g => {
+      const el = document.getElementById(`gate-${g.gate}`);
+      if (el) {
+        el.textContent = g.passed ? '✓' : '✗';
+        el.className   = `metric-val ${g.passed ? 'good' : 'danger'}`;
+        el.title       = g.message || '';
+      }
+    });
+  } catch (e) {
+    // API not yet running — silent
+  }
+}
+
+document.getElementById('validate-btn').addEventListener('click', checkGates);
+
+// ── Run smoke test ────────────────────────────────────────────────────────────
+document.getElementById('run-btn').addEventListener('click', async () => {
+  if (state.running) return;
+  state.running = true;
+  const status = document.getElementById('run-status');
+  status.textContent = 'running...';
+  status.className   = 'running';
+  resetEpisodeDisplay();
+
+  try {
+    const resp = await fetch('/api/visualnav/run-smoke', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: state.model, fleetsafe: state.fleetsafe }),
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      showRunResult(data);
+      status.textContent = 'done';
+      status.className   = '';
+    } else {
+      status.textContent = `error ${resp.status}`;
+      status.className   = 'failed';
+    }
+  } catch (e) {
+    status.textContent = 'error (check server)';
+    status.className   = 'failed';
+  }
+  state.running = false;
+});
+
+// ── Export report ─────────────────────────────────────────────────────────────
+document.getElementById('report-btn').addEventListener('click', async () => {
+  try {
+    const resp = await fetch('/api/visualnav/export-report', { method: 'POST' });
+    const data = await resp.json();
+    alert(data.message || 'Report exported.');
+  } catch (e) {
+    alert('Export failed — check server.');
+  }
+});
+
+// ── WebSocket live step updates ───────────────────────────────────────────────
+let ws = null;
+
+function connectWS() {
+  ws = new WebSocket('ws://' + location.host + '/ws/visualnav');
+  ws.onmessage = (evt) => {
+    try {
+      const d = JSON.parse(evt.data);
+      updateFromStep(d);
+    } catch (e) {}
+  };
+  ws.onclose = () => setTimeout(connectWS, 2000);
+}
+connectWS();
+
+function updateFromStep(d) {
+  // Robot pose
+  if (d.pose) {
+    state.robotPose = d.pose;
+    state.poseTrail.push({ x: d.pose.x, y: d.pose.y });
+    if (state.poseTrail.length > 500) state.poseTrail.shift();
+  }
+  if (d.goal_xy) state.goalXY = d.goal_xy;
+
+  // Commands
+  if (d.raw_cmd)  updateCmd(d.raw_cmd,  'raw');
+  if (d.safe_cmd) updateCmd(d.safe_cmd, 'safe');
+
+  // Action
+  if (d.action) {
+    state.action = d.action;
+    document.getElementById('action-model').textContent = d.action.model || '—';
+    document.getElementById('action-dist').textContent  = (d.action.goal_distance||'—').toFixed?.(2) || '—';
+    document.getElementById('action-reached').textContent = d.action.goal_reached ? 'YES' : 'no';
+    document.getElementById('action-reached').className   = `metric-val ${d.action.goal_reached ? 'good' : ''}`;
+    if (d.action.waypoints && d.action.waypoints.length > 0) {
+      const wp = d.action.waypoints[0];
+      document.getElementById('action-wp0').textContent = `(${wp[0].toFixed(3)}, ${wp[1].toFixed(3)})`;
+    }
+    document.getElementById('action-lat').textContent = `${(d.action.inference_ms||0).toFixed(1)} ms`;
+  }
+
+  // Safety
+  if (d.safety) {
+    state.safety = d.safety;
+    document.getElementById('fs-interv').textContent = d.safety.intervention_count || 0;
+    document.getElementById('fs-estop').textContent  = d.safety.estop_count || 0;
+    const md = d.safety.min_dist_m;
+    const mdEl = document.getElementById('fs-dist');
+    mdEl.textContent = md === null || md === undefined || md > 100 ? 'inf' : md.toFixed(3);
+    mdEl.className   = `metric-val ${md < 0.30 ? 'danger' : md < 0.45 ? 'warn' : 'good'}`;
+    document.getElementById('fs-rate').textContent = `${((d.safety.intervention_rate||0)*100).toFixed(1)}%`;
+
+    if (d.safety.intervened) {
+      addLog({ intervened: d.safety.estop, estop: d.safety.estop, reason: d.safety.reason || 'CBF', step: d.step || 0 });
+    }
+  }
+
+  // Episode
+  if (d.episode) {
+    document.getElementById('ep-success').textContent = d.episode.success ? 'YES' : 'no';
+    document.getElementById('ep-success').className   = `metric-val ${d.episode.success ? 'good' : ''}`;
+    document.getElementById('ep-collision').textContent = d.episode.collision ? 'YES' : 'no';
+    document.getElementById('ep-collision').className   = `metric-val ${d.episode.collision ? 'danger' : ''}`;
+    document.getElementById('ep-path').textContent  = (d.episode.path_length_m||0).toFixed(2);
+    document.getElementById('ep-nearv').textContent = d.episode.near_violation_count || 0;
+    document.getElementById('ep-steps').textContent = d.episode.steps || 0;
+  }
+
+  // Observation images (base64 PNG)
+  if (d.obs_img) drawBase64(document.getElementById('obs-canvas'), d.obs_img);
+  if (d.goal_img) drawBase64(document.getElementById('goal-canvas'), d.goal_img);
+
+  drawPose();
+}
+
+function updateCmd(cmd, type) {
+  const vmax = 0.5;
+  ['vx','vy','wz'].forEach(k => {
+    const lim = k === 'wz' ? 1.0 : vmax;
+    const pct = ((cmd[k] + lim) / (2*lim)) * 100;
+    document.getElementById(`${type}-${k}`).textContent = (cmd[k]||0).toFixed(3);
+    const bar = document.getElementById(`bar-${type}-${k}`);
+    if (bar) bar.style.width = Math.max(0, Math.min(100, pct)) + '%';
+  });
+}
+
+function drawBase64(canvas, b64) {
+  const img = new Image();
+  img.onload = () => {
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  };
+  img.src = 'data:image/png;base64,' + b64;
+}
+
+// ── Pose trail renderer ───────────────────────────────────────────────────────
+function drawPose() {
+  const W = poseCanvas.width, H = poseCanvas.height;
+  const ctx = poseCtx;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#1a1a2e';
+  ctx.fillRect(0, 0, W, H);
+
+  const scale = 60;   // pixels per metre
+  const cx = W / 2, cy = H / 2;
+
+  function toScreen(x, y) {
+    return [cx + x * scale, cy - y * scale];
+  }
+
+  // Grid
+  ctx.strokeStyle = '#0f3460';
+  ctx.lineWidth = 0.5;
+  for (let g = -10; g <= 10; g++) {
+    const [gx1, gy1] = toScreen(g, -10);
+    const [gx2, gy2] = toScreen(g, 10);
+    ctx.beginPath(); ctx.moveTo(gx1, gy1); ctx.lineTo(gx2, gy2); ctx.stroke();
+    const [gxx1, gyy1] = toScreen(-10, g);
+    const [gxx2, gyy2] = toScreen(10, g);
+    ctx.beginPath(); ctx.moveTo(gxx1, gyy1); ctx.lineTo(gxx2, gyy2); ctx.stroke();
+  }
+
+  // Goal marker
+  const [gx, gy] = toScreen(state.goalXY.x, state.goalXY.y);
+  ctx.beginPath();
+  ctx.arc(gx, gy, 8, 0, 2 * Math.PI);
+  ctx.strokeStyle = '#06d6a0';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.strokeStyle = '#06d6a0';
+  ctx.beginPath();
+  ctx.moveTo(gx - 10, gy); ctx.lineTo(gx + 10, gy);
+  ctx.moveTo(gx, gy - 10); ctx.lineTo(gx, gy + 10);
+  ctx.stroke();
+
+  // Pose trail
+  if (state.poseTrail.length > 1) {
+    ctx.beginPath();
+    const [tx0, ty0] = toScreen(state.poseTrail[0].x, state.poseTrail[0].y);
+    ctx.moveTo(tx0, ty0);
+    for (let i = 1; i < state.poseTrail.length; i++) {
+      const [tx, ty] = toScreen(state.poseTrail[i].x, state.poseTrail[i].y);
+      ctx.lineTo(tx, ty);
+    }
+    ctx.strokeStyle = state.fleetsafe ? '#06d6a0' : '#00d4ff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+
+  // Robot body
+  const [rx, ry] = toScreen(state.robotPose.x, state.robotPose.y);
+  ctx.save();
+  ctx.translate(rx, ry);
+  ctx.rotate(-state.robotPose.yaw);
+  ctx.fillStyle = '#00d4ff';
+  ctx.fillRect(-8, -5, 16, 10);
+  ctx.fillStyle = '#1a1a2e';
+  ctx.fillRect(5, -2, 5, 4);  // front arrow
+  ctx.restore();
+
+  // Labels
+  ctx.fillStyle = '#555';
+  ctx.font = '10px monospace';
+  ctx.fillText(`x=${state.robotPose.x.toFixed(2)}  y=${state.robotPose.y.toFixed(2)}`, 8, H - 8);
+  ctx.fillText(`${state.model.toUpperCase()}  ${state.fleetsafe ? 'FleetSafe' : 'Baseline'}  step=${state.episode.steps}`, 8, 16);
+}
+
+// ── Log entries ───────────────────────────────────────────────────────────────
+function addLog(entry) {
+  state.logs.unshift(entry);
+  if (state.logs.length > 20) state.logs.pop();
+  renderLog();
+}
+
+function renderLog() {
+  const el = document.getElementById('intervention-log');
+  el.innerHTML = state.logs.map(l => {
+    const cls = l.estop ? 'estop' : l.intervened ? 'intervened' : '';
+    return `<div class="log-entry ${cls}">step ${l.step}: ${l.reason || 'CBF'}</div>`;
+  }).join('');
+}
+
+// ── Show run results ──────────────────────────────────────────────────────────
+function showRunResult(data) {
+  const tbody = document.getElementById('results-body');
+  const agg = data.aggregate || {};
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${(data.model||'?').toUpperCase()}</td>
+    <td>${data.fleetsafe ? '✓' : '—'}</td>
+    <td>${((agg.success_rate||0)*100).toFixed(1)}</td>
+    <td>${((agg.collision_rate||0)*100).toFixed(1)}</td>
+    <td>${(agg.mean_intervention_count||0).toFixed(1)}</td>
+    <td>${(agg.mean_latency_ms||0).toFixed(1)}</td>
+  `;
+  if (tbody.children.length === 1 && tbody.children[0].querySelector('td[colspan]')) {
+    tbody.innerHTML = '';
+  }
+  tbody.prepend(row);
+}
+
+function resetEpisodeDisplay() {
+  state.poseTrail = [];
+  state.robotPose = { x: 0, y: 0, yaw: 0 };
+  state.logs = [];
+  renderLog();
+  drawPose();
+  document.getElementById('ep-steps').textContent = 0;
+}
+
+// ── Periodically poll API for live status ─────────────────────────────────────
+async function pollStatus() {
+  try {
+    const resp = await fetch('/api/visualnav/status');
+    if (resp.ok) {
+      const d = await resp.json();
+      updateFromStep(d);
+    }
+  } catch (e) {}
+}
+setInterval(pollStatus, 500);   // 2 Hz polling
+
+// ── Initial state ─────────────────────────────────────────────────────────────
+checkGates();
+drawPose();
+</script>
+</body>
+</html>

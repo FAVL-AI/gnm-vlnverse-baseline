@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: command-center/Dockerfile.backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ..:/workspace:ro
+      - ../benchmarks:/workspace/benchmarks:rw
+    environment:
+      - FLEETSAFE_REPO_ROOT=/workspace
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    restart: unless-stopped

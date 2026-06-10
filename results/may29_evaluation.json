@@ -1,0 +1,87 @@
+{
+  "timestamp": 1779499586.14385,
+  "config": {
+    "models": [
+      "gnm",
+      "vint"
+    ],
+    "scenes": [
+      "hospital_corridor"
+    ],
+    "episodes": 5,
+    "backend": "mock",
+    "d_safe": 0.5,
+    "estop": 0.3,
+    "v_max": 0.3
+  },
+  "results": [
+    {
+      "model": "gnm",
+      "fleetsafe": false,
+      "n_episodes": 5,
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "near_miss_rate": 0.0,
+      "mean_path_m": 2.25,
+      "mean_steps": 30.0,
+      "mean_time_s": 0.17,
+      "mean_min_dist_m": 1.666,
+      "mean_interventions": 0.0,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 5.33,
+      "mean_cbf_ms": 0.0,
+      "mean_delta_vx": 0.0
+    },
+    {
+      "model": "gnm",
+      "fleetsafe": true,
+      "n_episodes": 5,
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "near_miss_rate": 0.0,
+      "mean_path_m": 2.075,
+      "mean_steps": 30.0,
+      "mean_time_s": 0.17,
+      "mean_min_dist_m": 1.808,
+      "mean_interventions": 0.0,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 5.3,
+      "mean_cbf_ms": 0.04,
+      "mean_delta_vx": 0.0233
+    },
+    {
+      "model": "vint",
+      "fleetsafe": false,
+      "n_episodes": 5,
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "near_miss_rate": 0.0,
+      "mean_path_m": 2.25,
+      "mean_steps": 30.0,
+      "mean_time_s": 1.02,
+      "mean_min_dist_m": 1.577,
+      "mean_interventions": 0.0,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 33.76,
+      "mean_cbf_ms": 0.0,
+      "mean_delta_vx": 0.0
+    },
+    {
+      "model": "vint",
+      "fleetsafe": true,
+      "n_episodes": 5,
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "near_miss_rate": 0.0,
+      "mean_path_m": 2.075,
+      "mean_steps": 30.0,
+      "mean_time_s": 0.84,
+      "mean_min_dist_m": 1.745,
+      "mean_interventions": 0.0,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 27.72,
+      "mean_cbf_ms": 0.05,
+      "mean_delta_vx": 0.0233
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "source": "results/may29_evaluation_full.json",
+  "generated": "2026-05-23T05:00:20.113707+00:00",
+  "description": "Authoritative benchmark results from real GNM/ViNT checkpoints",
+  "conditions": [
+    {
+      "condition": "GNM",
+      "model": "GNM",
+      "fleetsafe": false,
+      "n": 20,
+      "success": 0.0,
+      "collision": 0.35,
+      "spl": null,
+      "min_dist": 0.573,
+      "interv": 0.0,
+      "infer_ms": 10.38,
+      "cbf_ms": 0.0,
+      "note": "n=20 eps, 2 scenes, real checkpoint",
+      "is_ours": true
+    },
+    {
+      "condition": "GNM + FleetSafe",
+      "model": "GNM",
+      "fleetsafe": true,
+      "n": 20,
+      "success": 0.0,
+      "collision": 0.0,
+      "spl": null,
+      "min_dist": 0.809,
+      "interv": 0.4,
+      "infer_ms": 10.48,
+      "cbf_ms": 0.66,
+      "note": "n=20 eps, 2 scenes, real checkpoint",
+      "is_ours": true
+    },
+    {
+      "condition": "VINT",
+      "model": "VINT",
+      "fleetsafe": false,
+      "n": 20,
+      "success": 0.0,
+      "collision": 0.5,
+      "spl": null,
+      "min_dist": 0.164,
+      "interv": 0.0,
+      "infer_ms": 31.14,
+      "cbf_ms": 0.0,
+      "note": "n=20 eps, 2 scenes, real checkpoint",
+      "is_ours": true
+    },
+    {
+      "condition": "VINT + FleetSafe",
+      "model": "VINT",
+      "fleetsafe": true,
+      "n": 20,
+      "success": 0.0,
+      "collision": 0.0,
+      "spl": null,
+      "min_dist": 0.479,
+      "interv": 0.624,
+      "infer_ms": 28.38,
+      "cbf_ms": 0.81,
+      "note": "n=20 eps, 2 scenes, real checkpoint",
+      "is_ours": true
+    }
+  ],
+  "literature": [
+    {
+      "condition": "GNM (Shah 2023)",
+      "success": 0.45,
+      "collision": null,
+      "spl": null,
+      "min_dist": null,
+      "interv": null,
+      "infer_ms": null,
+      "cbf_ms": null,
+      "note": "Indoor corridors, zero-shot, ICRA 2023",
+      "is_ours": false
+    },
+    {
+      "condition": "ViNT (Shah 2023)",
+      "success": 0.52,
+      "collision": null,
+      "spl": null,
+      "min_dist": null,
+      "interv": null,
+      "infer_ms": null,
+      "cbf_ms": null,
+      "note": "Novel environments, zero-shot, CoRL 2023",
+      "is_ours": false
+    }
+  ]
+}

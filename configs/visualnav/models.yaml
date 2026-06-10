@@ -1,0 +1,95 @@
+# configs/visualnav/models.yaml
+# ─────────────────────────────────────────────────────────────────────────────
+# VisualNav-Transformer model configurations for the FleetSafe benchmark.
+#
+# Checkpoint paths are RELATIVE TO THE REPO ROOT.
+# Run  bash scripts/visualnav/setup_visualnav.sh --download-weights  to populate.
+#
+# Upstream source: https://github.com/robodhruv/visualnav-transformer
+# ─────────────────────────────────────────────────────────────────────────────
+
+models:
+
+  gnm:
+    # General Navigation Model — mobile robot visual navigation
+    # Paper: "GNM: A General Navigation Model to Drive Any Robot" (Shah et al., 2023)
+    name: GNM
+    adapter_class: fleet_safe_vla.integrations.visualnav_transformer.gnm_adapter.GNMAdapter
+    checkpoint: third_party/visualnav-transformer/model_weights/gnm/gnm.pth
+    # Google Drive ID: 1Jyv3oIX05KmZ7T3ym7sPKHoFJ_r3Ia0K  (from upstream README)
+    image_size: [85, 64]        # [width, height] in pixels
+    context_size: 5             # past frames to stack
+    action_horizon: 5           # predicted waypoints
+    normalize: true
+    learn_angle: true
+    # Velocity limits for action_to_cmd_vel
+    v_max_ms: 0.3
+    vy_max_ms: 0.3              # holonomic (M3Pro); set 0.0 for X3
+    w_max_rads: 0.7
+    control_hz: 4.0
+    # Action statistics (from upstream gnm training on RECON dataset)
+    action_stats:
+      mean: [0.0, 0.0]
+      std: [1.0, 1.0]
+
+  vint:
+    # ViNT — Vision-based Navigation with Topological Graph
+    # Paper: "ViNT: A Foundation Model for Visual Robot Navigation" (Shah et al., 2023)
+    name: ViNT
+    adapter_class: fleet_safe_vla.integrations.visualnav_transformer.vint_adapter.ViNTAdapter
+    checkpoint: third_party/visualnav-transformer/model_weights/vint/vint.pth
+    # Google Drive ID: 1WwBBnAe3jSMhVjHf8HZoXBO7Nz3pPOm2  (from upstream README)
+    image_size: [85, 64]        # published checkpoint uses same size as GNM (vint.yaml)
+    context_size: 5
+    action_horizon: 5
+    normalize: true
+    learn_angle: true
+    v_max_ms: 0.3
+    vy_max_ms: 0.3
+    w_max_rads: 0.7
+    control_hz: 4.0
+    action_stats:
+      mean: [0.0, 0.0]
+      std: [1.0, 1.0]
+
+  nomad:
+    # NoMaD — No Maps, Diffusion-based Navigation
+    # Paper: "NoMaD: Goal Masking Diffusion Policies for Navigation and Exploration"
+    #        (Sridhar et al., 2024)
+    name: NoMaD
+    adapter_class: fleet_safe_vla.integrations.visualnav_transformer.nomad_adapter.NoMaDAdapter
+    checkpoint: third_party/visualnav-transformer/model_weights/nomad/nomad.pth
+    # Google Drive ID: 1SzK_J5KZgjGFhJNDe7xeWU6GWixhBuEo  (from upstream README)
+    image_size: [96, 96]
+    context_size: 3             # nomad.yaml: context_size: 3
+    action_horizon: 8           # NoMaD predicts longer horizons
+    num_diffusion_steps: 10     # fast inference; training uses 100
+    normalize: true
+    v_max_ms: 0.3
+    vy_max_ms: 0.3
+    w_max_rads: 0.7
+    control_hz: 4.0
+    # NoMaD does not produce goal_distance; proxy via final waypoint magnitude
+    goal_distance_proxy: last_waypoint_norm
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Checkpoint download instructions
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# The upstream repo README lists Google Drive links for each model checkpoint.
+# The setup script attempts automated download if gdown is installed:
+#
+#   bash scripts/visualnav/setup_visualnav.sh --download-weights
+#
+# Manual download fallback:
+#   1. Visit each Google Drive ID link above.
+#   2. Download the .pth file.
+#   3. Place at the path listed under "checkpoint:" above.
+#
+# Checkpoint sizes (approximate):
+#   gnm.pth   : ~250 MB
+#   vint.pth  : ~100 MB
+#   nomad.pth : ~400 MB
+#
+# Total: ~750 MB  (stored outside the git repo)
+# ─────────────────────────────────────────────────────────────────────────────

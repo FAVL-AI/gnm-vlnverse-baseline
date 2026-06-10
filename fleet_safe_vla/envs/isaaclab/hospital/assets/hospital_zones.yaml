@@ -1,0 +1,32 @@
+# hospital_zones.yaml — Zone polygon definitions for the FleetSafe hospital world.
+#
+# Coordinate system: metres, origin at arena centre.
+# Matches the procedural scene built by HospitalWorldLoader.build_procedural_scene().
+# Also compatible with a real hospital USD when authored to the same coordinate frame.
+#
+# Load with:
+#   loader = HospitalWorldLoader()
+#   zone_map = loader.load_zones_from_yaml("hospital_zones.yaml")
+
+default_profile: hospital
+
+zones:
+  - name: icu
+    profile: icu
+    vertices: [[-10, 2], [-2, 2], [-2, 8], [-10, 8]]
+
+  - name: nurse_station
+    profile: hospital
+    vertices: [[-2, 2], [2, 2], [2, 8], [-2, 8]]
+
+  - name: pharmacy
+    profile: pharmacy
+    vertices: [[2, 2], [10, 2], [10, 8], [2, 8]]
+
+  - name: emergency_corridor
+    profile: emergency_corridor
+    vertices: [[-10, -1.5], [10, -1.5], [10, 2], [-10, 2]]
+
+  - name: waiting_room
+    profile: waiting_room
+    vertices: [[-10, -8], [10, -8], [10, -1.5], [-10, -1.5]]

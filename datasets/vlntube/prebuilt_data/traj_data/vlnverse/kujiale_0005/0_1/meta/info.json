@@ -1,0 +1,8 @@
+{
+  "fps": 10,
+  "video": true,
+  "encoding": {
+    "vcodec": "libx264"
+  },
+  "dataset": "your_dataset"
+}

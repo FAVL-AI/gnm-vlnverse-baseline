@@ -1,0 +1,25 @@
+{
+  "checks": {
+    "env_prim_exists": {
+      "ok": true,
+      "detail": "/World/Hospital"
+    },
+    "scale_0_01": {
+      "ok": false,
+      "detail": "None"
+    },
+    "meshes_present": {
+      "ok": true,
+      "detail": "3 meshes"
+    },
+    "collision_applied": {
+      "ok": false,
+      "detail": "0/3 have CollisionAPI"
+    },
+    "robot_spawned": {
+      "ok": false,
+      "detail": ""
+    }
+  },
+  "passed": false
+}

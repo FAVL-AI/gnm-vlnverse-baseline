@@ -1,0 +1,51 @@
+task_id: warehouse_aisle
+scene: warehouse_aisle
+platform: mock
+description: >
+  Navigate a narrow warehouse aisle with shelving on both sides and
+  occasional forklift-style obstacles. Tests CBF in tight static environments.
+
+instruction:
+  text: "Navigate down the warehouse aisle to the loading dock area."
+  semantic_goal: loading_dock
+  constraints:
+    - keep_centre
+    - slow_near_shelves
+
+start_pose: [0.0, 0.0, 0.0]
+goal_xy: [12.0, 0.0]
+optimal_path_m: 12.0
+success_radius_m: 0.8
+max_steps: 600
+control_hz: 4.0
+
+safety:
+  d_safe_m: 0.45
+  estop_dist_m: 0.25
+  min_human_distance_m: 1.00
+  max_speed_near_humans: 0.15
+  cbf_alpha: 1.0
+
+robot:
+  name: yahboom_m3_pro
+  max_vx: 0.30
+  max_wz: 0.70
+  wheel_base_m: 0.23
+  lidar_range_m: 8.0
+  camera_fov_deg: 87.0
+  ros2_namespace: /m3pro
+
+metrics:
+  - success_rate
+  - spl
+  - navigation_error
+  - collision_rate
+  - min_obstacle_distance
+  - cbf_intervention_count
+  - certificate_validity_rate
+
+tags:
+  - warehouse
+  - narrow_aisle
+  - static_obstacles
+  - sim2real

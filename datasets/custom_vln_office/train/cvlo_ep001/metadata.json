@@ -1,0 +1,25 @@
+{
+  "episode_id": "cvlo_ep001",
+  "scene_id": "custom_vln_office",
+  "split": "train",
+  "instruction": "Navigate from the entrance to the first desk area in the open office.",
+  "start_pos": [
+    2.0,
+    5.0
+  ],
+  "start_yaw": -0.7854,
+  "goal_pos": [
+    5.5,
+    1.5
+  ],
+  "goal_yaw": -0.9828,
+  "n_steps": 31,
+  "path_length_m": 5.0198,
+  "goal_radius_m": 2.0,
+  "source": "collect_custom_vln_office_data.py --dry-run",
+  "isaac_assets_used": false,
+  "vlnverse_assets_used": false,
+  "gnm_input": "current RGB frame + goal RGB frame",
+  "gnm_output": "local waypoint (delta_x, delta_y) in robot frame",
+  "label_source": "derived from consecutive trajectory poses (traj_data.pkl)"
+}

@@ -1,0 +1,17 @@
+{
+  "source": "VLNVerse",
+  "note": "This is a sample stub. Download real data from HuggingFace or VLNVerse project.",
+  "sample_instructions": [
+    "Go down the corridor and turn left at the intersection.",
+    "Navigate to the nurse station at the end of the hallway.",
+    "Proceed through the double doors and stop near the reception desk.",
+    "Turn right past the supply closet and wait by the elevator.",
+    "Follow the blue line on the floor to the patient room."
+  ],
+  "hf_datasets": [
+    {"id": "R2R",        "hf_repo": "waymo/r2r",                          "size_gb": 15},
+    {"id": "RxR",        "hf_repo": "google-research-datasets/rxr",       "size_gb": 40},
+    {"id": "REVERIE",    "hf_repo": "VLN-BERT/REVERIE",                   "size_gb": 8},
+    {"id": "GNM-dataset","hf_repo": "robodhruv/go-navigate-move",         "size_gb": 120}
+  ]
+}

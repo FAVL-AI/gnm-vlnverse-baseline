@@ -1,0 +1,25 @@
+task,command,expected_outcome
+Set ROS domain,"source /opt/ros/humble/setup.bash
+export ROS_DOMAIN_ID=30
+export ROS_LOCALHOST_ONLY=0",All ROS terminals use the same domain and can discover each other.
+Start robot stack on Jetson,"source /opt/ros/humble/setup.bash
+source ~/yahboomcar_ws/install/setup.bash
+source ~/mircoROS_agent/install/setup.bash 2>/dev/null || true
+export ROS_DOMAIN_ID=30
+export ROS_LOCALHOST_ONLY=0",/YB_Node and robot sensor topics appear.
+Start controller on RTX desktop,"cd ~/robotics/FleetSafe-VisualNav-Benchmark
+source /opt/ros/humble/setup.bash
+export ROS_DOMAIN_ID=30
+export ROS_LOCALHOST_ONLY=0
+make vln-desktop-radius RADIUS=0.20",FleetSafe-VLN controller runs in dry-run mode.
+Check stack,SAFETY_RADIUS=0.20 make vln-check-stack,"Reports ROS, robot topics, FleetSafe topics, and LiDAR clearance."
+Inspect LiDAR,SAFETY_RADIUS=0.20 make vln-lidar-inspect,Prints raw vs valid vs fifth-percentile clearance and CBF decision.
+Send text instruction,"make vln-send TEXT=""move forward slowly and keep at least half a meter from obstacles""",Publishes a text instruction to /fleetsafe/instruction_text.
+Send voice transcript,"ros2 topic pub --once /fleetsafe/instruction_voice std_msgs/msg/String ""{data: 'move forward slowly while avoiding nearby obstacles'}""",Publishes a spoken-command transcript to /fleetsafe/instruction_voice.
+Watch parsed instruction,make vln-watch-parsed,Echoes GroundedGoal JSON.
+Watch nominal command,make vln-watch-nominal,Echoes nominal velocity command before CBF filtering.
+Watch certificate,make vln-watch-cert,"Echoes the certificate JSON showing h_min, min_dist_m, qp_status, and safety decision."
+Validate latest certificate,"LATEST_CERT=""$(ls -td results/certificates/* | head -1)""
+tail -n 1 ""$LATEST_CERT""/vln_certificates_m3pro.jsonl | python3 -m json.tool",Pretty-prints the latest safety certificate.
+Package evidence,"mkdir -p results/demo_evidence_voice_vln_real_robot
+cp ""$LATEST_CERT""/vln_certificates_m3pro.jsonl results/demo_evidence_voice_vln_real_robot/",Creates a compact evidence folder for reproducibility.

@@ -1,0 +1,52 @@
+# Yahboom RosMaster X3 — Physics / Actuator System Identification Config
+# Used by YahboomPhysicsEnv and validation sweeps.
+# Update these after running validate_motion.py to match observed real-robot dynamics.
+
+robot:
+  base_mass_kg: 2.1
+  wheel_mass_kg: 0.12
+  wheel_radius_m: 0.048
+  wheelbase_m: 0.245
+
+contact:
+  wheel_friction: 0.8        # sliding friction coefficient (measured)
+  floor_friction: 0.8        # floor-side friction
+  rolling_friction: 0.005    # MuJoCo second friction param
+  caster_friction: 0.01
+
+actuator:
+  # PID velocity controller parameters (runs at physics substep rate)
+  # Stability limit: KP < 2*I/dt = 2*1.38e-4/0.004 = 0.069 Nm·s/rad
+  pid_kp: 0.07               # proportional gain  (Nm / rad·s⁻¹)
+  pid_ki: 0.05               # integral gain       (Nm / rad)
+  pid_kd: 0.00               # derivative gain (0: avoid derivative kick)
+  torque_limit_nm: 3.0       # motor saturation
+
+simulation:
+  timestep_s: 0.004          # physics timestep
+  decimation: 25             # physics steps per control step (→ 10 Hz control)
+  integrator: implicitfast   # MuJoCo integrator
+  solver: Newton
+  iterations: 50
+
+# Domain randomisation ranges (used for sim2real transfer training)
+domain_rand:
+  friction:
+    low: 0.4
+    high: 1.5
+  mass:
+    low: 1.8         # kg  (base ± 0.3)
+    high: 2.8
+  pid_kp:
+    low: 0.02
+    high: 0.065   # < stability limit 0.069
+  pid_ki:
+    low: 0.02
+    high: 0.10
+
+# Acceptance thresholds for "physically believable" motion
+acceptance:
+  vx_ss_error_max: 0.05      # m/s  steady-state tracking error
+  mean_slip_max: 0.15        # slip ratio
+  yaw_drift_per_m_max: 0.05  # rad/m  for straight-line driving
+  time_to_90pct_max_s: 0.5   # seconds to reach 90 % of commanded speed

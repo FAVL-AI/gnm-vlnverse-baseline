@@ -1,0 +1,326 @@
+<?xml version="1.0"?>
+<!--
+  yahboom_m3pro.urdf.xacro — Yahboom RosMaster M3Pro (Gazebo Harmonic + real)
+
+  Args:
+    use_sim  [true|false]  — true: Gazebo diff-drive plugin, no real HW interface
+    robot_name [string]    — used as Gazebo model name (default: m3pro)
+
+  Geometry: product-spec values from robot_contract_m3pro.yaml
+  Inertials: box/cylinder approximations — replace with measured values for RL training
+-->
+<robot name="yahboom_m3pro" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:arg name="use_sim"    default="false"/>
+  <xacro:arg name="robot_name" default="m3pro"/>
+
+  <xacro:property name="sim" value="$(arg use_sim)"/>
+
+  <!-- ── Materials ─────────────────────────────────────────────────────────── -->
+  <material name="dark_grey"><color rgba="0.15 0.15 0.15 1.0"/></material>
+  <material name="tyre_black"><color rgba="0.05 0.05 0.05 1.0"/></material>
+  <material name="lidar_blue"><color rgba="0.0 0.3 0.8 1.0"/></material>
+  <material name="camera_black"><color rgba="0.05 0.05 0.05 1.0"/></material>
+  <material name="white"><color rgba="0.9 0.9 0.9 1.0"/></material>
+
+  <!-- ── Ground projection ─────────────────────────────────────────────────── -->
+  <link name="base_footprint"/>
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child  link="base_link"/>
+    <origin xyz="0 0 0.048" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ── Chassis ───────────────────────────────────────────────────────────── -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.040" rpy="0 0 0"/>
+      <geometry><box size="0.290 0.235 0.080"/></geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.040" rpy="0 0 0"/>
+      <geometry><box size="0.290 0.235 0.080"/></geometry>
+    </collision>
+    <inertial>
+      <!-- body_mass = 2.400 − 4×0.150 = 1.800 kg; box inertia -->
+      <origin xyz="0 0 0.040" rpy="0 0 0"/>
+      <mass value="1.800"/>
+      <inertia ixx="0.009" ixy="0.0" ixz="0.0"
+               iyy="0.014" iyz="0.0"
+               izz="0.021"/>
+    </inertial>
+  </link>
+
+  <!-- ── Wheel macro ───────────────────────────────────────────────────────── -->
+  <xacro:macro name="mecanum_wheel" params="name x y">
+    <link name="${name}_wheel">
+      <visual>
+        <origin xyz="0 0 0" rpy="-1.5708 0 0"/>
+        <geometry><cylinder length="0.025" radius="0.048"/></geometry>
+        <material name="tyre_black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="-1.5708 0 0"/>
+        <geometry><cylinder length="0.025" radius="0.048"/></geometry>
+      </collision>
+      <inertial>
+        <mass value="0.150"/>
+        <!-- cylinder spin axis=Y: iyy=0.5mr²; ixx=izz=m(3r²+h²)/12 -->
+        <inertia ixx="0.000094" ixy="0.0" ixz="0.0"
+                 iyy="0.000173" iyz="0.0"
+                 izz="0.000094"/>
+      </inertial>
+    </link>
+    <joint name="${name}_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child  link="${name}_wheel"/>
+      <origin xyz="${x} ${y} 0" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <dynamics damping="0.1" friction="0.05"/>
+    </joint>
+    <gazebo reference="${name}_wheel">
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+      <kp>1e6</kp>
+      <kd>100.0</kd>
+      <material>Gazebo/DarkGrey</material>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:mecanum_wheel name="fl" x=" 0.0775" y=" 0.085"/>
+  <xacro:mecanum_wheel name="fr" x=" 0.0775" y="-0.085"/>
+  <xacro:mecanum_wheel name="rl" x="-0.0775" y=" 0.085"/>
+  <xacro:mecanum_wheel name="rr" x="-0.0775" y="-0.085"/>
+
+  <!-- ── LiDAR link ─────────────────────────────────────────────────────────── -->
+  <link name="lidar_link">
+    <visual>
+      <origin xyz="0 0 0.020" rpy="0 0 0"/>
+      <geometry><cylinder length="0.040" radius="0.038"/></geometry>
+      <material name="lidar_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.020" rpy="0 0 0"/>
+      <geometry><cylinder length="0.040" radius="0.038"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.170"/>
+      <inertia ixx="0.000120" ixy="0.0" ixz="0.0"
+               iyy="0.000120" iyz="0.0"
+               izz="0.000180"/>
+    </inertial>
+  </link>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="lidar_link"/>
+    <!-- 0.160 m from ground − 0.048 m wheel radius -->
+    <origin xyz="0.0 0.0 0.112" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ── Camera link ───────────────────────────────────────────────────────── -->
+  <link name="camera_link">
+    <visual>
+      <geometry><box size="0.025 0.090 0.025"/></geometry>
+      <material name="camera_black"/>
+    </visual>
+    <collision>
+      <geometry><box size="0.025 0.090 0.025"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.050"/>
+      <inertia ixx="0.0000100" ixy="0.0" ixz="0.0"
+               iyy="0.0000100" iyz="0.0"
+               izz="0.0000100"/>
+    </inertial>
+  </link>
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="camera_link"/>
+    <origin xyz="0.100 0.0 0.082" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ROS optical frame -->
+  <link name="camera_optical_link"/>
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child  link="camera_optical_link"/>
+    <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>
+  </joint>
+
+  <!-- ── IMU ───────────────────────────────────────────────────────────────── -->
+  <link name="imu_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0.0" ixz="0.0"
+               iyy="0.0000001" iyz="0.0"
+               izz="0.0000001"/>
+    </inertial>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="imu_link"/>
+    <origin xyz="0.0 0.0 0.040" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ── Real hardware interface (only when not in sim) ────────────────────── -->
+  <xacro:unless value="${sim}">
+    <ros2_control name="yahboom_m3pro_hardware" type="system">
+      <hardware>
+        <plugin>yahboom_hardware/YahboomM3ProHardware</plugin>
+        <param name="serial_port">/dev/yahboom</param>
+        <param name="baud_rate">115200</param>
+        <param name="timeout_ms">100</param>
+      </hardware>
+      <joint name="fl_wheel_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="fr_wheel_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="rl_wheel_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="rr_wheel_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+    </ros2_control>
+  </xacro:unless>
+
+  <!-- ── Gazebo Harmonic plugins (sim only) ────────────────────────────────── -->
+  <xacro:if value="${sim}">
+
+    <!-- Differential drive (mecanum treated as skid-steer for demo) -->
+    <gazebo>
+      <plugin filename="gz-sim-diff-drive-system"
+              name="gz::sim::systems::DiffDrive">
+        <!-- left wheels -->
+        <left_joint>fl_wheel_joint</left_joint>
+        <left_joint>rl_wheel_joint</left_joint>
+        <!-- right wheels -->
+        <right_joint>fr_wheel_joint</right_joint>
+        <right_joint>rr_wheel_joint</right_joint>
+        <!-- M3Pro kinematics: track=0.170m, radius=0.048m -->
+        <wheel_separation>0.170</wheel_separation>
+        <wheel_radius>0.048</wheel_radius>
+        <max_linear_acceleration>1.0</max_linear_acceleration>
+        <max_angular_acceleration>2.0</max_angular_acceleration>
+        <max_velocity>0.5</max_velocity>
+        <topic>/cmd_vel</topic>
+        <odom_topic>/odom</odom_topic>
+        <tf_topic>/tf</tf_topic>
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_footprint</child_frame_id>
+        <odom_publish_frequency>30</odom_publish_frequency>
+      </plugin>
+    </gazebo>
+
+    <!-- Joint state publisher -->
+    <gazebo>
+      <plugin filename="gz-sim-joint-state-publisher-system"
+              name="gz::sim::systems::JointStatePublisher">
+        <topic>/joint_states</topic>
+        <joint_name>fl_wheel_joint</joint_name>
+        <joint_name>fr_wheel_joint</joint_name>
+        <joint_name>rl_wheel_joint</joint_name>
+        <joint_name>rr_wheel_joint</joint_name>
+      </plugin>
+    </gazebo>
+
+    <!-- RGB camera (GNM/ViNT/NoMaD input) -->
+    <gazebo reference="camera_link">
+      <sensor type="camera" name="rgb_camera">
+        <camera name="rgb_camera">
+          <horizontal_fov>1.3962634</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip><near>0.05</near><far>100</far></clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>false</visualize>
+        <topic>/camera/image_raw</topic>
+      </sensor>
+    </gazebo>
+
+    <!-- 2D LiDAR (RPLidar A1M8: 360°, 12m range) -->
+    <gazebo reference="lidar_link">
+      <sensor type="lidar" name="lidar">
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>360</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14159265</min_angle>
+              <max_angle>3.14159265</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.15</min>
+            <max>12.0</max>
+            <resolution>0.01</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </lidar>
+        <always_on>true</always_on>
+        <update_rate>10</update_rate>
+        <topic>/scan</topic>
+        <visualize>false</visualize>
+      </sensor>
+    </gazebo>
+
+    <!-- IMU -->
+    <gazebo reference="imu_link">
+      <sensor type="imu" name="imu_sensor">
+        <always_on>true</always_on>
+        <update_rate>100</update_rate>
+        <topic>/imu/data</topic>
+        <imu>
+          <angular_velocity>
+            <x><noise type="gaussian"><mean>0.0</mean><stddev>0.002</stddev></noise></x>
+            <y><noise type="gaussian"><mean>0.0</mean><stddev>0.002</stddev></noise></y>
+            <z><noise type="gaussian"><mean>0.0</mean><stddev>0.002</stddev></noise></z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></x>
+            <y><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></y>
+            <z><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></z>
+          </linear_acceleration>
+        </imu>
+      </sensor>
+    </gazebo>
+
+    <!-- Chassis material -->
+    <gazebo reference="base_link">
+      <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <gazebo reference="lidar_link">
+      <material>Gazebo/Blue</material>
+    </gazebo>
+    <gazebo reference="camera_link">
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+  </xacro:if>
+
+</robot>

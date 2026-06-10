@@ -1,0 +1,64 @@
+# GNM Ablation A3: EfficientNet encoder + baseline training config
+# ─────────────────────────────────────────────────────────────────────────────
+# Purpose: isolate whether EfficientNet encoder alone causes distance-head
+# collapse, independent of AMP/EMA/grad_accum/discriminative LR/hidden_dim.
+#
+# History:
+#   gnm_base      MobileNet  hidden=256  mse  aw=0.5  lr_scale=1.0  → works
+#   gnm_sota v1   EffNet     hidden=512  huber aw=0.6  lr_scale=0.1  → collapsed
+#   gnm_sota v2   EffNet     hidden=512  mse  aw=0.5  lr_scale=0.3  → collapsed
+#
+# A3 hypothesis: if dist head works here, collapse is caused by one of
+# {AMP, EMA, grad_accum, hidden_dim=512, discriminative LR}, not EffNet itself.
+# If dist head collapses here too, EffNet feature scale is the root cause.
+#
+# Exactly one change from gnm_base.yaml: encoder mobilenet → efficientnet
+# ─────────────────────────────────────────────────────────────────────────────
+
+model:
+  context_size: 5
+  goal_conditioned: true
+  action_dim: 2
+  hidden_dim: 256         # same as baseline (not 512)
+  encoder: efficientnet   # ← only change from gnm_base.yaml
+  out_dim: 512
+  pretrained: true
+
+data:
+  data_root: datasets/vlntube
+  image_size: [96, 96]
+  max_goal_dist: 20
+  action_std: [0.115528, 0.115528]
+  augment: true
+  num_workers: 4
+  pin_memory: true
+
+training:
+  epochs: 50
+  batch_size: 128
+  lr: 1e-4
+  weight_decay: 1e-4
+  warmup_frac: 0.05
+  max_grad_norm: 1.0
+  action_weight: 0.5
+  loss_type: mse
+  patience: 10
+  seed: 42
+  # no AMP, no EMA, no grad_accum, no discriminative LR
+
+checkpoint:
+  output_dir: checkpoints/gnm_ablation_a3
+  log_every: 50
+
+wandb:
+  project: fleetsafe-gnm-vlnverse
+  entity: null
+  name: gnm_ablation_a3
+  tags: [gnm, track_A, ablation, efficientnet, baseline_training]
+  notes: "A3 ablation: EfficientNet encoder only, all else from gnm_base — tests encoder feature scale hypothesis"
+
+evaluation:
+  success_threshold: 3.0
+  stop_threshold: 0.15
+  max_steps: 500
+  track: A

@@ -1,0 +1,77 @@
+# GNM SOTA v2 Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# Targeted fix for distance-head collapse observed in gnm_sota (v1).
+#
+# v1 post-mortem: dist_pred collapsed to ~0.11 (constant, < stop_threshold)
+# on all inputs → robot stopped at step 0 → TL=0.06m, OSR=SR=20%.
+#
+# Changes from gnm_sota.yaml (one isolation step):
+#   loss_type        : mse        (was huber — huber at delta=1 under-penalises
+#                                   near-zero dist collapse)
+#   action_weight    : 0.5        (was 0.6 — restores equal dist/action supervision)
+#   encoder_lr_scale : 0.3        (was 0.1 — less aggressive encoder freeze,
+#                                   allows encoder to adapt without shutting off
+#                                   gradient signal to dist head)
+#
+# Kept from gnm_sota.yaml:
+#   use_amp, grad_accum_steps, ema_decay, EfficientNet, hidden_dim=512,
+#   epochs=200, batch_size=256
+#
+# Reproducibility:
+#   Isaac Sim: 5.1.0 (pip, conda env 'isaac')
+#   USD source: Eyz/VLNVerse_scene (start_result_navigation.usd)
+#   Scenes: kujiale_0092/0203/0118/0271 (238 fine_train, 15 fine_val episodes)
+# ─────────────────────────────────────────────────────────────────────────────
+
+model:
+  context_size: 5
+  goal_conditioned: true
+  action_dim: 2
+  hidden_dim: 512         # wider than baseline (256)
+  encoder: efficientnet   # B0: better accuracy than mobilenet, similar speed
+  out_dim: 512
+  pretrained: true
+
+data:
+  data_root: datasets/vlntube
+  image_size: [96, 96]
+  max_goal_dist: 20
+  action_std: [0.115528, 0.115528]
+  augment: true
+  num_workers: 6
+  pin_memory: true
+
+training:
+  epochs: 200
+  batch_size: 256
+  lr: 2e-4
+  weight_decay: 1e-4
+  warmup_frac: 0.03
+  max_grad_norm: 1.0
+  action_weight: 0.5          # equal dist/action weighting (was 0.6)
+  loss_type: mse              # MSE for distance head (was huber — collapsed)
+  patience: 20
+  seed: 42
+
+  # ── SOTA additions (kept) ────────────────────────────────────────────────────
+  use_amp: true               # mixed precision (BF16 on Ampere GPUs)
+  grad_accum_steps: 2         # accumulate 2 steps → effective batch 512
+  ema_decay: 0.9999           # EMA of model weights → better val performance
+  encoder_lr_scale: 0.3       # discriminative LR: encoder gets lr × 0.3 (was 0.1)
+
+checkpoint:
+  output_dir: checkpoints/gnm_sota_v2
+  log_every: 50
+
+wandb:
+  project: fleetsafe-gnm-vlnverse
+  entity: null
+  name: gnm_sota_v2_track_A
+  tags: [gnm, track_A, vlnverse, efficientnet, amp, ema, sota_v2, dist_fix]
+  notes: "SOTA v2 — fix dist-head collapse: mse loss, equal weighting, encoder_lr_scale=0.3"
+
+evaluation:
+  success_threshold: 3.0
+  stop_threshold: 0.15
+  max_steps: 500
+  track: A

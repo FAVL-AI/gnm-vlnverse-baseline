@@ -1,0 +1,61 @@
+# VLNTube Data Generation Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# Reproducibility pin for the data generation pipeline.
+# These values are fixed for this branch — do not change without updating
+# the paper's data section and re-running the full pipeline.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Isaac Sim version pin ────────────────────────────────────────────────────
+# Two supported install modes:
+#   pip (active): Isaac Sim 5.1.0 in conda env 'isaac', Python 3.11
+#   launcher (fallback): Isaac Sim 4.5.0 at standard Omniverse Launcher path
+#
+# pip mode requires SimulationApp-first initialisation — handled automatically
+# by vlntube_runner.py._ensure_sim_app().
+isaac_sim:
+  version: "5.1.0"            # pip-installed, conda env 'isaac'
+  install_mode: "pip"         # "pip" | "launcher"
+  python: "~/miniforge3/envs/isaac/bin/python"
+  python_version: "3.11"
+  launch_pattern: "SimulationApp-first"
+  # Launcher fallback (if pip env unavailable):
+  launcher_version: "4.5.0"
+  launcher_python_sh: "~/.local/share/ov/pkg/isaac-sim-4.5.0/python.sh"
+
+# ── Scene assets ────────────────────────────────────────────────────────────
+scenes:
+  hf_repo: "Eyz/VLNVerse_scene"          # Source of USD scene assets
+  local_dir: "datasets/vlntube/envs"     # Where scenes are stored (gitignored)
+  usd_root: "start_result_navigation.usd"  # Root USD file inside each scene dir
+  # Scenes used in this branch (494 fine_train + 15 fine_val episodes):
+  validated:
+    - kujiale_0092    # 138 fine_train, 2 fine_val
+    - kujiale_0203    # 137 fine_train, 7 fine_val
+    - kujiale_0118    # 123 fine_train, 3 fine_val
+    - kujiale_0271    #  96 fine_train, 3 fine_val
+
+# ── Prebuilt split source ────────────────────────────────────────────────────
+splits:
+  source_dir: "datasets/vlntube/prebuilt_data/raw_data/final_splits"
+  train: "fine_train"
+  val:   "fine_val"
+  val_unseen: "fine_val_unseen"
+  test:  "fine_test"
+
+# ── Camera specification ─────────────────────────────────────────────────────
+# Must match the GNM training data spec exactly.
+camera:
+  resolution: [224, 224]   # pixels — wide for good feature extraction
+  hfov_deg: 90.0           # horizontal field of view
+  height_m: 1.5            # metres above ground (eye level)
+  fps: 1                   # one frame per reference path step
+
+# ── Output format ────────────────────────────────────────────────────────────
+output:
+  root: "datasets/vlntube"   # Output root (gitignored)
+  format:
+    images: "*.jpg"           # numbered: 0.jpg, 1.jpg, ...
+    jpeg_quality: 95
+    trajectory: "traj_data.pkl"   # keys: position (T,2), yaw (T,)
+    instruction: "instruction.txt"
+    metadata: "episode_info.json"

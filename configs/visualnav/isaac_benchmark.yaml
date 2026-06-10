@@ -1,0 +1,124 @@
+# configs/visualnav/isaac_benchmark.yaml
+# ─────────────────────────────────────────────────────────────────────────────
+# Benchmark configuration for the FleetSafe VisualNav reproduction study.
+#
+# Controls which scenes, seeds, start/goal pairs, and camera settings
+# are used when running scripts/visualnav/run_matrix.sh.
+#
+# Robot: yahboom_m3pro  (holonomic, mecanum wheels)
+#         yahboom_x3    (differential, smoke-test fallback only)
+#
+# Simulation backend: mujoco (default), isaaclab (requires GPU + IsaacSim)
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Robot ─────────────────────────────────────────────────────────────────────
+robot: yahboom_m3pro                  # m3pro once URDF/MJCF valid; x3 = fallback
+robot_fallback: yahboom_x3            # used for smoke tests if m3pro MJCF missing
+simulation_backend: mujoco            # mujoco | isaaclab
+
+# ── Control ───────────────────────────────────────────────────────────────────
+control_hz: 4.0                       # Hz — model inference rate
+v_max_ms: 0.3                         # m/s forward
+vy_max_ms: 0.3                        # m/s lateral (M3Pro holonomic; 0 for X3)
+w_max_rads: 0.7                       # rad/s yaw
+max_episode_steps: 500
+
+# ── Safety thresholds ─────────────────────────────────────────────────────────
+near_miss_dist_m: 0.45                # near-violation metric threshold
+collision_dist_m: 0.10                # chassis radius for collision detection
+stuck_vel_thresh_ms: 0.02             # m/s below which robot is "stuck"
+stuck_min_steps: 10                   # consecutive stuck steps to count
+
+# ── Reproducibility ───────────────────────────────────────────────────────────
+seeds: [0, 1, 2, 3, 4]               # 5 seeds × N scenes × M pairs = full matrix
+
+# ── Camera ────────────────────────────────────────────────────────────────────
+camera:
+  name: camera                        # camera element name in MJCF / Isaac asset
+  width: 640
+  height: 480
+  fov_deg: 60.0
+  use_camera: false                   # false = synthetic checkerboard goal (gates)
+                                      # true  = real robot-frame RGB observation
+
+# ── Scenes ────────────────────────────────────────────────────────────────────
+#
+# Each scene maps to a MuJoCo environment class.
+# obstacle_layout: "none" → YahboomNavEnv (open arena)
+#                  "sparse" → YahboomObstacleEnv (n_obstacles=6)
+#                  "dense"  → YahboomObstacleEnv (n_obstacles=16)
+#
+scenes:
+  - name: open_corridor
+    obstacle_layout: none
+    n_obstacles: 0
+    arena_size_m: 8.0
+    description: "Open arena, no obstacles — baseline navigation"
+
+  - name: sparse_obstacles
+    obstacle_layout: sparse
+    n_obstacles: 6
+    arena_size_m: 8.0
+    description: "Sparse cylinder field — light obstacle avoidance"
+
+  - name: dense_obstacles
+    obstacle_layout: dense
+    n_obstacles: 16
+    arena_size_m: 8.0
+    description: "Dense cylinder field — challenging navigation + FleetSafe stress"
+
+# ── Start / Goal pairs ────────────────────────────────────────────────────────
+#
+# Defined in robot frame at episode start.
+# Multiple pairs increase statistical power of the benchmark.
+#
+start_goal_pairs:
+  - label: forward_short
+    start_xy: [0.0, 0.0]
+    goal_xy:  [2.0, 0.0]
+    description: "2 m forward — simplest case"
+
+  - label: forward_long
+    start_xy: [0.0, 0.0]
+    goal_xy:  [4.0, 0.0]
+    description: "4 m forward"
+
+  - label: diagonal
+    start_xy: [0.0, 0.0]
+    goal_xy:  [2.5, 2.0]
+    description: "Diagonal goal — tests lateral + forward combination"
+
+  - label: lateral
+    start_xy: [0.0, 0.0]
+    goal_xy:  [0.0, 3.0]
+    description: "Pure lateral goal — tests holonomic strafe (M3Pro advantage)"
+
+  - label: reverse_diagonal
+    start_xy: [0.0, 0.0]
+    goal_xy:  [-1.5, 2.0]
+    description: "Goal behind and to the side — tests turning behaviour"
+
+# ── Benchmark matrix ──────────────────────────────────────────────────────────
+#
+# Full matrix = models × {baseline, fleetsafe} × scenes × seeds × pairs
+#
+# With defaults:
+#   3 models × 2 modes × 3 scenes × 5 seeds × 5 pairs = 450 episodes
+#   At 500 steps × ~15 ms/step ≈ 7.5 s/episode → ~56 minutes total (CPU)
+#
+# For a quick smoke test, reduce seeds or pairs in your run script.
+#
+benchmark_matrix:
+  models:        [gnm, vint, nomad]
+  fleetsafe:     [false, true]          # baseline then FleetSafe
+
+# ── Isaac Lab extension (future) ──────────────────────────────────────────────
+# When simulation_backend: isaaclab, the runner switches to the IsaacLab
+# environment defined in fleet_safe_vla/envs/isaaclab/yahboom/.
+# Requires: IsaacSim 4.x + IsaacLab 2.x + GPU.
+isaaclab:
+  task_name: FleetSafe-M3Pro-VisualNav-v0
+  headless: true
+  rendering: true                       # needed for camera observations
+  physics_dt: 0.004                     # 250 Hz
+  rendering_dt: 0.025                   # 40 Hz camera

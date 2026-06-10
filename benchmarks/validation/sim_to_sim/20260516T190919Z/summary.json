@@ -1,0 +1,93 @@
+{
+  "generated_at": "20260516T190919Z",
+  "isaac_available": true,
+  "control_hz": 4.0,
+  "near_miss_m": 0.35,
+  "obs_radius_m": 0.1,
+  "thresholds": {
+    "final_xy_error_m": 0.25,
+    "trajectory_rmse_m": 0.2,
+    "path_length_delta_pct": 10.0,
+    "near_violation_agreement": 0.8,
+    "collision_agreement": true
+  },
+  "n_pass": 3,
+  "n_fail": 0,
+  "gate_passed": true,
+  "scenarios": [
+    {
+      "scenario": "kinematic_smoke",
+      "n_steps_mujoco": 21,
+      "n_steps_isaac": 21,
+      "n_steps_aligned": 21,
+      "final_xy_error_m": 0.0,
+      "trajectory_rmse_m": 0.0,
+      "path_length_mujoco_m": 1.0,
+      "path_length_isaac_m": 1.0,
+      "path_length_delta_pct": 0.0,
+      "min_obs_dist_mujoco_m": 99.0,
+      "min_obs_dist_isaac_m": 99.0,
+      "min_obstacle_distance_delta_m": 0.0,
+      "first_collision_step_mujoco": null,
+      "first_collision_step_isaac": null,
+      "collision_agreement": true,
+      "near_violation_agreement": 1.0,
+      "applicable_thresholds": [
+        "final_xy_error_m",
+        "trajectory_rmse_m",
+        "path_length_delta_pct"
+      ],
+      "passed": true,
+      "fail_reasons": []
+    },
+    {
+      "scenario": "cluttered_navigation",
+      "n_steps_mujoco": 31,
+      "n_steps_isaac": 31,
+      "n_steps_aligned": 31,
+      "final_xy_error_m": 0.0,
+      "trajectory_rmse_m": 0.0,
+      "path_length_mujoco_m": 1.5,
+      "path_length_isaac_m": 1.5,
+      "path_length_delta_pct": 0.0,
+      "min_obs_dist_mujoco_m": 0.728,
+      "min_obs_dist_isaac_m": 0.728,
+      "min_obstacle_distance_delta_m": 0.0,
+      "first_collision_step_mujoco": null,
+      "first_collision_step_isaac": null,
+      "collision_agreement": true,
+      "near_violation_agreement": 1.0,
+      "applicable_thresholds": [
+        "trajectory_rmse_m",
+        "path_length_delta_pct",
+        "near_violation_agreement"
+      ],
+      "passed": true,
+      "fail_reasons": []
+    },
+    {
+      "scenario": "forced_collision",
+      "n_steps_mujoco": 11,
+      "n_steps_isaac": 11,
+      "n_steps_aligned": 11,
+      "final_xy_error_m": 0.0,
+      "trajectory_rmse_m": 0.0,
+      "path_length_mujoco_m": 0.75,
+      "path_length_isaac_m": 0.75,
+      "path_length_delta_pct": 0.0,
+      "min_obs_dist_mujoco_m": -0.05,
+      "min_obs_dist_isaac_m": -0.05,
+      "min_obstacle_distance_delta_m": 0.0,
+      "first_collision_step_mujoco": 10,
+      "first_collision_step_isaac": 10,
+      "collision_agreement": true,
+      "near_violation_agreement": 1.0,
+      "applicable_thresholds": [
+        "collision_agreement",
+        "near_violation_agreement"
+      ],
+      "passed": true,
+      "fail_reasons": []
+    }
+  ]
+}

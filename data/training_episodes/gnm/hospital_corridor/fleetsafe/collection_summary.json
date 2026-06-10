@@ -1,0 +1,112 @@
+{
+  "model": "gnm",
+  "scene": "hospital_corridor",
+  "fleetsafe": true,
+  "n_episodes": 5,
+  "success_rate": 0.0,
+  "collision_rate": 0.0,
+  "output_dir": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/data/training_episodes/gnm/hospital_corridor/fleetsafe",
+  "timestamp": 1779499508.8188775,
+  "episodes": [
+    {
+      "model": "gnm",
+      "scene": "hospital_corridor",
+      "seed": 0,
+      "fleetsafe": true,
+      "success": false,
+      "collision": false,
+      "steps": 300,
+      "path_length_m": 22.325,
+      "time_s": 454.606,
+      "min_obstacle_dist_m": 1.2098,
+      "intervention_count": 0,
+      "intervention_rate": 0.0,
+      "dist_to_goal_final": 10.8346,
+      "image_size": [
+        85,
+        64
+      ],
+      "context_size": 5
+    },
+    {
+      "model": "gnm",
+      "scene": "hospital_corridor",
+      "seed": 1,
+      "fleetsafe": true,
+      "success": false,
+      "collision": false,
+      "steps": 300,
+      "path_length_m": 22.325,
+      "time_s": 418.335,
+      "min_obstacle_dist_m": 1.2597,
+      "intervention_count": 0,
+      "intervention_rate": 0.0,
+      "dist_to_goal_final": 10.733,
+      "image_size": [
+        85,
+        64
+      ],
+      "context_size": 5
+    },
+    {
+      "model": "gnm",
+      "scene": "hospital_corridor",
+      "seed": 2,
+      "fleetsafe": true,
+      "success": false,
+      "collision": false,
+      "steps": 300,
+      "path_length_m": 22.325,
+      "time_s": 592.103,
+      "min_obstacle_dist_m": 1.1354,
+      "intervention_count": 0,
+      "intervention_rate": 0.0,
+      "dist_to_goal_final": 10.8921,
+      "image_size": [
+        85,
+        64
+      ],
+      "context_size": 5
+    },
+    {
+      "model": "gnm",
+      "scene": "hospital_corridor",
+      "seed": 3,
+      "fleetsafe": true,
+      "success": false,
+      "collision": false,
+      "steps": 300,
+      "path_length_m": 22.325,
+      "time_s": 3.311,
+      "min_obstacle_dist_m": 1.2824,
+      "intervention_count": 0,
+      "intervention_rate": 0.0,
+      "dist_to_goal_final": 11.8119,
+      "image_size": [
+        85,
+        64
+      ],
+      "context_size": 5
+    },
+    {
+      "model": "gnm",
+      "scene": "hospital_corridor",
+      "seed": 4,
+      "fleetsafe": true,
+      "success": false,
+      "collision": false,
+      "steps": 300,
+      "path_length_m": 22.325,
+      "time_s": 3.304,
+      "min_obstacle_dist_m": 1.0398,
+      "intervention_count": 0,
+      "intervention_rate": 0.0,
+      "dist_to_goal_final": 10.6126,
+      "image_size": [
+        85,
+        64
+      ],
+      "context_size": 5
+    }
+  ]
+}

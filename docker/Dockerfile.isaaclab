@@ -1,0 +1,32 @@
+# Fleet-Safe Isaac Lab Training Container
+# Base: nvcr.io/nvidia/isaac-sim (Isaac Sim 5.1)
+FROM nvcr.io/nvidia/isaac-sim:5.1.0 AS isaaclab-base
+
+LABEL maintainer="frankleroyvan@gmail.com"
+LABEL description="Fleet-Safe-VLA-OS Isaac Lab training environment"
+
+# Install Isaac Lab (pip install)
+RUN /isaac-sim/python.sh -m pip install \
+    "isaaclab[all]>=2.3.2" \
+    "isaaclab-tasks[all]>=2.3.2" \
+    "isaaclab-rl[rsl_rl]>=2.3.2" \
+    --extra-index-url https://pypi.ngc.nvidia.com
+
+# Install fleet-safe dependencies
+RUN /isaac-sim/python.sh -m pip install \
+    mujoco>=3.2 \
+    numpy>=1.26 \
+    scipy>=1.13 \
+    fastapi>=0.111 \
+    uvicorn>=0.30 \
+    websockets>=12
+
+# Install robot-lab
+COPY . /workspace
+RUN /isaac-sim/python.sh -m pip install -e /workspace \
+    && /isaac-sim/python.sh -m pip install -e /home/favl/robot-lab 2>/dev/null || true
+
+WORKDIR /workspace
+
+ENV OMNI_KIT_ACCEPT_EULA=Y
+ENV PYTHONPATH=/workspace:$PYTHONPATH

@@ -1,0 +1,16 @@
+acronym_or_symbol,expanded_form,meaning
+ASR,Automatic Speech Recognition,Converts human speech into text/transcripts.
+CBF,Control Barrier Function,A mathematical function used to keep the robot inside a safe set.
+QP,Quadratic Program,An optimization problem used to find the closest safe command to the nominal command.
+VLN,Vision-and-Language Navigation,Navigation where a robot follows natural-language instructions using visual perception.
+VLA,Vision-Language-Action,A system that maps perception and language into robot actions.
+LiDAR,Light Detection and Ranging,A range sensor that measures distances using laser scanning.
+ROS,Robot Operating System,Middleware for robot software components.
+QoS,Quality of Service,ROS 2 communication policy settings such as reliability and durability.
+JSONL,JavaScript Object Notation Lines,"One JSON record per line, useful for append-only logs."
+HDF5,Hierarchical Data Format 5,Structured file format for large multimodal datasets.
+u_nom,Nominal control command,The command proposed by the navigation backbone before safety filtering.
+u_safe,Safe control command,The command after the safety filter has applied constraints.
+h(x),Barrier value,"A safety margin. If h(x) is non-negative, the robot is inside the safe set."
+d_safe,Safety radius,Minimum allowed clearance around the robot.
+h_min,Minimum barrier margin,Smallest safety margin over all obstacles at a timestep.

@@ -1,0 +1,133 @@
+# FleetSafe VisualNav Canonical Scene Set — v0.1
+# This file is immutable once published. Changes require a new SCENESET_v0.2.yaml.
+# Every benchmark artifact must record the scene_manifest_file path.
+
+sceneset_version: "0.1.0"
+sceneset_frozen: true
+sceneset_created: "2026-05-15"
+total_scenes: 4
+
+scenes:
+
+  - scene_id: straight_corridor
+    scene_version: "0.1.0"
+    frozen: true
+    scene_type: corridor
+    description: >
+      10 m long, 3 m wide straight corridor. No obstacles.
+      Tests baseline navigation quality without any safety filter activations.
+    start_goal_pairs:
+      - label: forward
+        start_xy: [0.0, 0.0]
+        goal_xy:  [8.0, 0.0]
+        optimal_path_m: 8.0
+    obstacles: []
+    dynamic_agents: []
+    walls:
+      - id: wall_left
+        segment: [[0.0, 1.5], [10.0, 1.5]]
+      - id: wall_right
+        segment: [[0.0, -1.5], [10.0, -1.5]]
+    seed_policy: fixed_per_episode
+    hash: "placeholder_sha256_straight_corridor_v0.1"
+
+  - scene_id: cluttered_static
+    scene_version: "0.1.0"
+    frozen: true
+    scene_type: obstacle_field
+    description: >
+      10 m × 3 m corridor with 4 static circular obstacles arranged to force
+      the robot to navigate around them. Tests CBF intervention frequency and
+      safety margin maintenance under static occlusion.
+    start_goal_pairs:
+      - label: forward_through_clutter
+        start_xy: [0.0, 0.0]
+        goal_xy:  [8.0, 0.0]
+        optimal_path_m: 9.2
+    obstacles:
+      - obstacle_id: obstacle_0
+        position: [2.0, 0.3]
+        radius_m: 0.15
+        dynamic: false
+      - obstacle_id: obstacle_1
+        position: [3.5, -0.4]
+        radius_m: 0.15
+        dynamic: false
+      - obstacle_id: obstacle_2
+        position: [5.0, 0.2]
+        radius_m: 0.20
+        dynamic: false
+      - obstacle_id: obstacle_3
+        position: [6.5, -0.3]
+        radius_m: 0.15
+        dynamic: false
+    dynamic_agents: []
+    walls:
+      - id: wall_left
+        segment: [[0.0, 1.5], [10.0, 1.5]]
+      - id: wall_right
+        segment: [[0.0, -1.5], [10.0, -1.5]]
+    seed_policy: fixed_per_episode
+    hash: "placeholder_sha256_cluttered_static_v0.1"
+
+  - scene_id: narrow_passage
+    scene_version: "0.1.0"
+    frozen: true
+    scene_type: bottleneck
+    description: >
+      Two large obstacles leave exactly 0.8 m of clearance in the robot path.
+      Robot radius is 0.15 m; passage requires careful lateral alignment.
+      Tests CBF-QP constraint activation in high-constraint geometry.
+    start_goal_pairs:
+      - label: through_gap
+        start_xy: [0.0, 0.0]
+        goal_xy:  [6.0, 0.0]
+        optimal_path_m: 6.0
+    obstacles:
+      - obstacle_id: obstacle_0
+        position: [3.0, 0.7]
+        radius_m: 0.30
+        dynamic: false
+        note: "upper blocker — gap centre at y=0"
+      - obstacle_id: obstacle_1
+        position: [3.0, -0.7]
+        radius_m: 0.30
+        dynamic: false
+        note: "lower blocker — gap width = 0.8 m (0.7-0.3-0.15-0.15 = 0.10 m actual clearance per side from robot edge)"
+    dynamic_agents: []
+    walls:
+      - id: wall_left
+        segment: [[0.0, 1.5], [6.0, 1.5]]
+      - id: wall_right
+        segment: [[0.0, -1.5], [6.0, -1.5]]
+    seed_policy: fixed_per_episode
+    hash: "placeholder_sha256_narrow_passage_v0.1"
+
+  - scene_id: dynamic_obstacle
+    scene_version: "0.1.0"
+    frozen: true
+    scene_type: dynamic_crossing
+    description: >
+      Single dynamic agent crosses the robot path perpendicular to the corridor
+      axis at the midpoint of the robot's route. Crossing speed 0.3 m/s.
+      Tests moving_towards detection and temporal CBF activation.
+    start_goal_pairs:
+      - label: head_on_crossing
+        start_xy: [0.0, 0.0]
+        goal_xy:  [8.0, 0.0]
+        optimal_path_m: 8.0
+    obstacles: []
+    dynamic_agents:
+      - agent_id: dynamic_agent_0
+        start_position: [4.0, -1.5]
+        velocity: [0.0, 0.3]
+        radius_m: 0.15
+        crossing_time_s: 5.0
+        note: "crosses from y=-1.5 to y=+1.5 over 10 s; robot encounters it near step 20 at 4 Hz"
+    walls:
+      - id: wall_left
+        segment: [[0.0, 1.5], [10.0, 1.5]]
+      - id: wall_right
+        segment: [[0.0, -1.5], [10.0, -1.5]]
+    seed_policy: fixed_per_episode
+    hash: "placeholder_sha256_dynamic_obstacle_v0.1"

@@ -1,0 +1,229 @@
+<!-- Yahboom RosMaster M3Pro — MuJoCo MJCF
+     ═══════════════════════════════════════════════════════════════════════
+
+     STATUS: STRUCTURAL MJCF BASELINE (from product spec + URDF baseline)
+
+     GEOMETRY SOURCE
+       All dimension values match the URDF baseline (yahboom_m3pro.urdf)
+       and robot_contract_m3pro.yaml.  No dimensions invented.
+
+     INERTIALS
+       Box/cylinder approximations from product-spec masses.
+       PLACEHOLDER — replace with measured values before Stage 1 RL training.
+       See: fleet_safe_vla/robots/yahboom/m3pro/ASSET_IMPORT_PLAN.md
+
+     MECANUM FRICTION (Option A — approximate, sufficient for Stage 2 smoke tests)
+       Per-wheel friction = "0.8 0.1 0.001" (sliding, torsional, rolling)
+       The reduced torsional value approximates mecanum roller slip.
+       For sim-to-real (Stage 4+): upgrade to condim=6 with frictiondir1
+       aligned with each wheel's roller axis (±45°).
+       Reference: fleet_safe_vla/robots/yahboom/m3pro/ASSET_REQUIREMENTS.md
+
+     JOINT NAMES — DO NOT RENAME
+       fl_wheel_joint  fr_wheel_joint  rl_wheel_joint  rr_wheel_joint
+       (obs_adapter_m3pro.py, yahboom_m3pro_env_cfg.py, and ROS2 bridge
+        all reference these names)
+
+     KEY DIMENSIONS (verified against contract; need calipers for Stage 1)
+       Wheel radius: 0.048 m   lx (half wheelbase):  0.0775 m
+       Wheel width:  0.025 m   ly (half track width): 0.0850 m
+       Body spawn height: 0.048 m above floor (= wheel radius)
+-->
+<mujoco model="yahboom_m3pro">
+
+  <compiler angle="radian" meshdir="." autolimits="true"/>
+
+  <!-- timestep=0.004 s (250 Hz) matches robot_contract_m3pro.yaml sim_dt
+       implicitfast + Newton solver: robust for wheeled contact on flat floor
+       iterations=50 provides tight constraint resolution without excess cost -->
+  <option timestep="0.004" gravity="0 0 -9.81"
+          integrator="implicitfast" iterations="50" solver="Newton"/>
+
+  <!-- ── Class defaults ─────────────────────────────────────────────────────── -->
+  <default>
+    <joint damping="0.5" frictionloss="0.02"/>
+    <!-- Default geom: standard floor/chassis friction -->
+    <geom friction="0.8 0.005 0.0001" condim="3" contype="1" conaffinity="1"/>
+  </default>
+
+
+  <!-- ── Assets ─────────────────────────────────────────────────────────────── -->
+  <asset>
+    <texture name="floor_tex" type="2d" builtin="checker"
+             width="512" height="512" rgb1="0.60 0.60 0.60" rgb2="0.80 0.80 0.80"/>
+    <material name="floor_mat"   texture="floor_tex" texrepeat="10 10" reflectance="0.1"/>
+    <material name="chassis_mat" rgba="0.15 0.15 0.15 1.0"/>
+    <material name="wheel_mat"   rgba="0.05 0.05 0.05 1.0"/>
+    <material name="lidar_mat"   rgba="0.00 0.30 0.80 1.0"/>
+    <material name="sensor_mat"  rgba="0.20 0.20 0.20 0.6"/>
+  </asset>
+
+
+  <!-- ── World ──────────────────────────────────────────────────────────────── -->
+  <worldbody>
+
+    <geom name="floor" type="plane" size="10 10 0.1"
+          material="floor_mat" contype="1" conaffinity="1"/>
+
+    <!-- Robot spawns with base_link 0.048 m above floor (= wheel radius) -->
+    <body name="base_link" pos="0 0 0.048">
+      <freejoint name="root"/>
+
+      <!--
+        PLACEHOLDER inertials — replace with measured values before Stage 1.
+        body_mass = total(2.4 kg) - 4×wheel(0.150 kg) = 1.800 kg
+        Box formula (0.290 × 0.235 × 0.080):
+          ixx = 1.8/12×(0.235²+0.080²) = 0.009
+          iyy = 1.8/12×(0.290²+0.080²) = 0.014
+          izz = 1.8/12×(0.290²+0.235²) = 0.021
+      -->
+      <inertial mass="1.800" pos="0 0 0.040"
+                diaginertia="0.009 0.014 0.021"/>
+
+      <!-- Chassis box — MuJoCo size = half-extents (0.290/2, 0.235/2, 0.080/2) -->
+      <geom name="chassis" type="box" size="0.145 0.1175 0.040"
+            pos="0 0 0.040" material="chassis_mat"/>
+
+      <!-- ── Sensor sites ─────────────────────────────────────────────────── -->
+
+      <!-- IMU: mounted on main board, approximate centre of chassis -->
+      <site name="imu" pos="0 0 0.040" size="0.005"/>
+
+      <!-- LiDAR scan plane: 0.160 m from ground → 0.160 - 0.048 = 0.112 m above base_link -->
+      <site name="lidar" pos="0 0 0.112" size="0.010"/>
+
+      <!-- Camera lens centre: 0.130 m from ground → 0.082 m above base_link, 0.100 m forward -->
+      <site name="camera" pos="0.100 0 0.082" size="0.005"/>
+
+      <!-- ── Visual-only geoms (non-colliding, informational) ───────────────── -->
+
+      <!-- LiDAR body: radius 0.038 m, half-length 0.020 m (full length 0.040 m)
+           Centre at lidar_site + half-length: 0.112 + 0.020 = 0.132 m -->
+      <geom name="lidar_body" type="cylinder" size="0.038 0.020"
+            pos="0 0 0.132" material="lidar_mat"
+            contype="0" conaffinity="0"/>
+
+      <!-- Camera module: 0.025 × 0.090 × 0.025 m (half-extents) -->
+      <geom name="camera_body" type="box" size="0.0125 0.045 0.0125"
+            pos="0.100 0 0.082" material="sensor_mat"
+            contype="0" conaffinity="0"/>
+
+
+      <!-- ── Front-left mecanum wheel ────────────────────────────────────── -->
+      <!-- pos = (+lx=+0.0775, +ly=+0.085, 0) in base_link frame -->
+      <body name="fl_wheel" pos="0.0775 0.085 0">
+
+        <!-- hinge joint about Y-axis (wheel spin = forward/backward motion)
+             damping=0.1 matches URDF dynamics; higher than X3 for stability -->
+        <joint name="fl_wheel_joint" type="hinge"
+               axis="0 1 0" limited="false" damping="0.1"/>
+
+        <!--
+          PLACEHOLDER inertial: weigh wheel before Stage 1
+          Cylinder formulas (spin axis = Y, r=0.048, h=0.025):
+            iyy (spin)    = 0.5 × 0.150 × 0.048² = 1.73e-4
+            ixx = izz     = 0.150 × (3×0.048² + 0.025²) / 12 = 9.4e-5
+        -->
+        <inertial mass="0.150" pos="0 0 0"
+                  diaginertia="0.000094 0.000173 0.000094"/>
+
+        <!--
+          Mecanum friction approximation (Option A):
+            friction = "axial  torsional  rolling"
+                        0.8    0.1        0.001
+          The reduced torsional value approximates mecanum roller lateral slip.
+          euler="1.5708 0 0" rotates the cylinder axis from Z to Y
+          (cylinder spins about Y = same as joint axis)
+          size = "radius  half_length" = "0.048  0.0125" (full width = 0.025 m)
+        -->
+        <geom name="fl_wheel_geom" type="cylinder" size="0.048 0.0125"
+              euler="1.5708 0 0"
+              friction="0.8 0.1 0.001" condim="3"
+              material="wheel_mat"/>
+
+      </body> <!-- fl_wheel -->
+
+
+      <!-- ── Front-right mecanum wheel ───────────────────────────────────── -->
+      <body name="fr_wheel" pos="0.0775 -0.085 0">
+        <joint name="fr_wheel_joint" type="hinge"
+               axis="0 1 0" limited="false" damping="0.1"/>
+        <inertial mass="0.150" pos="0 0 0"
+                  diaginertia="0.000094 0.000173 0.000094"/>
+        <geom name="fr_wheel_geom" type="cylinder" size="0.048 0.0125"
+              euler="1.5708 0 0"
+              friction="0.8 0.1 0.001" condim="3"
+              material="wheel_mat"/>
+      </body>
+
+
+      <!-- ── Rear-left mecanum wheel ─────────────────────────────────────── -->
+      <body name="rl_wheel" pos="-0.0775 0.085 0">
+        <joint name="rl_wheel_joint" type="hinge"
+               axis="0 1 0" limited="false" damping="0.1"/>
+        <inertial mass="0.150" pos="0 0 0"
+                  diaginertia="0.000094 0.000173 0.000094"/>
+        <geom name="rl_wheel_geom" type="cylinder" size="0.048 0.0125"
+              euler="1.5708 0 0"
+              friction="0.8 0.1 0.001" condim="3"
+              material="wheel_mat"/>
+      </body>
+
+
+      <!-- ── Rear-right mecanum wheel ────────────────────────────────────── -->
+      <body name="rr_wheel" pos="-0.0775 -0.085 0">
+        <joint name="rr_wheel_joint" type="hinge"
+               axis="0 1 0" limited="false" damping="0.1"/>
+        <inertial mass="0.150" pos="0 0 0"
+                  diaginertia="0.000094 0.000173 0.000094"/>
+        <geom name="rr_wheel_geom" type="cylinder" size="0.048 0.0125"
+              euler="1.5708 0 0"
+              friction="0.8 0.1 0.001" condim="3"
+              material="wheel_mat"/>
+      </body>
+
+    </body> <!-- base_link -->
+
+  </worldbody>
+
+
+  <!-- ── Actuators ──────────────────────────────────────────────────────────── -->
+  <!--
+    Velocity actuators: command = target wheel angular velocity [rad/s]
+    kv=0.5: velocity feedback gain [N/(rad/s)] — tune against physical robot
+            too high → oscillation; too low → poor tracking
+    ctrlrange=[-20, 20]: matches max_wheel_rads in robot_contract_m3pro.yaml
+    ctrllimited=true: clips commands to ctrlrange (safe simulation)
+  -->
+  <actuator>
+    <velocity name="fl_drive" joint="fl_wheel_joint"
+              kv="0.5" ctrlrange="-20 20" ctrllimited="true"/>
+    <velocity name="fr_drive" joint="fr_wheel_joint"
+              kv="0.5" ctrlrange="-20 20" ctrllimited="true"/>
+    <velocity name="rl_drive" joint="rl_wheel_joint"
+              kv="0.5" ctrlrange="-20 20" ctrllimited="true"/>
+    <velocity name="rr_drive" joint="rr_wheel_joint"
+              kv="0.5" ctrlrange="-20 20" ctrllimited="true"/>
+  </actuator>
+
+
+  <!-- ── Sensors ────────────────────────────────────────────────────────────── -->
+  <sensor>
+    <!-- IMU (matches /imu/data topic fields in obs_adapter_m3pro.py) -->
+    <accelerometer name="accel"       site="imu"/>
+    <gyro          name="gyro"        site="imu"/>
+    <framequat     name="orientation" objtype="site" objname="imu"/>
+
+    <!-- Wheel encoders (match /joint_states topic; fl/fr/rl/rr order) -->
+    <jointpos name="fl_wheel_pos" joint="fl_wheel_joint"/>
+    <jointpos name="fr_wheel_pos" joint="fr_wheel_joint"/>
+    <jointpos name="rl_wheel_pos" joint="rl_wheel_joint"/>
+    <jointpos name="rr_wheel_pos" joint="rr_wheel_joint"/>
+
+    <jointvel name="fl_wheel_vel" joint="fl_wheel_joint"/>
+    <jointvel name="fr_wheel_vel" joint="fr_wheel_joint"/>
+    <jointvel name="rl_wheel_vel" joint="rl_wheel_joint"/>
+    <jointvel name="rr_wheel_vel" joint="rr_wheel_joint"/>
+  </sensor>
+
+</mujoco>

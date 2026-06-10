@@ -1,0 +1,17 @@
+sim,world,model,condition,n_episodes,success_rate,collision_rate,spl,near_miss_rate,min_dist_obs_m,min_dist_ppl_m,intervention_rate,path_deviation_m,inference_ms,cbf_ms,success_ci_lo,success_ci_hi,collision_ci_lo,collision_ci_hi,source_file,delta_min_dist,delta_spl,delta_collision
+mock,hospital,gnm,baseline,10,0.0,0.1,0.0,,3.808470764397596,0.37354815419383425,0.0,1.5362124316013759,10.002090303169098,3.58853527965645e-05,0.0,0.0,0.0,0.3,results/gazebo_smoke/benchmark_summary.json,,,
+mock,hospital,gnm,baseline,10,0.0,0.1,0.0,,3.808470764397596,0.37354815419383425,0.0,,10.002090303169098,3.58853527965645e-05,,,,,results/gazebo_smoke/hospital_gnm_bl_mock_benchmark.json,,,
+mock,hospital,gnm,fleetsafe,10,0.0,0.0,0.0,,4.236070047679384,0.4250929796381735,0.17116666666666666,1.3068556747344058,10.00237209390616,0.02524290586976955,0.0,0.0,0.0,0.0,results/gazebo_smoke/benchmark_summary.json,0.4276,0.0,-0.1
+mock,hospital,gnm,fleetsafe,10,0.0,0.0,0.0,,4.236070047679384,0.4250929796381735,0.17116666666666666,,10.00237209390616,0.02524290586976955,,,,,results/gazebo_smoke/hospital_gnm_fs_mock_benchmark.json,0.4276,0.0,-0.1
+mock,multi-scene,gnm,baseline,40,0.225,0.475,0.225,0.2146,0.4574,,0.0,,0.08,0.0,0.1,0.35,0.325,0.625,results/sota_smoke/sota_results.json,,,
+mock,multi-scene,gnm,fleetsafe,40,0.0,0.0,0.0,0.0,0.7854,,0.5702,,0.09,0.306,0.0,0.0,0.0,0.0,results/sota_smoke/sota_results.json,0.328,-0.225,-0.475
+mock,multi-scene,vint,baseline,40,0.225,0.475,0.225,0.2146,0.4574,,0.0,,0.08,0.0,0.1,0.35,0.325,0.625,results/sota_smoke/sota_results.json,,,
+mock,multi-scene,vint,fleetsafe,40,0.0,0.0,0.0,0.0,0.7854,,0.5702,,0.09,0.306,0.0,0.0,0.0,0.0,results/sota_smoke/sota_results.json,0.328,-0.225,-0.475
+mock,warehouse,gnm,baseline,10,0.1,0.2,0.012655094251595781,,1.8666833958952502,,0.0,0.5040259583769686,10.002106192884204,3.4549500760601555e-05,0.0,0.3,0.0,0.5,results/gazebo_smoke/benchmark_summary.json,,,
+mock,warehouse,gnm,baseline,10,0.1,0.2,0.012655094251595781,,1.8666833958952502,,0.0,,10.002106192884204,3.4549500760601555e-05,,,,,results/gazebo_smoke/warehouse_gnm_bl_mock_benchmark.json,,,
+mock,warehouse,gnm,fleetsafe,10,0.0,0.0,0.0,,2.2927875649504523,,0.19783333333333336,0.6773134288026434,10.002526536700318,0.05653833956845725,0.0,0.0,0.0,0.0,results/gazebo_smoke/benchmark_summary.json,0.4261,-0.0127,-0.2
+mock,warehouse,gnm,fleetsafe,10,0.0,0.0,0.0,,2.2927875649504523,,0.19783333333333336,,10.002526536700318,0.05653833956845725,,,,,results/gazebo_smoke/warehouse_gnm_fs_mock_benchmark.json,0.4261,-0.0127,-0.2
+mock+realckpt,hospital+cluttered,gnm,baseline,20,0.0,0.35,,0.5,0.573,,0.0,,10.38,0.0,,,,,results/may29_evaluation_full.json,,,
+mock+realckpt,hospital+cluttered,gnm,fleetsafe,20,0.0,0.0,,0.0,0.809,,0.4,,10.48,0.66,,,,,results/may29_evaluation_full.json,0.236,,-0.35
+mock+realckpt,hospital+cluttered,vint,baseline,20,0.0,0.5,,1.0,0.164,,0.0,,31.14,0.0,,,,,results/may29_evaluation_full.json,,,
+mock+realckpt,hospital+cluttered,vint,fleetsafe,20,0.0,0.0,,0.0,0.479,,0.624,,28.38,0.81,,,,,results/may29_evaluation_full.json,0.315,,-0.5

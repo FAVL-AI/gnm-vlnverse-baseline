@@ -1,0 +1,64 @@
+#usda 1.0
+(
+    doc = "CustomVLN-Office — independent Isaac Sim scene"
+    upAxis = "Z"
+    defaultPrim = "World"
+    metersPerUnit = 1
+    customLayerData = {
+        string source = "create_custom_vln_office_scene.py"
+        string vlnverse_assets = "none"
+        string isaac_assets = "USD primitives (fallback)"
+    }
+)
+
+def Xform "World"
+{
+    # ── Floor ──────────────────────────────────────────────────────────
+    # Floor: 16.0 m × 10.0 m  (grey plane, z=0)
+    def Mesh "Floor" { }
+
+    # ── Perimeter walls ────────────────────────────────────────────────
+    def Xform "Walls" {
+        def Cube "N" { }  # North wall
+        def Cube "S" { }  # South wall
+        def Cube "E" { }  # East wall
+        def Cube "W" { }  # West wall
+    }
+
+    # ── Props (desks, chairs, cabinets, plants, shelf, table) ──────────
+    def Xform "Props" {
+        def Cube "Desk_A" { }  # desk at (5.5, 1.5)
+        def Cube "Desk_B" { }  # desk at (8.5, 1.5)
+        def Cube "Desk_C" { }  # desk at (12.0, 1.5)
+        def Cube "Desk_D" { }  # desk at (14.0, 3.0)
+        def Cube "Chair_A" { }  # chair at (5.5, 2.8)
+        def Cube "Chair_B" { }  # chair at (8.5, 2.8)
+        def Cube "Chair_C" { }  # chair at (12.0, 2.8)
+        def Cube "Cabinet_A" { }  # cabinet at (15.2, 7.0)
+        def Cube "Cabinet_B" { }  # cabinet at (4.5, 8.5)
+        def Cube "Plant_A" { }  # plant at (1.5, 1.5)
+        def Cube "Plant_B" { }  # plant at (15.0, 9.5)
+        def Cube "Shelf_A" { }  # shelf at (15.3, 2.5)
+        def Cube "MeetingTable" { }  # table at (7.0, 8.5)
+        def Cube "Partition_A" { }  # wall at (4.0, 1.5)
+    }
+
+    # ── Navigation markers ─────────────────────────────────────────────
+    def Xform "GNM_Markers" {
+        def Sphere "START" { }   # entrance (2, 5)
+        def Sphere "GOAL" { }    # desk_a (5.5, 1.5)
+    }
+
+    # ── Lighting ────────────────────────────────────────────────────────
+    def Xform "Lighting" {
+        def RectLight "Main_1" { }
+        def RectLight "Main_2" { }
+        def SphereLight "Ambient" { }
+    }
+
+    # ── Cameras ─────────────────────────────────────────────────────────
+    def Xform "Cameras" {
+        def Camera "Overview" { }  # top-down
+        def Camera "RobotCam" { }  # first-person at 1.2 m
+    }
+}

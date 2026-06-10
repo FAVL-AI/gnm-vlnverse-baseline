@@ -1,0 +1,17 @@
+{
+  "perception_contract": {
+    "policy_receives_camera_only": true,
+    "policy_receives_state": false,
+    "policy_receives_obstacles": false,
+    "cbf_receives_state": true,
+    "cbf_receives_obstacle_positions": true
+  },
+  "model": "gnm",
+  "image_size": [
+    85,
+    64
+  ],
+  "context_size": 5,
+  "scene": "hospital_corridor",
+  "timestamp": 1779498910.0982387
+}

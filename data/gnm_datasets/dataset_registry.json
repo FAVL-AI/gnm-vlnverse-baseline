@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-05-23T02:09:14.235466+00:00",
+  "data_dir": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/data/gnm_datasets",
+  "datasets": {
+    "gostanford2": {
+      "name": "GoStanford2",
+      "description": "Stanford University indoor office and corridor navigation dataset. Collected with a ground robot traversing hallways and open spaces inside the Gates Computer Science Building.  The closest match in the GNM training corpus to hospital corridor navigation.",
+      "relevance_for_hospital": "HIGH",
+      "environment": "indoor",
+      "scenes": [
+        "corridors",
+        "offices",
+        "open_areas",
+        "doorways"
+      ],
+      "gnm_format_compatible": true,
+      "format_notes": "Folders named traj_NNNN/ each containing numbered JPG images (0.jpg, 1.jpg, \u2026) and traj_data.pkl with keys 'position' (shape [T,2]) and 'yaw' (shape [T]).",
+      "approximate_trajectories": 3000,
+      "approximate_size_gb": 8.5,
+      "access": "request",
+      "access_notes": "GoStanford2 is distributed as part of the drive-any-robot (DARo) dataset release.  Access is via the project page: https://sites.google.com/view/drive-any-robot\nDirect download link is provided after accepting the data-use agreement on the project page or the associated HuggingFace repo:\n  https://huggingface.co/datasets/robodhruv/drive-any-robot\nOnce downloaded, extract to <data_dir>/gostanford2/ so that traj_data.pkl files live at <data_dir>/gostanford2/<split>/<traj_id>/traj_data.pkl",
+      "citation": "Shah, D., Osinski, B., Ichter, B., & Levine, S. (2023). GNM: A General Navigation Model to Drive Any Robot. ICRA 2023. https://arxiv.org/abs/2210.03370",
+      "huggingface_url": "https://huggingface.co/datasets/robodhruv/drive-any-robot",
+      "project_url": "https://sites.google.com/view/drive-any-robot",
+      "download_status": {
+        "dataset": "gostanford2",
+        "status": "instructions_written",
+        "target_dir": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/data/gnm_datasets/gostanford2",
+        "action_required": "manual_download",
+        "url": "https://huggingface.co/datasets/robodhruv/drive-any-robot"
+      }
+    },
+    "scand": {
+      "name": "SCAND (Social Comfort-Aware Navigation Dataset)",
+      "description": "UT Austin dataset of human-accompanying navigation in both indoor (office/lab corridors) and outdoor (sidewalks, plazas) environments. Contains ROS bag recordings plus processed image+odometry data. The indoor splits are relevant for hospital hallway navigation.",
+      "relevance_for_hospital": "MEDIUM",
+      "environment": "indoor_and_outdoor",
+      "scenes": [
+        "indoor_corridors",
+        "sidewalks",
+        "plazas",
+        "crossings"
+      ],
+      "gnm_format_compatible": "partial",
+      "format_notes": "Distributed as ROS1 bags and processed HDF5/pickle files. The processed format includes image sequences and odometry. Use gnm_dataset_converter.py to convert to GNM traj format.",
+      "approximate_trajectories": 138,
+      "approximate_size_gb": 25.0,
+      "access": "public",
+      "access_notes": "SCAND is freely downloadable from the UT Austin project page:\n  https://cs.utexas.edu/~xiao/SCAND/SCAND.html\nDownload the 'processed data' archive for GNM-compatible sequences.",
+      "download_url_page": "https://cs.utexas.edu/~xiao/SCAND/SCAND.html",
+      "citation": "Karnan, H., Nair, A., Xiao, X., Warnell, G., Pirk, S., Toshev, A., Hart, J., Biswas, J., & Stone, P. (2022). SCAND: A Large-Scale Dataset of Human-Driven Robot Navigation. RA-L 2022. https://arxiv.org/abs/2203.13924",
+      "project_url": "https://cs.utexas.edu/~xiao/SCAND/SCAND.html",
+      "download_status": {
+        "dataset": "scand",
+        "status": "instructions_written",
+        "target_dir": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/data/gnm_datasets/scand",
+        "action_required": "manual_download",
+        "url": "https://cs.utexas.edu/~xiao/SCAND/SCAND.html"
+      }
+    },
+    "yahboom_hospital": {
+      "download_status": {
+        "dataset": "yahboom_hospital",
+        "status": "placeholder",
+        "target_dir": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/data/gnm_datasets/yahboom_hospital"
+      }
+    }
+  }
+}

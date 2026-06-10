@@ -1,0 +1,96 @@
+# Canonical Yahboom robot contract
+# ALL simulators and real robot must conform to this interface.
+# Do not modify observation/action keys — they are frozen.
+
+robot: yahboom_rosmaster_x3
+
+# ── Observations ─────────────────────────────────────────────────────────────
+obs:
+  rgb:
+    topic: /camera/color/image_raw
+    shape: [480, 640, 3]
+    dtype: uint8
+    encoding: bgr8
+    sim_equivalent: camera_rgb
+  depth:
+    topic: /camera/depth/image_rect_raw
+    shape: [480, 640]
+    dtype: float32
+    unit: meters
+    max_range_m: 5.0
+    sim_equivalent: camera_depth
+  lidar:
+    topic: /scan
+    shape: [360]
+    dtype: float32
+    angle_min_rad: -3.14159
+    angle_max_rad: 3.14159
+    range_min_m: 0.05
+    range_max_m: 12.0
+    sim_equivalent: lidar_scan
+  imu:
+    topic: /imu/data
+    fields: [ax, ay, az, wx, wy, wz, qx, qy, qz, qw]
+    shape: [10]
+    dtype: float32
+    sim_equivalent: imu_data
+  joint_states:
+    topic: /joint_states
+    joints: [left_wheel_joint, right_wheel_joint]
+    fields: [position, velocity, effort]
+    shape: [6]                     # 2 joints × 3 fields
+    dtype: float32
+    sim_equivalent: joint_states
+  odom:
+    topic: /odom
+    fields: [x, y, z, qx, qy, qz, qw, vx, vy, vyaw]
+    shape: [10]
+    dtype: float32
+    sim_equivalent: odom
+  cmd_vel_history:
+    length: 5
+    shape: [10]                    # 5 steps × [vx, wz]
+    dtype: float32
+    sim_equivalent: cmd_vel_history
+
+# Flat observation vector for RL policies (excludes raw image/depth/lidar)
+# Shape: imu(10) + joint_states(6) + odom(10) + cmd_vel_history(10) = 36
+obs_vector_dim: 36
+
+# ── Actions ───────────────────────────────────────────────────────────────────
+actions:
+  linear_velocity_x:
+    range: [-0.5, 0.5]    # m/s
+    topic_field: linear.x
+  angular_velocity_z:
+    range: [-1.0, 1.0]    # rad/s
+    topic_field: angular.z
+  cmd_vel_topic: /cmd_vel
+  action_dim: 2
+
+# ── Safety ────────────────────────────────────────────────────────────────────
+safety:
+  max_linear_speed_ms: 0.5
+  max_angular_speed_rads: 1.0
+  min_obstacle_distance_m: 0.3      # CBF barrier radius
+  emergency_stop_topic: /fleet_safe/estop
+  safety_margin_m: 0.15             # extra buffer inside min_obstacle_distance
+  torque_ramp_steps: 25             # 0.5s at 50Hz
+
+# ── Control ───────────────────────────────────────────────────────────────────
+control:
+  frequency_hz: 10.0                # real robot USB serial at 10 Hz
+  sim_frequency_hz: 50.0
+  decimation: 5                     # sim steps per control step
+  sim_dt: 0.004
+
+# ── Geometry ──────────────────────────────────────────────────────────────────
+geometry:
+  wheelbase_m: 0.16
+  wheel_radius_m: 0.048
+  width_m: 0.22
+  length_m: 0.28
+  height_m: 0.17
+  mass_kg: 2.1
+  camera_height_m: 0.12
+  lidar_height_m: 0.15

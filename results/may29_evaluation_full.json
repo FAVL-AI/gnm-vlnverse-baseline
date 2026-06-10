@@ -1,0 +1,88 @@
+{
+  "timestamp": 1779499720.5087442,
+  "config": {
+    "models": [
+      "gnm",
+      "vint"
+    ],
+    "scenes": [
+      "hospital_corridor",
+      "cluttered_navigation"
+    ],
+    "episodes": 10,
+    "backend": "mock",
+    "d_safe": 0.5,
+    "estop": 0.3,
+    "v_max": 0.3
+  },
+  "results": [
+    {
+      "model": "gnm",
+      "fleetsafe": false,
+      "n_episodes": 20,
+      "success_rate": 0.0,
+      "collision_rate": 0.35,
+      "near_miss_rate": 0.5,
+      "mean_path_m": 4.564,
+      "mean_steps": 60.9,
+      "mean_time_s": 0.65,
+      "mean_min_dist_m": 0.573,
+      "mean_interventions": 0.0,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 10.38,
+      "mean_cbf_ms": 0.0,
+      "mean_delta_vx": 0.0
+    },
+    {
+      "model": "gnm",
+      "fleetsafe": true,
+      "n_episodes": 20,
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "near_miss_rate": 0.0,
+      "mean_path_m": 3.623,
+      "mean_steps": 80.0,
+      "mean_time_s": 0.91,
+      "mean_min_dist_m": 0.809,
+      "mean_interventions": 32.0,
+      "intervention_rate": 0.4,
+      "mean_inference_ms": 10.48,
+      "mean_cbf_ms": 0.66,
+      "mean_delta_vx": 0.1212
+    },
+    {
+      "model": "vint",
+      "fleetsafe": false,
+      "n_episodes": 20,
+      "success_rate": 0.0,
+      "collision_rate": 0.5,
+      "near_miss_rate": 1.0,
+      "mean_path_m": 4.688,
+      "mean_steps": 62.5,
+      "mean_time_s": 1.97,
+      "mean_min_dist_m": 0.164,
+      "mean_interventions": 0.0,
+      "intervention_rate": 0.0,
+      "mean_inference_ms": 31.14,
+      "mean_cbf_ms": 0.0,
+      "mean_delta_vx": 0.0
+    },
+    {
+      "model": "vint",
+      "fleetsafe": true,
+      "n_episodes": 20,
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "near_miss_rate": 0.0,
+      "mean_path_m": 2.524,
+      "mean_steps": 80.0,
+      "mean_time_s": 2.36,
+      "mean_min_dist_m": 0.479,
+      "mean_interventions": 49.95,
+      "intervention_rate": 0.624,
+      "mean_inference_ms": 28.38,
+      "mean_cbf_ms": 0.81,
+      "mean_delta_vx": 0.1772
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "indexed_at": "2026-05-31T15:06:42.369431+00:00",
+  "source": "VLNTube",
+  "repo": {
+    "available": true,
+    "path": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/external/VLNTube",
+    "folders": {
+      "scene_graph": true,
+      "vistube": true,
+      "instube": true,
+      "datatube": true,
+      "splits": true
+    },
+    "usd_scene_count": 0,
+    "usd_scenes": [],
+    "python_file_count": 27,
+    "has_readme": true
+  },
+  "datasets": {
+    "data_root": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/datasets/vlntube",
+    "exists": true,
+    "usd_scene_files": 0,
+    "usd_scene_paths": [],
+    "rgb_sequences": 0,
+    "rgb_images": 0,
+    "depth_npy_files": 3,
+    "scene_graphs": 0,
+    "scene_graph_files": [],
+    "room_metadata_files": 0,
+    "room_meta_paths": [],
+    "instruction_files": 0,
+    "sample_instructions": [],
+    "trajectory_files": 0,
+    "trajectory_npy": 3,
+    "datatube_exports": 16,
+    "image_samples": 0,
+    "image_sample_paths": [],
+    "has_real_data": true
+  },
+  "summary": {
+    "repo_available": true,
+    "usd_scenes": 0,
+    "rgb_sequences": 0,
+    "rgb_images": 0,
+    "scene_graphs": 0,
+    "room_metadata_files": 0,
+    "instruction_files": 0,
+    "trajectory_files": 0,
+    "datatube_exports": 16,
+    "image_samples": 0,
+    "has_real_data": true
+  },
+  "next_actions": [
+    "Run VLNTube pipeline to generate scene data (requires Isaac Sim)",
+    "Or copy pre-built data into datasets/vlntube/prebuilt_data/"
+  ]
+}

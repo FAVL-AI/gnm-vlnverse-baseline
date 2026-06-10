@@ -1,0 +1,38 @@
+# Isaac Lab Simulator Configuration — Fleet-Safe-VLA-OS
+# NOTE: Installed Isaac Lab version is 0.54.3 (at /home/favl/ai-lab/IsaacLab).
+#       Isaac Sim version is 5.1.0.0.  The version field below reflects the
+#       actual installed package, not the upstream 2.x release numbering.
+simulator:
+  name: isaaclab
+  version: "0.54.3"
+
+  physics:
+    dt: 0.005             # 200 Hz physics
+    substeps: 1
+    gravity: [0.0, 0.0, -9.81]
+    solver: TGS           # Temporal Gauss-Seidel
+
+  scene:
+    num_envs: 4096
+    env_spacing: 3.0
+    replicate_physics: true
+
+  gpu:
+    device: "cuda:0"
+    pipeline: "gpu"
+    broadphase: "GPU"
+    num_position_iterations: 4
+    num_velocity_iterations: 1
+    contact_offset: 0.02
+    rest_offset: 0.001
+
+  rendering:
+    enable: false         # Disable during training
+    camera_resolution: [224, 224]
+
+  # Isaac Lab specific
+  isaaclab:
+    omni_kit_accept_eula: true
+    headless: true
+    enable_cameras: false
+    log_level: WARNING

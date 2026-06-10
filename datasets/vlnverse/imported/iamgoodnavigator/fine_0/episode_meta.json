@@ -1,0 +1,31 @@
+{
+  "source": "IAmGoodNavigator",
+  "task": "fine",
+  "index": 0,
+  "indexed_at": "2026-05-31T17:51:08.538485+00:00",
+  "work_dir": "runs/iamgoodnavigator/fine_0",
+  "exit_code": 0,
+  "instruction": "Start facing the window with cabinets below it. Turn left, keeping the cabinet unit with a wine rack on your right. Walk straight past the large built-in cabinet unit on your left and a living room entrance on your right. Then, turn left and go through the open doorway, stopping at its threshold facing the outdoor grassy area.",
+  "scan_id": "kujiale_0010",
+  "expected_scene_path": "external/IAmGoodNavigator/kujiale_0010/kujiale_0010.usda",
+  "scene_exists": true,
+  "evidence_valid": true,
+  "error": "2026-05-31T17:20:41Z [14,928ms] [Error] [omni.physicsschema.plugin] Rigid Body of (/World/Ground/Meshes/other/door_0000/Meshes/door_0000/group_0000) missing xformstack reset when child of another enab",
+  "error_summary": null,
+  "files": {
+    "trajectories": [
+      "kujiale_0010_4_4.csv"
+    ],
+    "metrics": [],
+    "images": [],
+    "log": "isaac_demo.log"
+  },
+  "file_counts": {
+    "trajectories": 1,
+    "metrics": 0,
+    "images": 0
+  },
+  "status": "completed",
+  "metadata_imported": true,
+  "camera_note": "FloatingCamera verified via Isaac UI screenshot"
+}

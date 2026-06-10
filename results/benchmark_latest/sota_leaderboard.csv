@@ -1,0 +1,5 @@
+condition,model,fleetsafe,n_episodes,success_rate,collision_rate,spl,near_miss_rate,min_dist_m,intervention_rate,inference_ms_p50,inference_ms_p95,cbf_ms_p50,success_ci_lo,success_ci_hi,collision_ci_lo,collision_ci_hi,spl_ci_lo,spl_ci_hi
+GNM,gnm,0,40,0.225,0.475,0.225,0.2146,0.4574,0.0,0.09,0.15,0.0,0.1,0.35,0.325,0.625,0.1,0.35
+GNM + FleetSafe,gnm,1,40,0.0,0.0,0.0,0.0,0.7854,0.5702,0.09,0.14,0.394,0.0,0.0,0.0,0.0,0.0,0.0
+VINT,vint,0,40,0.225,0.475,0.225,0.2146,0.4574,0.0,0.09,0.15,0.0,0.1,0.35,0.325,0.625,0.1,0.35
+VINT + FleetSafe,vint,1,40,0.0,0.0,0.0,0.0,0.7854,0.5702,0.09,0.13,0.378,0.0,0.0,0.0,0.0,0.0,0.0

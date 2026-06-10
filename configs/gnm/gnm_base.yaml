@@ -1,0 +1,49 @@
+model:
+  context_size: 5
+  goal_conditioned: true
+  action_dim: 2
+  hidden_dim: 256
+  encoder: mobilenet
+  out_dim: 512
+  pretrained: true
+data:
+  data_root: datasets/vlntube
+  image_size:
+  - 96
+  - 96
+  max_goal_dist: 20
+  action_std:
+  - 0.115528
+  - 0.115528
+  augment: true
+  num_workers: 4
+  pin_memory: true
+training:
+  epochs: 50
+  batch_size: 128
+  lr: 1e-4
+  weight_decay: 1e-4
+  warmup_frac: 0.05
+  max_grad_norm: 1.0
+  action_weight: 0.5
+  loss_type: mse
+  patience: 10
+  seed: 42
+checkpoint:
+  output_dir: checkpoints/gnm_base
+  log_every: 50
+wandb:
+  project: fleetsafe-gnm-vlnverse
+  entity: null
+  name: gnm_base_track_A
+  tags:
+  - gnm
+  - track_A
+  - vlnverse
+  - mobilenet
+  notes: Baseline GNM reproduction on VLNVerse/VLNTube data
+evaluation:
+  success_threshold: 3.0
+  stop_threshold: 0.15
+  max_steps: 500
+  track: A

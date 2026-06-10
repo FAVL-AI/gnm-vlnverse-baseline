@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  H1 Humanoid Robot MuJoCo Model — Fleet-Safe-VLA-OS
+  19 actuated DOF (10 leg + 8 arm + 1 torso).
+  Uses MuJoCo's built-in contact solver and constraint solver.
+
+  Joint order (actuator index 0-18):
+    0  left_hip_yaw
+    1  left_hip_roll
+    2  left_hip_pitch
+    3  left_knee
+    4  left_ankle
+    5  right_hip_yaw
+    6  right_hip_roll
+    7  right_hip_pitch
+    8  right_knee
+    9  right_ankle
+    10 left_shoulder_pitch
+    11 left_shoulder_roll
+    12 left_elbow
+    13 left_wrist
+    14 right_shoulder_pitch
+    15 right_shoulder_roll
+    16 right_elbow
+    17 right_wrist
+    18 torso_yaw (if enabled)
+-->
+<mujoco model="h1">
+
+  <compiler angle="radian" autolimits="true"/>
+
+  <option timestep="0.005" gravity="0 0 -9.81" iterations="50" solver="Newton">
+    <flag multiccd="enable"/>
+  </option>
+
+  <size njmax="1000" nconmax="500"/>
+
+  <default>
+    <joint limited="true" damping="2.0" frictionloss="0.5" armature="0.01"/>
+    <geom friction="0.8 0.02 0.001" condim="4" contype="1" conaffinity="1"/>
+    <motor ctrllimited="true" ctrlrange="-300 300"/>
+    <default class="leg_joint">
+      <joint damping="5.0"/>
+    </default>
+    <default class="ankle_joint">
+      <joint damping="1.0"/>
+      <motor ctrlrange="-40 40"/>
+    </default>
+    <default class="arm_joint">
+      <joint damping="1.0"/>
+      <motor ctrlrange="-40 40"/>
+    </default>
+  </default>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1=".3 .5 .7" rgb2="0 0 0" width="32" height="512"/>
+    <texture name="groundplane" type="2d" builtin="checker" width="512" height="512"
+             rgb1=".2 .3 .4" rgb2=".1 .2 .3" mark="edge" markrgb=".8 .8 .8"/>
+    <material name="groundplane" texture="groundplane" texrepeat="5 5" texuniform="true" reflectance=".2"/>
+    <material name="body" rgba=".2 .2 .2 1"/>
+    <material name="joint_mat" rgba="0 .4 .8 1"/>
+    <material name="foot_mat" rgba=".7 .7 .7 1"/>
+  </asset>
+
+  <worldbody>
+    <light name="sun" pos="0 0 5" dir="0 0 -1" diffuse=".8 .8 .8" specular="0.3 0.3 0.3"
+           directional="true" castshadow="true"/>
+    <geom name="floor" type="plane" size="20 20 0.1" material="groundplane" condim="6"/>
+
+    <!-- ─── Pelvis (floating base) ───────────────────────────────────────── -->
+    <body name="pelvis" pos="0 0 1.0">
+      <freejoint name="root"/>
+      <inertial pos="0 0 0" mass="10.0"
+                diaginertia="0.1 0.1 0.07"/>
+      <geom name="pelvis_geom" type="box" size="0.125 0.09 0.075" material="body"/>
+      <site name="imu_site" pos="0 0 0" size="0.01"/>
+
+      <!-- ─── Torso ────────────────────────────────────────────────────── -->
+      <body name="torso_link" pos="0 0 0.15">
+        <inertial pos="0 0 0.15" mass="15.0"
+                  diaginertia="0.2 0.18 0.08"/>
+        <geom name="torso_geom" type="box" size="0.11 0.08 0.175" pos="0 0 0.15" material="body"/>
+
+        <!-- Head -->
+        <body name="head_link" pos="0 0 0.38">
+          <inertial pos="0 0 0" mass="2.0" diaginertia="0.008 0.008 0.006"/>
+          <geom name="head_geom" type="box" size="0.09 0.08 0.09" material="body"/>
+          <site name="camera_front" pos="0.09 0 0.02" size="0.01"/>
+        </body>
+
+        <!-- ─── Left Arm ──────────────────────────────────────────────── -->
+        <body name="left_upper_arm_link" pos="0 0.2 0.28">
+          <inertial pos="0 0 -0.135" mass="2.0" diaginertia="0.01 0.01 0.001"/>
+          <geom type="cylinder" size="0.03 0.135" pos="0 0 -0.135" material="body"/>
+          <joint name="left_shoulder_pitch" class="arm_joint" axis="0 1 0" range="-3.14 3.14"/>
+
+          <body name="left_upper_arm_roll_link" pos="0 0 -0.27">
+            <inertial pos="0 0 0" mass="0.5" diaginertia="0.001 0.001 0.001"/>
+            <geom type="cylinder" size="0.025 0.02" material="joint_mat"/>
+            <joint name="left_shoulder_roll" class="arm_joint" axis="1 0 0" range="-1.57 1.57"/>
+
+            <body name="left_lower_arm_link" pos="0 0 0">
+              <inertial pos="0 0 -0.135" mass="1.5" diaginertia="0.007 0.007 0.001"/>
+              <geom type="cylinder" size="0.025 0.135" pos="0 0 -0.135" material="body"/>
+              <joint name="left_elbow" class="arm_joint" axis="0 1 0" range="-1.57 1.57"/>
+
+              <body name="left_hand_link" pos="0 0 -0.27">
+                <inertial pos="0 0 0" mass="0.5" diaginertia="0.001 0.001 0.001"/>
+                <geom type="box" size="0.03 0.04 0.015" material="body"/>
+                <joint name="left_wrist" class="arm_joint" axis="0 0 1" range="-1.57 1.57"/>
+              </body>
+            </body>
+          </body>
+        </body>
+
+        <!-- ─── Right Arm ─────────────────────────────────────────────── -->
+        <body name="right_upper_arm_link" pos="0 -0.2 0.28">
+          <inertial pos="0 0 -0.135" mass="2.0" diaginertia="0.01 0.01 0.001"/>
+          <geom type="cylinder" size="0.03 0.135" pos="0 0 -0.135" material="body"/>
+          <joint name="right_shoulder_pitch" class="arm_joint" axis="0 1 0" range="-3.14 3.14"/>
+
+          <body name="right_upper_arm_roll_link" pos="0 0 -0.27">
+            <inertial pos="0 0 0" mass="0.5" diaginertia="0.001 0.001 0.001"/>
+            <geom type="cylinder" size="0.025 0.02" material="joint_mat"/>
+            <joint name="right_shoulder_roll" class="arm_joint" axis="1 0 0" range="-1.57 1.57"/>
+
+            <body name="right_lower_arm_link" pos="0 0 0">
+              <inertial pos="0 0 -0.135" mass="1.5" diaginertia="0.007 0.007 0.001"/>
+              <geom type="cylinder" size="0.025 0.135" pos="0 0 -0.135" material="body"/>
+              <joint name="right_elbow" class="arm_joint" axis="0 1 0" range="-1.57 1.57"/>
+
+              <body name="right_hand_link" pos="0 0 -0.27">
+                <inertial pos="0 0 0" mass="0.5" diaginertia="0.001 0.001 0.001"/>
+                <geom type="box" size="0.03 0.04 0.015" material="body"/>
+                <joint name="right_wrist" class="arm_joint" axis="0 0 1" range="-1.57 1.57"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- ─── Left Leg ──────────────────────────────────────────────────── -->
+      <body name="left_hip_yaw_link" pos="0 0.09 -0.05">
+        <inertial pos="0 0 0" mass="1.5" diaginertia="0.003 0.003 0.002"/>
+        <geom type="cylinder" size="0.04 0.03" material="joint_mat"/>
+        <joint name="left_hip_yaw" class="leg_joint" axis="0 0 1" range="-0.785 0.785"/>
+
+        <body name="left_hip_roll_link" pos="0 0 0">
+          <inertial pos="0 0 0" mass="2.0" diaginertia="0.004 0.004 0.003"/>
+          <geom type="cylinder" size="0.04 0.03" material="joint_mat"/>
+          <joint name="left_hip_roll" class="leg_joint" axis="1 0 0" range="-0.523 0.523"/>
+
+          <body name="left_thigh_link" pos="0 0 0">
+            <inertial pos="0 0 -0.175" mass="5.0" diaginertia="0.05 0.05 0.005"/>
+            <geom type="box" size="0.035 0.03 0.175" pos="0 0 -0.175" material="body"/>
+            <joint name="left_hip_pitch" class="leg_joint" axis="0 1 0" range="-1.57 1.57"/>
+
+            <body name="left_shank_link" pos="0 0 -0.35">
+              <inertial pos="0 0 -0.175" mass="3.5" diaginertia="0.03 0.03 0.003"/>
+              <geom type="box" size="0.03 0.025 0.175" pos="0 0 -0.175" material="body"/>
+              <joint name="left_knee" class="leg_joint" axis="0 1 0" range="-0.087 2.443"/>
+
+              <body name="left_ankle_link" pos="0 0 -0.35">
+                <inertial pos="0.05 0 -0.03" mass="1.5" diaginertia="0.003 0.005 0.005"/>
+                <geom type="box" size="0.11 0.05 0.03" pos="0.05 0 -0.03" material="foot_mat"
+                      friction="1.0 0.005 0.0001"/>
+                <site name="left_foot_site" pos="0.05 0 -0.06" size="0.01"/>
+                <joint name="left_ankle" class="ankle_joint" axis="0 1 0" range="-0.785 0.785"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- ─── Right Leg ─────────────────────────────────────────────────── -->
+      <body name="right_hip_yaw_link" pos="0 -0.09 -0.05">
+        <inertial pos="0 0 0" mass="1.5" diaginertia="0.003 0.003 0.002"/>
+        <geom type="cylinder" size="0.04 0.03" material="joint_mat"/>
+        <joint name="right_hip_yaw" class="leg_joint" axis="0 0 1" range="-0.785 0.785"/>
+
+        <body name="right_hip_roll_link" pos="0 0 0">
+          <inertial pos="0 0 0" mass="2.0" diaginertia="0.004 0.004 0.003"/>
+          <geom type="cylinder" size="0.04 0.03" material="joint_mat"/>
+          <joint name="right_hip_roll" class="leg_joint" axis="1 0 0" range="-0.523 0.523"/>
+
+          <body name="right_thigh_link" pos="0 0 0">
+            <inertial pos="0 0 -0.175" mass="5.0" diaginertia="0.05 0.05 0.005"/>
+            <geom type="box" size="0.035 0.03 0.175" pos="0 0 -0.175" material="body"/>
+            <joint name="right_hip_pitch" class="leg_joint" axis="0 1 0" range="-1.57 1.57"/>
+
+            <body name="right_shank_link" pos="0 0 -0.35">
+              <inertial pos="0 0 -0.175" mass="3.5" diaginertia="0.03 0.03 0.003"/>
+              <geom type="box" size="0.03 0.025 0.175" pos="0 0 -0.175" material="body"/>
+              <joint name="right_knee" class="leg_joint" axis="0 1 0" range="-0.087 2.443"/>
+
+              <body name="right_ankle_link" pos="0 0 -0.35">
+                <inertial pos="0.05 0 -0.03" mass="1.5" diaginertia="0.003 0.005 0.005"/>
+                <geom type="box" size="0.11 0.05 0.03" pos="0.05 0 -0.03" material="foot_mat"
+                      friction="1.0 0.005 0.0001"/>
+                <site name="right_foot_site" pos="0.05 0 -0.06" size="0.01"/>
+                <joint name="right_ankle" class="ankle_joint" axis="0 1 0" range="-0.785 0.785"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+    </body><!-- end pelvis -->
+  </worldbody>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Actuators
+  ═══════════════════════════════════════════════════════════════ -->
+  <actuator>
+    <!-- Legs -->
+    <motor name="left_hip_yaw_motor"   joint="left_hip_yaw"   ctrlrange="-200 200"/>
+    <motor name="left_hip_roll_motor"  joint="left_hip_roll"  ctrlrange="-200 200"/>
+    <motor name="left_hip_pitch_motor" joint="left_hip_pitch" ctrlrange="-200 200"/>
+    <motor name="left_knee_motor"      joint="left_knee"      ctrlrange="-300 300"/>
+    <motor name="left_ankle_motor"     joint="left_ankle"     ctrlrange="-40 40"/>
+    <motor name="right_hip_yaw_motor"   joint="right_hip_yaw"   ctrlrange="-200 200"/>
+    <motor name="right_hip_roll_motor"  joint="right_hip_roll"  ctrlrange="-200 200"/>
+    <motor name="right_hip_pitch_motor" joint="right_hip_pitch" ctrlrange="-200 200"/>
+    <motor name="right_knee_motor"      joint="right_knee"      ctrlrange="-300 300"/>
+    <motor name="right_ankle_motor"     joint="right_ankle"     ctrlrange="-40 40"/>
+    <!-- Arms -->
+    <motor name="left_shoulder_pitch_motor" joint="left_shoulder_pitch" ctrlrange="-40 40"/>
+    <motor name="left_shoulder_roll_motor"  joint="left_shoulder_roll"  ctrlrange="-40 40"/>
+    <motor name="left_elbow_motor"          joint="left_elbow"          ctrlrange="-40 40"/>
+    <motor name="left_wrist_motor"          joint="left_wrist"          ctrlrange="-10 10"/>
+    <motor name="right_shoulder_pitch_motor" joint="right_shoulder_pitch" ctrlrange="-40 40"/>
+    <motor name="right_shoulder_roll_motor"  joint="right_shoulder_roll"  ctrlrange="-40 40"/>
+    <motor name="right_elbow_motor"          joint="right_elbow"          ctrlrange="-40 40"/>
+    <motor name="right_wrist_motor"          joint="right_wrist"          ctrlrange="-10 10"/>
+  </actuator>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Sensors
+  ═══════════════════════════════════════════════════════════════ -->
+  <sensor>
+    <!-- IMU sensors -->
+    <gyro name="imu_gyro" site="imu_site"/>
+    <accelerometer name="imu_accel" site="imu_site"/>
+    <framequat name="imu_quat" objtype="site" objname="imu_site"/>
+    <!-- Foot contact forces -->
+    <touch name="left_foot_touch" site="left_foot_site"/>
+    <touch name="right_foot_touch" site="right_foot_site"/>
+  </sensor>
+
+</mujoco>

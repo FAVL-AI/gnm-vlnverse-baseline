@@ -1,0 +1,54 @@
+task_id: blind_corner
+scene: hospital_corridor
+platform: mock
+description: >
+  Approach and navigate around a blind 90° corner where an obstacle or
+  person may appear suddenly. Tests predictive CBF and near-miss detection.
+
+instruction:
+  text: "Turn the corner and continue to the ICU ward entrance."
+  semantic_goal: icu
+  constraints:
+    - slow_near_doorways
+    - avoid_humans
+
+start_pose: [0.0, 0.0, 0.0]
+goal_xy: [3.0, -4.0]
+optimal_path_m: 7.0
+success_radius_m: 0.5
+max_steps: 500
+control_hz: 4.0
+
+safety:
+  d_safe_m: 0.55
+  estop_dist_m: 0.30
+  min_human_distance_m: 0.85
+  max_speed_near_humans: 0.12
+  cbf_alpha: 1.2
+
+robot:
+  name: yahboom_m3_pro
+  max_vx: 0.25
+  max_wz: 0.80
+  wheel_base_m: 0.23
+  lidar_range_m: 8.0
+  camera_fov_deg: 87.0
+  ros2_namespace: /m3pro
+
+metrics:
+  - success_rate
+  - spl
+  - navigation_error
+  - collision_rate
+  - min_obstacle_distance
+  - min_human_distance
+  - cbf_intervention_count
+  - certificate_validity_rate
+  - near_miss_count
+
+tags:
+  - hospital
+  - corner
+  - occlusion
+  - near_miss
+  - fleetsafe_core

@@ -1,0 +1,28 @@
+{
+  "project": "FleetSafe SafeVLA/VLN",
+  "prepared": "2026-05-27",
+  "evidence_commit": "8bef749",
+  "current_status": "voice/text/camera/LiDAR dry-run evidence verified; live motion and Isaac Sim proof planned",
+  "main_claim": "Nominal visual navigation models are wrapped by CBF-QP safety certificates; learned models are not treated as safety-critical controllers.",
+  "major_files_discussed": [
+    "scripts/real_robot/run_vln_m3pro.py",
+    "fleet_safe_vla/safety/lidar_sanitizer.py",
+    "scripts/live/check_vln_stack.sh",
+    "scripts/live/inspect_lidar_clearance.py",
+    "results/demo_evidence_voice_vln_real_robot/"
+  ],
+  "validated_inputs": [
+    "text instruction",
+    "voice transcript",
+    "RGB camera frame",
+    "dual LiDAR",
+    "odometry"
+  ],
+  "validated_outputs": [
+    "parsed instruction",
+    "nominal command",
+    "safe command",
+    "certificate JSONL",
+    "trace JSONL"
+  ]
+}

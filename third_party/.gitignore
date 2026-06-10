@@ -1,0 +1,7 @@
+# Upstream repo clones are large and not committed.
+# Run: bash scripts/visualnav/setup_visualnav.sh  to populate.
+visualnav-transformer/
+
+# But keep this README and .gitignore
+!README.md
+!.gitignore

@@ -1,0 +1,635 @@
+{
+  "world": "hunav_cafe",
+  "model": "vint",
+  "fleetsafe": false,
+  "sim_mode": "mock",
+  "aggregate": {
+    "n_episodes": 20,
+    "success_rate": 0.05,
+    "success_rate_ci95": [
+      0.0,
+      0.15
+    ],
+    "collision_rate": 0.25,
+    "collision_rate_ci95": [
+      0.1,
+      0.45
+    ],
+    "timeout_rate": 0.7,
+    "spl": 0.0043030638722098445,
+    "spl_ci95": [
+      0.0,
+      0.012909191616629534
+    ],
+    "mean_path_length_m": 38.90168969835954,
+    "mean_path_deviation_m": 1.1829488018183105,
+    "mean_min_dist_obs_m": 1.3256703385208843,
+    "mean_min_dist_people_m": 0.35800481465516876,
+    "mean_time_to_goal_s": 131.5,
+    "intervention_rate": 0.0,
+    "mean_inference_ms": 30.002247283343177,
+    "mean_cbf_ms": 3.646543394354141e-05
+  },
+  "episodes": [
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 0,
+      "seed": 4208437,
+      "start_xy": [
+        1.6280357305886772,
+        0.28308949533144734
+      ],
+      "goal_xy": [
+        -4.7633793895248395,
+        -1.0055649135446174
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.00000000000041,
+      "optimal_path_m": 6.520032010897753,
+      "path_deviation_m": 7.313209692652525,
+      "min_dist_obs_m": 0.9888540271110098,
+      "min_dist_people_m": 0.03042042723748808,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.002225024703268,
+      "cbf_ms": 3.4745510978003345e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 1,
+      "seed": 4208438,
+      "start_xy": [
+        -4.976458092928628,
+        -3.8339587463758207
+      ],
+      "goal_xy": [
+        2.4707584341435886,
+        3.6607695312786106
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 43.01639207403916,
+      "optimal_path_m": 10.565603908767853,
+      "path_deviation_m": 0.5338977417614704,
+      "min_dist_obs_m": 3.5195519782462013,
+      "min_dist_people_m": 0.21586294055144276,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.00219710636884,
+      "cbf_ms": 3.4494829985002674e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 2,
+      "seed": 4208439,
+      "start_xy": [
+        -2.52545476955384,
+        2.135731448540236
+      ],
+      "goal_xy": [
+        0.00898931206107978,
+        -3.9387677173320155
+      ],
+      "success": false,
+      "collision": true,
+      "timeout": false,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 14.01129409552481,
+      "optimal_path_m": 6.582016933966029,
+      "path_deviation_m": 0.225310218454005,
+      "min_dist_obs_m": -0.00714967261247651,
+      "min_dist_people_m": 0.05057543939050805,
+      "n_near_misses": 108,
+      "cbf_interventions": 0,
+      "total_steps": 302,
+      "inference_ms": 30.002247513432227,
+      "cbf_ms": 3.5211780040666756e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 3,
+      "seed": 4208440,
+      "start_xy": [
+        0.09749804398872186,
+        3.122987468496131
+      ],
+      "goal_xy": [
+        -3.8660895445399213,
+        -1.9300865819307345
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.000000000000284,
+      "optimal_path_m": 6.4221167796168,
+      "path_deviation_m": 0.4251382006037074,
+      "min_dist_obs_m": 1.5361740436955298,
+      "min_dist_people_m": 0.5983574594699957,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.00219230831135,
+      "cbf_ms": 3.539336224397024e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 4,
+      "seed": 4208441,
+      "start_xy": [
+        -4.86954037456563,
+        3.768736973681248
+      ],
+      "goal_xy": [
+        -4.501880013998484,
+        -2.761799456726961
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 4.891091403366113,
+      "optimal_path_m": 6.540877632980238,
+      "path_deviation_m": 0.26379680628076846,
+      "min_dist_obs_m": 3.273481791063727,
+      "min_dist_people_m": 1.1174216450713796,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.002237836209435,
+      "cbf_ms": 3.533612471073866e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 5,
+      "seed": 4208442,
+      "start_xy": [
+        1.916953361261136,
+        -3.715086064106068
+      ],
+      "goal_xy": [
+        4.092817182415638,
+        2.290688428962352
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 30.119637318475036,
+      "optimal_path_m": 6.387778223279227,
+      "path_deviation_m": 0.2905506329729568,
+      "min_dist_obs_m": 2.0724502298769605,
+      "min_dist_people_m": 0.39896840752209217,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.002222118200734,
+      "cbf_ms": 3.5561000307401024e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 6,
+      "seed": 4208443,
+      "start_xy": [
+        -4.237062638574552,
+        -3.0780095875644733
+      ],
+      "goal_xy": [
+        1.7870863091859093,
+        -2.2774077962187835
+      ],
+      "success": false,
+      "collision": true,
+      "timeout": false,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 13.27499999999996,
+      "optimal_path_m": 6.077115580035433,
+      "path_deviation_m": 0.9002283988754662,
+      "min_dist_obs_m": -0.006342712572670911,
+      "min_dist_people_m": 1.0474128665305422,
+      "n_near_misses": 14,
+      "cbf_interventions": 0,
+      "total_steps": 177,
+      "inference_ms": 30.002098909716022,
+      "cbf_ms": 3.3986696836638586e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 7,
+      "seed": 4208444,
+      "start_xy": [
+        -3.9594356343596937,
+        -3.0434588323648857
+      ],
+      "goal_xy": [
+        -4.275376398241484,
+        2.009271446388599
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 6.83788899041929,
+      "optimal_path_m": 5.062598328537874,
+      "path_deviation_m": 0.05307988087641697,
+      "min_dist_obs_m": 3.6882104769929236,
+      "min_dist_people_m": 0.7012828364042392,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.00223892837918,
+      "cbf_ms": 3.557400001833836e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 8,
+      "seed": 4208445,
+      "start_xy": [
+        0.2854818940015216,
+        -2.845954553453863
+      ],
+      "goal_xy": [
+        -3.6916786069796426,
+        -4.274958522358769
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.000000000000284,
+      "optimal_path_m": 4.226092520722981,
+      "path_deviation_m": 0.5176763176876836,
+      "min_dist_obs_m": 0.6346360057752589,
+      "min_dist_people_m": 0.07277772867430442,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.00229227570041,
+      "cbf_ms": 3.628665581345558e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 9,
+      "seed": 4208446,
+      "start_xy": [
+        -1.2976878737734943,
+        1.1090760802923576
+      ],
+      "goal_xy": [
+        0.29054202796810014,
+        -4.631159463020346
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 24.101795445537743,
+      "optimal_path_m": 5.955902812630223,
+      "path_deviation_m": 0.21468093598980975,
+      "min_dist_obs_m": 0.2696601166557707,
+      "min_dist_people_m": 0.02365477570169088,
+      "n_near_misses": 92,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.002242357392486,
+      "cbf_ms": 3.6634543600181736e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 10,
+      "seed": 4208447,
+      "start_xy": [
+        -1.0696684729330732,
+        -0.5643616074470179
+      ],
+      "goal_xy": [
+        -4.681070891623937,
+        -1.297703716755434
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.00000000000023,
+      "optimal_path_m": 3.6851076075212705,
+      "path_deviation_m": 7.347568807953309,
+      "min_dist_obs_m": 0.40068208270041095,
+      "min_dist_people_m": 0.24188382880607384,
+      "n_near_misses": 7,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.0022195832571,
+      "cbf_ms": 3.4908492428561054e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 11,
+      "seed": 4208448,
+      "start_xy": [
+        -1.2691408103704385,
+        -0.11368824197499627
+      ],
+      "goal_xy": [
+        3.366787938228825,
+        0.09422846205032087
+      ],
+      "success": false,
+      "collision": true,
+      "timeout": false,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 1.125,
+      "optimal_path_m": 4.640588833101019,
+      "path_deviation_m": 0.04490501235857814,
+      "min_dist_obs_m": -0.03151288654552459,
+      "min_dist_people_m": 0.2548445340132756,
+      "n_near_misses": 7,
+      "cbf_interventions": 0,
+      "total_steps": 15,
+      "inference_ms": 30.002588129912812,
+      "cbf_ms": 5.38692499200503e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 12,
+      "seed": 4208449,
+      "start_xy": [
+        -4.259039906482015,
+        0.6804482826897651
+      ],
+      "goal_xy": [
+        -2.547568778400616,
+        -1.9238794382606517
+      ],
+      "success": false,
+      "collision": true,
+      "timeout": false,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 20.137944025986812,
+      "optimal_path_m": 3.1163530448854813,
+      "path_deviation_m": 0.561038250775972,
+      "min_dist_obs_m": -0.008666442635701516,
+      "min_dist_people_m": 0.3635598708481875,
+      "n_near_misses": 10,
+      "cbf_interventions": 0,
+      "total_steps": 369,
+      "inference_ms": 30.00227343380643,
+      "cbf_ms": 3.716582810975672e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 13,
+      "seed": 4208450,
+      "start_xy": [
+        -4.670058439125247,
+        -3.8437088535313
+      ],
+      "goal_xy": [
+        -0.8059547803606923,
+        -4.117398480887133
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.00000000000019,
+      "optimal_path_m": 3.873784079914599,
+      "path_deviation_m": 1.6990284834635612,
+      "min_dist_obs_m": 2.630467913745688,
+      "min_dist_people_m": 0.1750080976694264,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.002171709008206,
+      "cbf_ms": 3.4586021987100445e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 14,
+      "seed": 4208451,
+      "start_xy": [
+        -3.1209960695661065,
+        0.08178345795651243
+      ],
+      "goal_xy": [
+        -2.1357629711745196,
+        3.7827803856608
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 18.312987565469466,
+      "optimal_path_m": 3.82989066646071,
+      "path_deviation_m": 0.20632757705683832,
+      "min_dist_obs_m": 0.14720477675377025,
+      "min_dist_people_m": 0.31172006611655834,
+      "n_near_misses": 125,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.002214772005875,
+      "cbf_ms": 3.564501336465279e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 15,
+      "seed": 4208452,
+      "start_xy": [
+        -1.4778082054849442,
+        3.338148487688766
+      ],
+      "goal_xy": [
+        3.8010861434939134,
+        -1.1470692522375945
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.000000000000284,
+      "optimal_path_m": 6.927041484084749,
+      "path_deviation_m": 0.5686379978994534,
+      "min_dist_obs_m": 1.4735955546966584,
+      "min_dist_people_m": 0.011975519735723514,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.00222634970366,
+      "cbf_ms": 3.49686403448383e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 16,
+      "seed": 4208453,
+      "start_xy": [
+        4.788598859406996,
+        -3.3827245270273165
+      ],
+      "goal_xy": [
+        0.9923032619183845,
+        -1.511775232974987
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.00000000000032,
+      "optimal_path_m": 4.232293884458677,
+      "path_deviation_m": 0.5057390983397013,
+      "min_dist_obs_m": 4.240613466874108,
+      "min_dist_people_m": 1.0180509394525565,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.0022535850682,
+      "cbf_ms": 3.674377997716268e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 17,
+      "seed": 4208454,
+      "start_xy": [
+        2.054645039270576,
+        -0.7629449826878769
+      ],
+      "goal_xy": [
+        -3.2162406640138554,
+        -0.6259362690039305
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 45.000000000000306,
+      "optimal_path_m": 5.272666069903683,
+      "path_deviation_m": 0.7518047477355079,
+      "min_dist_obs_m": 1.0050993029015098,
+      "min_dist_people_m": 0.10649760225826066,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 30.002242924335103,
+      "cbf_ms": 3.7255813367664814e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 18,
+      "seed": 4208455,
+      "start_xy": [
+        -1.7723456319725206,
+        3.11491645977579
+      ],
+      "goal_xy": [
+        3.467586635842178,
+        0.9762706590344017
+      ],
+      "success": false,
+      "collision": true,
+      "timeout": false,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 32.84999999999982,
+      "optimal_path_m": 5.659566770726754,
+      "path_deviation_m": 0.7235435846911538,
+      "min_dist_obs_m": -0.03283053396344099,
+      "min_dist_people_m": 0.09602650894259893,
+      "n_near_misses": 14,
+      "cbf_interventions": 0,
+      "total_steps": 438,
+      "inference_ms": 30.002258652066345,
+      "cbf_ms": 3.545723651369957e-05
+    },
+    {
+      "world": "hunav_cafe",
+      "model": "vint",
+      "fleetsafe": false,
+      "sim_mode": "mock",
+      "episode_id": 19,
+      "seed": 4208456,
+      "start_xy": [
+        -4.513609296279836,
+        1.1822754562521132
+      ],
+      "goal_xy": [
+        -1.888879767264644,
+        -0.8960469985890036
+      ],
+      "success": true,
+      "collision": false,
+      "timeout": false,
+      "time_to_goal_s": 131.5,
+      "path_length_m": 38.90168969835954,
+      "optimal_path_m": 3.3479291101785766,
+      "path_deviation_m": 0.5128136499373239,
+      "min_dist_obs_m": 0.7192272516579724,
+      "min_dist_people_m": 0.3237947987070318,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 526,
+      "inference_ms": 30.00230214928592,
+      "cbf_ms": 3.5484098322944494e-05
+    }
+  ]
+}

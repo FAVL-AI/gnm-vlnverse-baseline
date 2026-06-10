@@ -1,0 +1,9 @@
+episode_id,split,n_frames,n_rgb_frames,path_length_m,final_dist_m,min_dist_m,success,oracle_success,has_waypoint_labels,has_actions_jsonl,instruction
+cvlo_ep001,train,31,31,5.02,0.0,0.0,True,True,True,True,Navigate from the entrance to the first desk area in the open office.
+cvlo_ep002,train,31,31,6.68,0.0,0.0,True,True,True,True,Move through the open office and reach the meeting room table.
+cvlo_ep003,train,41,41,12.407,0.0,0.0,True,True,True,True,Walk through the entire office from the entrance to the end of the hallway.
+cvlo_ep004,train,41,41,8.504,0.0,0.0,True,True,True,True,Leave the meeting room and navigate to the back office desk.
+cvlo_ep005,train,41,41,11.324,0.0,0.0,True,True,True,True,Start near the first desk and navigate past the open office to the cabinet in the hallway.
+cvlo_ep006,train,41,41,12.407,0.0,0.0,True,True,True,True,Walk back from the end of the hallway to the office entrance.
+cvlo_ep007,val,41,41,8.511,0.0,0.0,True,True,True,True,Navigate from the back office desk to the meeting table.
+cvlo_ep008,val,51,51,13.39,0.0,0.0,True,True,True,True,Go from the entrance through the open office to the shelf at the far wall.

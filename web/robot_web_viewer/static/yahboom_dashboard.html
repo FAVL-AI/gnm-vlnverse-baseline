@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FleetSafe — Yahboom M3Pro Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#c9d1d9;font-family:'Segoe UI',system-ui,monospace;display:flex;flex-direction:column;height:100vh;overflow:hidden;font-size:13px}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+#header{background:#161b22;border-bottom:1px solid #21262d;padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+#header h1{font-size:16px;color:#58a6ff;font-weight:600}
+.chip{padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;letter-spacing:.04em}
+.chip-live    {background:#0d4c2d;color:#3fb950;border:1px solid #238636}
+.chip-running {background:#0d4c2d;color:#3fb950;border:1px solid #238636}
+.chip-paused  {background:#4c3b0d;color:#e3b341;border:1px solid #9e6a03}
+.chip-stopped {background:#4c1d1d;color:#f85149;border:1px solid #b91c1c}
+.chip-offline {background:#4c1d1d;color:#f85149;border:1px solid #b91c1c}
+.chip-starting{background:#162032;color:#79c0ff;border:1px solid #388bfd}
+.chip-real_robot{background:#0d4c2d;color:#3fb950;border:1px solid #238636}
+#header-right{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:11px;color:#8b949e}
+#nav-link{color:#58a6ff;text-decoration:none;font-size:12px}
+#nav-link:hover{text-decoration:underline}
+
+/* ── Source selector bar ─────────────────────────────────────────────────── */
+#source-bar{background:#0d1117;border-bottom:1px solid #21262d;padding:4px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+#source-bar .src-label{font-size:10px;color:#484f58;text-transform:uppercase;letter-spacing:.07em;margin-right:4px}
+.src-btn{padding:4px 14px;border-radius:5px;border:1px solid #30363d;background:#161b22;color:#8b949e;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .1s}
+.src-btn:hover{border-color:#58a6ff;color:#c9d1d9}
+.src-btn.active{background:#162032;border-color:#388bfd;color:#58a6ff}
+.src-dot{width:7px;height:7px;border-radius:50%;background:#484f58;flex-shrink:0}
+.src-dot.live{background:#3fb950}
+.src-dot.err {background:#f85149}
+.src-dot.connecting{background:#e3b341;animation:blink 1s step-end infinite}
+#estop-bar{margin-left:auto}
+#btn-estop-bar{padding:4px 16px;border-radius:5px;border:1px solid #b91c1c;background:#4c1d1d;color:#f85149;font-size:12px;font-weight:700;cursor:pointer}
+#btn-estop-bar:hover{background:#6e0f0f;color:#fff}
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+#body{display:flex;flex:1;overflow:hidden;gap:0}
+.panel{background:#161b22;border-right:1px solid #21262d;display:flex;flex-direction:column;overflow:hidden}
+#left-panel{width:340px;flex-shrink:0}
+#center-panel{flex:1;overflow-y:auto;padding:12px;gap:10px;display:flex;flex-direction:column}
+#right-panel{width:260px;flex-shrink:0;overflow-y:auto;padding:12px;gap:10px;display:flex;flex-direction:column;border-right:none}
+
+/* ── Section titles ──────────────────────────────────────────────────────── */
+.sec{font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;margin-top:10px}
+.sec:first-child{margin-top:0}
+
+/* ── Pose map ────────────────────────────────────────────────────────────── */
+#pose-label{padding:8px 12px;font-size:11px;color:#8b949e;border-bottom:1px solid #21262d;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+#pose-label span{color:#58a6ff;font-weight:600;font-size:12px}
+#map-canvas{display:block;width:340px;height:calc(100% - 34px);cursor:crosshair}
+
+/* ── Telemetry cards ─────────────────────────────────────────────────────── */
+.card{background:#0d1117;border:1px solid #21262d;border-radius:6px;padding:10px 12px}
+.card-title{font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px}
+.kv{display:flex;justify-content:space-between;align-items:center;padding:2px 0}
+.kv-label{font-size:11px;color:#8b949e}
+.kv-val{font-size:12px;color:#e6edf3;font-weight:500;font-family:monospace}
+.kv-val.hi{color:#f85149}
+.kv-val.ok{color:#3fb950}
+.kv-val.warn{color:#e3b341}
+
+/* ── Joint bars ──────────────────────────────────────────────────────────── */
+.jrow{margin-bottom:5px}
+.jlabel{display:flex;justify-content:space-between;font-size:10px;color:#8b949e;margin-bottom:2px}
+.jlabel span{color:#c9d1d9}
+.jbar-bg{height:5px;background:#21262d;border-radius:3px;overflow:hidden}
+.jbar-fg{height:100%;background:#58a6ff;border-radius:3px;transition:width 80ms linear;min-width:2px}
+
+/* ── Safety badge ────────────────────────────────────────────────────────── */
+#safety-badge{font-size:14px;font-weight:700;letter-spacing:.05em;padding:4px 0}
+.s-nominal  {color:#3fb950}
+.s-warning  {color:#e3b341}
+.s-emergency{color:#f85149;animation:blink 0.5s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ── Controls ────────────────────────────────────────────────────────────── */
+.btn-row{display:flex;gap:6px;flex-wrap:wrap}
+button{padding:5px 12px;border-radius:5px;border:1px solid;cursor:pointer;font-size:12px;font-weight:600;transition:opacity .1s}
+button:disabled{opacity:.35;cursor:not-allowed}
+#btn-start{background:#0d4c2d;color:#3fb950;border-color:#238636}
+#btn-stop {background:#4c3b0d;color:#e3b341;border-color:#9e6a03}
+#btn-reset{background:#162032;color:#79c0ff;border-color:#388bfd}
+#btn-estop{background:#6e0f0f;color:#fff;border-color:#f85149;width:100%;padding:8px;font-size:13px}
+button:not(:disabled):hover{opacity:.8}
+
+/* ── Isaac-only controls (hidden for real robot) ─────────────────────────── */
+#sim-controls{transition:opacity .2s}
+#sim-controls.hidden{opacity:.3;pointer-events:none}
+
+/* ── WASD pad ────────────────────────────────────────────────────────────── */
+#pad{display:grid;grid-template-columns:repeat(3,36px);grid-template-rows:repeat(2,36px);gap:4px;margin:4px 0}
+.pad-btn{background:#21262d;color:#c9d1d9;border:1px solid #30363d;border-radius:5px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;transition:background .1s}
+.pad-btn:active,.pad-btn.active{background:#388bfd;border-color:#58a6ff;color:#fff}
+#pad-w{grid-column:2}
+#pad-a{grid-column:1;grid-row:2}
+#pad-s{grid-column:2;grid-row:2}
+#pad-d{grid-column:3;grid-row:2}
+
+.cmdval{font-family:monospace;font-size:12px;display:flex;gap:8px;color:#8b949e;margin-top:4px;flex-wrap:wrap}
+.cmdval b{color:#e6edf3}
+
+/* ── Camera / scan placeholder ───────────────────────────────────────────── */
+#cam-box{background:#0d1117;border:1px dashed #30363d;border-radius:6px;padding:16px 12px;text-align:center;color:#484f58;font-size:11px;line-height:1.6}
+#cam-box a{color:#58a6ff;text-decoration:none}
+
+/* ── Topic status ────────────────────────────────────────────────────────── */
+#topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;margin-top:4px}
+.topic-row{display:flex;align-items:center;gap:4px;font-size:11px;color:#8b949e}
+.topic-dot{width:6px;height:6px;border-radius:50%;background:#484f58;flex-shrink:0}
+.topic-dot.ok{background:#3fb950}
+.topic-dot.err{background:#f85149}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+#footer{background:#161b22;border-top:1px solid #21262d;padding:4px 14px;display:flex;gap:16px;font-size:10px;color:#484f58;flex-shrink:0}
+#footer span{color:#8b949e}
+
+/* ── Docs section ────────────────────────────────────────────────────────── */
+#docs-toggle{width:100%;background:none;border:none;border-top:1px solid #21262d;color:#8b949e;font-size:11px;padding:8px 12px;text-align:left;cursor:pointer}
+#docs-toggle:hover{color:#c9d1d9;background:#21262d}
+#docs-body{display:none;padding:10px 12px;font-size:11px;color:#8b949e;line-height:1.7;border-top:1px solid #21262d}
+#docs-body code{color:#79c0ff;background:#0d1117;padding:1px 5px;border-radius:3px;font-size:10px}
+#docs-body.open{display:block}
+</style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────────────── -->
+<div id="header">
+  <h1>FleetSafe — Yahboom M3Pro</h1>
+  <span id="sim-chip" class="chip chip-starting">STARTING</span>
+  <span id="hz-label" style="font-size:11px;color:#484f58">–– Hz</span>
+  <div id="header-right">
+    <span id="robot-label" style="color:#58a6ff">–</span>
+    <a href="/" id="nav-link">← H1 Viewer</a>
+  </div>
+</div>
+
+<!-- ── Source selector ─────────────────────────────────────────────────────── -->
+<div id="source-bar">
+  <span class="src-label">Source</span>
+  <button class="src-btn active" id="src-isaac" onclick="setSource('isaac')">
+    <div class="src-dot" id="dot-isaac"></div>
+    Isaac Sim
+    <span id="chip-isaac" style="font-size:10px;color:#484f58">:8765</span>
+  </button>
+  <button class="src-btn" id="src-m3pro" onclick="setSource('real_m3pro')">
+    <div class="src-dot" id="dot-m3pro"></div>
+    Real M3Pro
+    <span id="chip-m3pro" style="font-size:10px;color:#484f58">:8766</span>
+  </button>
+  <div id="estop-bar">
+    <button id="btn-estop-bar" onclick="emergencyStop()">⬛ ESTOP (both)</button>
+  </div>
+</div>
+
+<!-- ── Body ────────────────────────────────────────────────────────────────── -->
+<div id="body">
+
+  <!-- Left: 2D pose map -->
+  <div class="panel" id="left-panel">
+    <div id="pose-label">
+      <span>Top-Down Pose Tracker</span>
+      <span id="trail-count" style="font-size:10px;color:#484f58">trail: 0 pts</span>
+    </div>
+    <canvas id="map-canvas"></canvas>
+  </div>
+
+  <!-- Center: telemetry -->
+  <div id="center-panel">
+
+    <div class="card">
+      <div class="card-title">Pose</div>
+      <div class="kv-grid">
+        <div class="kv"><span class="kv-label">x</span><span class="kv-val" id="p-x">0.000 m</span></div>
+        <div class="kv"><span class="kv-label">yaw</span><span class="kv-val" id="p-yaw">0.0°</span></div>
+        <div class="kv"><span class="kv-label">y</span><span class="kv-val" id="p-y">0.000 m</span></div>
+        <div class="kv"><span class="kv-label">pitch</span><span class="kv-val" id="p-pitch">0.0°</span></div>
+        <div class="kv"><span class="kv-label">z</span><span class="kv-val" id="p-z">0.048 m</span></div>
+        <div class="kv"><span class="kv-label">roll</span><span class="kv-val" id="p-roll">0.0°</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Velocity</div>
+      <div class="kv-grid">
+        <div class="kv"><span class="kv-label">vx</span><span class="kv-val" id="v-vx">0.000 m/s</span></div>
+        <div class="kv"><span class="kv-label">wx</span><span class="kv-val" id="v-wx">0.000 r/s</span></div>
+        <div class="kv"><span class="kv-label">vy</span><span class="kv-val" id="v-vy">0.000 m/s</span></div>
+        <div class="kv"><span class="kv-label">wy</span><span class="kv-val" id="v-wy">0.000 r/s</span></div>
+        <div class="kv"><span class="kv-label">vz</span><span class="kv-val" id="v-vz">0.000 m/s</span></div>
+        <div class="kv"><span class="kv-label">wz</span><span class="kv-val" id="v-wz">0.000 r/s</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Wheel Joints</div>
+      <div id="joint-bars"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Status</div>
+      <div class="kv-grid">
+        <div class="kv"><span class="kv-label">source</span><span class="kv-val" id="ep-source">–</span></div>
+        <div class="kv"><span class="kv-label">step</span><span class="kv-val" id="ep-step">0</span></div>
+        <div class="kv"><span class="kv-label">resets</span><span class="kv-val" id="ep-resets">0</span></div>
+        <div class="kv"><span class="kv-label">contact</span><span class="kv-val" id="ep-contact">–</span></div>
+      </div>
+    </div>
+
+    <!-- M3Pro: topic health (shown only for real robot) -->
+    <div class="card" id="topic-card" style="display:none">
+      <div class="card-title">ROS2 Topic Health</div>
+      <div id="topic-grid">
+        <div class="topic-row"><div class="topic-dot" id="td-odom"></div>/odom</div>
+        <div class="topic-row"><div class="topic-dot" id="td-joints"></div>/joint_states</div>
+        <div class="topic-row"><div class="topic-dot" id="td-scan"></div>/scan</div>
+        <div class="topic-row"><div class="topic-dot" id="td-imu"></div>/imu/data</div>
+        <div class="topic-row"><div class="topic-dot" id="td-safety"></div>/fleet_safe/status</div>
+      </div>
+    </div>
+
+  </div><!-- /center-panel -->
+
+  <!-- Right: controls + safety -->
+  <div id="right-panel" class="panel">
+
+    <!-- Isaac Sim controls (dimmed for real robot) -->
+    <div class="sec">Simulation</div>
+    <div id="sim-controls">
+      <div class="btn-row">
+        <button id="btn-start" onclick="sendToActive({type:'resume'})">▶ Resume</button>
+        <button id="btn-stop"  onclick="sendToActive({type:'pause'})">⏸ Pause</button>
+        <button id="btn-reset" onclick="sendToActive({type:'reset'})">↺ Reset</button>
+      </div>
+      <div style="font-size:10px;color:#484f58;margin-top:4px">
+        Resume/Pause/Reset applies to Isaac Sim only
+      </div>
+    </div>
+
+    <div class="sec" style="margin-top:14px">Cmd Vel (WASD / Arrow keys)</div>
+    <div id="pad">
+      <button class="pad-btn" id="pad-w" data-key="w">↑</button>
+      <button class="pad-btn" id="pad-a" data-key="a">←</button>
+      <button class="pad-btn" id="pad-s" data-key="s">↓</button>
+      <button class="pad-btn" id="pad-d" data-key="d">→</button>
+    </div>
+    <div class="cmdval">
+      <span>vx <b id="cv-vx">0.00</b></span>
+      <span>vy <b id="cv-vy">0.00</b></span>
+      <span>wz <b id="cv-wz">0.00</b></span>
+    </div>
+    <div style="font-size:10px;color:#484f58;margin-top:4px">
+      Space = zero  ·  Hold keys to drive  ·  Shift+A/D = strafe (M3Pro)
+    </div>
+
+    <button id="btn-estop" onclick="emergencyStop()" style="margin-top:8px">
+      ⬛ EMERGENCY STOP (both)
+    </button>
+
+    <div class="sec" style="margin-top:14px">Safety</div>
+    <div id="safety-badge" class="s-nominal">NOMINAL</div>
+    <div style="margin-top:6px">
+      <div class="kv"><span class="kv-label">CBF active</span><span class="kv-val" id="s-cbf">–</span></div>
+      <div class="kv"><span class="kv-label">Interventions</span><span class="kv-val" id="s-int">0</span></div>
+      <div class="kv"><span class="kv-label">Speed safe</span><span class="kv-val" id="s-speed">–</span></div>
+      <div class="kv"><span class="kv-label">E-stop</span><span class="kv-val" id="s-estop">–</span></div>
+    </div>
+
+    <!-- Scan min-dist (M3Pro only) -->
+    <div id="scan-section" style="display:none">
+      <div class="sec" style="margin-top:14px">LiDAR</div>
+      <div class="kv"><span class="kv-label">min dist</span><span class="kv-val" id="scan-min">–</span></div>
+      <div class="kv"><span class="kv-label">beams</span><span class="kv-val" id="scan-count">–</span></div>
+    </div>
+
+    <div class="sec" style="margin-top:14px">Camera Stream</div>
+    <div id="cam-box">
+      <div style="font-size:20px;margin-bottom:4px">📷</div>
+      Camera stream not yet implemented.<br/>
+      Phase 2: JPEG feed over WebSocket.
+    </div>
+
+  </div><!-- /right-panel -->
+</div><!-- /body -->
+
+<!-- ── Footer ───────────────────────────────────────────────────────────────── -->
+<div id="footer">
+  <span>Isaac: <span id="f-isaac">ws://localhost:8765</span></span>
+  <span>M3Pro: <span id="f-m3pro">ws://localhost:8766</span></span>
+  <span>Active: <span id="f-active">Isaac Sim</span></span>
+  <span>Last msg: <span id="f-last">–</span></span>
+  <span>Msgs/s: <span id="f-rate">–</span></span>
+</div>
+
+<!-- ── Architecture docs (collapsible) ─────────────────────────────────────── -->
+<button id="docs-toggle" onclick="toggleDocs()">
+  ▸ How to run — dual-source architecture — telemetry flow
+</button>
+<div id="docs-body">
+  <b style="color:#c9d1d9">Isaac Sim (digital twin)</b>:<br/>
+  Terminal 1: <code>./scripts/isaaclab/run_yahboom_bridge.sh</code> → ws://localhost:8765<br/>
+  Terminal 2: <code>./scripts/web/start_robot_viewer.sh</code><br/>
+  Browser: <code>http://localhost:8080/yahboom</code> → select "Isaac Sim" tab<br/><br/>
+
+  <b style="color:#c9d1d9">Real M3Pro (physical robot)</b>:<br/>
+  Step 1 — discover robot IP: <code>./scripts/real_robot/discover_yahboom.sh</code><br/>
+  Step 2 — verify topics: <code>./scripts/real_robot/check_m3pro_topics.sh</code><br/>
+  Terminal 1: <code>./scripts/real_robot/run_m3pro_ros2_bridge.sh</code> → ws://localhost:8766<br/>
+  Terminal 2: <code>./scripts/web/start_robot_viewer.sh</code><br/>
+  Browser: <code>http://localhost:8080/yahboom</code> → select "Real M3Pro" tab<br/><br/>
+
+  <b style="color:#c9d1d9">Robot network</b>:<br/>
+  ASK4/LAN DHCP IP is the preferred connection method.<br/>
+  <code>192.168.8.88</code> = hotspot/AP fallback only (pass <code>--hotspot</code> to scripts).<br/>
+  ROS_DOMAIN_ID must match between the robot and this machine (default: 0).<br/><br/>
+
+  <b style="color:#c9d1d9">Telemetry flow</b>:<br/>
+  Isaac Sim → bridge(:8765) → dashboard<br/>
+  M3Pro hardware → ROS2 DDS → bridge(:8766) → dashboard<br/>
+  cmd_vel goes to the active source. ESTOP sends to both.<br/><br/>
+
+  <b style="color:#c9d1d9">Helper scripts</b>:<br/>
+  <code>./scripts/real_robot/ssh_yahboom.sh</code> — SSH to robot<br/>
+  <code>./scripts/real_robot/teleop_m3pro.sh</code> — keyboard teleop<br/>
+  <code>./scripts/real_robot/remote_screen_yahboom.sh</code> — VNC/RustDesk
+</div>
+
+
+<script>
+'use strict';
+
+// ── Config ────────────────────────────────────────────────────────────────────
+const WS_ISAAC  = 'ws://localhost:8765';
+const WS_M3PRO  = 'ws://localhost:8766';
+const MAX_VX    = 0.5;
+const MAX_VY    = 0.5;   // M3Pro holonomic strafe
+const MAX_WZ    = 1.0;
+const MAX_TRAIL = 300;
+const MAP_RANGE = 6.0;
+
+// ── Connection state ──────────────────────────────────────────────────────────
+let wsIsaac = null, wsM3Pro = null;
+let isaacAlive = false, m3proAlive = false;
+let activeSource = 'isaac';   // 'isaac' | 'real_m3pro'
+
+let lastTele = null;
+let trail = [];
+let msgCount = 0, msgCountPrev = 0;
+let cmdVx = 0, cmdVy = 0, cmdWz = 0;
+let keys = {};
+let cmdInterval = null;
+
+// ── Source selector ───────────────────────────────────────────────────────────
+function setSource(src) {
+  activeSource = src;
+  document.getElementById('src-isaac').classList.toggle('active', src === 'isaac');
+  document.getElementById('src-m3pro').classList.toggle('active', src === 'real_m3pro');
+  document.getElementById('f-active').textContent = src === 'isaac' ? 'Isaac Sim' : 'Real M3Pro';
+
+  // Show/hide Isaac-only controls
+  const simCtrl = document.getElementById('sim-controls');
+  simCtrl.classList.toggle('hidden', src !== 'isaac');
+
+  // Show/hide M3Pro-only panels
+  document.getElementById('topic-card').style.display   = src === 'real_m3pro' ? ''     : 'none';
+  document.getElementById('scan-section').style.display = src === 'real_m3pro' ? ''     : 'none';
+
+  // Reset display when switching
+  trail = [];
+  lastTele = null;
+  drawMap();
+}
+
+// ── Pose map canvas ───────────────────────────────────────────────────────────
+const mapCanvas = document.getElementById('map-canvas');
+const mapCtx    = mapCanvas.getContext('2d');
+
+function resizeMap() {
+  const rect = mapCanvas.parentElement.getBoundingClientRect();
+  mapCanvas.width  = Math.floor(rect.width);
+  mapCanvas.height = Math.floor(rect.height - 34);
+}
+resizeMap();
+window.addEventListener('resize', () => { resizeMap(); drawMap(); });
+
+function worldToCanvas(wx, wy) {
+  const W = mapCanvas.width, H = mapCanvas.height;
+  const scale = Math.min(W, H) / (MAP_RANGE * 2);
+  return [W / 2 + wx * scale, H / 2 - wy * scale];
+}
+
+function drawMap() {
+  const W = mapCanvas.width, H = mapCanvas.height;
+  const scale = Math.min(W, H) / (MAP_RANGE * 2);
+  const ctx = mapCtx;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = '#161b22'; ctx.lineWidth = 1;
+  for (let gx = -MAP_RANGE; gx <= MAP_RANGE; gx++) {
+    const [sx] = worldToCanvas(gx, 0);
+    ctx.beginPath(); ctx.moveTo(sx, 0); ctx.lineTo(sx, H); ctx.stroke();
+  }
+  for (let gy = -MAP_RANGE; gy <= MAP_RANGE; gy++) {
+    const [, sy] = worldToCanvas(0, gy);
+    ctx.beginPath(); ctx.moveTo(0, sy); ctx.lineTo(W, sy); ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = '#21262d'; ctx.lineWidth = 1.5;
+  const [ox, oy] = worldToCanvas(0, 0);
+  ctx.beginPath(); ctx.moveTo(0, oy); ctx.lineTo(W, oy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox, 0); ctx.lineTo(ox, H); ctx.stroke();
+
+  ctx.fillStyle = '#30363d';
+  ctx.beginPath(); ctx.arc(ox, oy, 3, 0, 2 * Math.PI); ctx.fill();
+
+  // Trail
+  if (trail.length > 1) {
+    ctx.beginPath();
+    trail.forEach((p, i) => {
+      const [tx, ty] = worldToCanvas(p.x, p.y);
+      i === 0 ? ctx.moveTo(tx, ty) : ctx.lineTo(tx, ty);
+    });
+    ctx.strokeStyle = activeSource === 'real_m3pro' ? '#3fb95044' : '#388bfd44';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  // Robot body
+  if (lastTele) {
+    const { x, y, yaw } = lastTele.pose;
+    const [rx, ry] = worldToCanvas(x, y);
+    ctx.save();
+    ctx.translate(rx, ry);
+    ctx.rotate(-yaw);
+
+    const bw = 0.29 * scale, bh = 0.23 * scale;
+    ctx.fillStyle = '#21262d';
+    ctx.strokeStyle = activeSource === 'real_m3pro' ? '#3fb950' : '#58a6ff';
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(-bh / 2, -bw / 2, bh, bw);
+    ctx.strokeRect(-bh / 2, -bw / 2, bh, bw);
+
+    ctx.strokeStyle = '#e3b341';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(bh / 2 + 5, 0); ctx.stroke();
+    ctx.fillStyle = '#e3b341';
+    ctx.beginPath();
+    ctx.moveTo(bh / 2 + 10, 0); ctx.lineTo(bh / 2 + 2, -4); ctx.lineTo(bh / 2 + 2, 4);
+    ctx.closePath(); ctx.fill();
+
+    ctx.restore();
+
+    ctx.fillStyle = '#8b949e';
+    ctx.font = '10px monospace';
+    ctx.fillText(`(${x.toFixed(2)}, ${y.toFixed(2)})`, rx + 12, ry - 8);
+  }
+
+  document.getElementById('trail-count').textContent = `trail: ${trail.length} pts`;
+}
+
+// ── Joint bars ────────────────────────────────────────────────────────────────
+let jointEls = [];
+
+function buildJointBars(names) {
+  const cont = document.getElementById('joint-bars');
+  cont.innerHTML = '';
+  jointEls = names.map((name, i) => {
+    const row = document.createElement('div');
+    row.className = 'jrow';
+    row.innerHTML = `
+      <div class="jlabel"><span>${name}</span><span id="jv-pos-${i}">0.000 rad · 0.000 r/s</span></div>
+      <div class="jbar-bg"><div class="jbar-fg" id="jb-${i}" style="width:50%"></div></div>`;
+    cont.appendChild(row);
+    return {
+      bar: () => document.getElementById(`jb-${i}`),
+      val: () => document.getElementById(`jv-pos-${i}`),
+    };
+  });
+}
+
+function updateJoints(names, positions, velocities) {
+  if (jointEls.length !== names.length) buildJointBars(names);
+  names.forEach((_, i) => {
+    const pos = positions[i] || 0, vel = velocities[i] || 0;
+    const pct = 50 + (pos / (2 * Math.PI)) * 100;
+    if (jointEls[i]) {
+      jointEls[i].bar().style.width = Math.max(2, Math.min(98, pct)) + '%';
+      jointEls[i].val().textContent = `${pos.toFixed(3)} rad · ${vel.toFixed(2)} r/s`;
+    }
+  });
+}
+
+// ── Telemetry update ──────────────────────────────────────────────────────────
+function applyTelemetry(d) {
+  // Only display telemetry for the active source
+  const src = d.source || 'isaac';
+  if (src !== activeSource && src !== undefined) return;
+
+  lastTele = d;
+  msgCount++;
+
+  const isReal = (activeSource === 'real_m3pro');
+
+  // Header chip
+  const status = d.sim?.status || (isReal ? 'REAL_ROBOT' : 'UNKNOWN');
+  const chip = document.getElementById('sim-chip');
+  chip.textContent = isReal ? (d.ros2_connected ? 'LIVE' : 'OFFLINE') : status;
+  chip.className = 'chip chip-' + (isReal
+    ? (d.ros2_connected ? 'live' : 'offline')
+    : status.toLowerCase());
+
+  const hz = d.sim?.physics_hz || 0;
+  document.getElementById('hz-label').textContent = isReal ? '20 Hz' : `${hz} Hz`;
+  document.getElementById('robot-label').textContent = d.robot || (isReal ? 'M3Pro' : 'Yahboom');
+
+  // Pose
+  const p = d.pose || {};
+  const r2d = v => (v * 180 / Math.PI).toFixed(1);
+  document.getElementById('p-x').textContent    = (p.x || 0).toFixed(3) + ' m';
+  document.getElementById('p-y').textContent    = (p.y || 0).toFixed(3) + ' m';
+  document.getElementById('p-z').textContent    = (p.z || 0).toFixed(3) + ' m';
+  document.getElementById('p-yaw').textContent  = r2d(p.yaw   || 0) + '°';
+  document.getElementById('p-pitch').textContent= r2d(p.pitch || 0) + '°';
+  document.getElementById('p-roll').textContent = r2d(p.roll  || 0) + '°';
+
+  // Velocity
+  const v = d.velocity || {};
+  document.getElementById('v-vx').textContent = (v.vx || 0).toFixed(3) + ' m/s';
+  document.getElementById('v-vy').textContent = (v.vy || 0).toFixed(3) + ' m/s';
+  document.getElementById('v-vz').textContent = (v.vz || 0).toFixed(3) + ' m/s';
+  document.getElementById('v-wx').textContent = (v.wx || 0).toFixed(3) + ' r/s';
+  document.getElementById('v-wy').textContent = (v.wy || 0).toFixed(3) + ' r/s';
+  document.getElementById('v-wz').textContent = (v.wz || 0).toFixed(3) + ' r/s';
+
+  // Joints
+  const j = d.joints || {};
+  if (j.names?.length) updateJoints(j.names, j.positions || [], j.velocities || []);
+
+  // Status card
+  const ep = d.episode || {};
+  document.getElementById('ep-source').textContent  = isReal ? 'Real M3Pro' : 'Isaac Sim';
+  document.getElementById('ep-step').textContent    = ep.step || d.sim?.step || 0;
+  document.getElementById('ep-resets').textContent  = ep.reset_count || 0;
+  const contact = ep.contact_detected;
+  const cEl = document.getElementById('ep-contact');
+  cEl.textContent = contact == null ? '–' : (contact ? 'YES' : 'no');
+  cEl.className = 'kv-val ' + (contact ? 'hi' : 'ok');
+
+  // Safety
+  const s = d.safety || {};
+  const badge = document.getElementById('safety-badge');
+  const safeState = s.state || 'NOMINAL';
+  badge.textContent = safeState;
+  badge.className = safeState === 'NOMINAL' ? 's-nominal'
+                  : safeState === 'WARNING'  ? 's-warning'
+                  : 's-emergency';
+  document.getElementById('s-cbf').textContent   = s.cbf_active ? 'YES' : 'no';
+  document.getElementById('s-int').textContent   = s.intervention_count || 0;
+  document.getElementById('s-speed').textContent = s.is_safe ? '✓' : '⚠';
+  const estopEl = document.getElementById('s-estop');
+  estopEl.textContent  = s.estop ? 'ACTIVE' : '–';
+  estopEl.className    = 'kv-val ' + (s.estop ? 'hi' : '');
+
+  // cmd_vel echo
+  const c = d.cmd_vel || {};
+  document.getElementById('cv-vx').textContent = (c.vx || 0).toFixed(2);
+  document.getElementById('cv-vy').textContent = (c.vy || 0).toFixed(2);
+  document.getElementById('cv-wz').textContent = (c.wz || 0).toFixed(2);
+
+  // M3Pro extras: topic health
+  if (isReal && d.topics) {
+    const t = d.topics;
+    const setDot = (id, ok) => {
+      const el = document.getElementById(id);
+      if (el) { el.className = 'topic-dot ' + (ok ? 'ok' : 'err'); }
+    };
+    setDot('td-odom',   t.odom);
+    setDot('td-joints', t.joint_states);
+    setDot('td-scan',   t.scan);
+    setDot('td-imu',    t.imu);
+    setDot('td-safety', t.safety);
+  }
+
+  // M3Pro extras: scan
+  if (isReal && d.scan) {
+    const scanEl = document.getElementById('scan-min');
+    const md = d.scan.min_dist;
+    scanEl.textContent = md >= 0 ? md.toFixed(3) + ' m' : '–';
+    scanEl.className   = 'kv-val ' + (md > 0 && md < 0.30 ? 'warn' : md > 0 && md < 0.15 ? 'hi' : '');
+    document.getElementById('scan-count').textContent = d.scan.range_count || '–';
+  }
+
+  // Trail
+  if (p.x !== undefined && p.y !== undefined) {
+    trail.push({ x: p.x, y: p.y });
+    if (trail.length > MAX_TRAIL) trail.shift();
+  }
+
+  document.getElementById('f-last').textContent = new Date().toLocaleTimeString();
+  drawMap();
+}
+
+// ── WebSocket connections ─────────────────────────────────────────────────────
+let isaacRetries = 0, m3proRetries = 0;
+
+function connectIsaac() {
+  wsIsaac = new WebSocket(WS_ISAAC);
+  document.getElementById('dot-isaac').className = 'src-dot connecting';
+
+  wsIsaac.onopen = () => {
+    isaacAlive = true; isaacRetries = 0;
+    document.getElementById('dot-isaac').className = 'src-dot live';
+    document.getElementById('chip-isaac').textContent = ':8765 ✓';
+    if (activeSource === 'isaac' && !cmdInterval) startCmdLoop();
+  };
+
+  wsIsaac.onmessage = evt => {
+    try {
+      const d = JSON.parse(evt.data);
+      if (!d.source) d.source = 'isaac';  // Isaac bridge doesn't set source field
+      applyTelemetry(d);
+    } catch(e) {}
+  };
+
+  wsIsaac.onerror = () => {
+    document.getElementById('dot-isaac').className = 'src-dot err';
+  };
+
+  wsIsaac.onclose = () => {
+    isaacAlive = false;
+    document.getElementById('dot-isaac').className = 'src-dot';
+    document.getElementById('chip-isaac').textContent = ':8765 ✗';
+    if (activeSource === 'isaac') {
+      document.getElementById('sim-chip').textContent = 'OFFLINE';
+      document.getElementById('sim-chip').className = 'chip chip-offline';
+    }
+    setTimeout(connectIsaac, Math.min(30000, 2000 * ++isaacRetries));
+  };
+}
+
+function connectM3Pro() {
+  wsM3Pro = new WebSocket(WS_M3PRO);
+  document.getElementById('dot-m3pro').className = 'src-dot connecting';
+
+  wsM3Pro.onopen = () => {
+    m3proAlive = true; m3proRetries = 0;
+    document.getElementById('dot-m3pro').className = 'src-dot live';
+    document.getElementById('chip-m3pro').textContent = ':8766 ✓';
+    if (activeSource === 'real_m3pro' && !cmdInterval) startCmdLoop();
+  };
+
+  wsM3Pro.onmessage = evt => {
+    try { applyTelemetry(JSON.parse(evt.data)); } catch(e) {}
+  };
+
+  wsM3Pro.onerror = () => {
+    document.getElementById('dot-m3pro').className = 'src-dot err';
+  };
+
+  wsM3Pro.onclose = () => {
+    m3proAlive = false;
+    document.getElementById('dot-m3pro').className = 'src-dot';
+    document.getElementById('chip-m3pro').textContent = ':8766 ✗';
+    if (activeSource === 'real_m3pro') {
+      document.getElementById('sim-chip').textContent = 'OFFLINE';
+      document.getElementById('sim-chip').className = 'chip chip-offline';
+    }
+    setTimeout(connectM3Pro, Math.min(30000, 2000 * ++m3proRetries));
+  };
+}
+
+function sendToActive(obj) {
+  const ws = activeSource === 'isaac' ? wsIsaac : wsM3Pro;
+  if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj));
+}
+
+function emergencyStop() {
+  // ESTOP goes to BOTH bridges
+  const payload = JSON.stringify({ type: 'stop' });
+  if (wsIsaac && wsIsaac.readyState === WebSocket.OPEN) wsIsaac.send(payload);
+  if (wsM3Pro && wsM3Pro.readyState === WebSocket.OPEN) wsM3Pro.send(JSON.stringify({ type: 'estop' }));
+  // Zero out cmd display
+  document.getElementById('cv-vx').textContent = '0.00';
+  document.getElementById('cv-vy').textContent = '0.00';
+  document.getElementById('cv-wz').textContent = '0.00';
+  cmdVx = cmdVy = cmdWz = 0;
+}
+
+// ── Keyboard & pad controls ───────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if (['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k) || e.shiftKey) {
+    e.preventDefault();
+    keys[k] = true;
+    const id = {w:'pad-w',a:'pad-a',s:'pad-s',d:'pad-d',arrowup:'pad-w',arrowdown:'pad-s',arrowleft:'pad-a',arrowright:'pad-d'}[k];
+    if (id) document.getElementById(id)?.classList.add('active');
+  }
+});
+document.addEventListener('keyup', e => {
+  const k = e.key.toLowerCase();
+  keys[k] = false;
+  if (!e.shiftKey) keys['shift'] = false;
+  const id = {w:'pad-w',a:'pad-a',s:'pad-s',d:'pad-d',arrowup:'pad-w',arrowdown:'pad-s',arrowleft:'pad-a',arrowright:'pad-d'}[k];
+  if (id) document.getElementById(id)?.classList.remove('active');
+});
+
+document.querySelectorAll('.pad-btn').forEach(btn => {
+  const key = btn.dataset.key;
+  btn.addEventListener('mousedown',  () => { keys[key] = true;  btn.classList.add('active'); });
+  btn.addEventListener('mouseup',    () => { keys[key] = false; btn.classList.remove('active'); });
+  btn.addEventListener('mouseleave', () => { keys[key] = false; btn.classList.remove('active'); });
+  btn.addEventListener('touchstart', e => { e.preventDefault(); keys[key] = true;  btn.classList.add('active'); });
+  btn.addEventListener('touchend',   e => { e.preventDefault(); keys[key] = false; btn.classList.remove('active'); });
+});
+
+function computeCmd() {
+  let vx = 0, vy = 0, wz = 0;
+  if (keys['w'] || keys['arrowup'])    vx =  MAX_VX;
+  if (keys['s'] || keys['arrowdown'])  vx = -MAX_VX;
+  // Normal A/D = rotate; Shift+A/D = strafe (holonomic M3Pro)
+  const strafe = keys['shift'] && activeSource === 'real_m3pro';
+  if (keys['a'] || keys['arrowleft'])  { if (strafe) vy =  MAX_VY; else wz =  MAX_WZ; }
+  if (keys['d'] || keys['arrowright']) { if (strafe) vy = -MAX_VY; else wz = -MAX_WZ; }
+  if (keys[' ']) { vx = 0; vy = 0; wz = 0; }
+  return { vx, vy, wz };
+}
+
+function startCmdLoop() {
+  if (cmdInterval) return;
+  cmdInterval = setInterval(() => {
+    const { vx, vy, wz } = computeCmd();
+    if (vx !== cmdVx || vy !== cmdVy || wz !== cmdWz) {
+      cmdVx = vx; cmdVy = vy; cmdWz = wz;
+      sendToActive({ type: 'cmd_vel', vx, vy, wz });
+    }
+  }, 100);
+}
+
+// ── Msg rate counter ──────────────────────────────────────────────────────────
+setInterval(() => {
+  document.getElementById('f-rate').textContent = (msgCount - msgCountPrev) + '/s';
+  msgCountPrev = msgCount;
+}, 1000);
+
+// ── Docs toggle ───────────────────────────────────────────────────────────────
+function toggleDocs() {
+  const body = document.getElementById('docs-body');
+  const btn  = document.getElementById('docs-toggle');
+  body.classList.toggle('open');
+  btn.textContent = body.classList.contains('open')
+    ? '▾ How to run — dual-source architecture — telemetry flow'
+    : '▸ How to run — dual-source architecture — telemetry flow';
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+drawMap();
+connectIsaac();
+connectM3Pro();
+startCmdLoop();
+</script>
+</body>
+</html>

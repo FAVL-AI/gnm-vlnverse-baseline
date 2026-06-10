@@ -1,0 +1,141 @@
+# Yahboom RosMaster M3Pro — Robot Contract (CANONICAL TARGET)
+#
+# STATUS: ARCHITECTURE DEFINED — URDF/MJCF NOT YET CREATED
+#
+# The M3Pro is a 4-mecanum-wheel holonomic robot.
+# It is the actual physical hardware in this project.
+# The X3 (robot_contract.yaml) is kept as a differential-drive baseline.
+#
+# ASSETS REQUIRED before physics simulation is valid:
+#   fleet_safe_vla/robots/yahboom/urdf/yahboom_m3pro.urdf
+#   fleet_safe_vla/robots/yahboom/mjcf/yahboom_m3pro.xml
+#
+# Mecanum wheel inverse kinematics (for obs_adapter_m3pro.py):
+#   fl = (vx - vy - (lx + ly) * wz) / r
+#   fr = (vx + vy + (lx + ly) * wz) / r
+#   rl = (vx + vy - (lx + ly) * wz) / r
+#   rr = (vx - vy + (lx + ly) * wz) / r
+#   where lx = half_wheelbase, ly = half_track, r = wheel_radius
+
+robot: yahboom_rosmaster_m3pro
+
+# ── Geometry ──────────────────────────────────────────────────────────────────
+geometry:
+  wheel_type: mecanum
+  num_wheels: 4
+  wheel_radius_m: 0.048          # to be verified against physical hardware
+  wheelbase_m: 0.155             # front-rear axle distance
+  track_width_m: 0.170           # left-right wheel center distance
+  length_m: 0.290
+  width_m: 0.235
+  height_m: 0.175
+  mass_kg: 2.4                   # approximate — measure physical unit
+  camera_height_m: 0.13
+  lidar_height_m: 0.16
+
+# ── Joints ────────────────────────────────────────────────────────────────────
+joints:
+  - fl_wheel_joint   # front-left  (continuous, mecanum)
+  - fr_wheel_joint   # front-right (continuous, mecanum)
+  - rl_wheel_joint   # rear-left   (continuous, mecanum)
+  - rr_wheel_joint   # rear-right  (continuous, mecanum)
+
+# ── Observations ─────────────────────────────────────────────────────────────
+obs:
+  rgb:
+    topic: /camera/color/image_raw
+    shape: [480, 640, 3]
+    dtype: uint8
+    encoding: bgr8
+  depth:
+    topic: /camera/depth/image_rect_raw
+    shape: [480, 640]
+    dtype: float32
+    unit: meters
+    max_range_m: 5.0
+  lidar:
+    topic: /scan
+    shape: [360]
+    dtype: float32
+    angle_min_rad: -3.14159
+    angle_max_rad: 3.14159
+    range_min_m: 0.05
+    range_max_m: 12.0
+  imu:
+    topic: /imu/data
+    fields: [ax, ay, az, wx, wy, wz, qx, qy, qz, qw]
+    shape: [10]
+    dtype: float32
+  joint_states:
+    topic: /joint_states
+    joints: [fl_wheel_joint, fr_wheel_joint, rl_wheel_joint, rr_wheel_joint]
+    fields: [position, velocity, effort]
+    shape: [12]                  # 4 joints × 3 fields
+    dtype: float32
+  odom:
+    topic: /odom
+    fields: [x, y, z, qx, qy, qz, qw, vx, vy, vyaw]
+    shape: [10]
+    dtype: float32
+  cmd_vel_history:
+    length: 5
+    shape: [15]                  # 5 steps × [vx, vy, wz]
+    dtype: float32
+
+# Flat RL observation vector (excludes image/depth/lidar):
+# imu(10) + joint_states(12) + odom(10) + cmd_vel_history(15) = 47
+obs_vector_dim: 47
+
+# ── Actions ───────────────────────────────────────────────────────────────────
+# M3Pro is holonomic — 3-DoF cmd_vel vs X3's 2-DoF
+actions:
+  linear_velocity_x:
+    range: [-0.5, 0.5]    # m/s  forward/backward
+  linear_velocity_y:
+    range: [-0.5, 0.5]    # m/s  strafe left/right (holonomic)
+  angular_velocity_z:
+    range: [-1.0, 1.0]    # rad/s yaw
+  cmd_vel_topic: /cmd_vel
+  action_dim: 3            # [vx, vy, wz]  ← differs from X3 (action_dim: 2)
+
+# ── Safety ────────────────────────────────────────────────────────────────────
+safety:
+  max_linear_speed_ms: 0.5
+  max_strafe_speed_ms: 0.5
+  max_angular_speed_rads: 1.0
+  min_obstacle_distance_m: 0.3
+  emergency_stop_topic: /fleet_safe/estop
+  safety_margin_m: 0.15
+  torque_ramp_steps: 25
+
+# ── Control ───────────────────────────────────────────────────────────────────
+control:
+  frequency_hz: 10.0
+  sim_frequency_hz: 50.0
+  decimation: 5
+  sim_dt: 0.004
+
+# ── Required assets (not yet created) ─────────────────────────────────────────
+# TODO: Create these files before enabling M3Pro in simulation:
+#
+# 1. fleet_safe_vla/robots/yahboom/urdf/yahboom_m3pro.urdf
+#    - 4 mecanum wheel joints (fl/fr/rl/rr, type="continuous")
+#    - Correct inertials measured from physical hardware
+#    - Camera and LiDAR link positions per M3Pro mechanical drawing
+#
+# 2. fleet_safe_vla/robots/yahboom/mjcf/yahboom_m3pro.xml
+#    - Mecanum friction approximation (box friction cones per wheel or
+#      explicit roller geoms for each mecanum roller)
+#    - Wheel actuators: velocity type, gear ratio 1.0
+#    - Contact params tuned for mecanum slip on flat surfaces
+#
+# 3. fleet_safe_vla/robots/yahboom/controllers/obs_adapter_m3pro.py
+#    - cmd_vel [vx, vy, wz] → [fl, fr, rl, rr] wheel angular velocities
+#    - Inverse mecanum kinematics (formula above)
+#
+# 4. fleet_safe_vla/envs/isaaclab/yahboom/m3pro_env.py
+#    - ArticulationCfg with yahboom_m3pro.urdf
+#    - 4-wheel velocity targets in step()
+#
+# 5. fleet_safe_vla/envs/mujoco/yahboom/m3pro_env.py
+#    - MuJoCo env inheriting from YahboomMuJoCoBase with 4-wheel control

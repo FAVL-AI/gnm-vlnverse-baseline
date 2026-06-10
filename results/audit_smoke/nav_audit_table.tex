@@ -1,0 +1,35 @@
+\begin{table}[t]
+\centering
+\caption{M3Pro Hospital Navigation Benchmark across three world types.
+  SR = success rate; Coll = collision rate; SPL = success weighted path length;
+  Dist = mean minimum obstacle surface distance; Interv = FleetSafe intervention rate.
+  Values are mean over N episodes. \dag\ mock simulator; * real GNM/ViNT checkpoint.}
+\label{tab:m3pro_benchmark}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llcccccc}
+\toprule
+\textbf{World} & \textbf{Condition} & \textbf{SR}$\uparrow$ & \textbf{Coll}$\downarrow$ & \textbf{SPL}$\uparrow$ & \textbf{Dist (m)}$\uparrow$ & \textbf{Interv\%} & \textbf{N} \\
+\midrule
+ & GNM (baseline) & 0.0\% & 10.0\% & 0.000 & 3.808 & — & 10 \\
+ & GNM (baseline) & 0.0\% & 10.0\% & 0.000 & 3.808 & — & 10 \\
+ & \textbf{GNM + FleetSafe} & 0.0\% & \textbf{\textcolor{ProvenGreen}{0.0\%}} & 0.000 & 4.236 & 17.1\% & 10 \\
+ & \textbf{GNM + FleetSafe} & 0.0\% & \textbf{\textcolor{ProvenGreen}{0.0\%}} & 0.000 & 4.236 & 17.1\% & 10 \\
+\midrule
+ & GNM (baseline) & 22.5\% & 47.5\% & 0.225 & 0.457 & — & 40 \\
+ & \textbf{GNM + FleetSafe} & 0.0\% & \textbf{\textcolor{ProvenGreen}{0.0\%}} & 0.000 & 0.785 & 57.0\% & 40 \\
+ & VINT (baseline) & 22.5\% & 47.5\% & 0.225 & 0.457 & — & 40 \\
+ & \textbf{VINT + FleetSafe} & 0.0\% & \textbf{\textcolor{ProvenGreen}{0.0\%}} & 0.000 & 0.785 & 57.0\% & 40 \\
+\midrule
+ & GNM (baseline) & 10.0\% & 20.0\% & 0.013 & 1.867 & — & 10 \\
+ & GNM (baseline) & 10.0\% & 20.0\% & 0.013 & 1.867 & — & 10 \\
+ & \textbf{GNM + FleetSafe} & 0.0\% & \textbf{\textcolor{ProvenGreen}{0.0\%}} & 0.000 & 2.293 & 19.8\% & 10 \\
+ & \textbf{GNM + FleetSafe} & 0.0\% & \textbf{\textcolor{ProvenGreen}{0.0\%}} & 0.000 & 2.293 & 19.8\% & 10 \\
+\midrule
+ & GNM (baseline) & 0.0\% & 35.0\% & — & 0.573 & — & 20 \\
+ & \textbf{GNM + FleetSafe} & 0.0\% & \textbf{\textcolor{ProvenGreen}{0.0\%}} & — & 0.809 & 40.0\% & 20 \\
+ & VINT (baseline) & 0.0\% & 50.0\% & — & 0.164 & — & 20 \\
+ & \textbf{VINT + FleetSafe} & 0.0\% & \textbf{\textcolor{ProvenGreen}{0.0\%}} & — & 0.479 & 62.4\% & 20 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

@@ -1,0 +1,186 @@
+{
+  "config": {
+    "models": [
+      "gnm",
+      "vint"
+    ],
+    "scenes": [
+      "hospital_corridor",
+      "cluttered_navigation",
+      "straight_corridor",
+      "narrow_passage"
+    ],
+    "seeds": 10,
+    "backend": "mock",
+    "d_safe": 0.5,
+    "estop": 0.3,
+    "v_max": 0.3,
+    "timestamp": "2026-05-23T05:00:12.275564+00:00"
+  },
+  "conditions": [
+    {
+      "label": "GNM",
+      "model": "gnm",
+      "fleetsafe": false,
+      "n_episodes": 40,
+      "success_rate": 0.225,
+      "collision_rate": 0.475,
+      "spl": 0.225,
+      "near_miss_rate": 0.2146,
+      "min_dist_m": 0.4574,
+      "intervention_rate": 0.0,
+      "inference_latency_p50": 0.09,
+      "inference_latency_p95": 0.15,
+      "cbf_latency_p50": 0.0,
+      "success_ci": [
+        0.1,
+        0.35
+      ],
+      "collision_ci": [
+        0.325,
+        0.625
+      ],
+      "spl_ci": [
+        0.1,
+        0.35
+      ]
+    },
+    {
+      "label": "GNM + FleetSafe",
+      "model": "gnm",
+      "fleetsafe": true,
+      "n_episodes": 40,
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "spl": 0.0,
+      "near_miss_rate": 0.0,
+      "min_dist_m": 0.7854,
+      "intervention_rate": 0.5702,
+      "inference_latency_p50": 0.09,
+      "inference_latency_p95": 0.14,
+      "cbf_latency_p50": 0.394,
+      "success_ci": [
+        0.0,
+        0.0
+      ],
+      "collision_ci": [
+        0.0,
+        0.0
+      ],
+      "spl_ci": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "label": "VINT",
+      "model": "vint",
+      "fleetsafe": false,
+      "n_episodes": 40,
+      "success_rate": 0.225,
+      "collision_rate": 0.475,
+      "spl": 0.225,
+      "near_miss_rate": 0.2146,
+      "min_dist_m": 0.4574,
+      "intervention_rate": 0.0,
+      "inference_latency_p50": 0.09,
+      "inference_latency_p95": 0.15,
+      "cbf_latency_p50": 0.0,
+      "success_ci": [
+        0.1,
+        0.35
+      ],
+      "collision_ci": [
+        0.325,
+        0.625
+      ],
+      "spl_ci": [
+        0.1,
+        0.35
+      ]
+    },
+    {
+      "label": "VINT + FleetSafe",
+      "model": "vint",
+      "fleetsafe": true,
+      "n_episodes": 40,
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "spl": 0.0,
+      "near_miss_rate": 0.0,
+      "min_dist_m": 0.7854,
+      "intervention_rate": 0.5702,
+      "inference_latency_p50": 0.09,
+      "inference_latency_p95": 0.13,
+      "cbf_latency_p50": 0.378,
+      "success_ci": [
+        0.0,
+        0.0
+      ],
+      "collision_ci": [
+        0.0,
+        0.0
+      ],
+      "spl_ci": [
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "stats": {
+    "gnm": {
+      "baseline_collision": 0.475,
+      "safe_collision": 0.0,
+      "collision_delta": -0.475,
+      "collision_p": 1.3071845366763019e-05,
+      "collision_d": -1.3451854182690985,
+      "baseline_dist": 0.4574265373844645,
+      "safe_dist": 0.7853510646555938,
+      "dist_delta": 0.3279245272711293,
+      "dist_p": 1.8189894035458565e-12,
+      "baseline_spl": 0.225,
+      "safe_spl": 0.0,
+      "spl_delta": -0.225,
+      "intervention_rate": 0.5702083333333334
+    },
+    "vint": {
+      "baseline_collision": 0.475,
+      "safe_collision": 0.0,
+      "collision_delta": -0.475,
+      "collision_p": 1.3071845366763019e-05,
+      "collision_d": -1.3451854182690985,
+      "baseline_dist": 0.4574265373844645,
+      "safe_dist": 0.7853510646555938,
+      "dist_delta": 0.3279245272711293,
+      "dist_p": 1.8189894035458565e-12,
+      "baseline_spl": 0.225,
+      "safe_spl": 0.0,
+      "spl_delta": -0.225,
+      "intervention_rate": 0.5702083333333334
+    }
+  },
+  "literature_baselines": {
+    "GNM (Shah 2023, indoor corridors)": {
+      "success_rate": 0.45,
+      "collision_rate": null,
+      "spl": null,
+      "citation": "Shah et al. GNM: A General Navigation Model to Drive Any Robot. ICRA 2023.",
+      "notes": "Indoor office corridors subset; zero-shot on unseen robots."
+    },
+    "ViNT (Shah 2023, novel environments)": {
+      "success_rate": 0.52,
+      "collision_rate": null,
+      "spl": null,
+      "citation": "Shah et al. ViNT: A Foundation Model for Visual Navigation. CoRL 2023.",
+      "notes": "Zero-shot generalization to novel indoor environments."
+    },
+    "NoMaD (Sridhar 2023)": {
+      "success_rate": null,
+      "collision_rate": null,
+      "spl": null,
+      "citation": "Sridhar et al. NoMaD: Goal Masked Diffusion Policies for Navigation. ICRA 2024.",
+      "notes": "Exploration-focused; not designed for goal-conditioned point-nav."
+    }
+  },
+  "elapsed_s": 7.44
+}

@@ -1,0 +1,335 @@
+{
+  "world": "hospital",
+  "model": "gnm",
+  "fleetsafe": true,
+  "sim_mode": "mock",
+  "aggregate": {
+    "n_episodes": 10,
+    "success_rate": 0.0,
+    "success_rate_ci95": [
+      0.0,
+      0.0
+    ],
+    "collision_rate": 0.0,
+    "collision_rate_ci95": [
+      0.0,
+      0.0
+    ],
+    "timeout_rate": 1.0,
+    "spl": 0.0,
+    "spl_ci95": [
+      0.0,
+      0.0
+    ],
+    "mean_path_length_m": 0.0,
+    "mean_path_deviation_m": 1.3068556747344058,
+    "mean_min_dist_obs_m": 4.236070047679384,
+    "mean_min_dist_people_m": 0.4250929796381735,
+    "mean_time_to_goal_s": 0.0,
+    "intervention_rate": 0.17116666666666666,
+    "mean_inference_ms": 10.00237209390616,
+    "mean_cbf_ms": 0.02524290586976955
+  },
+  "episodes": [
+    {
+      "world": "hospital",
+      "model": "gnm",
+      "fleetsafe": true,
+      "sim_mode": "mock",
+      "episode_id": 0,
+      "seed": 4205340,
+      "start_xy": [
+        -5.39524606395355,
+        -7.201535932999799
+      ],
+      "goal_xy": [
+        -2.455860181808431,
+        -6.247922930020422
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 43.368062164634466,
+      "optimal_path_m": 3.09020502937999,
+      "path_deviation_m": 0.679457805739632,
+      "min_dist_obs_m": 4.613175918250736,
+      "min_dist_people_m": 0.25964600117943853,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002377893736897,
+      "cbf_ms": 0.010321832766445974
+    },
+    {
+      "world": "hospital",
+      "model": "gnm",
+      "fleetsafe": true,
+      "sim_mode": "mock",
+      "episode_id": 1,
+      "seed": 4205341,
+      "start_xy": [
+        2.8359781289546735,
+        1.601688331056092
+      ],
+      "goal_xy": [
+        -5.972165443590136,
+        -6.400953257170174
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 0.4616140350699429,
+      "optimal_path_m": 11.900658199619508,
+      "path_deviation_m": 0.34414469994063196,
+      "min_dist_obs_m": 0.2932265209609437,
+      "min_dist_people_m": 0.1410672911344293,
+      "n_near_misses": 576,
+      "cbf_interventions": 600,
+      "total_steps": 600,
+      "inference_ms": 10.002424534759484,
+      "cbf_ms": 0.05016160663217306
+    },
+    {
+      "world": "hospital",
+      "model": "gnm",
+      "fleetsafe": true,
+      "sim_mode": "mock",
+      "episode_id": 2,
+      "seed": 4205342,
+      "start_xy": [
+        -3.1544638307015997,
+        -4.568346466677283
+      ],
+      "goal_xy": [
+        -7.186463412627787,
+        4.821287162415366
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 37.460324101150036,
+      "optimal_path_m": 10.218720091931306,
+      "path_deviation_m": 0.3134013902436077,
+      "min_dist_obs_m": 1.803556974038098,
+      "min_dist_people_m": 0.09954595079734731,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002374545632241,
+      "cbf_ms": 0.010249984140197435
+    },
+    {
+      "world": "hospital",
+      "model": "gnm",
+      "fleetsafe": true,
+      "sim_mode": "mock",
+      "episode_id": 3,
+      "seed": 4205343,
+      "start_xy": [
+        -10.042971660738214,
+        5.007478487200437
+      ],
+      "goal_xy": [
+        -2.2145532853525456,
+        -0.8174680059825548
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 44.82500161975622,
+      "optimal_path_m": 9.757773101918328,
+      "path_deviation_m": 0.7625819448912853,
+      "min_dist_obs_m": 6.51433506657478,
+      "min_dist_people_m": 0.13689486967189218,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002326615698015,
+      "cbf_ms": 0.010079261846840382
+    },
+    {
+      "world": "hospital",
+      "model": "gnm",
+      "fleetsafe": true,
+      "sim_mode": "mock",
+      "episode_id": 4,
+      "seed": 4205344,
+      "start_xy": [
+        -3.7657589391464334,
+        5.6540470799578735
+      ],
+      "goal_xy": [
+        -3.8742676356053494,
+        -6.278782523833746
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 4.2492878730408865,
+      "optimal_path_m": 11.933322944190058,
+      "path_deviation_m": 0.15338967475877682,
+      "min_dist_obs_m": 2.134144625388644,
+      "min_dist_people_m": 0.310612846186089,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.0023353373399,
+      "cbf_ms": 0.01020164597624292
+    },
+    {
+      "world": "hospital",
+      "model": "gnm",
+      "fleetsafe": true,
+      "sim_mode": "mock",
+      "episode_id": 5,
+      "seed": 4205345,
+      "start_xy": [
+        -2.2012933114432585,
+        -9.116704420600552
+      ],
+      "goal_xy": [
+        7.098755030465043,
+        -8.997277949111878
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 34.68767543602735,
+      "optimal_path_m": 9.300815117177827,
+      "path_deviation_m": 1.267953937836231,
+      "min_dist_obs_m": 7.3685373077954575,
+      "min_dist_people_m": 0.8526089845055149,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002345882045725,
+      "cbf_ms": 0.01010443433187902
+    },
+    {
+      "world": "hospital",
+      "model": "gnm",
+      "fleetsafe": true,
+      "sim_mode": "mock",
+      "episode_id": 6,
+      "seed": 4205346,
+      "start_xy": [
+        9.632307567170766,
+        -4.561109082869283
+      ],
+      "goal_xy": [
+        7.465059450412543,
+        1.250067163553851
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 28.508371876552697,
+      "optimal_path_m": 6.202155574200354,
+      "path_deviation_m": 0.42624017186326746,
+      "min_dist_obs_m": 2.926540784208088,
+      "min_dist_people_m": 0.840118630008199,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002334175320962,
+      "cbf_ms": 0.010146598991317054
+    },
+    {
+      "world": "hospital",
+      "model": "gnm",
+      "fleetsafe": true,
+      "sim_mode": "mock",
+      "episode_id": 7,
+      "seed": 4205347,
+      "start_xy": [
+        1.3376057375901649,
+        2.6506934916695073
+      ],
+      "goal_xy": [
+        9.527566135177981,
+        3.1385956590674695
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 13.200681717854422,
+      "optimal_path_m": 8.204480473436963,
+      "path_deviation_m": 1.9436960057474655,
+      "min_dist_obs_m": 0.26834212942225033,
+      "min_dist_people_m": 0.21209457367956439,
+      "n_near_misses": 372,
+      "cbf_interventions": 427,
+      "total_steps": 600,
+      "inference_ms": 10.002497676953984,
+      "cbf_ms": 0.12095157309280087
+    },
+    {
+      "world": "hospital",
+      "model": "gnm",
+      "fleetsafe": true,
+      "sim_mode": "mock",
+      "episode_id": 8,
+      "seed": 4205348,
+      "start_xy": [
+        -6.741248011351492,
+        -8.319853571303355
+      ],
+      "goal_xy": [
+        -4.717552408459239,
+        -2.604869972002353
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 25.398931637406353,
+      "optimal_path_m": 6.062704135404009,
+      "path_deviation_m": 0.247596306716978,
+      "min_dist_obs_m": 7.246682250089213,
+      "min_dist_people_m": 0.46907611610332245,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002358701118888,
+      "cbf_ms": 0.010076866407568255
+    },
+    {
+      "world": "hospital",
+      "model": "gnm",
+      "fleetsafe": true,
+      "sim_mode": "mock",
+      "episode_id": 9,
+      "seed": 4205349,
+      "start_xy": [
+        6.962474555588184,
+        9.784397227242913
+      ],
+      "goal_xy": [
+        1.2709001933090924,
+        8.722775222425902
+      ],
+      "success": false,
+      "collision": false,
+      "timeout": true,
+      "time_to_goal_s": 0.0,
+      "path_length_m": 44.82500161975622,
+      "optimal_path_m": 5.78973747267217,
+      "path_deviation_m": 6.930094809606183,
+      "min_dist_obs_m": 9.192158900065628,
+      "min_dist_people_m": 0.9292645331159388,
+      "n_near_misses": 0,
+      "cbf_interventions": 0,
+      "total_steps": 600,
+      "inference_ms": 10.002345576455506,
+      "cbf_ms": 0.010135254512230555
+    }
+  ]
+}
