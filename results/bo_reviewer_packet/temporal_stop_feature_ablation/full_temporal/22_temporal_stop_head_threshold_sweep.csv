@@ -1,0 +1,10 @@
+prob_threshold,stable_k,policy,episodes,SR_percent,OSR_percent,NE_m,TL_m,stop_fired,mean_stop_step
+0.10,3,temporal_neural_stop_head,15,20.0,20.0,5.71,0.80,15,3.8
+0.20,3,temporal_neural_stop_head,15,20.0,20.0,5.63,1.11,15,7.0
+0.30,3,temporal_neural_stop_head,15,20.0,20.0,5.54,1.43,15,9.1
+0.40,3,temporal_neural_stop_head,15,26.7,26.7,5.11,2.67,15,16.7
+0.50,3,temporal_neural_stop_head,15,33.3,33.3,4.47,4.24,13,23.6
+0.60,3,temporal_neural_stop_head,15,26.7,33.3,4.74,4.93,11,26.0
+0.70,3,temporal_neural_stop_head,15,26.7,40.0,5.33,6.00,7,28.4
+0.80,3,temporal_neural_stop_head,15,20.0,40.0,6.33,7.72,2,32.5
+0.90,3,temporal_neural_stop_head,15,13.3,40.0,6.55,8.02,1,32.0

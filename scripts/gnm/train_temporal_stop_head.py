@@ -42,15 +42,39 @@ from scripts.gnm.ablate_deployable_stop_policy import (
 from scripts.gnm.learn_stop_head import _features, build_trace_rows
 
 
-FEATURE_DIM = 6
+FEATURE_COLUMNS = [
+    "dist_pred",
+    "wp_norm",
+    "dist_mean",
+    "wp_mean",
+    "dist_trend",
+    "wp_trend",
+]
+
+FEATURE_SET_COLUMNS = {
+    "dist_only": ["dist_pred", "dist_mean", "dist_trend"],
+    "waypoint_only": ["wp_norm", "wp_mean", "wp_trend"],
+    "dist_waypoint": ["dist_pred", "wp_norm"],
+    "full_temporal": FEATURE_COLUMNS,
+}
+
+
+def feature_columns(feature_set: str) -> list[str]:
+    if feature_set not in FEATURE_SET_COLUMNS:
+        raise ValueError(f"Unknown feature_set={feature_set!r}. Options: {sorted(FEATURE_SET_COLUMNS)}")
+    return FEATURE_SET_COLUMNS[feature_set]
+
+
+def select_feature_array(row: dict, feature_set: str) -> np.ndarray:
+    return np.asarray([float(row[name]) for name in feature_columns(feature_set)], dtype=np.float32)
 
 
 class TemporalStopHead(nn.Module):
-    def __init__(self, seq_len: int, hidden: int = 64):
+    def __init__(self, seq_len: int, feature_dim: int, hidden: int = 64):
         super().__init__()
         self.net = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(seq_len * FEATURE_DIM, hidden),
+            nn.Linear(seq_len * feature_dim, hidden),
             nn.ReLU(),
             nn.Linear(hidden, hidden // 2),
             nn.ReLU(),
@@ -66,6 +90,7 @@ def make_sequence_dataset(
     traj_dirs: list[Path],
     seq_len: int,
     window: int,
+    feature_set: str,
 ) -> tuple[np.ndarray, np.ndarray]:
     xs = []
     ys = []
@@ -76,17 +101,7 @@ def make_sequence_dataset(
 
         rows = build_trace_rows(evaluator, traj_dir, window=window)
         feats = np.asarray(
-            [
-                [
-                    r["dist_pred"],
-                    r["wp_norm"],
-                    r["dist_mean"],
-                    r["wp_mean"],
-                    r["dist_trend"],
-                    r["wp_trend"],
-                ]
-                for r in rows
-            ],
+            [select_feature_array(r, feature_set) for r in rows],
             dtype=np.float32,
         )
         labels = np.asarray([r["label_stop"] for r in rows], dtype=np.float32)
@@ -104,8 +119,9 @@ def make_sequence_dataset(
 
 
 def normalise_train(X: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    mu = X.reshape(-1, FEATURE_DIM).mean(axis=0)
-    sigma = X.reshape(-1, FEATURE_DIM).std(axis=0) + 1e-6
+    feature_dim = X.shape[-1]
+    mu = X.reshape(-1, feature_dim).mean(axis=0)
+    sigma = X.reshape(-1, feature_dim).std(axis=0) + 1e-6
     Xn = (X - mu.reshape(1, 1, -1)) / sigma.reshape(1, 1, -1)
     return Xn.astype(np.float32), mu.astype(np.float32), sigma.astype(np.float32)
 
@@ -124,7 +140,7 @@ def train_head(
     seed: int,
 ) -> TemporalStopHead:
     torch.manual_seed(seed)
-    model = TemporalStopHead(seq_len=seq_len)
+    model = TemporalStopHead(seq_len=seq_len, feature_dim=X.shape[-1])
     model.train()
 
     X_t = torch.tensor(X, dtype=torch.float32)
@@ -187,6 +203,7 @@ def rollout_temporal(
     sigma: np.ndarray,
     seq_len: int,
     window: int,
+    feature_set: str,
     prob_threshold: float,
     stable_k: int,
 ) -> dict:
@@ -215,7 +232,16 @@ def rollout_temporal(
         dist_hist.append(dist_pred)
         wp_hist.append(wp_norm)
 
-        feat = _features(dist_hist, wp_hist, window=window)
+        full_feat = _features(dist_hist, wp_hist, window=window)
+        feat_row = {
+            "dist_pred": dist_pred,
+            "wp_norm": wp_norm,
+            "dist_mean": float(full_feat[2]),
+            "wp_mean": float(full_feat[3]),
+            "dist_trend": float(full_feat[4]),
+            "wp_trend": float(full_feat[5]),
+        }
+        feat = select_feature_array(feat_row, feature_set)
         seq_feats.append(feat)
 
         p_stop = predict_stop_prob(model, seq_feats, seq_len, mu, sigma)
@@ -278,6 +304,11 @@ def main() -> None:
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--seq-len", type=int, default=8)
     parser.add_argument("--window", type=int, default=3)
+    parser.add_argument(
+        "--feature-set",
+        choices=sorted(FEATURE_SET_COLUMNS),
+        default="full_temporal",
+    )
     parser.add_argument("--stable-k", type=int, default=3)
     parser.add_argument("--epochs", type=int, default=120)
     parser.add_argument("--lr", type=float, default=1e-3)
@@ -312,7 +343,7 @@ def main() -> None:
     eval_dirs = sorted(d for d in (data_root / args.eval_split).iterdir() if d.is_dir())
 
     print(f"Building temporal dataset from {len(train_dirs)} train trajectories...", flush=True)
-    X, y = make_sequence_dataset(evaluator, train_dirs, args.seq_len, args.window)
+    X, y = make_sequence_dataset(evaluator, train_dirs, args.seq_len, args.window, args.feature_set)
     Xn, mu, sigma = normalise_train(X)
 
     print(f"Training samples={len(y)} positives={int(y.sum())}", flush=True)
@@ -359,6 +390,7 @@ def main() -> None:
                     sigma,
                     args.seq_len,
                     args.window,
+                    args.feature_set,
                     p,
                     args.stable_k,
                 )
@@ -404,7 +436,9 @@ def main() -> None:
             "model_state": stop_model.state_dict(),
             "seq_len": args.seq_len,
             "window": args.window,
-            "feature_dim": FEATURE_DIM,
+            "feature_dim": int(X.shape[-1]),
+            "feature_set": args.feature_set,
+            "feature_columns": feature_columns(args.feature_set),
             "mean": mu.tolist(),
             "std": sigma.tolist(),
             "best_threshold": best_threshold,
@@ -448,6 +482,9 @@ def main() -> None:
         "positive_stop_labels": int(y.sum()),
         "seq_len": args.seq_len,
         "window": args.window,
+        "feature_set": args.feature_set,
+        "feature_dim": int(X.shape[-1]),
+        "feature_columns": feature_columns(args.feature_set),
         "stable_k": args.stable_k,
         "epochs": args.epochs,
         "best_threshold": best_threshold,
@@ -475,6 +512,8 @@ def main() -> None:
         f"- Training samples: {int(len(y))}",
         f"- Positive stop labels: {int(y.sum())}",
         f"- Sequence length: {args.seq_len}",
+        f"- Feature set: {args.feature_set}",
+        f"- Feature columns: {', '.join(feature_columns(args.feature_set))}",
         f"- Stable K: {args.stable_k}",
         "",
         "## Interpretation",

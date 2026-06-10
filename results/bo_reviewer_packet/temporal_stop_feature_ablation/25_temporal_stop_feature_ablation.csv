@@ -1,0 +1,5 @@
+feature_set,feature_dim,feature_columns,seq_len,stable_k,best_threshold,episodes,SR_percent,OSR_percent,NE_m,TL_m,stop_fired,mean_stop_step,run_dir
+full_temporal,6,"dist_pred, wp_norm, dist_mean, wp_mean, dist_trend, wp_trend",8,3,0.50,15,33.3,33.3,4.47,4.24,13,23.6,results/bo_reviewer_packet/temporal_stop_feature_ablation/full_temporal
+dist_waypoint,2,"dist_pred, wp_norm",8,3,0.40,15,26.7,26.7,4.81,2.61,15,15.3,results/bo_reviewer_packet/temporal_stop_feature_ablation/dist_waypoint
+dist_only,3,"dist_pred, dist_mean, dist_trend",8,3,0.70,15,20.0,46.7,6.38,7.67,4,39.2,results/bo_reviewer_packet/temporal_stop_feature_ablation/dist_only
+waypoint_only,3,"wp_norm, wp_mean, wp_trend",8,3,0.70,15,20.0,40.0,6.04,6.71,6,24.7,results/bo_reviewer_packet/temporal_stop_feature_ablation/waypoint_only
