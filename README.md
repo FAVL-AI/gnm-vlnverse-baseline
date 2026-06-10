@@ -156,3 +156,21 @@ results/bo_reviewer_packet/03_success_rate_breakdown.md
 
 F. Van Laarhoven
 Newcastle University
+
+## Optional Stable Isaac Live Trajectory Demo
+
+For a stable live Isaac Sim visual demo, use the lightweight trajectory renderer. This uses real VLNVerse/GNM trajectory data but renders it in a simplified Isaac stage instead of loading the full photorealistic VLNVerse USD scene.
+
+```bash
+conda activate isaac
+python scripts/gnm/isaac_live_trajectory_demo.py
+```
+
+Expected behaviour:
+
+- Isaac Sim opens.
+- A simple scene appears with floor, walls, obstacles, start marker, goal marker, and trajectory breadcrumbs.
+- A robot cube moves along a real recorded VLNVerse trajectory.
+- The window remains open until interrupted with `Ctrl+C`.
+
+The full photorealistic VLNVerse USD scene replay remains optional and environment-dependent.
