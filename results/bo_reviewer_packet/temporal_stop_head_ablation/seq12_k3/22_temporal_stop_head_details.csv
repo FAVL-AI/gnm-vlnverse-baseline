@@ -1,0 +1,16 @@
+episode_id,stop_fired,stop_step,n_steps,final_dist_m,success,oracle_success,path_length_m,p_stop_mean,p_stop_max
+kujiale_0092_kujiale_0092_91_1,True,42,44,4.0242,False,False,7.0892,0.1638,0.9966
+kujiale_0092_kujiale_0092_9_2,True,31,33,3.6396,False,False,5.8024,0.1116,0.7908
+kujiale_0118_kujiale_0118_25_3,True,2,4,3.5273,False,False,0.5659,0.3996,0.4290
+kujiale_0118_kujiale_0118_31_0,True,13,15,5.9014,False,False,2.3280,0.2407,0.6922
+kujiale_0118_kujiale_0118_40_4,True,20,22,10.0091,False,False,3.8561,0.1090,0.3465
+kujiale_0203_kujiale_0203_15_3,True,14,16,4.8794,False,False,2.0988,0.2098,0.8229
+kujiale_0203_kujiale_0203_16_3,True,4,6,5.7195,False,False,0.6274,0.3662,0.7063
+kujiale_0203_kujiale_0203_22_4,True,26,28,5.7812,False,False,2.5709,0.2339,0.9207
+kujiale_0203_kujiale_0203_25_0,True,2,4,2.3785,True,True,0.4576,0.4642,0.5542
+kujiale_0203_kujiale_0203_32_2,True,34,36,2.6951,True,True,3.7919,0.1357,0.7742
+kujiale_0203_kujiale_0203_43_1,True,13,15,4.9698,False,False,1.4909,0.3421,0.8683
+kujiale_0203_kujiale_0203_49_3,True,2,4,6.0870,False,False,0.4690,0.6087,0.6908
+kujiale_0271_kujiale_0271_15_1,True,32,34,1.7955,True,True,7.0675,0.1201,0.8394
+kujiale_0271_kujiale_0271_24_4,True,18,20,6.9042,False,False,3.8592,0.2480,0.6594
+kujiale_0271_kujiale_0271_7_3,True,2,4,2.4406,True,True,0.3963,0.5527,0.6580
