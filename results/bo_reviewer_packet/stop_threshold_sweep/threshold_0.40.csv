@@ -1,0 +1,16 @@
+episode_id,scene,start_x,start_y,goal_x,goal_y,init_dist_m,final_dist_m,min_dist_m,success_r_m,success,oracle_suc,traj_len_m,n_steps,collisions
+kujiale_0092_kujiale_0092_91_1,kujiale_0092,1.437,6.284,-0.925,-1.44,8.078,7.909,7.909,3.0,False,False,0.196,2,0
+kujiale_0092_kujiale_0092_9_2,kujiale_0092,1.487,-2.601,1.934,6.32,8.932,8.689,8.689,3.0,False,False,0.251,2,0
+kujiale_0118_kujiale_0118_25_3,kujiale_0118,4.3,1.612,6.802,-1.012,3.626,3.527,3.527,3.0,False,False,0.566,4,0
+kujiale_0118_kujiale_0118_31_0,kujiale_0118,2.544,3.375,6.13,-3.681,7.915,7.732,7.732,3.0,False,False,0.203,2,0
+kujiale_0118_kujiale_0118_40_4,kujiale_0118,4.401,-1.763,-5.871,-0.891,10.308,10.251,10.251,3.0,False,False,0.232,2,0
+kujiale_0203_kujiale_0203_15_3,kujiale_0203,-6.966,5.573,-4.658,0.515,5.559,5.204,5.204,3.0,False,False,0.807,6,0
+kujiale_0203_kujiale_0203_16_3,kujiale_0203,-6.714,1.598,-7.638,-3.487,5.168,5.266,5.168,3.0,False,False,0.113,2,0
+kujiale_0203_kujiale_0203_22_4,kujiale_0203,-2.327,-0.565,-7.776,-2.915,5.933,5.895,5.895,3.0,False,False,0.159,2,0
+kujiale_0203_kujiale_0203_25_0,kujiale_0203,-6.563,-0.364,-7.719,-2.873,2.762,2.626,2.626,3.0,True,True,0.16,2,0
+kujiale_0203_kujiale_0203_32_2,kujiale_0203,-7.369,-0.364,-6.489,1.925,2.453,2.33,2.33,3.0,True,True,0.182,2,0
+kujiale_0203_kujiale_0203_43_1,kujiale_0203,-3.134,4.063,-3.836,-2.288,6.39,6.255,6.255,3.0,False,False,0.141,2,0
+kujiale_0203_kujiale_0203_49_3,kujiale_0203,-6.966,-0.867,-1.936,-5.044,6.538,6.392,6.392,3.0,False,False,0.151,2,0
+kujiale_0271_kujiale_0271_15_1,kujiale_0271,-3.707,1.518,2.96,2.3,6.713,6.49,6.49,3.0,False,False,0.231,2,0
+kujiale_0271_kujiale_0271_24_4,kujiale_0271,-2.662,3.01,4.273,-2.906,9.116,8.961,8.961,3.0,False,False,0.218,2,0
+kujiale_0271_kujiale_0271_7_3,kujiale_0271,-0.473,3.508,-2.654,3.398,2.184,2.347,2.184,3.0,True,True,0.259,3,0
