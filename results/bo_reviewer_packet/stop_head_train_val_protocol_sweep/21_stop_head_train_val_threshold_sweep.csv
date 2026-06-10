@@ -1,0 +1,10 @@
+prob_threshold,stable_k,policy,episodes,SR_percent,OSR_percent,NE_m,TL_m,stop_fired,mean_stop_step
+0.10,3,learned_logistic_stop_head_train_val,15,20.0,20.0,5.83,0.52,15,2.0
+0.20,3,learned_logistic_stop_head_train_val,15,20.0,20.0,5.83,0.52,15,2.0
+0.30,3,learned_logistic_stop_head_train_val,15,20.0,20.0,5.83,0.52,15,2.0
+0.40,3,learned_logistic_stop_head_train_val,15,20.0,20.0,5.76,0.61,15,2.5
+0.50,3,learned_logistic_stop_head_train_val,15,13.3,26.7,5.46,2.96,15,16.6
+0.60,3,learned_logistic_stop_head_train_val,15,20.0,40.0,6.01,6.19,9,32.6
+0.70,3,learned_logistic_stop_head_train_val,15,20.0,46.7,6.51,8.08,0,
+0.80,3,learned_logistic_stop_head_train_val,15,20.0,46.7,6.51,8.08,0,
+0.90,3,learned_logistic_stop_head_train_val,15,20.0,46.7,6.51,8.08,0,
