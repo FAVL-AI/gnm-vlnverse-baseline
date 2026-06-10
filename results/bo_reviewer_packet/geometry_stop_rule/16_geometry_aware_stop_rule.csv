@@ -1,0 +1,9 @@
+metric,value
+episodes,15
+success_radius_m,3.0
+baseline_successes,3
+baseline_sr_percent,20.0
+geometry_oracle_successes,7
+geometry_oracle_sr_percent,46.7
+baseline_ne_m,6.51
+oracle_stop_ne_m,3.79
