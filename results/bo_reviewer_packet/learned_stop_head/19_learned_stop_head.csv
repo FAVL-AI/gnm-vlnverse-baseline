@@ -1,0 +1,2 @@
+policy,episodes,SR_percent,OSR_percent,NE_m,TL_m,stop_fired,mean_stop_step
+learned_logistic_stop_head,15,13.3,20.0,6.15,2.39,14,11.9
