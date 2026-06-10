@@ -1,0 +1,2 @@
+policy,best_threshold,episodes,SR_percent,OSR_percent,NE_m,TL_m,stop_fired,mean_stop_step
+temporal_neural_stop_head,0.40,15,26.7,40.0,4.85,5.09,10,28.0

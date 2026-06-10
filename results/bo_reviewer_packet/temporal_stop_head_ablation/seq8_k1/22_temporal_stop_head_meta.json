@@ -1,0 +1,13 @@
+{
+  "train_split": "train",
+  "eval_split": "val",
+  "train_episodes": 238,
+  "eval_episodes": 15,
+  "training_samples": 12421,
+  "positive_stop_labels": 2568,
+  "seq_len": 8,
+  "window": 3,
+  "stable_k": 1,
+  "epochs": 120,
+  "best_threshold": 0.9
+}
