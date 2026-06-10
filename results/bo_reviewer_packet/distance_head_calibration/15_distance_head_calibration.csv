@@ -1,0 +1,17 @@
+metric,value
+checkpoint,best.pt
+global_step,1067
+best_val_loss,0.5022
+weights,live
+dist_pred_mean,0.3555
+dist_pred_std,0.0651
+dist_pred_min,0.2095
+dist_pred_max,0.6147
+dist_target_mean,0.4680
+dist_target_min,0.0500
+dist_target_max,1.0000
+pred_target_corr,0.0229
+healthy_corr_threshold,0.3000
+stop_threshold,0.1500
+collapse_count,0/64
+verdict,UNCALIBRATED_DISTANCE_HEAD
