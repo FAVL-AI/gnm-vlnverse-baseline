@@ -11,6 +11,7 @@ This repository contains a staged GNM-VLNVerse Track A research release ladder. 
 | v1.3 | Stable Isaac live trajectory demo | Live Isaac replay using real VLNVerse/GNM trajectory data |
 | v1.4 | Supervisor evidence pack | Answers how GNM is used, how data is labelled, why baseline SR is 20.0%, and why OSR shows stopping failure |
 | v1.5 | Dataset and scene manifest | Records 238 train trajectories, 15 validation trajectories, four Kujiale scenes, and local asset inventory |
+| v1.6 | Public README research release matrix | Summarises the staged release ladder, result table, dataset split, Isaac demo, and evidence documents |
 
 ### Key Track A results
 

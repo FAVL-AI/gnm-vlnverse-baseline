@@ -237,3 +237,6 @@ datasets/vlntube/envs
 
 # Local nested copies / extracted archives
 gnm-vlnverse-baseline-main/
+
+# Generated reproducibility logs
+results/bo_reviewer_packet/reproducibility_pack/
