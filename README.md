@@ -1,3 +1,50 @@
+<!-- GNM_VLNVERSE_RELEASE_MATRIX_START -->
+## Research release matrix
+
+This repository contains a staged GNM-VLNVerse Track A research release ladder. Each release adds a specific piece of evidence for navigation performance, stopping-policy diagnosis, ablation, Isaac live demonstration, and supervisor/reviewer validation.
+
+| Release | Focus | Main evidence |
+|---|---|---|
+| v1.0 | Track A stop-policy study | Baseline GNM, stop-policy sweep, temporal stop-head result, geometry-aware oracle |
+| v1.1 | Temporal stop-head ablation | Sequence length and stability-window ablation |
+| v1.2 | Temporal stop-head feature-set ablation | Shows full temporal runtime history is required for best deployable result |
+| v1.3 | Stable Isaac live trajectory demo | Live Isaac replay using real VLNVerse/GNM trajectory data |
+| v1.4 | Supervisor evidence pack | Answers how GNM is used, how data is labelled, why baseline SR is 20.0%, and why OSR shows stopping failure |
+| v1.5 | Dataset and scene manifest | Records 238 train trajectories, 15 validation trajectories, four Kujiale scenes, and local asset inventory |
+
+### Key Track A results
+
+| Method | SR | OSR | NE |
+|---|---:|---:|---:|
+| Baseline GNM | 20.0% | 46.7% | 6.51 m |
+| Hand-tuned waypoint gate | 26.7% | 26.7% | 5.34 m |
+| Logistic stop head, train to validation | 20.0% | 46.7% | 6.51 m |
+| Temporal neural stop head | 33.3% | 33.3% | 4.47 m |
+| Geometry-aware oracle upper bound | 46.7% | 46.7% | 3.79 m |
+
+### Dataset and scene evidence
+
+The current Track A study uses:
+
+- 238 training trajectories
+- 15 validation trajectories
+- 4 local Kujiale/VLNVerse scenes
+
+Scene-level split:
+
+| Scene ID | Train trajectories | Validation trajectories |
+|---|---:|---:|
+| kujiale_0092 | 66 | 2 |
+| kujiale_0118 | 60 | 3 |
+| kujiale_0203 | 65 | 7 |
+| kujiale_0271 | 47 | 3 |
+
+### Stable Isaac live demo
+
+```bash
+conda activate isaac
+python scripts/gnm/isaac_live_trajectory_demo.py
+
 # GNM-VLNVerse Baseline
 
 Repository: https://github.com/FAVL-AI/gnm-vlnverse-baseline
