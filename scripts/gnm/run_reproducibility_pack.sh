@@ -88,7 +88,7 @@ echo "------------------------------------------------------------"
 
 grep -q "GNM_VLNVERSE_RELEASE_MATRIX_START" README.md
 grep -q "Research release matrix" README.md
-grep -q "v1.6" README.md
+grep -q "Public README research release matrix" README.md
 grep -q "Temporal neural stop head" README.md
 grep -Eq "Stable Isaac live demo|Stable Isaac live trajectory demo" README.md
 
