@@ -5,31 +5,58 @@ import json
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "results/bo_reviewer_packet/32_end_to_end_methodology_evidence_walkthrough.md"
 
-def rel(p: str) -> Path:
-    return ROOT / p
 
-def read_text(path: str, max_lines: int = 80) -> str:
-    p = rel(path)
-    if not p.exists():
+def read_file(path: str, max_lines: int = 100) -> str:
+    file_path = ROOT / path
+    if not file_path.exists():
         return f"# Missing file: {path}\n"
-    lines = p.read_text(errors="replace").splitlines()
+    lines = file_path.read_text(errors="replace").splitlines()
     return "\n".join(lines[:max_lines])
 
+
 def read_json(path: str) -> dict:
-    p = rel(path)
-    if not p.exists():
+    file_path = ROOT / path
+    if not file_path.exists():
         return {}
-    return json.loads(p.read_text())
+    try:
+        return json.loads(file_path.read_text(errors="replace"))
+    except json.JSONDecodeError:
+        return {}
 
-meta = read_json("results/bo_reviewer_packet/temporal_stop_head/22_temporal_stop_head_meta.json")
 
-doc = f"""# End-to-End Methodology and Evidence Walkthrough — GNM-VLNVerse Track A
+def code_evidence(path: str, language: str = "python", max_lines: int = 100) -> str:
+    return (
+        f"\n### Code evidence: `{path}`\n\n"
+        f"```{language}\n"
+        f"{read_file(path, max_lines)}\n"
+        f"```\n"
+    )
+
+
+def command_block(command: str) -> str:
+    return f"\n```bash\n{command.strip()}\n```\n"
+
+
+temporal_meta = read_json("results/bo_reviewer_packet/temporal_stop_head/22_temporal_stop_head_meta.json")
+
+parts = []
+
+parts.append(
+"""# End-to-End Methodology and Evidence Walkthrough — GNM-VLNVerse Track A
 
 ## 1. Executive summary
 
-This project investigates a specific failure mode in visual robot navigation: the robot can often reach the goal area, but it does not reliably stop there.
+This document explains the full methodology, implementation, training setup, Isaac Sim setup, evaluation flow, evidence chain, and failure investigation for the GNM-VLNVerse Track A study.
 
-The baseline General Navigation Model, abbreviated as GNM, achieves:
+The goal is not only to say that the system works. The goal is to show how it works, where the evidence is stored, what code produced the evidence, what failed, how each failure was investigated, and how the final claims can be reproduced.
+
+The central finding is:
+
+> The baseline GNM model can often reach the goal region, but it does not reliably stop there.
+
+This means the project is not only about path following. It is also about stop reliability.
+
+Baseline result:
 
 | Method | Success Rate | Oracle Success Rate | Navigation Error |
 |---|---:|---:|---:|
@@ -37,86 +64,119 @@ The baseline General Navigation Model, abbreviated as GNM, achieves:
 | Temporal neural stop head | 33.3% | 33.3% | 4.47 m |
 | Geometry-aware oracle upper bound | 46.7% | 46.7% | 3.79 m |
 
-The key evidence is the gap between Success Rate and Oracle Success Rate.
+The Success Rate / Oracle Success Rate gap is the main forensic clue.
 
-Success Rate asks: did the robot finish correctly?
+Success Rate asks:
 
-Oracle Success Rate asks: did the robot ever enter the goal region during the path?
+> Did the robot finish correctly?
 
-The baseline has 20.0% Success Rate but 46.7% Oracle Success Rate. That means the robot often reaches the correct region but fails to stop there.
+Oracle Success Rate asks:
 
-This document explains the full evidence chain: dataset, environment, Isaac Sim setup, GNM integration, training, evaluation, failure analysis, ablations, mitigation, and reproducibility.
+> Did the robot enter the goal region at any point?
 
----
+The baseline has 20.0% Success Rate but 46.7% Oracle Success Rate. That means the robot often gets into the correct area, but the stopping decision is unreliable.
+"""
+)
 
-## 2. Glossary in plain English
+parts.append(
+"""## 2. Plain-English explanation of the problem
 
-| Term | Meaning |
-|---|---|
-| GNM | General Navigation Model. The visual navigation model used as the robot navigation brain. |
-| VLN | Vision-Language Navigation. Navigation using visual observations and task/goal context. |
-| VLNVerse | Benchmark/environment source used for indoor navigation trajectory evaluation. |
-| VLNTube | Local dataset layout used to organise VLNVerse-style trajectory and scene data. |
-| Trajectory | A recorded path through the environment. |
-| Waypoint | A short-term movement target predicted by the navigation model. |
-| SR | Success Rate. Final task success. |
-| OSR | Oracle Success Rate. Whether the path ever entered the goal region. |
-| NE | Navigation Error. Final distance from the goal. |
-| Isaac Sim | NVIDIA robotics simulator used to visualise live replay. |
-| USD | Universal Scene Description. 3D scene file format used by Isaac Sim. |
-| Ablation | A controlled experiment where one component is removed or changed to see what matters. |
+Imagine a robot is told to go to a kitchen door.
 
----
+If it drives near the kitchen door but keeps moving past it, it has not completed the task. It understood the rough direction, but it failed to stop at the correct time.
 
-## 3. Full system architecture
+That is the failure mode studied here.
+
+The project separates two questions:
+
+1. Can the robot reach the goal region?
+2. Can the robot stop correctly when it reaches the goal region?
+
+A normal navigation score can hide this distinction. This project exposes it using both Success Rate and Oracle Success Rate.
+"""
+)
+
+parts.append(
+"""## 3. Acronyms and unknown words explained
+
+| Term | Expanded meaning | Plain-English meaning |
+|---|---|---|
+| GNM | General Navigation Model | The robot navigation model used as the visual navigation brain. |
+| VLN | Vision-Language Navigation | A task where a robot uses visual observations and goal/task context to navigate. |
+| VLNVerse | Vision-Language Navigation benchmark environment | The benchmark/source environment used for indoor navigation trajectories. |
+| VLNTube | VLNVerse-style local dataset pipeline | The local folder/data layout used to organise trajectories and scene assets. |
+| SR | Success Rate | Did the robot stop successfully at the goal? |
+| OSR | Oracle Success Rate | Did the robot enter the goal region at any time, even if it failed to stop? |
+| NE | Navigation Error | Final distance from the goal. Lower is better. |
+| TL | Trajectory Length | How long the travelled path is. |
+| Waypoint | Short-term target point | The next small movement target predicted by the model. |
+| Trajectory | Path through time | The robot’s recorded movement path. |
+| Isaac Sim | NVIDIA Isaac Simulator | A 3D robotics simulator used here to replay real trajectory data. |
+| USD | Universal Scene Description | A 3D scene file format used by Isaac Sim. |
+| Ablation | Controlled removal/change | A test where we remove or change one part to see what matters. |
+| Oracle | Diagnostic privileged information | Information used for analysis, not allowed in deployable runtime inference. |
+"""
+)
+
+parts.append(
+"""## 4. Full architecture and data flow
 
 ```text
-+-----------------------------+
-| VLNVerse / VLNTube Dataset  |
-| train, val, envs            |
-+--------------+--------------+
-               |
-               v
-+-----------------------------+
-| Dataset Manifest Generator  |
-| generate_dataset_scene...   |
-| counts scenes + trajectories|
-+--------------+--------------+
-               |
-               v
-+-----------------------------+
-| GNM Evaluation Pipeline     |
-| loads checkpoint + config   |
-| runs visual-goal prediction |
-+--------------+--------------+
-               |
-               v
-+-----------------------------+
-| Rollout and Metrics         |
-| SR, OSR, NE, TL             |
-+--------------+--------------+
-               |
-               v
-+-----------------------------+
-| Stop-Policy Study           |
-| thresholds, waypoint gate,  |
-| logistic head, temporal head|
-+--------------+--------------+
-               |
-               v
-+-----------------------------+
-| Evidence Outputs            |
-| CSV, Markdown, JSON         |
-+--------------+--------------+
-               |
-               v
-+-----------------------------+
-| Reproducibility Pack        |
-| one command verifies chain  |
-+--------------+--------------+
-               |
-               v
-+-----------------------------+
-| Isaac Live Demo             |
-| stable trajectory replay    |
-+-----------------------------+
++--------------------------------------------------+
+|  VLNVerse / VLNTube local data                   |
+|  datasets/vlntube/train                          |
+|  datasets/vlntube/val                            |
+|  datasets/vlntube/envs                           |
++-------------------------+------------------------+
+                          |
+                          v
++--------------------------------------------------+
+|  Dataset and scene manifest generator            |
+|  scripts/gnm/generate_dataset_scene_manifest.py  |
+|  Counts train/val trajectories and scenes        |
++-------------------------+------------------------+
+                          |
+                          v
++--------------------------------------------------+
+|  GNM evaluation and rollout code                 |
+|  Loads trajectory data and GNM-derived signals   |
+|  Produces rollout traces                         |
++-------------------------+------------------------+
+                          |
+                          v
++--------------------------------------------------+
+|  Metric calculation                              |
+|  Success Rate, Oracle Success Rate,              |
+|  Navigation Error, Trajectory Length             |
++-------------------------+------------------------+
+                          |
+                          v
++--------------------------------------------------+
+|  Stop-policy investigation                       |
+|  Thresholds, waypoint gate, logistic head,       |
+|  temporal neural stop head, oracle diagnostics   |
++-------------------------+------------------------+
+                          |
+                          v
++--------------------------------------------------+
+|  Ablation studies                                |
+|  sequence length, stable-K, feature sets         |
++-------------------------+------------------------+
+                          |
+                          v
++--------------------------------------------------+
+|  Evidence packet                                 |
+|  Markdown, CSV, JSON                             |
++-------------------------+------------------------+
+                          |
+                          v
++--------------------------------------------------+
+|  One-command reproducibility                     |
+|  scripts/gnm/run_reproducibility_pack.sh         |
++-------------------------+------------------------+
+                          |
+                          v
++--------------------------------------------------+
+|  Isaac Sim live trajectory replay                |
+|  scripts/gnm/isaac_live_trajectory_demo.py       |
++--------------------------------------------------+
