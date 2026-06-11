@@ -1,0 +1,290 @@
+{
+  "data_root": "datasets/vlntube",
+  "upstream_sources": [
+    {
+      "name": "VLNVerse data on Hugging Face",
+      "url": "https://huggingface.co/datasets/Eyz/VLNVerse_data"
+    },
+    {
+      "name": "VLNVerse paper",
+      "url": "https://arxiv.org/abs/2512.19021"
+    }
+  ],
+  "train": {
+    "split": "train",
+    "path": "datasets/vlntube/train",
+    "exists": true,
+    "trajectory_count": 238,
+    "scene_counts": {
+      "kujiale_0092": 66,
+      "kujiale_0118": 60,
+      "kujiale_0203": 65,
+      "kujiale_0271": 47
+    },
+    "example_trajectories": [
+      {
+        "path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_0_3/traj_data.pkl",
+        "readable": true,
+        "error": "",
+        "keys": [
+          "position",
+          "yaw"
+        ],
+        "shapes": {
+          "position": "48x2",
+          "yaw": "48"
+        }
+      },
+      {
+        "path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_100_4/traj_data.pkl",
+        "readable": true,
+        "error": "",
+        "keys": [
+          "position",
+          "yaw"
+        ],
+        "shapes": {
+          "position": "40x2",
+          "yaw": "40"
+        }
+      },
+      {
+        "path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_102_1/traj_data.pkl",
+        "readable": true,
+        "error": "",
+        "keys": [
+          "position",
+          "yaw"
+        ],
+        "shapes": {
+          "position": "86x2",
+          "yaw": "86"
+        }
+      },
+      {
+        "path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_102_2/traj_data.pkl",
+        "readable": true,
+        "error": "",
+        "keys": [
+          "position",
+          "yaw"
+        ],
+        "shapes": {
+          "position": "30x2",
+          "yaw": "30"
+        }
+      },
+      {
+        "path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_103_1/traj_data.pkl",
+        "readable": true,
+        "error": "",
+        "keys": [
+          "position",
+          "yaw"
+        ],
+        "shapes": {
+          "position": "95x2",
+          "yaw": "95"
+        }
+      }
+    ]
+  },
+  "val": {
+    "split": "val",
+    "path": "datasets/vlntube/val",
+    "exists": true,
+    "trajectory_count": 15,
+    "scene_counts": {
+      "kujiale_0092": 2,
+      "kujiale_0118": 3,
+      "kujiale_0203": 7,
+      "kujiale_0271": 3
+    },
+    "example_trajectories": [
+      {
+        "path": "datasets/vlntube/val/kujiale_0092_kujiale_0092_91_1/traj_data.pkl",
+        "readable": true,
+        "error": "",
+        "keys": [
+          "position",
+          "yaw"
+        ],
+        "shapes": {
+          "position": "51x2",
+          "yaw": "51"
+        }
+      },
+      {
+        "path": "datasets/vlntube/val/kujiale_0092_kujiale_0092_9_2/traj_data.pkl",
+        "readable": true,
+        "error": "",
+        "keys": [
+          "position",
+          "yaw"
+        ],
+        "shapes": {
+          "position": "39x2",
+          "yaw": "39"
+        }
+      },
+      {
+        "path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_25_3/traj_data.pkl",
+        "readable": true,
+        "error": "",
+        "keys": [
+          "position",
+          "yaw"
+        ],
+        "shapes": {
+          "position": "50x2",
+          "yaw": "50"
+        }
+      },
+      {
+        "path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_31_0/traj_data.pkl",
+        "readable": true,
+        "error": "",
+        "keys": [
+          "position",
+          "yaw"
+        ],
+        "shapes": {
+          "position": "51x2",
+          "yaw": "51"
+        }
+      },
+      {
+        "path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_40_4/traj_data.pkl",
+        "readable": true,
+        "error": "",
+        "keys": [
+          "position",
+          "yaw"
+        ],
+        "shapes": {
+          "position": "69x2",
+          "yaw": "69"
+        }
+      }
+    ]
+  },
+  "envs": {
+    "path": "datasets/vlntube/envs",
+    "exists": true,
+    "scene_ids": [
+      "kujiale_0092",
+      "kujiale_0118",
+      "kujiale_0203",
+      "kujiale_0271"
+    ],
+    "scene_count": 4,
+    "items": [
+      {
+        "scene_id": "kujiale_0092",
+        "name": "kujiale_0092",
+        "path": "datasets/vlntube/envs/kujiale_0092",
+        "type": "directory",
+        "file_count": 1136,
+        "suffix_counts": {
+          ".hdr": 1,
+          ".jpeg": 2,
+          ".json": 3,
+          ".mdl": 11,
+          ".png": 457,
+          ".usd": 662
+        },
+        "sample_files": [
+          "datasets/vlntube/envs/kujiale_0092/Materials/BasicShapeMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0092/Materials/M_BaseMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0092/Materials/M_BaseMaterial_twosided.mdl",
+          "datasets/vlntube/envs/kujiale_0092/Materials/M_BaseMaterial_v2.mdl",
+          "datasets/vlntube/envs/kujiale_0092/Materials/M_BaseMaterial_v2_twosided.mdl",
+          "datasets/vlntube/envs/kujiale_0092/Materials/M_TranslucentMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0092/Materials/M_TranslucentMaterial_v2.mdl",
+          "datasets/vlntube/envs/kujiale_0092/Materials/OmniUe4Base.mdl",
+          "datasets/vlntube/envs/kujiale_0092/Materials/OmniUe4Function.mdl",
+          "datasets/vlntube/envs/kujiale_0092/Materials/OmniUe4Translucent.mdl"
+        ]
+      },
+      {
+        "scene_id": "kujiale_0118",
+        "name": "kujiale_0118",
+        "path": "datasets/vlntube/envs/kujiale_0118",
+        "type": "directory",
+        "file_count": 707,
+        "suffix_counts": {
+          ".jpeg": 1,
+          ".json": 3,
+          ".mdl": 11,
+          ".png": 234,
+          ".usd": 458
+        },
+        "sample_files": [
+          "datasets/vlntube/envs/kujiale_0118/Materials/BasicShapeMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0118/Materials/M_BaseMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0118/Materials/M_BaseMaterial_twosided.mdl",
+          "datasets/vlntube/envs/kujiale_0118/Materials/M_BaseMaterial_v2.mdl",
+          "datasets/vlntube/envs/kujiale_0118/Materials/M_BaseMaterial_v2_twosided.mdl",
+          "datasets/vlntube/envs/kujiale_0118/Materials/M_TranslucentMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0118/Materials/M_TranslucentMaterial_v2.mdl",
+          "datasets/vlntube/envs/kujiale_0118/Materials/OmniUe4Base.mdl",
+          "datasets/vlntube/envs/kujiale_0118/Materials/OmniUe4Function.mdl",
+          "datasets/vlntube/envs/kujiale_0118/Materials/OmniUe4Translucent.mdl"
+        ]
+      },
+      {
+        "scene_id": "kujiale_0203",
+        "name": "kujiale_0203",
+        "path": "datasets/vlntube/envs/kujiale_0203",
+        "type": "directory",
+        "file_count": 1210,
+        "suffix_counts": {
+          ".hdr": 1,
+          ".jpeg": 1,
+          ".json": 3,
+          ".mdl": 11,
+          ".png": 607,
+          ".usd": 587
+        },
+        "sample_files": [
+          "datasets/vlntube/envs/kujiale_0203/Materials/BasicShapeMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0203/Materials/M_BaseMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0203/Materials/M_BaseMaterial_twosided.mdl",
+          "datasets/vlntube/envs/kujiale_0203/Materials/M_BaseMaterial_v2.mdl",
+          "datasets/vlntube/envs/kujiale_0203/Materials/M_BaseMaterial_v2_twosided.mdl",
+          "datasets/vlntube/envs/kujiale_0203/Materials/M_TranslucentMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0203/Materials/M_TranslucentMaterial_v2.mdl",
+          "datasets/vlntube/envs/kujiale_0203/Materials/OmniUe4Base.mdl",
+          "datasets/vlntube/envs/kujiale_0203/Materials/OmniUe4Function.mdl",
+          "datasets/vlntube/envs/kujiale_0203/Materials/OmniUe4Translucent.mdl"
+        ]
+      },
+      {
+        "scene_id": "kujiale_0271",
+        "name": "kujiale_0271",
+        "path": "datasets/vlntube/envs/kujiale_0271",
+        "type": "directory",
+        "file_count": 1202,
+        "suffix_counts": {
+          ".jpeg": 1,
+          ".json": 3,
+          ".mdl": 11,
+          ".png": 521,
+          ".usd": 666
+        },
+        "sample_files": [
+          "datasets/vlntube/envs/kujiale_0271/Materials/BasicShapeMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0271/Materials/M_BaseMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0271/Materials/M_BaseMaterial_twosided.mdl",
+          "datasets/vlntube/envs/kujiale_0271/Materials/M_BaseMaterial_v2.mdl",
+          "datasets/vlntube/envs/kujiale_0271/Materials/M_BaseMaterial_v2_twosided.mdl",
+          "datasets/vlntube/envs/kujiale_0271/Materials/M_TranslucentMaterial.mdl",
+          "datasets/vlntube/envs/kujiale_0271/Materials/M_TranslucentMaterial_v2.mdl",
+          "datasets/vlntube/envs/kujiale_0271/Materials/OmniUe4Base.mdl",
+          "datasets/vlntube/envs/kujiale_0271/Materials/OmniUe4Function.mdl",
+          "datasets/vlntube/envs/kujiale_0271/Materials/OmniUe4Translucent.mdl"
+        ]
+      }
+    ]
+  }
+}
