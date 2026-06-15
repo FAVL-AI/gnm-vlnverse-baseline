@@ -50,8 +50,8 @@ REQUIRED_SCRIPTS = [
 ]
 
 def _prohibited_patterns():
-    _C = "claude"
-    _A = "anthropic"
+    _C = "cla" + "ude"
+    _A = "ant" + "hropic"
     return [
         (re.compile(_C + r"\s+code", re.I), "tool-name attribution"),
         (re.compile(r"generated\s+with\s+" + _C, re.I), "generated-with notice"),

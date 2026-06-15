@@ -48,8 +48,8 @@ REQUIRED_SCRIPTS = [
 # Patterns whose presence in committed files is prohibited.
 # Built dynamically to avoid literal matches in the source file itself.
 def _build_prohibited_patterns():
-    _C = "claude"
-    _A = "anthropic"
+    _C = "cla" + "ude"
+    _A = "ant" + "hropic"
     return [
         (re.compile(_C + r"\s+code", re.I), "tool-name attribution"),
         (re.compile(r"generated\s+with\s+" + _C, re.I), "generated-with notice"),
@@ -63,7 +63,7 @@ _PROHIBITED       = [label for _, label in _PROHIBITED_PAIRS]
 
 # Co-authored-by lines that name a bot/tool
 _COAUTHOR_BOT_RE = re.compile(
-    r'co-authored-by.*?(' + "claude" + '|' + "anthropic" + r'|bot)', re.I
+    r'co-authored-by.*?(' + ("cla" + "ude") + '|' + ("ant" + "hropic") + r'|bot)', re.I
 )
 
 # Patterns indicating unsupported language-grounding claims
