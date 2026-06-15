@@ -1,0 +1,142 @@
+{
+  "audit_timestamp": "2026-06-15T03:44:36+00:00",
+  "audited_roots": 4,
+  "gate_b_decision": "READY_FOR_GENERATED_LANGUAGE_BENCHMARK_EVALUATION",
+  "gate_b_rationale": "Datasets ['vlntube_fleetsafe'] have 253 upstream-generated instructions (method: gemini-2.5-flash_from_trajectory_frames; from trajectory frames by Gemini API, sourced from Eyz/VLNVerse_data) colocated with real images and independently established goal_pos targets for 253 episodes. goal_pos is derived from scene-graph A* geometry independent of any instruction or retrieval system. Instruction generator (Gemini) saw trajectory frames including final frames (INDIRECT_TARGET_VISUAL_EXPOSURE); goal_pos was NOT in the generator prompt. Instructions were generated before Track B CLIP retrieval was implemented \u2014 no circular dependency with retrieval system. Leakage risk: low_standard_vln (endpoint description is standard VLN task formulation). CLAIM BOUNDARY: These are upstream Gemini-generated instructions, not human-authored benchmark language. Do not make human-language-generalisation claims without a human-authored subset.",
+  "datasets": {
+    "custom_vln_office": {
+      "dataset_id": "custom_vln_office",
+      "dataset_root": "/home/favl/robotics/gnm-vlnverse-language/datasets/custom_vln_office",
+      "dataset_type": "synthetic_dry_run",
+      "source_classification": "project_authored_synthetic",
+      "evidence": "provenance.json per episode + dataset_provenance.json",
+      "splits_available": [
+        "train",
+        "val"
+      ],
+      "episode_count": 8,
+      "instruction_count": 8,
+      "image_count": 318,
+      "trajectory_count": 8,
+      "has_goal_pos": true,
+      "has_language_instructions": true,
+      "has_real_images": false,
+      "has_independent_targets": false,
+      "missing_fields": [
+        "independent_target_annotation",
+        "real_images"
+      ],
+      "dataset_provenance": {
+        "schema_version": "1.0",
+        "dataset_id": "custom_vln_office",
+        "image_source": "synthetic_gradient_dry_run",
+        "instruction_source": "project_authored_synthetic_dry_run",
+        "generator_script": "collect_custom_vln_office_data.py",
+        "generator_version": "1.1",
+        "dry_run": true,
+        "synthetic": true,
+        "isaac_assets_used": false,
+        "vlnverse_assets_used": false,
+        "evidence_level": "pipeline_diagnostic_only",
+        "creation_timestamp": "2026-06-15T01:15:35+00:00",
+        "creation_commit": "27ad5cb017b174298d487d427b7124cbed9b0d7b",
+        "deterministic_seed": 0,
+        "episode_count": 8
+      }
+    },
+    "vlntube_fleetsafe": {
+      "dataset_id": "vlntube_fleetsafe",
+      "dataset_root": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/datasets/vlntube",
+      "dataset_type": "real_kujiale_trajectories",
+      "source_classification": "upstream_repository_provided",
+      "evidence": "instruction.txt from Eyz/VLNVerse_data (fine_train/fine_val splits, Gemini-2.5-flash generated from trajectory frames via instube/); traj_data.pkl with position/yaw; JPG images; episode_info.json with goal_pos",
+      "instruction_source": "upstream_generated_from_trajectory_frames",
+      "instruction_generation_method": "gemini-2.5-flash_from_trajectory_frames",
+      "instruction_generation_provider": "Google",
+      "instruction_generation_script": "external/VLNTube/instube/gemini_images_analyzer.py",
+      "instruction_max_frames_to_generator": 30,
+      "instruction_final_frame_visible_to_generator": true,
+      "instruction_goal_pos_in_generator_prompt": false,
+      "instruction_target_frame_explicit_to_generator": false,
+      "instruction_source_repository": "Eyz/VLNVerse_data",
+      "instruction_source_file": "Eyz/VLNVerse_data (fine_train.json.gz, fine_val.json.gz)",
+      "instruction_predates_clip_retrieval": true,
+      "splits_available": [
+        "train",
+        "val",
+        "test"
+      ],
+      "episode_count": 253,
+      "instruction_count": 253,
+      "image_count": 13491,
+      "trajectory_count": 253,
+      "has_goal_pos": true,
+      "has_language_instructions": true,
+      "has_real_images": true,
+      "has_independent_targets": true,
+      "instruction_target_independent": true,
+      "visually_groundable": true,
+      "leakage_risk": "low_standard_vln",
+      "missing_fields": [],
+      "instruction_conflict_count": 0,
+      "scenes": [
+        "kujiale_0092",
+        "kujiale_0118",
+        "kujiale_0203",
+        "kujiale_0271"
+      ]
+    },
+    "vlntube_prebuilt": {
+      "dataset_id": "vlntube_prebuilt",
+      "dataset_root": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/datasets/vlntube",
+      "dataset_type": "vlntube_benchmark_trajectories",
+      "source_classification": "upstream_repository_provided",
+      "evidence": "episodes.jsonl with instruction_text; rgb.npy image arrays",
+      "splits_available": [
+        "prebuilt"
+      ],
+      "episode_count": 2,
+      "instruction_count": 2,
+      "image_count": 0,
+      "trajectory_count": 0,
+      "has_goal_pos": false,
+      "has_language_instructions": true,
+      "has_real_images": true,
+      "has_independent_targets": false,
+      "missing_fields": [
+        "goal_pos",
+        "independent_target_annotation"
+      ],
+      "scenes": [
+        "kujiale_0005"
+      ]
+    },
+    "vlnverse_imported": {
+      "dataset_id": "vlnverse_imported",
+      "dataset_root": "/home/favl/robotics/gnm-vlnverse-language/datasets/vlnverse",
+      "dataset_type": "vlnverse_navigator_runs",
+      "source_classification": "benchmark_provided",
+      "evidence": "imported/iamgoodnavigator/*/episode_meta.json",
+      "episode_count": 1,
+      "instruction_count": 1,
+      "image_count": 0,
+      "trajectory_count": 1,
+      "has_goal_pos": false,
+      "has_language_instructions": true,
+      "has_real_images": false,
+      "has_independent_targets": false,
+      "missing_fields": [
+        "rgb_images",
+        "independent_target_annotation"
+      ]
+    }
+  },
+  "totals": {
+    "total_episodes": 264,
+    "total_instructions": 264,
+    "total_images": 13809,
+    "authentic_instructions": 256,
+    "real_image_count": 13491,
+    "anchored_episodes": 253
+  }
+}

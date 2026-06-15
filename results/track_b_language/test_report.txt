@@ -1,0 +1,117 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.13, pytest-9.0.3, pluggy-1.6.0
+rootdir: /home/favl/robotics/gnm-vlnverse-language
+configfile: pyproject.toml
+plugins: asyncio-1.4.0, anyio-4.13.0, timeout-2.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1888 items
+
+tests/gnm/test_coordinate_frames.py .............                        [  0%]
+tests/gnm/test_custom_vln_office.py ...............                      [  1%]
+tests/gnm/test_data_converter.py ...........                             [  2%]
+tests/gnm/test_gnm_model.py ...............                              [  2%]
+tests/gnm/test_live_dashboard.py ssFssss.s.s                             [  3%]
+tests/gnm/test_manual_testdrive.py ........                              [  3%]
+tests/gnm/test_metrics.py ....................................           [  5%]
+tests/gnm/test_requirements.py ......................                    [  6%]
+tests/test_baseline_contract.py .......sss.sss..sss.sss..sss.sss..sss.ss [  9%]
+s..sss.sss..sss.sss..sss.sss..sss.sss..sss.sss...sss.sss..sss.sss....... [ 12%]
+.....                                                                    [ 13%]
+tests/test_benchmark_governance.py ..................................... [ 15%]
+..                                                                       [ 15%]
+tests/test_cbf_math_contract.py .................                        [ 16%]
+tests/test_certificate_logger.py ..................                      [ 17%]
+tests/test_certify_rosbag.py .............                               [ 17%]
+tests/test_dashboard.py ..............................................   [ 20%]
+tests/test_evidence_v8.py .........................................      [ 22%]
+tests/test_explainability.py ........................................... [ 24%]
+.........                                                                [ 25%]
+tests/test_fleetsafe_perception_node.py ................................ [ 26%]
+..                                                                       [ 26%]
+tests/test_hospital_asset_library.py ................................... [ 28%]
+.................                                                        [ 29%]
+tests/test_hospital_capture.py .......................................   [ 31%]
+tests/test_hospital_scene_builder.py .........................           [ 33%]
+tests/test_hospital_scenes.py .........................                  [ 34%]
+tests/test_intervention_evidence_replay.py .............                 [ 35%]
+tests/test_isaac_m3pro_asset_gate.py ................................... [ 36%]
+.......s..                                                               [ 37%]
+tests/test_isaac_physics_backend.py .....................ssssss          [ 38%]
+tests/test_isaac_replay_contract.py ...........................          [ 40%]
+tests/test_language_grounding_pipeline.py .............................. [ 41%]
+................................                                         [ 43%]
+tests/test_lidar_sanitizer.py .......................                    [ 44%]
+tests/test_m3pro_mjcf.py ............................................    [ 47%]
+tests/test_metrics.py ssssssssssssssssssssss                             [ 48%]
+tests/test_mujoco_drive.py .....                                         [ 48%]
+tests/test_mujoco_env.py ............                                    [ 49%]
+tests/test_obs_adapter_m3pro.py ........................................ [ 51%]
+....                                                                     [ 51%]
+tests/test_perception.py ............................................... [ 54%]
+...........                                                              [ 54%]
+tests/test_physics_motion.py .....xx.........                            [ 55%]
+tests/test_ppo_social_adapter.py ....................                    [ 56%]
+tests/test_robot_ops.py ...................s..............               [ 58%]
+tests/test_routes_smoke.py ...........................F........          [ 60%]
+tests/test_runner_perception.py ......................................   [ 62%]
+tests/test_safety_certificate_schema.py ...........................      [ 63%]
+tests/test_safety_filter.py .........sssssssss                           [ 64%]
+tests/test_safety_v7.py .........................                        [ 65%]
+tests/test_semantic_agents.py ................                           [ 66%]
+tests/test_shell_scripts.py ............................................ [ 69%]
+................                                                         [ 69%]
+tests/test_sim_evidence_v10.py ......................................... [ 72%]
+.............                                                            [ 72%]
+tests/test_sim_to_sim_agreement.py ......................ss              [ 74%]
+tests/test_social_awareness.py ......................................... [ 76%]
+...                                                                      [ 76%]
+tests/test_social_risk_runner_integration.py ....................        [ 77%]
+tests/test_social_zone_activation.py .................                   [ 78%]
+tests/test_transparency_contract.py .................                    [ 79%]
+tests/test_visualnav_adapters.py ..................s...................  [ 81%]
+tests/test_visualnav_benchmark_metrics.py .............................. [ 82%]
+..........                                                               [ 83%]
+tests/test_visualnav_benchmark_runner.py ...........................     [ 84%]
+tests/test_visualnav_benchmark_stats.py ................................ [ 86%]
+......                                                                   [ 86%]
+tests/test_vln_backbone_router.py ...............                        [ 87%]
+tests/test_vln_demo_trace.py .............                               [ 88%]
+tests/test_vln_estop.py ..........                                       [ 88%]
+tests/test_vln_evidence.py .........................                     [ 90%]
+tests/test_vln_grounding.py ..........................                   [ 91%]
+tests/test_vln_instruction_schema.py ..................                  [ 92%]
+tests/test_vln_scan_topics.py ...........................                [ 93%]
+tests/test_wandb_logger.py ............................................. [ 96%]
+........                                                                 [ 96%]
+tests/test_yahboom_cbf.py .............                                  [ 97%]
+tests/test_yolo_v9.py .................................                  [ 99%]
+tests/test_zone_map.py ...............                                   [100%]
+
+=================================== FAILURES ===================================
+________________ test_export_live_dashboard_first_frame_exists _________________
+tests/gnm/test_live_dashboard.py:54: in test_export_live_dashboard_first_frame_exists
+    assert first.exists(), "dashboard_000000.png (frame 0) missing — run --export-live-dashboard on a machine with the dataset"
+E   AssertionError: dashboard_000000.png (frame 0) missing — run --export-live-dashboard on a machine with the dataset
+E   assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/home/favl/robotics/gnm-vlnverse-language/results/bo_reviewer_packet/live_dashboard/dashboard_000000.png').exists
+______________________ test_experiments_summary_has_total ______________________
+tests/test_routes_smoke.py:132: in test_experiments_summary_has_total
+    assert body["total_runs"] > 0
+E   assert 0 > 0
+=============================== warnings summary ===============================
+tests/test_sim_evidence_v10.py::TestPublicationBundle::test_bundle_dir_created
+tests/test_sim_evidence_v10.py::TestPublicationBundle::test_readme_created
+tests/test_sim_evidence_v10.py::TestPublicationBundle::test_readme_has_do_not_claim
+tests/test_sim_evidence_v10.py::TestPublicationBundle::test_readiness_json_created
+tests/test_sim_evidence_v10.py::TestPublicationBundle::test_readiness_has_overall_pct
+tests/test_sim_evidence_v10.py::TestPublicationBundle::test_claim_validation_created
+tests/test_sim_evidence_v10.py::TestPublicationBundle::test_evidence_ledger_created
+  /home/favl/robotics/gnm-vlnverse-language/command-center/backend/services/paper_artifact_exporter.py:314: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+    Generated: {__import__('datetime').datetime.utcfromtimestamp(ts).isoformat()}Z
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/gnm/test_live_dashboard.py::test_export_live_dashboard_first_frame_exists
+FAILED tests/test_routes_smoke.py::test_experiments_summary_has_total - asser...
+===== 2 failed, 1768 passed, 116 skipped, 2 xfailed, 7 warnings in 19.36s ======

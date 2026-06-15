@@ -1,0 +1,21 @@
+{
+  "audit_timestamp": "2026-06-15T03:50:36+00:00",
+  "vlntube_root": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/datasets/vlntube",
+  "total_episodes": 253,
+  "generator_model": "gemini-2.5-flash",
+  "generator_provider": "Google",
+  "generator_prompt_template": "VLN_PROMPT_IMAGE_SEQUENCE",
+  "generator_script": "external/VLNTube/instube/gemini_images_analyzer.py",
+  "max_frames_to_generator": 30,
+  "goal_pos_in_generator_prompt": false,
+  "target_frame_explicit": false,
+  "final_frame_always_included": true,
+  "exposure_classification_counts": {
+    "INDIRECT_TARGET_VISUAL_EXPOSURE": 253
+  },
+  "episodes_final_frame_included": 253,
+  "episodes_goal_region_visible": 253,
+  "episodes_sampled_not_full_traj": 230,
+  "evaluation_eligible": 253,
+  "claim_boundary": "These are upstream Gemini-generated instructions (not human-authored). The instruction generator saw trajectory frames including goal-region frames (INDIRECT_TARGET_VISUAL_EXPOSURE). This is standard for auto-generated VLN benchmarks. Evaluation results should be labelled 'generated-language grounding', not 'human-language generalisation'."
+}

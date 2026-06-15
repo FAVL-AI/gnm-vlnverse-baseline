@@ -1,0 +1,16 @@
+{
+  "total_episodes": 253,
+  "non_empty_instructions": 253,
+  "unique_instruction_texts": 253,
+  "exact_duplicates": 0,
+  "fully_colocated": 253,
+  "per_scene": {
+    "kujiale_0092": 68,
+    "kujiale_0118": 63,
+    "kujiale_0203": 72,
+    "kujiale_0271": 50
+  },
+  "avg_word_count": 78.5098814229249,
+  "min_word_count": 34,
+  "max_word_count": 150
+}

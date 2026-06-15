@@ -1,114 +1,93 @@
-# GNM-VLNVerse Baseline — Quickstart
+# Quick Start
 
-Minimal command path to reproduce the GNM/VLNVerse baseline proof.
-
-The proof path runs without Isaac Sim GUI.
+**Full guide:** [docs/USAGE.md](docs/USAGE.md) | **README:** [README.md](README.md)
 
 ---
 
-## 1. Bootstrap
+## Prerequisites
+
+- Python 3.10+
+- PyTorch 2.2+
+- Local copy of FleetSafe-VisualNav-Benchmark dataset
+
+---
+
+## Installation
 
 ```bash
-git clone git@github.com:FAVL-AI/gnm-vlnverse-baseline.git
+git clone https://github.com/FAVL-AI/gnm-vlnverse-baseline.git
 cd gnm-vlnverse-baseline
-
 bash scripts/gnm/bootstrap_demo_env.sh
-source .venv/bin/activate
+pip install -e .                     # base
+pip install -e '.[language]'         # CLIP retrieval (Track B)
 ```
+
+PyTorch is required for model inference. CPU-only environments may install a CPU build; CUDA is optional. See docs/USAGE.md for details.
 
 ---
 
-## 2. Link Data
+## Link dataset
 
 ```bash
 bash scripts/gnm/link_vlntube_data.sh /path/to/vlntube
 python3 scripts/gnm/check_demo_ready.py
 ```
 
-Expected readiness result:
-
-```text
-Overall: PASS — ready to run the proof pipeline.
-```
-
 ---
 
-## 3. Dataset Proof
+## Track A
+
+Stop-policy scripts require a GNM checkpoint (`--ckpt`). Pre-computed results
+are committed in `results/bo_reviewer_packet/`.
 
 ```bash
-python3 scripts/gnm/replay_gnm_demo.py --prove-dataset
-```
+# Stop-policy ablation — SR/OSR/NE table (requires checkpoint)
+python3 scripts/gnm/ablate_deployable_stop_policy.py \
+    --ckpt /path/to/gnm.pth --split val
 
-Expected output includes:
-
-```text
-Train trajectories : 238
-Val trajectories   : 15
-SR                 : 20.0%
-OSR                : 46.7%
-NE                 : 6.51 m
-```
-
----
-
-## 4. Dashboard Export
-
-```bash
+# Export live dashboard (no checkpoint, no GUI required)
 python3 scripts/gnm/replay_gnm_demo.py --export-live-dashboard
 ```
 
-This generates local dashboard frames under:
-
-```text
-results/bo_reviewer_packet/live_dashboard/
-```
-
-Generated dashboard frames are not committed to Git.
+Results: `results/bo_reviewer_packet/`
 
 ---
 
-## 5. Manual Dry-Runs
+## Track B
 
 ```bash
-python3 scripts/gnm/manual_testdrive.py --dry-run
-python3 scripts/gnm/replay_manual_testdrive.py --dry-run
-python3 scripts/gnm/convert_manual_testdrive_to_gnm.py --dry-run
+# Instruction-provenance audit (Gate B)
+python3 scripts/gnm/audit_track_b_language_data.py
+
+# Target-exposure audit
+python3 scripts/gnm/audit_instruction_target_exposure.py
+
+# Dev-set method selection (7 methods, 238 train episodes)
+python3 scripts/gnm/dev_set_method_selection.py
+
+# Language-dependence controls (critical: see README for interpretation)
+python3 scripts/gnm/language_dependence_controls.py --split train
+```
+
+Results: `results/track_b_language/`
+
+> **Important:** All VLNTube trajectories end exactly at goal_pos. SR@3m = 1.000
+> is achievable by the route prior alone, regardless of instruction content.
+> Language dependence is not demonstrated on this dataset.
+
+---
+
+## Tests
+
+```bash
+python3 -m pytest -q          # full suite (~2012 passing)
 ```
 
 ---
 
-## 6. Tests
+## Further reading
 
-```bash
-python3 -m pytest tests/gnm -q
-```
-
-Expected result: all tests pass. Torch-dependent model tests skip only if PyTorch is absent.
-
----
-
-## Optional Isaac Sim Replay
-
-Isaac Sim replay is optional and environment-dependent.
-
-```bash
-conda activate isaac
-
-LIVE_DASHBOARD=1 AUTO_PLAY=1 SHOW_GNM_PANELS=1 MAX_STEPS=100000 \
-python scripts/gnm/replay_gnm_demo.py
-```
-
-For manual driving:
-
-```bash
-conda activate isaac
-MODE=custom_office python scripts/gnm/manual_testdrive.py
-```
-
-If Isaac GUI is unstable, use the non-GUI dashboard export as the reliable evidence path.
-
----
-
-## Repository
-
-[https://github.com/FAVL-AI/gnm-vlnverse-baseline](https://github.com/FAVL-AI/gnm-vlnverse-baseline)
+- [README.md](README.md) — research scope, results, claim boundaries
+- [docs/USAGE.md](docs/USAGE.md) — step-by-step workflow for all 20 documented tasks
+- [data/track_b_annotations/DATASET_CARD.md](data/track_b_annotations/DATASET_CARD.md) — manifest schema and split discipline
+- [results/track_b_language/language_dependence_controls/train/report.md](results/track_b_language/language_dependence_controls/train/report.md) — full language-dependence analysis (train split)

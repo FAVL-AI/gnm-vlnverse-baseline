@@ -1,0 +1,73 @@
+2026-06-15 01:44:15,003 INFO Run timestamp: 2026-06-15T00:44:14Z
+2026-06-15 01:44:15,003 INFO Commit: 3c2226d6e519a66206f4ea7317f552604526b83a
+2026-06-15 01:44:15,003 INFO Stride: 5  threshold_m: 3.0  seed: 0
+2026-06-15 01:44:15,003 INFO Dependencies: {'torch': '2.12.0+cpu', 'numpy': '2.4.4', 'cv2': '4.13.0', 'pillow': '12.2.0', 'transformers': 'UNAVAILABLE'}
+2026-06-15 01:44:15,003 INFO CLIP available: False
+2026-06-15 01:44:15,040 INFO Loaded 6 episodes
+2026-06-15 01:44:15,041 INFO === oracle ===
+2026-06-15 01:44:15,041 INFO   cvlo_ep001 [oracle] idx=6/6 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep002 [oracle] idx=6/6 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep003 [oracle] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep004 [oracle] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep005 [oracle] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep006 [oracle] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO === last-frame ===
+2026-06-15 01:44:15,041 INFO   cvlo_ep001 [last] idx=6/6 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep002 [last] idx=6/6 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep003 [last] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep004 [last] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep005 [last] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep006 [last] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO CLIP skipped: DEPENDENCY_MISSING: transformers not installed — pip install transformers
+2026-06-15 01:44:15,042 INFO Wrote results/track_b_language/custom_vln_office/episode_results.jsonl
+2026-06-15 01:44:15,047 INFO Wrote results/track_b_language/custom_vln_office/aggregate_metrics.json
+2026-06-15 01:44:15,047 INFO Wrote results/track_b_language/custom_vln_office/results_table.csv
+2026-06-15 01:44:15,047 INFO Wrote results/track_b_language/custom_vln_office/run_manifest.json
+2026-06-15 02:00:25,585 INFO Track B evaluation — train split
+2026-06-15 02:00:25,585 INFO Dataset root : datasets/custom_vln_office
+2026-06-15 02:00:25,585 INFO Methods      : ['oracle', 'last']
+2026-06-15 02:00:25,585 INFO Stride       : 5
+2026-06-15 02:00:25,585 INFO Threshold    : 3.0 m
+2026-06-15 02:00:25,585 INFO Output dir   : results/track_b_language/custom_vln_office  (dry_run=False)
+2026-06-15 02:00:25,630 INFO Loaded 6 episodes from datasets/custom_vln_office/train
+2026-06-15 02:00:25,632 INFO Running method='oracle'
+2026-06-15 02:00:25,637 INFO [Track B | oracle]  RSR=6/6 (100.0%)  mean-REE=0.0000 m  std=0.0000 m  [0.0000, 0.0000]
+2026-06-15 02:00:25,637 INFO Running method='last'
+2026-06-15 02:00:25,637 INFO [Track B | last]  RSR=6/6 (100.0%)  mean-REE=0.0000 m  std=0.0000 m  [0.0000, 0.0000]
+2026-06-15 02:00:26,107 INFO Written: episode_results.jsonl (12 records)
+2026-06-15 02:00:26,107 INFO Written: aggregate_metrics.json
+2026-06-15 02:00:26,107 INFO Written: run_manifest.json
+2026-06-15 02:00:26,107 INFO Written: results_table.csv
+2026-06-15 02:00:26,107 INFO Evaluation complete.
+2026-06-15 02:02:25,002 INFO Track B evaluation — train split
+2026-06-15 02:02:25,002 INFO Dataset root : datasets/custom_vln_office
+2026-06-15 02:02:25,002 INFO Methods      : ['oracle', 'last']
+2026-06-15 02:02:25,002 INFO Stride       : 5
+2026-06-15 02:02:25,002 INFO Threshold    : 3.0 m
+2026-06-15 02:02:25,002 INFO Output dir   : results/track_b_language/custom_vln_office  (dry_run=False)
+2026-06-15 02:02:25,048 INFO Loaded 6 episodes from datasets/custom_vln_office/train
+2026-06-15 02:02:25,050 INFO Running method='oracle'
+2026-06-15 02:02:25,055 INFO [Track B | oracle]  RSR=6/6 (100.0%)  mean-REE=0.0000 m  std=0.0000 m  [0.0000, 0.0000]
+2026-06-15 02:02:25,055 INFO Running method='last'
+2026-06-15 02:02:25,055 INFO [Track B | last]  RSR=6/6 (100.0%)  mean-REE=0.0000 m  std=0.0000 m  [0.0000, 0.0000]
+2026-06-15 02:02:25,515 INFO Written: episode_results.jsonl (12 records)
+2026-06-15 02:02:25,515 INFO Written: aggregate_metrics.json
+2026-06-15 02:02:25,516 INFO Written: run_manifest.json
+2026-06-15 02:02:25,516 INFO Written: results_table.csv
+2026-06-15 02:02:25,516 INFO Evaluation complete.
+2026-06-15 02:12:53,800 INFO Track B evaluation — train split
+2026-06-15 02:12:53,801 INFO Dataset root : datasets/custom_vln_office
+2026-06-15 02:12:53,801 INFO Methods      : ['oracle', 'last']
+2026-06-15 02:12:53,801 INFO Stride       : 5
+2026-06-15 02:12:53,801 INFO Threshold    : 3.0 m
+2026-06-15 02:12:53,801 INFO Output dir   : results/track_b_language/custom_vln_office  (dry_run=False)
+2026-06-15 02:12:53,828 INFO Loaded 6 episodes from datasets/custom_vln_office/train
+2026-06-15 02:12:53,831 INFO Running method='oracle'
+2026-06-15 02:12:53,835 INFO [Track B | oracle]  RSR=6/6 (100.0%)  mean-REE=0.0000 m  std=0.0000 m  [0.0000, 0.0000]
+2026-06-15 02:12:53,835 INFO Running method='last'
+2026-06-15 02:12:53,835 INFO [Track B | last]  RSR=6/6 (100.0%)  mean-REE=0.0000 m  std=0.0000 m  [0.0000, 0.0000]
+2026-06-15 02:12:54,292 INFO Written: episode_results.jsonl (12 records)
+2026-06-15 02:12:54,292 INFO Written: aggregate_metrics.json
+2026-06-15 02:12:54,293 INFO Written: run_manifest.json
+2026-06-15 02:12:54,293 INFO Written: results_table.csv
+2026-06-15 02:12:54,293 INFO Evaluation complete.
