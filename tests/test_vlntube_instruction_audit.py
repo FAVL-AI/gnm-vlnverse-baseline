@@ -253,16 +253,18 @@ def _make_audit(
     has_language_instructions: bool,
     has_independent_targets: bool,
     source_classification: str,
+    instruction_source: str = "unknown",
     episode_count: int = 5,
     instruction_count: int = 5,
     image_count: int = 100,
-    instruction_generation_method: str = "llm_gemini_from_trajectory_frames",
+    instruction_generation_method: str = "gemini-2.5-flash_from_trajectory_frames",
 ) -> dict:
     return {
         "has_real_images": has_real_images,
         "has_language_instructions": has_language_instructions,
         "has_independent_targets": has_independent_targets,
         "source_classification": source_classification,
+        "instruction_source": instruction_source,
         "episode_count": episode_count,
         "instruction_count": instruction_count,
         "image_count": image_count,
@@ -272,45 +274,72 @@ def _make_audit(
 
 class TestGateBDecision:
 
-    def test_upstream_colocated_yields_benchmark_evaluation(self):
+    def test_upstream_generated_colocated_yields_generated_evaluation(self):
+        """upstream_generated_from_trajectory_frames → READY_FOR_GENERATED_LANGUAGE_BENCHMARK_EVALUATION."""
         audits = {
             "vlntube_fleetsafe": _make_audit(
                 has_real_images=True,
                 has_language_instructions=True,
                 has_independent_targets=True,
                 source_classification="upstream_repository_provided",
+                instruction_source="upstream_generated_from_trajectory_frames",
                 episode_count=253,
                 instruction_count=253,
                 image_count=13491,
             )
         }
         decision, rationale = _gate_b_decision(audits)
-        assert decision == "READY_FOR_BENCHMARK_LANGUAGE_EVALUATION"
+        assert decision == "READY_FOR_GENERATED_LANGUAGE_BENCHMARK_EVALUATION"
         assert "253" in rationale
+        assert "Gemini" in rationale or "trajectory" in rationale
 
-    def test_benchmark_colocated_also_yields_benchmark_evaluation(self):
+    def test_human_benchmark_colocated_yields_benchmark_evaluation(self):
+        """benchmark_provided (human-authored) → READY_FOR_BENCHMARK_LANGUAGE_EVALUATION."""
         audits = {
             "my_ds": _make_audit(
                 has_real_images=True,
                 has_language_instructions=True,
                 has_independent_targets=True,
                 source_classification="benchmark_provided",
+                instruction_source="benchmark_provided",
             )
         }
         decision, _ = _gate_b_decision(audits)
         assert decision == "READY_FOR_BENCHMARK_LANGUAGE_EVALUATION"
 
-    def test_upstream_without_independent_targets_not_benchmark(self):
+    def test_human_benchmark_beats_upstream_generated(self):
+        """Human benchmark takes precedence over upstream generated."""
+        audits = {
+            "generated": _make_audit(
+                has_real_images=True,
+                has_language_instructions=True,
+                has_independent_targets=True,
+                source_classification="upstream_repository_provided",
+                instruction_source="upstream_generated_from_trajectory_frames",
+            ),
+            "human": _make_audit(
+                has_real_images=True,
+                has_language_instructions=True,
+                has_independent_targets=True,
+                source_classification="benchmark_provided",
+                instruction_source="benchmark_provided",
+            ),
+        }
+        decision, _ = _gate_b_decision(audits)
+        assert decision == "READY_FOR_BENCHMARK_LANGUAGE_EVALUATION"
+
+    def test_upstream_generated_without_independent_targets_not_generated_benchmark(self):
         audits = {
             "vlntube_prebuilt": _make_audit(
                 has_real_images=True,
                 has_language_instructions=True,
                 has_independent_targets=False,
                 source_classification="upstream_repository_provided",
+                instruction_source="upstream_generated_from_trajectory_frames",
             )
         }
         decision, _ = _gate_b_decision(audits)
-        assert decision != "READY_FOR_BENCHMARK_LANGUAGE_EVALUATION"
+        assert decision != "READY_FOR_GENERATED_LANGUAGE_BENCHMARK_EVALUATION"
 
     def test_no_instructions_falls_to_annotation(self):
         audits = {
@@ -319,6 +348,7 @@ class TestGateBDecision:
                 has_language_instructions=False,
                 has_independent_targets=True,
                 source_classification="upstream_repository_provided",
+                instruction_source="upstream_generated_from_trajectory_frames",
                 instruction_count=0,
             )
         }
@@ -332,6 +362,7 @@ class TestGateBDecision:
                 has_language_instructions=True,
                 has_independent_targets=True,
                 source_classification="upstream_repository_provided",
+                instruction_source="upstream_generated_from_trajectory_frames",
                 image_count=0,
             )
         }
@@ -348,6 +379,7 @@ class TestGateBDecision:
                 has_language_instructions=False,
                 has_independent_targets=True,
                 source_classification="upstream_repository_provided",
+                instruction_source="upstream_generated_from_trajectory_frames",
                 instruction_count=0,
             ),
             "instr_no_images": _make_audit(
@@ -355,21 +387,26 @@ class TestGateBDecision:
                 has_language_instructions=True,
                 has_independent_targets=False,
                 source_classification="benchmark_provided",
+                instruction_source="benchmark_provided",
                 image_count=0,
             ),
         }
         decision, _ = _gate_b_decision(audits)
         assert decision == "READY_FOR_PROJECT_AUTHORED_ANNOTATION"
 
-    def test_synthetic_dataset_does_not_trigger_benchmark_decision(self):
+    def test_synthetic_dataset_does_not_trigger_generated_benchmark_decision(self):
         audits = {
             "custom_vln_office": _make_audit(
                 has_real_images=False,
                 has_language_instructions=True,
                 has_independent_targets=False,
                 source_classification="project_authored_synthetic",
+                instruction_source="project_authored_synthetic",
                 image_count=318,
             )
         }
         decision, _ = _gate_b_decision(audits)
-        assert decision != "READY_FOR_BENCHMARK_LANGUAGE_EVALUATION"
+        assert decision not in (
+            "READY_FOR_BENCHMARK_LANGUAGE_EVALUATION",
+            "READY_FOR_GENERATED_LANGUAGE_BENCHMARK_EVALUATION",
+        )

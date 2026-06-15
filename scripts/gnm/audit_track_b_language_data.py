@@ -269,11 +269,20 @@ def _audit_vlntube_real(root: Path, label: str = "vlntube_fleetsafe") -> dict:
         "source_classification": "upstream_repository_provided",
         "evidence": (
             "instruction.txt from Eyz/VLNVerse_data (fine_train/fine_val splits, "
-            "Gemini-generated from trajectory frames); "
+            "Gemini-2.5-flash generated from trajectory frames via instube/); "
             "traj_data.pkl with position/yaw; JPG images; episode_info.json with goal_pos"
         ),
-        "instruction_generation_method": "llm_gemini_from_trajectory_frames",
+        "instruction_source":            "upstream_generated_from_trajectory_frames",
+        "instruction_generation_method": "gemini-2.5-flash_from_trajectory_frames",
+        "instruction_generation_provider": "Google",
+        "instruction_generation_script": "external/VLNTube/instube/gemini_images_analyzer.py",
+        "instruction_max_frames_to_generator": 30,
+        "instruction_final_frame_visible_to_generator": True,
+        "instruction_goal_pos_in_generator_prompt": False,
+        "instruction_target_frame_explicit_to_generator": False,
+        "instruction_source_repository": "Eyz/VLNVerse_data",
         "instruction_source_file":       "Eyz/VLNVerse_data (fine_train.json.gz, fine_val.json.gz)",
+        "instruction_predates_clip_retrieval": True,
         "splits_available":      [],
         "episode_count":         0,
         "instruction_count":     0,
@@ -337,7 +346,7 @@ def _audit_vlntube_real(root: Path, label: str = "vlntube_fleetsafe") -> dict:
                 "has_goal_pos":            goal is not None,
                 "has_instruction":         bool(instr_text),
                 "instruction_source_file": instr_src,
-                "instruction_source":      "upstream_repository_provided" if instr_src == "instruction.txt" else "unknown",
+                "instruction_source":      "upstream_generated_from_trajectory_frames" if instr_src == "instruction.txt" else "unknown",
                 "instruction_conflict":    instr_conflict,
                 "image_source":            "real_camera",
             })
@@ -504,10 +513,11 @@ def _gate_b_decision(audits: dict) -> tuple[str, str]:
 
     Returns (decision_code, rationale).
     """
-    UPSTREAM_CLASSES = {"upstream_repository_provided", "benchmark_provided"}
-    PROJECT_CLASSES  = {"project_authored"}
-    LLM_CLASSES      = {"llm_generated"}
-    SYNTHETIC_CLASSES = {"project_authored_synthetic"}
+    HUMAN_BENCHMARK_CLASSES    = {"benchmark_provided"}
+    UPSTREAM_GENERATED_SOURCES = {"upstream_generated_from_trajectory_frames"}
+    PROJECT_CLASSES            = {"project_authored"}
+    LLM_PROJECT_CLASSES        = {"llm_generated"}
+    SYNTHETIC_CLASSES          = {"project_authored_synthetic"}
 
     def _is_colocated(a: dict) -> bool:
         return (
@@ -519,33 +529,56 @@ def _gate_b_decision(audits: dict) -> tuple[str, str]:
             and a.get("image_count", 0) > 0
         )
 
-    # Level 1: upstream/benchmark instructions colocated
-    upstream_ready = [
+    # Level 1 (strongest): human-authored benchmark instructions colocated
+    human_ready = [
         name for name, a in audits.items()
         if _is_colocated(a)
-        and a.get("source_classification") in UPSTREAM_CLASSES
+        and a.get("source_classification") in HUMAN_BENCHMARK_CLASSES
     ]
-    if upstream_ready:
-        n_ep = sum(audits[n]["episode_count"] for n in upstream_ready)
-        n_instr = sum(audits[n]["instruction_count"] for n in upstream_ready)
-        methods = {audits[n].get("instruction_generation_method", "?") for n in upstream_ready}
+    if human_ready:
+        n_ep = sum(audits[n]["episode_count"] for n in human_ready)
+        n_instr = sum(audits[n]["instruction_count"] for n in human_ready)
         return (
             "READY_FOR_BENCHMARK_LANGUAGE_EVALUATION",
             (
-                f"Datasets {upstream_ready} have {n_instr} upstream-benchmark instructions "
-                f"(generation method: {', '.join(methods)}) colocated with real images "
-                f"and independently established goal_pos targets for {n_ep} episodes. "
-                "goal_pos is derived from scene-graph geometry independent of any "
-                "instruction or retrieval system. "
-                "Instructions were generated from trajectory frames before Track B "
-                "retrieval was implemented — no circular dependency. "
-                "Evaluation eligible: all colocated episodes. "
-                "Leakage risk: low_standard_vln (endpoint description is standard VLN "
-                "formulation, not retrieval-system leakage)."
+                f"Datasets {human_ready} have {n_instr} human-authored benchmark "
+                f"instructions colocated with real images and independent targets "
+                f"for {n_ep} episodes."
             ),
         )
 
-    # Level 2: project-authored instructions colocated
+    # Level 2: upstream LLM-generated instructions (Gemini from trajectory frames) colocated
+    upstream_gen_ready = [
+        name for name, a in audits.items()
+        if _is_colocated(a)
+        and a.get("instruction_source") in UPSTREAM_GENERATED_SOURCES
+    ]
+    if upstream_gen_ready:
+        n_ep = sum(audits[n]["episode_count"] for n in upstream_gen_ready)
+        n_instr = sum(audits[n]["instruction_count"] for n in upstream_gen_ready)
+        methods = {audits[n].get("instruction_generation_method", "?") for n in upstream_gen_ready}
+        return (
+            "READY_FOR_GENERATED_LANGUAGE_BENCHMARK_EVALUATION",
+            (
+                f"Datasets {upstream_gen_ready} have {n_instr} upstream-generated instructions "
+                f"(method: {', '.join(methods)}; from trajectory frames by Gemini API, "
+                f"sourced from Eyz/VLNVerse_data) colocated with real images "
+                f"and independently established goal_pos targets for {n_ep} episodes. "
+                "goal_pos is derived from scene-graph A* geometry independent of any "
+                "instruction or retrieval system. "
+                "Instruction generator (Gemini) saw trajectory frames including final frames "
+                "(INDIRECT_TARGET_VISUAL_EXPOSURE); goal_pos was NOT in the generator prompt. "
+                "Instructions were generated before Track B CLIP retrieval was implemented — "
+                "no circular dependency with retrieval system. "
+                "Leakage risk: low_standard_vln (endpoint description is standard VLN "
+                "task formulation). "
+                "CLAIM BOUNDARY: These are upstream Gemini-generated instructions, "
+                "not human-authored benchmark language. "
+                "Do not make human-language-generalisation claims without a human-authored subset."
+            ),
+        )
+
+    # Level 3: project-authored instructions colocated
     project_ready = [
         name for name, a in audits.items()
         if _is_colocated(a)
@@ -561,20 +594,20 @@ def _gate_b_decision(audits: dict) -> tuple[str, str]:
             ),
         )
 
-    # Level 3: LLM-generated instructions colocated (useful diagnostic)
+    # Level 4: LLM-generated by project, colocated (useful diagnostic)
     llm_ready = [
         name for name, a in audits.items()
         if _is_colocated(a)
-        and a.get("source_classification") in LLM_CLASSES
+        and a.get("source_classification") in LLM_PROJECT_CLASSES
     ]
     if llm_ready:
         n_ep = sum(audits[n]["episode_count"] for n in llm_ready)
         return (
             "READY_FOR_TEMPLATED_LANGUAGE_DIAGNOSTIC",
             (
-                f"Datasets {llm_ready} have LLM-generated instructions colocated with "
+                f"Datasets {llm_ready} have project-generated LLM instructions colocated with "
                 f"real images and independent targets for {n_ep} episodes. "
-                "Suitable for controlled diagnostics but not for human-authored benchmark claims."
+                "Suitable for controlled diagnostics but not for benchmark claims."
             ),
         )
 

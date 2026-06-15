@@ -1,8 +1,8 @@
 {
-  "audit_timestamp": "2026-06-15T03:26:03+00:00",
+  "audit_timestamp": "2026-06-15T03:44:36+00:00",
   "audited_roots": 4,
-  "gate_b_decision": "READY_FOR_BENCHMARK_LANGUAGE_EVALUATION",
-  "gate_b_rationale": "Datasets ['vlntube_fleetsafe'] have 253 upstream-benchmark instructions (generation method: llm_gemini_from_trajectory_frames) colocated with real images and independently established goal_pos targets for 253 episodes. goal_pos is derived from scene-graph geometry independent of any instruction or retrieval system. Instructions were generated from trajectory frames before Track B retrieval was implemented \u2014 no circular dependency. Evaluation eligible: all colocated episodes. Leakage risk: low_standard_vln (endpoint description is standard VLN formulation, not retrieval-system leakage).",
+  "gate_b_decision": "READY_FOR_GENERATED_LANGUAGE_BENCHMARK_EVALUATION",
+  "gate_b_rationale": "Datasets ['vlntube_fleetsafe'] have 253 upstream-generated instructions (method: gemini-2.5-flash_from_trajectory_frames; from trajectory frames by Gemini API, sourced from Eyz/VLNVerse_data) colocated with real images and independently established goal_pos targets for 253 episodes. goal_pos is derived from scene-graph A* geometry independent of any instruction or retrieval system. Instruction generator (Gemini) saw trajectory frames including final frames (INDIRECT_TARGET_VISUAL_EXPOSURE); goal_pos was NOT in the generator prompt. Instructions were generated before Track B CLIP retrieval was implemented \u2014 no circular dependency with retrieval system. Leakage risk: low_standard_vln (endpoint description is standard VLN task formulation). CLAIM BOUNDARY: These are upstream Gemini-generated instructions, not human-authored benchmark language. Do not make human-language-generalisation claims without a human-authored subset.",
   "datasets": {
     "custom_vln_office": {
       "dataset_id": "custom_vln_office",
@@ -49,9 +49,18 @@
       "dataset_root": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/datasets/vlntube",
       "dataset_type": "real_kujiale_trajectories",
       "source_classification": "upstream_repository_provided",
-      "evidence": "instruction.txt from Eyz/VLNVerse_data (fine_train/fine_val splits, Gemini-generated from trajectory frames); traj_data.pkl with position/yaw; JPG images; episode_info.json with goal_pos",
-      "instruction_generation_method": "llm_gemini_from_trajectory_frames",
+      "evidence": "instruction.txt from Eyz/VLNVerse_data (fine_train/fine_val splits, Gemini-2.5-flash generated from trajectory frames via instube/); traj_data.pkl with position/yaw; JPG images; episode_info.json with goal_pos",
+      "instruction_source": "upstream_generated_from_trajectory_frames",
+      "instruction_generation_method": "gemini-2.5-flash_from_trajectory_frames",
+      "instruction_generation_provider": "Google",
+      "instruction_generation_script": "external/VLNTube/instube/gemini_images_analyzer.py",
+      "instruction_max_frames_to_generator": 30,
+      "instruction_final_frame_visible_to_generator": true,
+      "instruction_goal_pos_in_generator_prompt": false,
+      "instruction_target_frame_explicit_to_generator": false,
+      "instruction_source_repository": "Eyz/VLNVerse_data",
       "instruction_source_file": "Eyz/VLNVerse_data (fine_train.json.gz, fine_val.json.gz)",
+      "instruction_predates_clip_retrieval": true,
       "splits_available": [
         "train",
         "val",
