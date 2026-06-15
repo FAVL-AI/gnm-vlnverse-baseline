@@ -54,6 +54,16 @@ compare_methods
 
 Deterministic repeatability
     - Multiple evaluate() calls produce identical results
+
+Non-discriminative dataset detection (Gate A.6)
+    - Oracle REE == last-frame REE for every episode in the synthetic dataset
+    - All per-episode REE values are 0.0 (synthetic trajectories end at goal_pos)
+
+Discriminative dataset (Gate A.7)
+    - Synthetic episode where goal is mid-trajectory, not the final frame
+    - Oracle REE < last-frame REE
+    - Oracle within threshold; last-frame outside threshold
+    - Oracle RSR > last-frame RSR
 """
 from __future__ import annotations
 
@@ -533,3 +543,125 @@ class TestCompareMethods:
     def test_invalid_method_raises(self, all_episodes):
         with pytest.raises(ValueError):
             evaluate(all_episodes, method="nonexistent_method")
+
+
+# ---------------------------------------------------------------------------
+# Non-discriminative dataset detection  (Gate A.6)
+# ---------------------------------------------------------------------------
+
+class TestNonDiscriminativeDataset:
+    """Proves the synthetic dataset cannot distinguish retrieval methods.
+
+    Every synthetic trajectory terminates exactly at goal_pos, so oracle
+    and last-frame retrieve the same position and produce identical REE.
+    This test documents the limitation — it is not a correctness failure.
+    """
+
+    def test_oracle_ree_equals_last_ree_for_all_episodes(self, all_episodes):
+        """Oracle REE must equal last-frame REE for every synthetic episode."""
+        r = compare_methods(all_episodes, methods=["oracle", "last"])
+        for ep_oracle, ep_last in zip(r["oracle"].per_episode, r["last"].per_episode):
+            assert ep_oracle.retrieval_error_m == pytest.approx(
+                ep_last.retrieval_error_m, abs=1e-9
+            ), (
+                f"Non-discriminative dataset violated: oracle REE != last-frame REE "
+                f"for episode {ep_oracle.episode_id}. "
+                f"oracle={ep_oracle.retrieval_error_m:.6f}, "
+                f"last={ep_last.retrieval_error_m:.6f}. "
+                f"This means the dataset is discriminative and the limitation "
+                f"statement is no longer accurate."
+            )
+
+    def test_all_per_episode_ree_are_zero(self, all_episodes):
+        """All per-episode REE values are 0.0 m for the synthetic dataset."""
+        r = compare_methods(all_episodes, methods=["oracle", "last"])
+        for s in r.values():
+            for ep in s.per_episode:
+                assert ep.retrieval_error_m == pytest.approx(0.0, abs=1e-9), (
+                    f"Expected REE=0.0 for synthetic dataset but got "
+                    f"{ep.retrieval_error_m:.6f} m for episode {ep.episode_id}"
+                )
+
+    def test_oracle_rsr_equals_last_rsr(self, all_episodes):
+        """On a non-discriminative dataset, oracle RSR == last-frame RSR."""
+        r = compare_methods(all_episodes, methods=["oracle", "last"])
+        assert r["oracle"].rsr == pytest.approx(r["last"].rsr, abs=1e-9)
+
+
+# ---------------------------------------------------------------------------
+# Discriminative dataset  (Gate A.7)
+# ---------------------------------------------------------------------------
+
+class TestDiscriminativeDataset:
+    """Tests using a synthetic episode where the goal is mid-trajectory.
+
+    When the true goal is NOT the last frame, oracle retrieval finds a closer
+    keyframe and must outperform last-frame retrieval.  This verifies that the
+    evaluator can detect retrieval quality differences — it is not limited to
+    the non-discriminative synthetic dataset.
+    """
+
+    @pytest.fixture
+    def discriminative_episode(self) -> LanguageEpisode:
+        """Trajectory from (0,0) to (10,0); goal fixed at (1,0).
+
+        - oracle_idx: returns index 1 (position (1,0), REE=0.0 m)
+        - last_idx  : returns index 10 (position (10,0), REE=9.0 m)
+        """
+        positions = [(float(i), 0.0) for i in range(11)]
+        keyframes = [np.zeros((32, 32, 3), dtype=np.uint8) for _ in positions]
+        return LanguageEpisode(
+            episode_id="disc_test_ep",
+            instruction="Walk one metre and stop",
+            keyframes=keyframes,
+            positions=positions,
+            goal_pos=(1.0, 0.0),
+            path_length_m=10.0,
+            scene_id="test",
+        )
+
+    def test_oracle_ree_less_than_last_ree(self, discriminative_episode):
+        ep = discriminative_episode
+        oracle_ree = ep.retrieval_error_m(ep.oracle_idx(success_threshold_m=3.0))
+        last_ree   = ep.retrieval_error_m(len(ep) - 1)
+        assert oracle_ree < last_ree, (
+            f"oracle REE ({oracle_ree:.3f} m) must be < last-frame REE "
+            f"({last_ree:.3f} m) for a discriminative episode"
+        )
+
+    def test_oracle_within_threshold(self, discriminative_episode):
+        ep = discriminative_episode
+        oracle_ree = ep.retrieval_error_m(ep.oracle_idx(success_threshold_m=3.0))
+        assert oracle_ree <= 3.0, (
+            f"oracle REE {oracle_ree:.3f} m should be within the 3.0 m threshold"
+        )
+
+    def test_last_frame_outside_threshold(self, discriminative_episode):
+        ep = discriminative_episode
+        last_ree = ep.retrieval_error_m(len(ep) - 1)
+        assert last_ree > 3.0, (
+            f"last-frame REE {last_ree:.3f} m should exceed the 3.0 m threshold "
+            f"for this discriminative episode"
+        )
+
+    def test_oracle_rsr_exceeds_last_rsr(self, discriminative_episode):
+        """Oracle RSR must be strictly greater than last-frame RSR."""
+        r = compare_methods([discriminative_episode], methods=["oracle", "last"])
+        assert r["oracle"].rsr > r["last"].rsr, (
+            f"oracle RSR ({r['oracle'].rsr}) should exceed "
+            f"last-frame RSR ({r['last'].rsr}) for a discriminative episode"
+        )
+
+    def test_oracle_mean_ree_less_than_last(self, discriminative_episode):
+        r = compare_methods([discriminative_episode], methods=["oracle", "last"])
+        assert r["oracle"].mean_ree_m < r["last"].mean_ree_m
+
+    def test_last_frame_n_success_zero(self, discriminative_episode):
+        """Last-frame method fails when goal is mid-trajectory."""
+        s = evaluate([discriminative_episode], method="last")
+        assert s.n_success == 0
+
+    def test_oracle_n_success_one(self, discriminative_episode):
+        """Oracle succeeds when a keyframe is within threshold of goal."""
+        s = evaluate([discriminative_episode], method="oracle")
+        assert s.n_success == 1

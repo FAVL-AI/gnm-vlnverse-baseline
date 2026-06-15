@@ -1,7 +1,7 @@
 {
-  "run_description": "Local six-episode language-grounding diagnostic",
-  "run_timestamp": "2026-06-15T00:44:14Z",
-  "commit": "3c2226d6e519a66206f4ea7317f552604526b83a",
+  "run_description": "Track B language-grounding diagnostic evaluation",
+  "run_timestamp": "2026-06-15T01:02:25+00:00",
+  "commit": "e6045e892ac68af0575d65aae087bffc67e33303",
   "python_version": "3.13.13 | packaged by conda-forge | (main, Apr  8 2026, 02:00:33) [GCC 14.3.0]",
   "dependencies": {
     "torch": "2.12.0+cpu",
@@ -11,14 +11,19 @@
     "transformers": "UNAVAILABLE"
   },
   "clip_available": false,
-  "clip_status": "DEPENDENCY_MISSING",
-  "clip_reason": "DEPENDENCY_MISSING: transformers not installed \u2014 pip install transformers",
+  "evidence_level": "pipeline_diagnostic_only",
   "dataset_root": "datasets/custom_vln_office",
   "split": "train",
   "n_episodes": 6,
   "stride": 5,
   "threshold_m": 3.0,
+  "methods": [
+    "oracle",
+    "last"
+  ],
   "seed": 0,
+  "device": "cpu",
+  "encoder_model": "openai/clip-vit-base-patch16",
   "output_dir": "results/track_b_language/custom_vln_office",
   "output_files": [
     "episode_results.jsonl",
@@ -29,7 +34,7 @@
   ],
   "instruction_provenance": {
     "cvlo_ep001": {
-      "instruction_source": "dataset_provided_authored",
+      "instruction_source": "project_authored_synthetic_dry_run",
       "rgb_frame_source": "synthetic_gradient_dry_run",
       "target_frame_source": "trajectory_final_position",
       "target_defined_independently": true,
@@ -41,7 +46,7 @@
       "vlnverse_assets_used": false
     },
     "cvlo_ep002": {
-      "instruction_source": "dataset_provided_authored",
+      "instruction_source": "project_authored_synthetic_dry_run",
       "rgb_frame_source": "synthetic_gradient_dry_run",
       "target_frame_source": "trajectory_final_position",
       "target_defined_independently": true,
@@ -53,7 +58,7 @@
       "vlnverse_assets_used": false
     },
     "cvlo_ep003": {
-      "instruction_source": "dataset_provided_authored",
+      "instruction_source": "project_authored_synthetic_dry_run",
       "rgb_frame_source": "synthetic_gradient_dry_run",
       "target_frame_source": "trajectory_final_position",
       "target_defined_independently": true,
@@ -65,7 +70,7 @@
       "vlnverse_assets_used": false
     },
     "cvlo_ep004": {
-      "instruction_source": "dataset_provided_authored",
+      "instruction_source": "project_authored_synthetic_dry_run",
       "rgb_frame_source": "synthetic_gradient_dry_run",
       "target_frame_source": "trajectory_final_position",
       "target_defined_independently": true,
@@ -77,7 +82,7 @@
       "vlnverse_assets_used": false
     },
     "cvlo_ep005": {
-      "instruction_source": "dataset_provided_authored",
+      "instruction_source": "project_authored_synthetic_dry_run",
       "rgb_frame_source": "synthetic_gradient_dry_run",
       "target_frame_source": "trajectory_final_position",
       "target_defined_independently": true,
@@ -89,7 +94,7 @@
       "vlnverse_assets_used": false
     },
     "cvlo_ep006": {
-      "instruction_source": "dataset_provided_authored",
+      "instruction_source": "project_authored_synthetic_dry_run",
       "rgb_frame_source": "synthetic_gradient_dry_run",
       "target_frame_source": "trajectory_final_position",
       "target_defined_independently": true,
