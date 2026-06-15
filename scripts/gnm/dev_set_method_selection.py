@@ -151,7 +151,8 @@ def _clip_embed_frames(frames: list[np.ndarray], clip_model, clip_proc) -> np.nd
 
 def _clip_embed_text(text: str, clip_model, clip_proc) -> np.ndarray:
     import torch
-    inp = clip_proc(text=[text], return_tensors="pt", padding=True)
+    inp = clip_proc(text=[text or "."], return_tensors="pt", padding=True,
+                    truncation=True, max_length=77)
     with torch.no_grad():
         feat = _to_tensor(clip_model.get_text_features(**inp), torch)
     return feat.cpu().numpy()   # (1, D)

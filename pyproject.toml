@@ -8,13 +8,13 @@ version = "0.1.0"
 description = "Reproducible Isaac Sim pipeline for GNM visual-goal navigation on VLNVerse data"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
-authors = [{ name = "F. Van Laarhoven", email = "F.Van-Laarhoven2@newcastle.ac.uk" }]
+license = { text = "All rights reserved. See COPYRIGHT.md and docs/legal/LICENSING_STATUS.md." }
+authors = [{ name = "Frank Asante Van Laarhoven", email = "F.Van-Laarhoven2@newcastle.ac.uk" }]
 keywords = ["robotics", "visual-navigation", "gnm", "vlnverse", "isaac-sim"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
+    "License :: Other/Proprietary License",
     "Programming Language :: Python :: 3.10",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]

@@ -1,0 +1,62 @@
+{
+  "recorded_date": "2026-06-15",
+  "working_directory": "/home/favl/robotics/gnm-vlnverse-language",
+  "python_executable": "/usr/bin/python3",
+  "python_version": "3.13.13",
+  "pytest_version": "9.0.3",
+  "runs": [
+    {
+      "label": "language_files_only",
+      "command": "python3 -m pytest tests/test_vlntube_instruction_audit.py tests/test_language_grounding_pipeline.py -q",
+      "test_paths": [
+        "tests/test_vlntube_instruction_audit.py",
+        "tests/test_language_grounding_pipeline.py"
+      ],
+      "collected": 98,
+      "passed": 89,
+      "failed": 0,
+      "skipped": 9,
+      "xfailed": 0,
+      "note": "9 skipped are CLIP-dependent tests that skip when CLIP weights are unavailable at inference time. This run covers only the two language-grounding test files, not the full suite.",
+      "context": "Used in session update message reporting Track B test status after subgoal_selector.py CLIP API fix."
+    },
+    {
+      "label": "full_suite",
+      "command": "python3 -m pytest -q --tb=no",
+      "test_paths": ["tests/"],
+      "pytest_config": "pyproject.toml [tool.pytest.ini_options] testpaths=[tests]",
+      "collected": 1944,
+      "passed": 1815,
+      "failed": 2,
+      "skipped": 125,
+      "xfailed": 2,
+      "runtime_s": 45.46,
+      "pre_existing_failures": [
+        {
+          "test": "tests/gnm/test_live_dashboard.py::test_export_live_dashboard_first_frame_exists",
+          "classification": "PRE_EXISTING_IDENTICAL_FAILURE",
+          "note": "Fails when live dashboard export directory absent; not caused by Track B changes."
+        },
+        {
+          "test": "tests/test_routes_smoke.py::test_experiments_summary_has_total",
+          "classification": "PRE_EXISTING_IDENTICAL_FAILURE",
+          "note": "Smoke test against stale fixture; not caused by Track B changes."
+        }
+      ],
+      "context": "Full repository test suite as collected by pytest using pyproject.toml configuration. Both failures pre-exist on main branch at commit 3c2226d."
+    },
+    {
+      "label": "earlier_reported_count_1798",
+      "command": "python3 -m pytest (full suite, earlier in session history)",
+      "note": "Earlier session summary reported 1798 passed, 2 pre-existing failures. The current count of 1815 reflects 26 new vlntube instruction audit tests added in commit d488104 (39b51c5). Both runs are full-suite runs; count increased as new tests were added to the branch.",
+      "collected_approx": 1800,
+      "passed_approx": 1798,
+      "failed": 2
+    }
+  ],
+  "disambiguation": {
+    "89_passed_9_skipped": "Scope: tests/test_vlntube_instruction_audit.py + tests/test_language_grounding_pipeline.py only. 98 tests, 9 CLIP-dependent skips.",
+    "1815_passed_2_failed": "Scope: full repository suite (1944 tests collected). 2 pre-existing failures unrelated to Track B.",
+    "1798_passed_historical": "Scope: full repository suite before 26 new audit tests were added. Both failures were pre-existing."
+  }
+}

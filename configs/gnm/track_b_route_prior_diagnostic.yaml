@@ -1,0 +1,79 @@
+# Track B route-prior diagnostic configuration
+#
+# This configuration describes the clip_route method evaluated on the dev set.
+# It is NOT a validated language-grounding configuration.
+#
+# Evidence level: trajectory_endpoint_diagnostic
+# Language dependence: not_demonstrated
+#
+# All 253 VLNTube trajectories end exactly at goal_pos (final_dist = 0.000 m).
+# The route prior (beta=1.0) upweights later frames, which are always at or
+# near goal_pos.  SR@3m = 1.000 is achievable by the endpoint heuristic alone.
+# Language-dependence controls (shuffled/empty/constant instructions) are
+# required before language grounding can be claimed.  See:
+#   results/track_b_language/language_dependence_controls/
+
+track_b:
+  description: >
+    Route-prior diagnostic configuration.  Records the clip_route method
+    and its dev-set results.  Not selected as a language-grounding method
+    because language dependence has not been demonstrated.
+
+  evidence_level: trajectory_endpoint_diagnostic
+  language_dependence: not_demonstrated
+  validated_language_method: false
+
+  # ── Subgoal retrieval ──────────────────────────────────────────────────────
+  retrieval:
+    method: clip_route
+    clip_model: openai/clip-vit-base-patch16
+    keyframe_stride: 5
+    route_beta: 1.0
+    device: cpu
+
+  # ── Evaluation ────────────────────────────────────────────────────────────
+  evaluation:
+    success_radius_m: 3.0
+    dev_split: train
+    held_out_split: val
+    manifest: data/track_b_annotations/generated_language_manifest.jsonl
+    manifest_sha256: 1659d2b8f0d229990bc1683de6f855b6340660f846623c3369ac1cfcf5ac80d9
+
+  # ── Dev-set results (train, 238 episodes) ─────────────────────────────────
+  dev_results:
+    date: "2026-06-15"
+    n_episodes: 238
+    method_sr_at_3m:
+      random:          0.462
+      first:           0.055
+      final:           1.000
+      oracle:          1.000
+      clip:            0.344
+      clip_route:      1.000
+      clip_route_rej:  1.000
+    interpretation: >
+      clip_route achieves SR@3m = 1.000, as does the final-frame baseline and
+      oracle.  The route prior (beta=1.0) is sufficient to drive selection
+      toward the final frame regardless of instruction content.  Pure CLIP
+      (beta=0) achieves only 0.344.  Language-dependence controls are required
+      to determine whether the instruction contributes to retrieval quality.
+
+  # ── Held-out validation results (val, 15 episodes) ────────────────────────
+  held_out_results:
+    date: "2026-06-15"
+    n_episodes: 15
+    sr_at_3m: 1.000
+    mean_dist_m: 0.033
+    interpretation: >
+      SR@3m = 1.000 on 15 val episodes.  All VLNTube val trajectories also
+      end at goal_pos.  This result is consistent with trajectory-endpoint
+      selection rather than language understanding.
+
+  # ── Dataset property ──────────────────────────────────────────────────────
+  dataset_note: >
+    VLNTube/vlntube_fleetsafe episodes are constructed so that the final
+    trajectory frame coincides exactly with goal_pos (final_dist = 0.000 m
+    for all 253 episodes).  Any method that reliably selects the final frame
+    will achieve SR@3m = 1.000.  This is a dataset property, not evidence
+    of language-grounding capability.  Results must not be presented as
+    standalone language-grounding evidence.

@@ -223,7 +223,8 @@ class SubgoalSelector:
             return F.normalize(t.float(), dim=-1)
 
         inputs = self._clip_processor(
-            text=[instruction], return_tensors="pt", padding=True
+            text=[instruction], return_tensors="pt", padding=True,
+            truncation=True, max_length=77,
         )
         with torch.no_grad():
             text_feat = _norm(self._clip_model.get_text_features(**inputs))
