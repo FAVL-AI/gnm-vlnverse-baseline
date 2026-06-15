@@ -1,8 +1,8 @@
 {
-  "audit_timestamp": "2026-06-15T01:15:28+00:00",
+  "audit_timestamp": "2026-06-15T03:26:03+00:00",
   "audited_roots": 4,
-  "gate_b_decision": "READY_FOR_PROJECT_AUTHORED_ANNOTATION",
-  "gate_b_rationale": "Real images present: 13491 images. Datasets with real images + goal_pos: ['vlntube_fleetsafe']. Datasets with authentic instructions: ['custom_vln_office', 'vlntube_prebuilt', 'vlnverse_imported'] (3 instructions). Instructions and real images are NOT colocated within any single episode set. Action required: pair vlntube_fleetsafe episodes (real images + goal_pos) with language instructions via data/track_b_annotations/ before CLIP evaluation.",
+  "gate_b_decision": "READY_FOR_BENCHMARK_LANGUAGE_EVALUATION",
+  "gate_b_rationale": "Datasets ['vlntube_fleetsafe'] have 253 upstream-benchmark instructions (generation method: llm_gemini_from_trajectory_frames) colocated with real images and independently established goal_pos targets for 253 episodes. goal_pos is derived from scene-graph geometry independent of any instruction or retrieval system. Instructions were generated from trajectory frames before Track B retrieval was implemented \u2014 no circular dependency. Evaluation eligible: all colocated episodes. Leakage risk: low_standard_vln (endpoint description is standard VLN formulation, not retrieval-system leakage).",
   "datasets": {
     "custom_vln_office": {
       "dataset_id": "custom_vln_office",
@@ -38,7 +38,7 @@
         "isaac_assets_used": false,
         "vlnverse_assets_used": false,
         "evidence_level": "pipeline_diagnostic_only",
-        "creation_timestamp": "2026-06-15T01:11:53+00:00",
+        "creation_timestamp": "2026-06-15T01:15:35+00:00",
         "creation_commit": "27ad5cb017b174298d487d427b7124cbed9b0d7b",
         "deterministic_seed": 0,
         "episode_count": 8
@@ -49,23 +49,27 @@
       "dataset_root": "/home/favl/robotics/FleetSafe-VisualNav-Benchmark/datasets/vlntube",
       "dataset_type": "real_kujiale_trajectories",
       "source_classification": "upstream_repository_provided",
-      "evidence": "traj_data.pkl with position/yaw; JPG images; episode_info.json with goal_pos",
+      "evidence": "instruction.txt from Eyz/VLNVerse_data (fine_train/fine_val splits, Gemini-generated from trajectory frames); traj_data.pkl with position/yaw; JPG images; episode_info.json with goal_pos",
+      "instruction_generation_method": "llm_gemini_from_trajectory_frames",
+      "instruction_source_file": "Eyz/VLNVerse_data (fine_train.json.gz, fine_val.json.gz)",
       "splits_available": [
         "train",
         "val",
         "test"
       ],
       "episode_count": 253,
-      "instruction_count": 0,
+      "instruction_count": 253,
       "image_count": 13491,
       "trajectory_count": 253,
       "has_goal_pos": true,
-      "has_language_instructions": false,
+      "has_language_instructions": true,
       "has_real_images": true,
       "has_independent_targets": true,
-      "missing_fields": [
-        "language_instructions"
-      ],
+      "instruction_target_independent": true,
+      "visually_groundable": true,
+      "leakage_risk": "low_standard_vln",
+      "missing_fields": [],
+      "instruction_conflict_count": 0,
       "scenes": [
         "kujiale_0092",
         "kujiale_0118",
@@ -120,9 +124,9 @@
   },
   "totals": {
     "total_episodes": 264,
-    "total_instructions": 11,
+    "total_instructions": 264,
     "total_images": 13809,
-    "authentic_instructions": 3,
+    "authentic_instructions": 256,
     "real_image_count": 13491,
     "anchored_episodes": 253
   }
