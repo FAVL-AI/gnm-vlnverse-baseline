@@ -1,0 +1,97 @@
+{
+  "run_description": "Local six-episode language-grounding diagnostic",
+  "run_timestamp": "2026-06-15T00:44:14Z",
+  "commit": "3c2226d6e519a66206f4ea7317f552604526b83a",
+  "stride": 5,
+  "threshold_m": 3.0,
+  "seed": 0,
+  "dataset": "custom_vln_office",
+  "dataset_split": "train",
+  "n_episodes": 6,
+  "rgb_frame_type": "synthetic_gradient_dry_run",
+  "instruction_type": "dataset_provided_authored",
+  "vlnverse_benchmark": false,
+  "is_vlnverse_benchmark_track_b": false,
+  "limitations": [
+    "RGB frames are synthetic colour-gradient placeholders \u2014 not real camera images.",
+    "Six episodes is a local diagnostic run, not the full VLNVerse Track B benchmark.",
+    "Instructions were authored for this dataset; independent benchmark annotation not established.",
+    "All episodes are from the train split and were used during development.",
+    "Retrieval metrics evaluate language-to-image grounding only.",
+    "Results do not prove GNM navigation success.",
+    "Oracle retrieval removes retrieval error but does not establish closed-loop navigation performance.",
+    "Full language-conditioned navigation requires retrieval followed by GNM rollout and stopping evaluation."
+  ],
+  "navigation_separation_statement": "Current retrieval metrics evaluate language-to-image grounding. They do not prove GNM navigation success. Oracle retrieval removes retrieval error but does not establish closed-loop navigation performance. Full language-conditioned navigation requires retrieval followed by actual GNM rollout and stopping criterion evaluation. Retrieval success and navigation success must not be combined into a single claim unless both stages are executed for the same episode.",
+  "dependencies": {
+    "torch": "2.12.0+cpu",
+    "numpy": "2.4.4",
+    "cv2": "4.13.0",
+    "pillow": "12.2.0",
+    "transformers": "UNAVAILABLE"
+  },
+  "methods": {
+    "oracle": {
+      "method": "oracle",
+      "method_label": "Diagnostic upper bound \u2014 not deployable",
+      "n_episodes": 6,
+      "n_success": 6,
+      "rsr": 1.0,
+      "rsr_pct": 100.0,
+      "mean_ree_m": 0.0,
+      "median_ree_m": 0.0,
+      "std_ree_m": 0.0,
+      "min_ree_m": 0.0,
+      "max_ree_m": 0.0,
+      "threshold_m": 3.0,
+      "stride": 5,
+      "seed": 0,
+      "ree_metric": "euclidean_world_position_metres",
+      "ree_formula": "sqrt((retrieved_x - goal_x)^2 + (retrieved_y - goal_y)^2)",
+      "rsr_formula": "n_success / n_episodes  where success := ree_m <= threshold_m",
+      "per_episode_ree": {
+        "cvlo_ep001": 0.0,
+        "cvlo_ep002": 0.0,
+        "cvlo_ep003": 0.0,
+        "cvlo_ep004": 0.0,
+        "cvlo_ep005": 0.0,
+        "cvlo_ep006": 0.0
+      }
+    },
+    "last": {
+      "method": "last",
+      "method_label": "Non-language lower/comparison baseline",
+      "n_episodes": 6,
+      "n_success": 6,
+      "rsr": 1.0,
+      "rsr_pct": 100.0,
+      "mean_ree_m": 0.0,
+      "median_ree_m": 0.0,
+      "std_ree_m": 0.0,
+      "min_ree_m": 0.0,
+      "max_ree_m": 0.0,
+      "threshold_m": 3.0,
+      "stride": 5,
+      "seed": 0,
+      "ree_metric": "euclidean_world_position_metres",
+      "ree_formula": "sqrt((retrieved_x - goal_x)^2 + (retrieved_y - goal_y)^2)",
+      "rsr_formula": "n_success / n_episodes  where success := ree_m <= threshold_m",
+      "per_episode_ree": {
+        "cvlo_ep001": 0.0,
+        "cvlo_ep002": 0.0,
+        "cvlo_ep003": 0.0,
+        "cvlo_ep004": 0.0,
+        "cvlo_ep005": 0.0,
+        "cvlo_ep006": 0.0
+      }
+    },
+    "clip": {
+      "method": "clip",
+      "method_label": "Deployable semantic-retrieval baseline",
+      "status": "NOT_RUN",
+      "reason": "DEPENDENCY_MISSING: transformers not installed \u2014 pip install transformers",
+      "model_identifier": "openai/clip-vit-base-patch16",
+      "install_command": "pip install 'gnm-vlnverse[language]'"
+    }
+  }
+}

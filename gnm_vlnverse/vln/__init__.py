@@ -6,5 +6,6 @@ Track C: Track A or B with LoRA-adapted weights
 """
 from .subgoal_selector import SubgoalSelector
 from .planner import VLNPlanner
+from .language_episode import LanguageEpisode, load_episode, load_dataset
 
-__all__ = ["SubgoalSelector", "VLNPlanner"]
+__all__ = ["SubgoalSelector", "VLNPlanner", "LanguageEpisode", "load_episode", "load_dataset"]

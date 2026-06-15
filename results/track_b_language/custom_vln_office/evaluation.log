@@ -1,0 +1,25 @@
+2026-06-15 01:44:15,003 INFO Run timestamp: 2026-06-15T00:44:14Z
+2026-06-15 01:44:15,003 INFO Commit: 3c2226d6e519a66206f4ea7317f552604526b83a
+2026-06-15 01:44:15,003 INFO Stride: 5  threshold_m: 3.0  seed: 0
+2026-06-15 01:44:15,003 INFO Dependencies: {'torch': '2.12.0+cpu', 'numpy': '2.4.4', 'cv2': '4.13.0', 'pillow': '12.2.0', 'transformers': 'UNAVAILABLE'}
+2026-06-15 01:44:15,003 INFO CLIP available: False
+2026-06-15 01:44:15,040 INFO Loaded 6 episodes
+2026-06-15 01:44:15,041 INFO === oracle ===
+2026-06-15 01:44:15,041 INFO   cvlo_ep001 [oracle] idx=6/6 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep002 [oracle] idx=6/6 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep003 [oracle] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep004 [oracle] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep005 [oracle] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep006 [oracle] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO === last-frame ===
+2026-06-15 01:44:15,041 INFO   cvlo_ep001 [last] idx=6/6 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep002 [last] idx=6/6 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep003 [last] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep004 [last] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep005 [last] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO   cvlo_ep006 [last] idx=8/8 REE=0.000 m  SUCCESS
+2026-06-15 01:44:15,041 INFO CLIP skipped: DEPENDENCY_MISSING: transformers not installed — pip install transformers
+2026-06-15 01:44:15,042 INFO Wrote results/track_b_language/custom_vln_office/episode_results.jsonl
+2026-06-15 01:44:15,047 INFO Wrote results/track_b_language/custom_vln_office/aggregate_metrics.json
+2026-06-15 01:44:15,047 INFO Wrote results/track_b_language/custom_vln_office/results_table.csv
+2026-06-15 01:44:15,047 INFO Wrote results/track_b_language/custom_vln_office/run_manifest.json

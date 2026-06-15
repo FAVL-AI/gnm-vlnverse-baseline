@@ -39,6 +39,13 @@ dev = [
     "black>=24",
     "ruff>=0.4",
 ]
+# Track B language-grounding dependencies.
+# Install with:  pip install 'gnm-vlnverse[language]'
+# Enables CLIP-based text-to-image subgoal retrieval in SubgoalSelector.
+# Required model: openai/clip-vit-base-patch16 (downloaded on first use via HuggingFace hub).
+language = [
+    "transformers>=4.40",
+]
 
 [project.scripts]
 gnm-train    = "scripts.gnm.train_gnm_entry:main"
