@@ -1,0 +1,50 @@
+{
+  "audit_timestamp": "2026-06-15T04:03:18+00:00",
+  "n_episodes": 253,
+  "word_count": {
+    "min": 34,
+    "max": 150,
+    "mean": 78.5,
+    "median": 76
+  },
+  "char_count": {
+    "min": 185,
+    "max": 815,
+    "mean": 433.8
+  },
+  "sentence_count": {
+    "min": 3,
+    "max": 10,
+    "mean": 5.7
+  },
+  "structural_patterns": {
+    "has_endpoint_stop": {
+      "count": 238,
+      "fraction": 0.941
+    },
+    "has_turn_instruction": {
+      "count": 225,
+      "fraction": 0.889
+    },
+    "has_landmark": {
+      "count": 253,
+      "fraction": 1.0
+    },
+    "has_color_cue": {
+      "count": 138,
+      "fraction": 0.545
+    },
+    "ends_with_stop_phrase": {
+      "count": 38,
+      "fraction": 0.15
+    },
+    "multi_sentence": {
+      "count": 253,
+      "fraction": 1.0
+    }
+  },
+  "instruction_source": "upstream_generated_from_trajectory_frames",
+  "generator_model": "gemini-2.5-flash",
+  "unique_count": 253,
+  "duplicate_count": 0
+}

@@ -135,7 +135,13 @@ class SubgoalSelector:
     def _embed_keyframes(self) -> None:
         """Pre-compute and L2-normalise CLIP image embeddings for all keyframes."""
         import torch
+        import torch.nn.functional as F
         from PIL import Image
+
+        def _norm(t):
+            if not isinstance(t, torch.Tensor):
+                t = getattr(t, "image_embeds", None) or getattr(t, "pooler_output", t)
+            return F.normalize(t.float(), dim=-1)
 
         all_embeds = []
         batch_size = 32
@@ -144,8 +150,7 @@ class SubgoalSelector:
             pil_images = [Image.fromarray(f) for f in batch]
             inputs = self._clip_processor(images=pil_images, return_tensors="pt")
             with torch.no_grad():
-                feats = self._clip_model.get_image_features(**inputs)
-                feats = feats / feats.norm(dim=-1, keepdim=True)
+                feats = _norm(self._clip_model.get_image_features(**inputs))
             all_embeds.append(feats.cpu().numpy())
 
         self._keyframe_embeds = np.concatenate(all_embeds, axis=0)
@@ -210,12 +215,18 @@ class SubgoalSelector:
 
         import torch
 
+        import torch.nn.functional as F
+
+        def _norm(t):
+            if not isinstance(t, torch.Tensor):
+                t = getattr(t, "text_embeds", None) or getattr(t, "pooler_output", t)
+            return F.normalize(t.float(), dim=-1)
+
         inputs = self._clip_processor(
             text=[instruction], return_tensors="pt", padding=True
         )
         with torch.no_grad():
-            text_feat = self._clip_model.get_text_features(**inputs)
-            text_feat = text_feat / text_feat.norm(dim=-1, keepdim=True)
+            text_feat = _norm(self._clip_model.get_text_features(**inputs))
 
         text_np = text_feat.cpu().numpy()           # (1, D)
         similarities = (self._keyframe_embeds @ text_np.T).squeeze()  # (N,)

@@ -1,0 +1,76 @@
+{
+  "audit_timestamp": "2026-06-15T03:58:33+00:00",
+  "split": "train",
+  "n_episodes": 238,
+  "success_radius_m": 3.0,
+  "clip_model": "openai/clip-vit-base-patch16",
+  "stride": 5,
+  "route_beta": 1.0,
+  "rejection_threshold": 0.2,
+  "seed": 42,
+  "methods": {
+    "random": {
+      "n_episodes": 238,
+      "sr_at_3m": 0.4622,
+      "n_success": 110,
+      "mean_dist_m": 3.788,
+      "median_dist_m": 3.357,
+      "p25_dist_m": 1.77,
+      "p75_dist_m": 5.106
+    },
+    "first": {
+      "n_episodes": 238,
+      "sr_at_3m": 0.0546,
+      "n_success": 13,
+      "mean_dist_m": 6.511,
+      "median_dist_m": 5.989,
+      "p25_dist_m": 4.223,
+      "p75_dist_m": 8.321
+    },
+    "final": {
+      "n_episodes": 238,
+      "sr_at_3m": 1.0,
+      "n_success": 238,
+      "mean_dist_m": 0.0,
+      "median_dist_m": 0.0,
+      "p25_dist_m": 0.0,
+      "p75_dist_m": 0.0
+    },
+    "oracle": {
+      "n_episodes": 238,
+      "sr_at_3m": 1.0,
+      "n_success": 238,
+      "mean_dist_m": 0.0,
+      "median_dist_m": 0.0,
+      "p25_dist_m": 0.0,
+      "p75_dist_m": 0.0
+    },
+    "clip": {
+      "n_episodes": 238,
+      "sr_at_3m": 0.3445,
+      "n_success": 82,
+      "mean_dist_m": 4.104,
+      "median_dist_m": 3.661,
+      "p25_dist_m": 1.995,
+      "p75_dist_m": 5.359
+    },
+    "clip_route": {
+      "n_episodes": 238,
+      "sr_at_3m": 1.0,
+      "n_success": 238,
+      "mean_dist_m": 0.086,
+      "median_dist_m": 0.0,
+      "p25_dist_m": 0.0,
+      "p75_dist_m": 0.0
+    },
+    "clip_route_rej": {
+      "n_episodes": 238,
+      "sr_at_3m": 1.0,
+      "n_success": 238,
+      "mean_dist_m": 0.086,
+      "median_dist_m": 0.0,
+      "p25_dist_m": 0.0,
+      "p75_dist_m": 0.0
+    }
+  }
+}

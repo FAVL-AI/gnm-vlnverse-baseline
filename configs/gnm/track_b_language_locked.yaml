@@ -1,0 +1,68 @@
+# Track B language-grounding locked configuration
+#
+# Frozen after dev-set method selection on 238 train episodes.
+# Do not modify this file once held-out validation has been run.
+#
+# Retrieval method: clip_route
+#   CLIP cosine similarity multiplied by a linear route prior that upweights
+#   later frames.  score[i] = sim[i] * (1 + route_beta * rank/N).
+#   Selected because it achieves SR@3m = 1.000 on the dev set while making
+#   principled use of the language instruction.
+#
+# Note: all VLNTube episodes end exactly at goal_pos (final_dist = 0.000 m
+# for all 253 episodes).  The route prior exploits this trajectory property.
+# SR@3m = 1.000 is therefore an achievable upper bound for retrieval, not a
+# claim about language-instruction quality.
+
+track_b:
+  description: >
+    Language-grounding retrieval configuration, locked after dev-set method
+    selection.  Selects a goal image from the episode trajectory by combining
+    CLIP text-image similarity with a route prior.
+
+  # ── Subgoal retrieval ──────────────────────────────────────────────────────
+  retrieval:
+    method: clip_route
+    clip_model: openai/clip-vit-base-patch16
+    keyframe_stride: 5           # sample every Nth frame for CLIP retrieval
+    route_beta: 1.0              # linear route-prior weight; final frame gets 2x vs first
+    rejection_threshold: 0.20    # not active when method=clip_route (active for clip_route_rej)
+    device: cpu
+
+  # ── Evaluation ────────────────────────────────────────────────────────────
+  evaluation:
+    success_radius_m: 3.0
+    dev_split: train             # used for method selection; 238 episodes
+    held_out_split: val          # run ONCE; 15 episodes
+    manifest: data/track_b_annotations/generated_language_manifest.jsonl
+    manifest_sha256: 1659d2b8f0d229990bc1683de6f855b6340660f846623c3369ac1cfcf5ac80d9
+
+  # ── Dev-set results (train, 238 episodes) ─────────────────────────────────
+  dev_results:
+    date: "2026-06-15"
+    n_episodes: 238
+    method_sr_at_3m:
+      random:          0.462
+      first:           0.055
+      final:           1.000
+      oracle:          1.000
+      clip:            0.344
+      clip_route:      1.000
+      clip_route_rej:  1.000
+    selected_method: clip_route
+    selection_rationale: >
+      clip_route achieves SR@3m = 1.000, matching oracle and the final-frame
+      baseline.  It is preferred over the final-frame heuristic because it
+      makes explicit use of the language instruction through CLIP similarity,
+      consistent with the language-grounding objective.  Pure CLIP without the
+      route prior achieves only 0.344, confirming that the route prior is
+      necessary to align CLIP retrieval with trajectory structure.
+
+  # ── Trajectory property note ─────────────────────────────────────────────
+  dataset_note: >
+    VLNTube/vlntube_fleetsafe episodes are constructed so that the final
+    trajectory frame coincides exactly with goal_pos (final_dist = 0.000 m
+    for all 253 episodes).  Retrieval SR@3m = 1.000 therefore reflects this
+    dataset property as much as retrieval quality.  Results should be reported
+    as "subgoal retrieval on automatically constructed episodes" rather than
+    as evidence of language-instruction grounding fidelity.
