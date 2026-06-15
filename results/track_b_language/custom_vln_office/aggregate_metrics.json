@@ -1,8 +1,8 @@
 {
   "evidence_level": "pipeline_diagnostic_only",
   "run_description": "Track B language-grounding diagnostic evaluation",
-  "run_timestamp": "2026-06-15T01:02:25+00:00",
-  "commit": "e6045e892ac68af0575d65aae087bffc67e33303",
+  "run_timestamp": "2026-06-15T01:12:54+00:00",
+  "commit": "27ad5cb017b174298d487d427b7124cbed9b0d7b",
   "dataset_root": "datasets/custom_vln_office",
   "dataset": "custom_vln_office",
   "dataset_split": "train",
@@ -12,6 +12,7 @@
   "n_episodes": 6,
   "rgb_frame_type": "synthetic_gradient_dry_run",
   "instruction_type": "project_authored_synthetic_dry_run",
+  "provenance_source": "explicit_metadata",
   "vlnverse_benchmark": false,
   "is_vlnverse_benchmark_track_b": false,
   "limitations": [

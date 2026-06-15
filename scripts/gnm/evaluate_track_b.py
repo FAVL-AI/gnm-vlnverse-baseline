@@ -61,6 +61,14 @@ import numpy as np
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 
+from gnm_vlnverse.vln.provenance import (
+    IMAGE_SOURCE_UNKNOWN,
+    INSTRUCTION_SOURCE_UNKNOWN,
+    PROVENANCE_SOURCE_HEURISTIC,
+    infer_image_source_heuristic,
+    resolve_provenance,
+)
+
 SUCCESS_THRESHOLD_M = 3.0
 
 _LIMITATION_DIAGNOSTIC = (
@@ -98,29 +106,35 @@ def _dep_version(mod: str) -> str:
         return "UNAVAILABLE"
 
 
-def _detect_rgb_frame_type(ep_dirs: list[Path]) -> str:
-    """Classify RGB frames as synthetic-gradient or real by first-derivative std.
+def _resolve_dataset_provenance(
+    ep_dirs: list[Path],
+    dataset_root: Path,
+    episodes: list,
+) -> tuple[str, str, str]:
+    """Resolve image_source, instruction_source, and provenance_source.
 
-    Synthetic colour-gradient frames have low spatial variation between adjacent
-    pixels (first-derivative std < 25).  Real camera frames have much higher
-    local detail (first-derivative std >> 25 due to texture and edges).
+    Uses the priority hierarchy in gnm_vlnverse.vln.provenance:
+      1. Explicit episode provenance.json
+      2. Explicit dataset_provenance.json
+      3. Pixel heuristic fallback
+      4. Unknown
+
+    Returns (image_source, instruction_source, provenance_source).
+    Logs a warning when the heuristic is used.
     """
-    if not ep_dirs:
-        return "unknown"
-    sample = ep_dirs[0] / "rgb" / "000000.jpg"
-    if not sample.exists():
-        return "unknown"
-    try:
-        import cv2
-        import numpy as np
-        img = cv2.imread(str(sample))
-        if img is None:
-            return "unknown"
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(float)
-        dx_std = float(np.diff(gray, axis=1).std())
-        return "synthetic_gradient_dry_run" if dx_std < 25.0 else "real_camera"
-    except Exception:
-        return "unknown"
+    if not ep_dirs or not episodes:
+        return IMAGE_SOURCE_UNKNOWN, INSTRUCTION_SOURCE_UNKNOWN, "unknown"
+
+    result = resolve_provenance(ep_dirs[0], dataset_root)
+
+    if result.is_heuristic:
+        logging.getLogger(__name__).warning(
+            "Provenance determined by pixel heuristic — provide provenance.json "
+            "or dataset_provenance.json for authoritative labelling. "
+            "Heuristic: %s", result.warning
+        )
+
+    return result.image_source, result.instruction_source, result.provenance_source
 
 
 def _write_jsonl(path: Path, records: list[dict]) -> None:
@@ -274,7 +288,9 @@ def main() -> None:
 
     split_dir  = dataset_root / args.split
     ep_dirs    = sorted(p for p in split_dir.iterdir() if (p / "traj_data.pkl").exists())
-    rgb_type   = _detect_rgb_frame_type(ep_dirs)
+    rgb_type, inst_type, prov_source = _resolve_dataset_provenance(
+        ep_dirs, dataset_root, episodes
+    )
 
     # Run evaluation
     summaries: dict = {}
@@ -336,14 +352,15 @@ def main() -> None:
 
     instruction_provenance = {
         ep.episode_id: {
-            "instruction_source":           "project_authored_synthetic_dry_run",
+            "instruction_source":           inst_type,
             "rgb_frame_source":             rgb_type,
+            "provenance_source":            prov_source,
             "target_frame_source":          "trajectory_final_position",
             "target_defined_independently": True,
-            "scene":                        ep.scene_id or "custom_vln_office",
+            "scene":                        ep.scene_id or dataset_root.name,
             "split":                        args.split,
             "used_during_development":      True,
-            "source_script":                "collect_custom_vln_office_data.py --dry-run",
+            "source_script":                "evaluate_track_b.py",
             "isaac_assets_used":            False,
             "vlnverse_assets_used":         False,
         }
@@ -373,7 +390,8 @@ def main() -> None:
         "seed":                          args.seed,
         "n_episodes":                    len(episodes),
         "rgb_frame_type":                rgb_type,
-        "instruction_type":              "project_authored_synthetic_dry_run",
+        "instruction_type":              inst_type,
+        "provenance_source":             prov_source,
         "vlnverse_benchmark":            False,
         "is_vlnverse_benchmark_track_b": False,
         "limitations":                   limitations,

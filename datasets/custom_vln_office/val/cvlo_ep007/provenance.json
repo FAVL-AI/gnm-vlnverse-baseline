@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "image_source": "synthetic_gradient_dry_run",
+  "instruction_source": "project_authored_synthetic_dry_run",
+  "generator_script": "collect_custom_vln_office_data.py",
+  "generator_version": "1.1",
+  "dry_run": true,
+  "synthetic": true,
+  "isaac_assets_used": false,
+  "vlnverse_assets_used": false,
+  "evidence_level": "pipeline_diagnostic_only",
+  "creation_timestamp": "2026-06-15T01:15:35+00:00",
+  "creation_commit": "27ad5cb017b174298d487d427b7124cbed9b0d7b",
+  "deterministic_seed": 0,
+  "episode_id": "cvlo_ep007",
+  "split": "val"
+}

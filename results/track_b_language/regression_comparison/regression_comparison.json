@@ -1,0 +1,51 @@
+{
+  "audit_timestamp": "2026-06-15T01:08:19+00:00",
+  "purpose": "Verify that test failures in current branch are pre-existing, not regressions",
+  "python_executable": "/home/favl/miniforge3/bin/python3",
+  "python_version": "3.13.13",
+  "pytest_version": "9.0.3",
+  "base_commit": "3c2226d6e519a66206f4ea7317f552604526b83a",
+  "current_commit": "27ad5cb",
+  "base_worktree": "/tmp/gnm-track-b-baseline-check",
+  "current_worktree": "/home/favl/robotics/gnm-vlnverse-language",
+  "tests": [
+    {
+      "node_id": "tests/gnm/test_live_dashboard.py::test_export_live_dashboard_first_frame_exists",
+      "base_return_code": 1,
+      "current_return_code": 1,
+      "classification": "PRE_EXISTING_IDENTICAL_FAILURE",
+      "base_failure_message": "AssertionError: dashboard_000000.png (frame 0) missing \u2014 run --export-live-dashboard on a machine with the dataset\nassert False\n +  where False = exists()\n +    where exists = PosixPath('/tmp/gnm-track-b-baseline-check/results/bo_reviewer_packet/live_dashboard/dashboard_000000.png').exists",
+      "current_failure_message": "AssertionError: dashboard_000000.png (frame 0) missing \u2014 run --export-live-dashboard on a machine with the dataset\nassert False\n +  where False = exists()\n +    where exists = PosixPath('/home/favl/robotics/gnm-vlnverse-language/results/bo_reviewer_packet/live_dashboard/dashboard_000000.png').exists",
+      "failure_reason": "Requires a pre-generated export file (dashboard_000000.png) not present in this environment. The test must be run on a machine with the full dataset after running --export-live-dashboard. Path differs only by worktree root.",
+      "messages_identical_ignoring_path": true
+    },
+    {
+      "node_id": "tests/test_routes_smoke.py::test_experiments_summary_has_total",
+      "base_return_code": 1,
+      "current_return_code": 1,
+      "classification": "PRE_EXISTING_IDENTICAL_FAILURE",
+      "base_failure_message": "assert 0 > 0",
+      "current_failure_message": "assert 0 > 0",
+      "failure_reason": "Expects total_runs > 0 from an in-memory experiment database. No experiment runs recorded in this environment; total_runs=0 on both commits. Messages byte-for-byte identical."
+    }
+  ],
+  "conclusion": "no_regression",
+  "conclusion_detail": "Both failures are PRE_EXISTING_IDENTICAL_FAILURE. Assertion messages are identical on base commit 3c2226d and current commit 27ad5cb (test_live_dashboard differs only in absolute worktree path). Commit 27ad5cb introduced no new test failures.",
+  "changed_files_in_current_commit": [
+    "scripts/gnm/evaluate_track_b.py (new)",
+    "tests/test_language_grounding_pipeline.py (+10 tests)",
+    "results/track_b_language/custom_vln_office/aggregate_metrics.json",
+    "results/track_b_language/custom_vln_office/episode_results.jsonl",
+    "results/track_b_language/custom_vln_office/evaluation.log",
+    "results/track_b_language/custom_vln_office/results_table.csv",
+    "results/track_b_language/custom_vln_office/run_manifest.json"
+  ],
+  "new_regressions": 0,
+  "regression_classifications_summary": {
+    "PRE_EXISTING_IDENTICAL_FAILURE": 2,
+    "PRE_EXISTING_DIFFERENT_FAILURE": 0,
+    "NEW_REGRESSION": 0,
+    "ENVIRONMENT_MISMATCH": 0,
+    "PASSES_ON_BOTH": 0
+  }
+}

@@ -25,8 +25,10 @@ import argparse
 import json
 import math
 import pickle
+import subprocess
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -38,6 +40,16 @@ SCENE_USD  = REPO / "assets/custom_vln_office/custom_vln_office.usd"
 DATA_ROOT  = REPO / "datasets/custom_vln_office"
 STEPS_PER_SEG = 10     # frames per waypoint segment
 WAYPOINT_HORIZON = 5   # local waypoint offset
+GENERATOR_VERSION = "1.1"  # increment when provenance schema changes
+
+
+def _git_commit() -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=REPO, stderr=subprocess.DEVNULL
+        ).decode().strip()
+    except Exception:
+        return "unknown"
 
 
 def _load_tasks() -> dict:
@@ -104,8 +116,31 @@ def _placeholder_frame(i: int, split: str, ep_id: str) -> "PIL.Image":
     return img
 
 
+def _episode_provenance(ep_id: str, split: str, dry_run: bool,
+                        creation_ts: str, creation_commit: str) -> dict:
+    """Build the authoritative per-episode provenance record."""
+    return {
+        "schema_version":        "1.0",
+        "image_source":          "synthetic_gradient_dry_run" if dry_run else "real_camera",
+        "instruction_source":    "project_authored_synthetic_dry_run" if dry_run else "project_authored",
+        "generator_script":      "collect_custom_vln_office_data.py",
+        "generator_version":     GENERATOR_VERSION,
+        "dry_run":               dry_run,
+        "synthetic":             dry_run,
+        "isaac_assets_used":     False,
+        "vlnverse_assets_used":  False,
+        "evidence_level":        "pipeline_diagnostic_only" if dry_run else "real_data",
+        "creation_timestamp":    creation_ts,
+        "creation_commit":       creation_commit,
+        "deterministic_seed":    0,
+        "episode_id":            ep_id,
+        "split":                 split,
+    }
+
+
 def _save_episode(ep: dict, split: str, dry_run: bool,
-                  get_frame_fn=None) -> Path:
+                  get_frame_fn=None, creation_ts: str = "",
+                  creation_commit: str = "unknown") -> Path:
     ep_id   = ep["episode_id"]
     instr   = ep["instruction"]
     wps     = [(w["x"], w["y"]) for w in ep["waypoints"]]
@@ -216,6 +251,11 @@ def _save_episode(ep: dict, split: str, dry_run: bool,
     with open(out_dir / "metadata.json", "w") as f:
         json.dump(meta, f, indent=2)
 
+    # provenance.json — explicit, machine-readable data provenance
+    prov = _episode_provenance(ep_id, split, dry_run, creation_ts, creation_commit)
+    with open(out_dir / "provenance.json", "w") as f:
+        json.dump(prov, f, indent=2)
+
     print(f"  {split}/{ep_id}  T={T}  len={path_len:.1f} m  "
           f"start=({sx:.1f},{sy:.1f})  goal=({gx:.1f},{gy:.1f})")
     return out_dir
@@ -224,8 +264,34 @@ def _save_episode(ep: dict, split: str, dry_run: bool,
 def run_dry_run(tasks: dict) -> None:
     print("Collecting CustomVLN-Office data (dry-run — no Isaac Sim)")
     print("=" * 60)
+    creation_ts     = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    creation_commit = _git_commit()
     for ep in tasks["episodes"]:
-        _save_episode(ep, ep["split"], dry_run=True)
+        _save_episode(ep, ep["split"], dry_run=True,
+                      creation_ts=creation_ts, creation_commit=creation_commit)
+
+    # Write dataset-level provenance manifest
+    ds_prov = {
+        "schema_version":        "1.0",
+        "dataset_id":            "custom_vln_office",
+        "image_source":          "synthetic_gradient_dry_run",
+        "instruction_source":    "project_authored_synthetic_dry_run",
+        "generator_script":      "collect_custom_vln_office_data.py",
+        "generator_version":     GENERATOR_VERSION,
+        "dry_run":               True,
+        "synthetic":             True,
+        "isaac_assets_used":     False,
+        "vlnverse_assets_used":  False,
+        "evidence_level":        "pipeline_diagnostic_only",
+        "creation_timestamp":    creation_ts,
+        "creation_commit":       creation_commit,
+        "deterministic_seed":    0,
+        "episode_count":         len(tasks["episodes"]),
+    }
+    ds_prov_path = DATA_ROOT / "dataset_provenance.json"
+    with open(ds_prov_path, "w") as f:
+        json.dump(ds_prov, f, indent=2)
+    print(f"  Dataset provenance written: {ds_prov_path.relative_to(REPO)}")
 
     # Counts
     t_count = len([e for e in tasks["episodes"] if e["split"] == "train"])
@@ -294,8 +360,11 @@ def run_isaac(tasks: dict) -> None:
             pass
         return Image.new("RGB", (480, 360), (80, 100, 80))
 
+    creation_ts     = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    creation_commit = _git_commit()
     for ep in tasks["episodes"]:
-        _save_episode(ep, ep["split"], dry_run=False, get_frame_fn=get_frame)
+        _save_episode(ep, ep["split"], dry_run=False, get_frame_fn=get_frame,
+                      creation_ts=creation_ts, creation_commit=creation_commit)
 
     _app.close()
 
