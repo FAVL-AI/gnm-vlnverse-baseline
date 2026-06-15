@@ -1,0 +1,7 @@
+{"dataset_id": "custom_vln_office", "field": "independent_target_annotation"}
+{"dataset_id": "custom_vln_office", "field": "real_images"}
+{"dataset_id": "vlntube_fleetsafe", "field": "language_instructions"}
+{"dataset_id": "vlntube_prebuilt", "field": "goal_pos"}
+{"dataset_id": "vlntube_prebuilt", "field": "independent_target_annotation"}
+{"dataset_id": "vlnverse_imported", "field": "rgb_images"}
+{"dataset_id": "vlnverse_imported", "field": "independent_target_annotation"}
