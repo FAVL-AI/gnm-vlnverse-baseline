@@ -105,7 +105,15 @@ do not end at the goal is required before language-grounding evaluation can be c
 ```bash
 git clone https://github.com/FAVL-AI/gnm-vlnverse-baseline.git
 cd gnm-vlnverse-baseline
+bash scripts/gnm/bootstrap_demo_env.sh
 pip install -e .
+```
+
+PyTorch is an optional dependency for CPU-only environments (e.g. CI).
+Install it separately before running model-inference code:
+
+```bash
+pip install torch torchvision
 ```
 
 ### Language extras (Track B, CLIP retrieval)

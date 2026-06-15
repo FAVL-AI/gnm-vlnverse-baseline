@@ -17,9 +17,12 @@
 ```bash
 git clone https://github.com/FAVL-AI/gnm-vlnverse-baseline.git
 cd gnm-vlnverse-baseline
+bash scripts/gnm/bootstrap_demo_env.sh
 pip install -e .                     # base
 pip install -e '.[language]'         # CLIP retrieval (Track B)
 ```
+
+PyTorch is optional for CPU-only environments. See docs/USAGE.md for details.
 
 ---
 
