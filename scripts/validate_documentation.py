@@ -7,7 +7,7 @@ Checks:
 - Documented scripts exist and accept --help or --dry-run
 - README numbers match evidence files
 - Copyright and third-party notices exist
-- No prohibited attribution (Claude/Anthropic/Generated with/Co-Authored-By bot)
+- No prohibited AI-tool or vendor attribution notices
 - No placeholder metrics (X.XX%, TBD, TODO, PLACEHOLDER)
 - No unsupported language-grounding claims
 - Manifest split counts match DATASET_CARD
