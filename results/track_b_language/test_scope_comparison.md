@@ -30,7 +30,11 @@ Using `pyproject.toml` configuration (`testpaths = ["tests"]`).
 
 | Collected | Passed | Failed | Skipped | xfailed |
 |-----------|--------|--------|---------|---------|
-| 1944 | 1815 | 2 | 125 | 2 |
+| 2141 | 2012 | 2 | 125 | 2 |
+
+The increase from 1,815 to 2,012 reflects 197 new tests added in
+`tests/test_documentation_integrity.py` (manifest integrity, prohibited attribution,
+unsupported claims, local links, copyright notices).
 
 Both failures are pre-existing and unrelated to Track B:
 
@@ -44,12 +48,13 @@ introduced by `track-b-language-grounding`.
 
 ---
 
-## Historical count of 1,798
+## Historical counts
 
-An earlier session report stated "1,798 passed, 2 pre-existing failures." This
-was a full-suite run captured before 26 new vlntube instruction-audit tests were
-added in commit `d488104` / `39b51c5`. The count increased to 1,815 as new tests
-were committed to the branch.
+| Earlier count | Reason |
+|---------------|--------|
+| ~1,798 passed | Full-suite run before 26 new vlntube instruction-audit tests (commits `d488104` / `39b51c5`) |
+| 1,815 passed | Full suite after vlntube audit tests; before documentation-integrity tests |
+| **2,012 passed** | **Current authoritative count** — includes 197 `test_documentation_integrity.py` tests |
 
 ---
 
@@ -58,8 +63,9 @@ were committed to the branch.
 | Reported count | Scope | Command |
 |----------------|-------|---------|
 | 89 passed, 9 skipped | 2 language test files only | `pytest tests/test_vlntube_instruction_audit.py tests/test_language_grounding_pipeline.py` |
-| 1,815 passed, 2 failed | Full suite (current) | `pytest` (all of `tests/`) |
-| ~1,798 passed, 2 failed | Full suite (earlier, fewer tests) | `pytest` |
+| 2,012 passed, 2 failed | Full suite (current) | `pytest` (all of `tests/`) |
+| 1,815 passed, 2 failed | Full suite (pre-documentation-integrity tests) | `pytest` |
+| ~1,798 passed, 2 failed | Full suite (earliest recorded) | `pytest` |
 
 "Full suite" means all tests collected from the `tests/` directory using the
 `pyproject.toml` configuration. Partial runs must not be called the full suite.

@@ -25,12 +25,12 @@
       "command": "python3 -m pytest -q --tb=no",
       "test_paths": ["tests/"],
       "pytest_config": "pyproject.toml [tool.pytest.ini_options] testpaths=[tests]",
-      "collected": 1944,
-      "passed": 1815,
+      "collected": 2141,
+      "passed": 2012,
       "failed": 2,
       "skipped": 125,
       "xfailed": 2,
-      "runtime_s": 45.46,
+      "note": "197 new tests added in tests/test_documentation_integrity.py since the 1,815 count was recorded.",
       "pre_existing_failures": [
         {
           "test": "tests/gnm/test_live_dashboard.py::test_export_live_dashboard_first_frame_exists",
@@ -56,7 +56,8 @@
   ],
   "disambiguation": {
     "89_passed_9_skipped": "Scope: tests/test_vlntube_instruction_audit.py + tests/test_language_grounding_pipeline.py only. 98 tests, 9 CLIP-dependent skips.",
-    "1815_passed_2_failed": "Scope: full repository suite (1944 tests collected). 2 pre-existing failures unrelated to Track B.",
+    "2012_passed_2_failed": "Scope: full repository suite (2141 tests collected). Current authoritative count. 2 pre-existing failures unrelated to Track B.",
+    "1815_passed_historical": "Scope: full repository suite before 197 test_documentation_integrity.py tests were added.",
     "1798_passed_historical": "Scope: full repository suite before 26 new audit tests were added. Both failures were pre-existing."
   }
 }

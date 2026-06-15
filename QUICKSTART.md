@@ -22,7 +22,7 @@ pip install -e .                     # base
 pip install -e '.[language]'         # CLIP retrieval (Track B)
 ```
 
-PyTorch is optional for CPU-only environments. See docs/USAGE.md for details.
+PyTorch is required for model inference. CPU-only environments may install a CPU build; CUDA is optional. See docs/USAGE.md for details.
 
 ---
 
@@ -37,11 +37,15 @@ python3 scripts/gnm/check_demo_ready.py
 
 ## Track A
 
-```bash
-# Reproduce baseline metrics (SR/OSR/NE)
-python3 scripts/gnm/evaluate_track_b.py --split val --methods oracle last
+Stop-policy scripts require a GNM checkpoint (`--ckpt`). Pre-computed results
+are committed in `results/bo_reviewer_packet/`.
 
-# Export live dashboard (no GUI)
+```bash
+# Stop-policy ablation — SR/OSR/NE table (requires checkpoint)
+python3 scripts/gnm/ablate_deployable_stop_policy.py \
+    --ckpt /path/to/gnm.pth --split val
+
+# Export live dashboard (no checkpoint, no GUI required)
 python3 scripts/gnm/replay_gnm_demo.py --export-live-dashboard
 ```
 
@@ -76,7 +80,7 @@ Results: `results/track_b_language/`
 ## Tests
 
 ```bash
-python3 -m pytest -q          # full suite (~1815 passing)
+python3 -m pytest -q          # full suite (~2012 passing)
 ```
 
 ---

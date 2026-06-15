@@ -109,8 +109,8 @@ bash scripts/gnm/bootstrap_demo_env.sh
 pip install -e .
 ```
 
-PyTorch is an optional dependency for CPU-only environments (e.g. CI).
-Install it separately before running model-inference code:
+PyTorch is required for model inference. CPU-only environments may install a CPU
+build; CUDA is optional. Install it separately if not already present:
 
 ```bash
 pip install torch torchvision
@@ -145,13 +145,22 @@ bash scripts/gnm/link_vlntube_data.sh \
 
 ## Track A reproduction
 
-```bash
-# Run the Track A evaluation CLI
-python3 scripts/gnm/evaluate_track_b.py --split val --methods oracle last
+All Track A scripts require a GNM checkpoint (`--ckpt`). Pre-computed results are
+committed in `results/bo_reviewer_packet/`.
 
-# Run the stop-policy study scripts
-python3 scripts/gnm/learn_stop_head.py
+```bash
+# Stop-policy ablation — produces SR/OSR/NE results table (requires checkpoint)
+python3 scripts/gnm/ablate_deployable_stop_policy.py \
+    --ckpt /path/to/gnm.pth --split val
+
+# Train the logistic stop head (requires checkpoint)
+python3 scripts/gnm/learn_stop_head.py --ckpt /path/to/gnm.pth
+
+# Export live dashboard (no checkpoint required)
 python3 scripts/gnm/replay_gnm_demo.py --export-live-dashboard
+
+# One-command reproducibility check (no checkpoint required)
+bash scripts/gnm/run_reproducibility_pack.sh
 ```
 
 Evidence: `results/bo_reviewer_packet/`
@@ -203,7 +212,7 @@ python3 -m pytest tests/test_vlntube_instruction_audit.py \
                   tests/test_language_grounding_pipeline.py -q
 ```
 
-Current full-suite result: 1815 passed, 2 pre-existing failures (unrelated to
+Current full-suite result: 2012 passed, 2 pre-existing failures (unrelated to
 Track B), 125 skipped, 2 xfailed. See
 `results/track_b_language/test_scope_comparison.md` for test-count disambiguation.
 

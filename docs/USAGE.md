@@ -44,6 +44,9 @@ This installs the `gnm-vlnverse-baseline` package plus all required dependencies
 (numpy, torch, torchvision, timm, opencv-python-headless, pyyaml, omegaconf,
 scipy, pandas, tqdm, Pillow).
 
+PyTorch is required for model inference. CPU-only environments may install a CPU
+build; CUDA is optional.
+
 ---
 
 ## 4. Optional language installation (Track B, CLIP retrieval)
@@ -102,25 +105,40 @@ This verifies:
 
 ## 7. Track A evaluation
 
+All model scripts require a GNM checkpoint (`--ckpt`). Pre-computed results are
+committed in `results/bo_reviewer_packet/`. To reproduce from a checkpoint:
+
 ### 7a. Reproduce the baseline SR/OSR/NE metrics
 
 ```bash
-python3 scripts/gnm/evaluate_track_b.py \
+python3 scripts/gnm/ablate_deployable_stop_policy.py \
+    --ckpt /path/to/gnm.pth \
     --split val \
-    --methods oracle last \
-    --output-dir results/track_a_eval
+    --output-dir results/bo_reviewer_packet
 ```
 
-### 7b. Train and evaluate the temporal stop head
+### 7b. Train and evaluate the logistic stop head
 
 ```bash
-python3 scripts/gnm/learn_stop_head.py
+python3 scripts/gnm/learn_stop_head.py --ckpt /path/to/gnm.pth
 ```
 
-### 7c. Export the live dashboard (no GUI required)
+### 7c. Train and evaluate the temporal neural stop head
+
+```bash
+python3 scripts/gnm/train_temporal_stop_head.py --ckpt /path/to/gnm.pth
+```
+
+### 7d. Export the live dashboard (no checkpoint required)
 
 ```bash
 python3 scripts/gnm/replay_gnm_demo.py --export-live-dashboard
+```
+
+### 7e. One-command reproducibility check (no checkpoint required)
+
+```bash
+bash scripts/gnm/run_reproducibility_pack.sh
 ```
 
 Evidence written to `results/bo_reviewer_packet/`.
@@ -265,7 +283,7 @@ language grounding.
 python3 -m pytest -q
 ```
 
-Expected: ~1815 passed, 2 pre-existing failures, ~125 skipped.
+Expected: ~2012 passed, 2 pre-existing failures, ~125 skipped.
 
 ### Language-grounding tests only
 

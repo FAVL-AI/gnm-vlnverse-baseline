@@ -7,15 +7,18 @@
 ## Current status
 
 No top-level open-source licence has been formally selected for this repository.
-The `pyproject.toml` file contains `license = { text = "MIT" }` as a classifier
-declaration, but no `LICENSE` file exists at the repository root. This means:
+The `pyproject.toml` file declares:
 
-- The MIT declaration in `pyproject.toml` does not legally grant MIT licence permissions
-  without an accompanying `LICENSE` file.
+```
+license = { text = "All rights reserved. See COPYRIGHT.md and docs/legal/LICENSING_STATUS.md." }
+```
+
+No `LICENSE` file exists at the repository root. This means:
+
+- All rights are reserved to the original author under UK copyright law by default.
 - Public visibility of this repository on GitHub does not constitute permission to
   reuse, reproduce, distribute or adapt the code.
-- Default copyright law (UK) applies: all rights reserved to the original author
-  unless otherwise stated.
+- See `COPYRIGHT.md` for the full copyright notice.
 
 ## Compatibility constraints
 
@@ -41,7 +44,8 @@ compatible:
    https://github.com/robodhruv/visualnav-transformer).
 3. Verify that Newcastle University's IP policy does not restrict the choice of
    open-source licence for this doctoral research.
-4. Once compatibility is confirmed, add a `LICENSE` file and update `pyproject.toml`.
+4. Once compatibility is confirmed, select a licence, add a `LICENSE` file, and
+   update the `pyproject.toml` licence declaration accordingly.
 
 ## Reference
 
