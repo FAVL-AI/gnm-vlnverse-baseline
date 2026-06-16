@@ -99,6 +99,18 @@ echo "[OK] All v2.0 files present" | tee -a "$LOG_FILE"
 
 echo ""
 echo "------------------------------------------------------------"
+echo "[STEP] Verify v2.1 live Isaac ROS 2 bridge files"
+echo "------------------------------------------------------------"
+
+check_file "docs/v2.1_isaac_ros2_bridge_checklist.md"
+check_file "docs/yahboom_control_scene_checklist.md"
+check_file "scripts/gnm/check_isaac_bridge.sh"
+check_file "scripts/gnm/verify_live_topics.py"
+
+echo "[OK] All v2.1 files present" | tee -a "$LOG_FILE"
+
+echo ""
+echo "------------------------------------------------------------"
 echo "[STEP] v2.0 dry-run checks (no ROS 2 or Isaac Sim required)"
 echo "------------------------------------------------------------"
 
@@ -123,6 +135,17 @@ run_step "v2.0 evaluation wrapper (dry-run mode)" \
 
 echo ""
 echo "------------------------------------------------------------"
+echo "[STEP] v2.1 dry-run checks (no ROS 2 or Isaac Sim required)"
+echo "------------------------------------------------------------"
+
+run_step "v2.1 Isaac bridge checker (dry-run mode)" \
+  bash scripts/gnm/check_isaac_bridge.sh
+
+run_step "v2.1 live topic verifier (dry-run mode)" \
+  python3 scripts/gnm/verify_live_topics.py
+
+echo ""
+echo "------------------------------------------------------------"
 echo "[STEP] Verify README release matrix markers"
 echo "------------------------------------------------------------"
 
@@ -133,6 +156,7 @@ grep -q "Temporal neural stop head" README.md
 grep -Eq "Stable Isaac live demo|Stable Isaac live trajectory demo" README.md
 grep -q "v2.0" README.md
 grep -q "FleetSafe-GNM" README.md
+grep -q "v2.1" README.md
 
 echo "[OK] README release matrix present" | tee -a "$LOG_FILE"
 
