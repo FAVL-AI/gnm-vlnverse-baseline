@@ -16,6 +16,7 @@ This repository contains a staged GNM-VLNVerse Track A research release ladder. 
 | v1.8 | 131-test suite and stop-policy ablation | Full stop-policy ablation with temporal feature sensitivity evidence |
 | v1.9 | Methodology walkthrough | End-to-end architecture and code evidence walkthrough |
 | v2.0 | FleetSafe-GNM Isaac ROS 2 implementation manual and data collection pipeline | Implementation manual, ROS 2 topic checker, Isaac rosbag collection wrapper, rosbag-to-GNM converter, GNM fine-tuning wrapper, GNM-only vs GNM-plus-FleetSafe evaluation wrapper, ROS 2 launch skeleton, dry-run-safe scripts |
+| v2.1 | Live Isaac ROS 2 bridge verification layer and Yahboom placeholder | Isaac bridge availability checker, live topic verifier (five required topics), Yahboom M3 Pro control scene placeholder checklist, Isaac Sim startup instructions, CI-safe dry-run mode for all checks |
 
 ### Key Track A results
 
@@ -308,3 +309,50 @@ bash scripts/gnm/eval_gnm_vs_fleetsafe.sh --dry-run
 ```
 
 All dry-run commands complete without ROS 2 or Isaac Sim installed.
+
+---
+
+## v2.1 — Live Isaac ROS 2 Bridge Verification Layer
+
+v2.1 adds the first live Isaac ROS 2 verification layer on top of the v2.0 dry-run pipeline.
+
+**Scope:** bridge availability check, required topic verification, Yahboom M3 Pro placeholder.  
+**Not in scope:** live GNM inference, FleetSafe shielding, Yahboom hardware integration.
+
+### Required live topics
+
+| Topic | Source |
+|---|---|
+| `/camera/image_raw` | Isaac Sim camera sensor |
+| `/odom` | Isaac Sim differential drive |
+| `/tf` | Isaac Sim TF tree |
+| `/scan` | Isaac Sim lidar sensor |
+| `/cmd_vel` | Robot drive subscriber |
+
+### v2.1 files
+
+| File | Purpose |
+|---|---|
+| `docs/v2.1_isaac_ros2_bridge_checklist.md` | Full checklist including Isaac Sim startup instructions |
+| `docs/yahboom_control_scene_checklist.md` | Yahboom M3 Pro placeholder control scene checklist |
+| `scripts/gnm/check_isaac_bridge.sh` | Checks Isaac ROS 2 bridge availability; exits 0 in CI |
+| `scripts/gnm/verify_live_topics.py` | Verifies the five required live topics; exits 0 in CI |
+| `tests/gnm/test_isaac_ros2_bridge_v21.py` | Test suite for v2.1 (no Isaac Sim required) |
+
+### Dry-run verification
+
+```bash
+bash scripts/gnm/check_isaac_bridge.sh
+python3 scripts/gnm/verify_live_topics.py
+```
+
+Both commands exit 0 without ROS 2 or Isaac Sim installed.
+
+### Live verification (requires Isaac Sim running with ROS 2 Bridge enabled)
+
+```bash
+bash scripts/gnm/check_isaac_bridge.sh --strict
+python3 scripts/gnm/verify_live_topics.py --strict
+```
+
+See `docs/v2.1_isaac_ros2_bridge_checklist.md` for Isaac Sim startup instructions.
