@@ -1,0 +1,54 @@
+environment:
+  name: office_sim
+  simulator: isaac_sim
+  ros_domain_id: 30
+
+robot:
+  name: yahboom_rosmaster_m3_pro
+  base_frame: base_link
+  odom_frame: odom
+  map_frame: map
+
+topics:
+  camera: /camera/image_raw
+  odom: /odom
+  tf: /tf
+  scan: /scan
+  gnm_raw_cmd: /gnm/cmd_vel_raw
+  fleetsafe_cmd: /fleetsafe/cmd_vel_safe
+  final_cmd: /cmd_vel
+
+data_collection:
+  output_root: datasets/gnm_fleetsafe_rosbags
+  episode_metadata: episode_metadata.json
+  rosbag_profile: gnm_fleetsafe_required_topics
+
+gnm:
+  checkpoint: checkpoints/gnm_public_or_finetuned.pt
+  dataset_root: datasets/gnm_fleetsafe_converted
+  context_size: 5
+  image_size: 96
+  fine_tuning_mode: head_or_lora
+  dry_run: true
+
+fleetsafe:
+  enabled: true
+  mode: cbf_qp
+  min_clearance_m: 0.35
+  max_linear_velocity: 0.25
+  max_angular_velocity: 0.8
+  dry_run: true
+
+evaluation:
+  compare:
+    - gnm_only
+    - gnm_plus_fleetsafe
+  metrics:
+    - success_rate
+    - path_efficiency
+    - navigation_error
+    - collision_rate
+    - min_clearance
+    - intervention_count
+    - intervention_magnitude
+    - certificate_validity_rate

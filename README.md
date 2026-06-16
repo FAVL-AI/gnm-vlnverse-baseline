@@ -12,6 +12,10 @@ This repository contains a staged GNM-VLNVerse Track A research release ladder. 
 | v1.4 | Supervisor evidence pack | Answers how GNM is used, how data is labelled, why baseline SR is 20.0%, and why OSR shows stopping failure |
 | v1.5 | Dataset and scene manifest | Records 238 train trajectories, 15 validation trajectories, four Kujiale scenes, and local asset inventory |
 | v1.6 | Public README research release matrix | Summarises the staged release ladder, result table, dataset split, Isaac demo, and evidence documents |
+| v1.7 | One-command reproducibility pack | Single script verifies full evidence chain without Isaac Sim or GPU |
+| v1.8 | 131-test suite and stop-policy ablation | Full stop-policy ablation with temporal feature sensitivity evidence |
+| v1.9 | Methodology walkthrough | End-to-end architecture and code evidence walkthrough |
+| v2.0 | FleetSafe-GNM Isaac ROS 2 implementation manual and data collection pipeline | Implementation manual, ROS 2 topic checker, Isaac rosbag collection wrapper, rosbag-to-GNM converter, GNM fine-tuning wrapper, GNM-only vs GNM-plus-FleetSafe evaluation wrapper, ROS 2 launch skeleton, dry-run-safe scripts |
 
 ### Key Track A results
 
@@ -252,3 +256,55 @@ Key files:
 * `results/bo_reviewer_packet/23_paper_results_table.md`
 * `results/bo_reviewer_packet/temporal_stop_head/22_temporal_stop_head.md`
 * `scripts/gnm/train_temporal_stop_head.py`
+
+---
+
+## v2.0 — FleetSafe-GNM Isaac ROS 2 Implementation Manual and Data Collection Pipeline
+
+v2.0 turns the research-evidence repository into an implementation-ready FleetSafe-GNM Isaac ROS 2 workspace plan.
+
+### Architecture
+
+```
+Isaac camera / robot sensors
+          ↓
+     ROS 2 topics
+          ↓
+  GNM reads camera / goal
+          ↓
+   GNM produces raw command  →  /gnm/cmd_vel_raw
+          ↓
+   FleetSafe CBF-QP shield
+          ↓
+   safe command             →  /fleetsafe/cmd_vel_safe  →  /cmd_vel
+          ↓
+     Isaac robot moves
+```
+
+### v2.0 files
+
+| File | Purpose |
+|---|---|
+| `docs/FLEETSAFE_GNM_IMPLEMENTATION_MANUAL.md` | Full implementation manual with architecture, beginner Q&A, and phased plan |
+| `configs/gnm_fleetsafe_isaac.yaml` | Unified config for environment, robot, topics, data, GNM, FleetSafe, evaluation |
+| `scripts/gnm/check_ros2_topics.sh` | Checks required ROS 2 topics; exits 0 in CI without ROS 2 |
+| `scripts/gnm/collect_isaac_rosbag_episode.sh` | Records a rosbag2 episode from Isaac Sim; supports --dry-run |
+| `scripts/gnm/convert_rosbag_to_gnm_dataset.py` | Converts rosbag episode to GNM training format; supports --dry-run |
+| `scripts/gnm/train_gnm_from_collected_data.sh` | Fine-tuning wrapper (head tuning or LoRA); supports --dry-run |
+| `scripts/gnm/eval_gnm_vs_fleetsafe.sh` | Evaluates GNM-only vs GNM+FleetSafe; writes CSV and Markdown; supports --dry-run |
+| `launch/gnm_fleetsafe_isaac.launch.py` | ROS 2 launch skeleton for Isaac bridge, GNM, FleetSafe, and logger nodes |
+
+### Dry-run verification
+
+```bash
+bash scripts/gnm/check_ros2_topics.sh
+bash scripts/gnm/collect_isaac_rosbag_episode.sh demo_episode --dry-run
+python3 scripts/gnm/convert_rosbag_to_gnm_dataset.py \
+  --rosbag-root datasets/gnm_fleetsafe_rosbags \
+  --output-root datasets/gnm_fleetsafe_converted \
+  --episode-name demo_episode --dry-run
+bash scripts/gnm/train_gnm_from_collected_data.sh --dry-run
+bash scripts/gnm/eval_gnm_vs_fleetsafe.sh --dry-run
+```
+
+All dry-run commands complete without ROS 2 or Isaac Sim installed.

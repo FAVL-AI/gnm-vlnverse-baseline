@@ -83,6 +83,46 @@ check_file "scripts/gnm/generate_dataset_scene_manifest.py"
 
 echo ""
 echo "------------------------------------------------------------"
+echo "[STEP] Verify v2.0 FleetSafe-GNM Isaac ROS 2 files"
+echo "------------------------------------------------------------"
+
+check_file "docs/FLEETSAFE_GNM_IMPLEMENTATION_MANUAL.md"
+check_file "configs/gnm_fleetsafe_isaac.yaml"
+check_file "scripts/gnm/check_ros2_topics.sh"
+check_file "scripts/gnm/collect_isaac_rosbag_episode.sh"
+check_file "scripts/gnm/convert_rosbag_to_gnm_dataset.py"
+check_file "scripts/gnm/train_gnm_from_collected_data.sh"
+check_file "scripts/gnm/eval_gnm_vs_fleetsafe.sh"
+check_file "launch/gnm_fleetsafe_isaac.launch.py"
+
+echo "[OK] All v2.0 files present" | tee -a "$LOG_FILE"
+
+echo ""
+echo "------------------------------------------------------------"
+echo "[STEP] v2.0 dry-run checks (no ROS 2 or Isaac Sim required)"
+echo "------------------------------------------------------------"
+
+run_step "v2.0 ROS 2 topic checker (dry-run mode)" \
+  bash scripts/gnm/check_ros2_topics.sh
+
+run_step "v2.0 rosbag episode collector (dry-run mode)" \
+  bash scripts/gnm/collect_isaac_rosbag_episode.sh reproducibility_check --dry-run
+
+run_step "v2.0 rosbag-to-GNM converter (dry-run mode)" \
+  python3 scripts/gnm/convert_rosbag_to_gnm_dataset.py \
+    --rosbag-root datasets/gnm_fleetsafe_rosbags \
+    --output-root datasets/gnm_fleetsafe_converted \
+    --episode-name reproducibility_check \
+    --dry-run
+
+run_step "v2.0 GNM training wrapper (dry-run mode)" \
+  bash scripts/gnm/train_gnm_from_collected_data.sh --dry-run
+
+run_step "v2.0 evaluation wrapper (dry-run mode)" \
+  bash scripts/gnm/eval_gnm_vs_fleetsafe.sh --dry-run
+
+echo ""
+echo "------------------------------------------------------------"
 echo "[STEP] Verify README release matrix markers"
 echo "------------------------------------------------------------"
 
@@ -91,6 +131,8 @@ grep -q "Research release matrix" README.md
 grep -q "Public README research release matrix" README.md
 grep -q "Temporal neural stop head" README.md
 grep -Eq "Stable Isaac live demo|Stable Isaac live trajectory demo" README.md
+grep -q "v2.0" README.md
+grep -q "FleetSafe-GNM" README.md
 
 echo "[OK] README release matrix present" | tee -a "$LOG_FILE"
 
