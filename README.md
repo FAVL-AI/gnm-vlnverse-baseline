@@ -17,6 +17,7 @@ This repository contains a staged GNM-VLNVerse Track A research release ladder. 
 | v1.9 | Methodology walkthrough | End-to-end architecture and code evidence walkthrough |
 | v2.0 | FleetSafe-GNM Isaac ROS 2 implementation manual and data collection pipeline | Implementation manual, ROS 2 topic checker, Isaac rosbag collection wrapper, rosbag-to-GNM converter, GNM fine-tuning wrapper, GNM-only vs GNM-plus-FleetSafe evaluation wrapper, ROS 2 launch skeleton, dry-run-safe scripts |
 | v2.1 | Live Isaac ROS 2 bridge verification layer and Yahboom placeholder | Isaac bridge availability checker, live topic verifier (five required topics), Yahboom M3 Pro control scene placeholder checklist, Isaac Sim startup instructions, CI-safe dry-run mode for all checks |
+| v2.2 | Yahboom M3 Pro sim-to-real topic bridge plan (prerequisite) | Sim-to-real plan with full concept glossary, asset inventory (5 URDFs, Xacro, 2 USDs, launch files, configs), canonical topic contract, Nova Carter smoke-test retirement, camera alias documentation |
 
 ### Key Track A results
 
@@ -356,3 +357,49 @@ python3 scripts/gnm/verify_live_topics.py --strict
 ```
 
 See `docs/v2.1_isaac_ros2_bridge_checklist.md` for Isaac Sim startup instructions.
+
+---
+
+## v2.2 — Yahboom M3 Pro Sim-to-Real Topic Bridge Plan (Prerequisite)
+
+v2.2 retires Nova Carter as the pipeline robot (smoke test only) and establishes
+the Yahboom ROSMASTER M3 Pro as the single target for all simulation and
+real-world work.
+
+**Scope:** asset inventory, canonical topic contract, camera alias documentation,
+mecanum wheel kinematics, URDF/USD/Xacro status. No live episode yet.
+
+### Asset status
+
+| Asset | Location | Status |
+|---|---|---|
+| Canonical URDF | `assets/robots/yahboom_m3_pro/yahboom_m3pro.urdf` | Present |
+| Xacro (Gazebo + real) | `ros2_ws/src/fleet_safe_description/urdf/yahboom_m3pro.urdf.xacro` | Present |
+| USD reference stage | `assets/robots/yahboom_m3_pro/yahboom_m3pro_reference.usda` | Present |
+| Robot config | `configs/robots/yahboom_m3_pro.yaml` | Present |
+| STL/DAE meshes | — | None — primitive geometry only |
+| Isaac Sim live stage | — | Pending — load URDF → USD in Isaac Sim |
+
+### Camera topic alias
+
+The Yahboom hardware driver publishes `/camera/color/image_raw`.
+The GNM pipeline requires `/camera/image_raw`.
+A topic remap is required before recording training rosbags on the real robot.
+
+### v2.2 files
+
+| File | Purpose |
+|---|---|
+| `docs/v2.2_yahboom_m3pro_sim_to_real_plan.md` | Full sim-to-real plan with concept glossary |
+| `scripts/gnm/discover_yahboom_assets.py` | Inventories all Yahboom URDF, Xacro, USD, config, launch assets |
+| `scripts/gnm/check_yahboom_topic_contract.py` | Defines and checks the canonical sim-to-real topic contract |
+| `tests/gnm/test_yahboom_sim_to_real_v22.py` | CI-safe test suite for v2.2 |
+
+### Dry-run verification
+
+```bash
+python3 scripts/gnm/discover_yahboom_assets.py
+python3 scripts/gnm/check_yahboom_topic_contract.py
+```
+
+Both commands exit 0 without Isaac Sim or the physical robot connected.
