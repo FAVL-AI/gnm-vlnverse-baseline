@@ -408,3 +408,10 @@ python3 scripts/gnm/check_yahboom_topic_contract.py
 ```
 
 Both commands exit 0 without Isaac Sim or the physical robot connected.
+
+## Run the EDA / Training Notebook in Colab
+
+[![Open FleetSafe-GNM EDA Notebook in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FAVL-AI/gnm-vlnverse-baseline/blob/main/notebooks/fleetsafe_gnm_yahboom_eda_training_safety_notebook.ipynb)
+
+This notebook can run in Colab for data profiling, EDA, trajectory plots, stop-head training demonstrations, and FleetSafe safety-filter visualisation. Isaac Sim, live ROS 2 topics, and rosbag2 recording still require the local Ubuntu/Isaac/Yahboom environment.
+
