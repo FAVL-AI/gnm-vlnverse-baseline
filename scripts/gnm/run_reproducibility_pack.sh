@@ -213,6 +213,29 @@ run_step "v2.4 Yahboom episode validator (no episode path — CI mode)" \
 
 echo ""
 echo "------------------------------------------------------------"
+echo "[STEP] Verify Yahboom upstream integration files"
+echo "------------------------------------------------------------"
+
+check_file "docs/yahboom_upstream_integration.md"
+check_file "docs/yahboom_to_fleetsafe_topic_mapping.md"
+check_file "scripts/setup/clone_yahboom_rosmaster_m3pro.sh"
+check_file "scripts/gnm/inspect_yahboom_upstream.py"
+
+echo "[OK] All Yahboom upstream integration files present" | tee -a "$LOG_FILE"
+
+echo ""
+echo "------------------------------------------------------------"
+echo "[STEP] Yahboom upstream integration dry-run checks"
+echo "------------------------------------------------------------"
+
+run_step "Yahboom clone script (dry-run mode)" \
+  bash scripts/setup/clone_yahboom_rosmaster_m3pro.sh --dry-run
+
+run_step "Yahboom upstream inspector (no clone present — CI mode)" \
+  python3 scripts/gnm/inspect_yahboom_upstream.py
+
+echo ""
+echo "------------------------------------------------------------"
 echo "[STEP] Verify README release matrix markers"
 echo "------------------------------------------------------------"
 

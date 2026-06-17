@@ -138,6 +138,7 @@ artifacts/*.tar.gz
 datasets/custom_gnm_scene/
 
 # Local downloaded datasets / generated evidence
+external/yahboom/
 external/IAmGoodNavigator/kujiale_0010/
 external/IAmGoodNavigator/demo_scene.zip
 datasets/vlntube/envs/
