@@ -236,6 +236,25 @@ run_step "Yahboom upstream inspector (no clone present — CI mode)" \
 
 echo ""
 echo "------------------------------------------------------------"
+echo "[STEP] Verify v2.4.1 visible placeholder stage files"
+echo "------------------------------------------------------------"
+
+check_file "docs/v2.4.1_yahboom_visible_stage_ros2_scaffold.md"
+check_file "scripts/gnm/create_yahboom_visible_placeholder_stage.py"
+check_file "assets/robots/yahboom_m3_pro/yahboom_m3pro_visible_placeholder.usda"
+
+echo "[OK] All v2.4.1 files present" | tee -a "$LOG_FILE"
+
+echo ""
+echo "------------------------------------------------------------"
+echo "[STEP] v2.4.1 dry-run checks"
+echo "------------------------------------------------------------"
+
+run_step "v2.4.1 visible placeholder stage generator (dry-run mode)" \
+  python3 scripts/gnm/create_yahboom_visible_placeholder_stage.py --dry-run
+
+echo ""
+echo "------------------------------------------------------------"
 echo "[STEP] Verify README release matrix markers"
 echo "------------------------------------------------------------"
 
@@ -250,6 +269,7 @@ grep -q "v2.1" README.md
 grep -q "v2.2" README.md
 grep -q "v2.3" README.md
 grep -q "v2.4" README.md
+grep -q "v2.4.1" README.md
 
 echo "[OK] README release matrix present" | tee -a "$LOG_FILE"
 
