@@ -191,6 +191,28 @@ run_step "v2.3 Yahboom live topic gate verifier (dry-run mode)" \
 
 echo ""
 echo "------------------------------------------------------------"
+echo "[STEP] Verify v2.4 Yahboom first rosbag2 episode files"
+echo "------------------------------------------------------------"
+
+check_file "docs/v2.4_yahboom_first_rosbag_episode.md"
+check_file "scripts/gnm/collect_yahboom_episode.sh"
+check_file "scripts/gnm/validate_yahboom_episode.py"
+
+echo "[OK] All v2.4 files present" | tee -a "$LOG_FILE"
+
+echo ""
+echo "------------------------------------------------------------"
+echo "[STEP] v2.4 dry-run checks (no Isaac Sim or robot required)"
+echo "------------------------------------------------------------"
+
+run_step "v2.4 Yahboom episode collector (dry-run mode)" \
+  bash scripts/gnm/collect_yahboom_episode.sh --dry-run --episode-name reproducibility_check
+
+run_step "v2.4 Yahboom episode validator (no episode path — CI mode)" \
+  python3 scripts/gnm/validate_yahboom_episode.py
+
+echo ""
+echo "------------------------------------------------------------"
 echo "[STEP] Verify README release matrix markers"
 echo "------------------------------------------------------------"
 
@@ -204,6 +226,7 @@ grep -q "FleetSafe-GNM" README.md
 grep -q "v2.1" README.md
 grep -q "v2.2" README.md
 grep -q "v2.3" README.md
+grep -q "v2.4" README.md
 
 echo "[OK] README release matrix present" | tee -a "$LOG_FILE"
 

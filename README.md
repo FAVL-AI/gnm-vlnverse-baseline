@@ -19,6 +19,7 @@ This repository contains a staged GNM-VLNVerse Track A research release ladder. 
 | v2.1 | Live Isaac ROS 2 bridge verification layer and Yahboom placeholder | Isaac bridge availability checker, live topic verifier (five required topics), Yahboom M3 Pro control scene placeholder checklist, Isaac Sim startup instructions, CI-safe dry-run mode for all checks |
 | v2.2 | Yahboom M3 Pro sim-to-real topic bridge plan (prerequisite) | Sim-to-real plan with full concept glossary, asset inventory (5 URDFs, Xacro, 2 USDs, launch files, configs), canonical topic contract, Nova Carter smoke-test retirement, camera alias documentation |
 | v2.3 | Yahboom Isaac import and Track A/B verification gates (prerequisite) | Ordered 11-step Isaac import plan, recording gate topic verifier, Track A/B completion gates, full concept glossary, claim boundary table |
+| v2.4 | First valid Yahboom Isaac rosbag2 episode (prerequisite) | Yahboom-specific episode collector with mandatory topic gate, episode validator (message_count > 0 on all five topics), Nova Carter contamination check, episode metadata and validation report |
 
 ### Key Track A results
 
