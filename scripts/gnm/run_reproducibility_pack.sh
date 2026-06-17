@@ -122,6 +122,18 @@ echo "[OK] All v2.2 files present" | tee -a "$LOG_FILE"
 
 echo ""
 echo "------------------------------------------------------------"
+echo "[STEP] Verify v2.3 Yahboom Isaac import and gate files"
+echo "------------------------------------------------------------"
+
+check_file "docs/v2.3_yahboom_isaac_import_topic_verification.md"
+check_file "docs/track_a_track_b_completion_gates.md"
+check_file "scripts/gnm/yahboom_isaac_import_plan.py"
+check_file "scripts/gnm/verify_yahboom_live_topics.py"
+
+echo "[OK] All v2.3 files present" | tee -a "$LOG_FILE"
+
+echo ""
+echo "------------------------------------------------------------"
 echo "[STEP] v2.0 dry-run checks (no ROS 2 or Isaac Sim required)"
 echo "------------------------------------------------------------"
 
@@ -168,6 +180,17 @@ run_step "v2.2 Yahboom topic contract (dry-run mode)" \
 
 echo ""
 echo "------------------------------------------------------------"
+echo "[STEP] v2.3 dry-run checks (no Isaac Sim or robot required)"
+echo "------------------------------------------------------------"
+
+run_step "v2.3 Yahboom Isaac import plan (dry-run mode)" \
+  python3 scripts/gnm/yahboom_isaac_import_plan.py
+
+run_step "v2.3 Yahboom live topic gate verifier (dry-run mode)" \
+  python3 scripts/gnm/verify_yahboom_live_topics.py
+
+echo ""
+echo "------------------------------------------------------------"
 echo "[STEP] Verify README release matrix markers"
 echo "------------------------------------------------------------"
 
@@ -180,6 +203,7 @@ grep -q "v2.0" README.md
 grep -q "FleetSafe-GNM" README.md
 grep -q "v2.1" README.md
 grep -q "v2.2" README.md
+grep -q "v2.3" README.md
 
 echo "[OK] README release matrix present" | tee -a "$LOG_FILE"
 
