@@ -20,6 +20,7 @@ This repository contains a staged GNM-VLNVerse Track A research release ladder. 
 | v2.2 | Yahboom M3 Pro sim-to-real topic bridge plan (prerequisite) | Sim-to-real plan with full concept glossary, asset inventory (5 URDFs, Xacro, 2 USDs, launch files, configs), canonical topic contract, Nova Carter smoke-test retirement, camera alias documentation |
 | v2.3 | Yahboom Isaac import and Track A/B verification gates (prerequisite) | Ordered 11-step Isaac import plan, recording gate topic verifier, Track A/B completion gates, full concept glossary, claim boundary table |
 | v2.4 | First valid Yahboom Isaac rosbag2 episode (prerequisite) | Yahboom-specific episode collector with mandatory topic gate, episode validator (message_count > 0 on all five topics), Nova Carter contamination check, episode metadata and validation report |
+| v2.4.2 | Yahboom ROS 2 OmniGraph topic publishers | Isaac Sim Python script to create ROS 2 action graph (OnPlaybackTick → ROS2Context → 5 publisher/subscriber nodes), updated USDA with Camera sensor prim and OmniGraph stubs, GUI and script methods |
 | v2.4.1 | Visible Yahboom Isaac stage and ROS 2 publisher scaffold | Visible geometry-correct placeholder stage (base, deck, camera, lidar, 4 wheels, ground), programmatic USDA generator, five-node OmniGraph scaffold plan, no-absolute-path USDA |
 | upstream | Yahboom ROSMASTER M3 Pro upstream integration | Official Yahboom repo as external hardware reference, clone/setup script, upstream inspector, Yahboom-to-canonical topic mapping, OpenClaw architecture note |
 

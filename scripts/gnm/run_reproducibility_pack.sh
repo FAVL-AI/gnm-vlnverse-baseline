@@ -255,6 +255,24 @@ run_step "v2.4.1 visible placeholder stage generator (dry-run mode)" \
 
 echo ""
 echo "------------------------------------------------------------"
+echo "[STEP] Verify v2.4.2 OmniGraph publisher files"
+echo "------------------------------------------------------------"
+
+check_file "docs/v2.4.2_yahboom_omnigraph_publishers.md"
+check_file "scripts/gnm/add_yahboom_ros2_omnigraph.py"
+
+echo "[OK] All v2.4.2 files present" | tee -a "$LOG_FILE"
+
+echo ""
+echo "------------------------------------------------------------"
+echo "[STEP] v2.4.2 OmniGraph creator CI-mode check"
+echo "------------------------------------------------------------"
+
+run_step "v2.4.2 OmniGraph creator (no Isaac Sim — CI mode)" \
+  python3 scripts/gnm/add_yahboom_ros2_omnigraph.py
+
+echo ""
+echo "------------------------------------------------------------"
 echo "[STEP] Verify README release matrix markers"
 echo "------------------------------------------------------------"
 

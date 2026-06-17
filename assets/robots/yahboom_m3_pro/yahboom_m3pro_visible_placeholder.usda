@@ -1,7 +1,7 @@
 #usda 1.0
 (
     defaultPrim = "World"
-    doc = "Yahboom ROSMASTER M3 Pro visible placeholder stage [v2.4.1]"
+    doc = "Yahboom ROSMASTER M3 Pro visible placeholder stage [v2.4.2]"
     metersPerUnit = 1
     upAxis = "Z"
 )
@@ -10,20 +10,22 @@
 # Yahboom ROSMASTER M3 Pro — Visible Placeholder Stage
 #
 # This stage contains primitive geometry for engineering validation.
-# It is NOT photo-realistic. It has NO physics, collision, or mass.
-# It has NO OmniGraph ROS 2 publisher nodes.
+# It is NOT photo-realistic. It has NO physics or collision.
 #
-# Robot prim path: /World/YahboomM3Pro
+# Robot prim path : /World/YahboomM3Pro
+# Camera sensor   : /World/YahboomM3Pro/camera_link/sensor
 # Ground prim path: /World/Ground
+# OmniGraph path  : /World/ROS2ActionGraph
 #
-# ROS 2 Publisher Scaffold (Pending — add via Isaac Sim OmniGraph):
-#   Node 1: ROS2PublishImage    camera_link  -> /camera/image_raw
-#   Node 2: ROS2PublishOdometry base_link    -> /odom
-#   Node 3: ROS2PublishTransformTree World/YahboomM3Pro -> /tf
-#   Node 4: ROS2PublishLaserScan lidar_link  -> /scan
-#   Node 5: ROS2SubscribeTwist  wheel joints <- /cmd_vel
+# ROS 2 OmniGraph publisher/subscriber nodes (stubs — wire via
+# add_yahboom_ros2_omnigraph.py or Isaac Sim GUI):
+#   ROS2PublishImage          camera_link/sensor  -> /camera/image_raw
+#   ROS2PublishOdometry       base_link           -> /odom
+#   ROS2PublishTransformTree  YahboomM3Pro tree   -> /tf
+#   ROS2PublishLaserScan      lidar_link          -> /scan
+#   ROS2SubscribeTwist        /cmd_vel            <- wheel joints
 #
-# See docs/v2.4.1_yahboom_visible_stage_ros2_scaffold.md for instructions.
+# See docs/v2.4.2_yahboom_omnigraph_publishers.md for wiring instructions.
 # ============================================================
 
 def Xform "World"
@@ -49,20 +51,41 @@ def Xform "World"
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
         }
 
-        # Camera mount: 0.10 m wide, 0.16 m tall, 0.10 m deep.
-        # Positioned at front (x=+0.38 m) at top-deck height.
-        # This is the source prim for /camera/image_raw publisher.
-        def Cube "camera_link"
+        # Camera mount block: 0.10 m wide, 0.16 m tall, 0.10 m deep.
+        # Contains a Camera sensor prim used by ROS2PublishImage.
+        def Xform "camera_link"
         {
-            double size = 1
-            float3 xformOp:scale = (0.1, 0.16, 0.1)
             double3 xformOp:translate = (0.38, 0, 0.62)
-            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "mount"
+            {
+                double size = 1
+                float3 xformOp:scale = (0.1, 0.16, 0.1)
+                uniform token[] xformOpOrder = ["xformOp:scale"]
+            }
+
+            # Camera sensor prim.
+            # ROS2PublishImage input: cameraPrim = /World/YahboomM3Pro/camera_link/sensor
+            def Camera "sensor"
+            {
+                float2 clippingRange = (0.1, 10000)
+                float focalLength = 24
+                float focusDistance = 400
+                float fStop = 0
+                float horizontalAperture = 20.955
+                token projection = "perspective"
+                uniform token purpose = "default"
+                float verticalAperture = 15.2908
+                float3 xformOp:rotateXYZ = (0, 0, 0)
+                double3 xformOp:translate = (0, 0, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
+            }
         }
 
-        # LiDAR sensor: cylinder, r=0.16 m, h=0.08 m.
+        # LiDAR sensor mount: cylinder, r=0.16 m, h=0.08 m.
         # Positioned on top of the deck.
-        # This is the source prim for /scan publisher.
+        # ROS2PublishLaserScan input: lidarPrim = /World/YahboomM3Pro/lidar_link
         def Cylinder "lidar_link"
         {
             double height = 0.08
@@ -122,5 +145,31 @@ def Xform "World"
         float3 xformOp:scale = (3, 3, 0.03)
         double3 xformOp:translate = (0, 0, -0.03)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    # ============================================================
+    # OmniGraph Action Graph stubs [v2.4.2]
+    #
+    # This block defines the graph structure. The nodes will be
+    # created and wired by add_yahboom_ros2_omnigraph.py when run
+    # inside Isaac Sim. Until then, the graph exists as a named
+    # Xform placeholder so the prim path is reserved.
+    #
+    # To activate: run add_yahboom_ros2_omnigraph.py inside Isaac Sim
+    # then press Play and verify with verify_yahboom_live_topics.py --strict
+    # ============================================================
+    def Xform "ROS2ActionGraph" (
+        doc = "Pending: replace with OmniGraph via add_yahboom_ros2_omnigraph.py"
+    )
+    {
+        # Node stubs — for reference; actual OmniGraph nodes are
+        # created by add_yahboom_ros2_omnigraph.py at runtime.
+        #
+        # OnPlaybackTick          -> ROS2Context
+        # ROS2Context             -> ROS2PublishImage         /camera/image_raw
+        # ROS2Context             -> ROS2PublishOdometry      /odom
+        # ROS2Context             -> ROS2PublishTransformTree /tf
+        # ROS2Context             -> ROS2PublishLaserScan     /scan
+        # ROS2Context             -> ROS2SubscribeTwist       /cmd_vel
     }
 }
