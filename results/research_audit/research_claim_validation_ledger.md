@@ -1,0 +1,18 @@
+# Research Claim Validation Ledger
+
+This file separates validated claims from blocked claims.
+
+| Claim ID | Status | Claim | Missing evidence | Notes |
+|---|---|---|---|---|
+| `tracka_aggregate_results_reported` | **REPORTED** | Track A aggregate stop-policy results are reported. | None | Aggregate results exist. Full per-episode provenance must also pass for audit-ready status. |
+| `tracka_per_episode_provenance` | **BLOCKED** | Full per-episode provenance CSV exists for Track A methods. | results/research_audit/tracka_per_episode_metric_provenance.csv<br>results/research_audit/tracka_metric_provenance_report.json | Must be generated from evaluator output, not manually invented. |
+| `yahboom_episode_001_rosbag2` | **BLOCKED** | A valid Yahboom episode_001 rosbag2 recording exists. | datasets/gnm_fleetsafe_rosbags/episode_001/episode_metadata.json<br>results/gnm_fleetsafe_v2_4/episode_001_validation.json | The validation JSON must confirm all five canonical topics have message_count > 0 and duration >= 30s. |
+| `yahboom_rosbag_to_gnm_conversion` | **BLOCKED** | Yahboom rosbag2 has been converted to GNM dataset format. | datasets/gnm_fleetsafe_converted/episode_001/manifest.json<br>results/gnm_fleetsafe_v2_5/conversion_report.json | Only valid after episode_001 rosbag2 validation passes. |
+| `gnm_finetune_on_yahboom` | **BLOCKED** | GNM has been fine-tuned on validated Yahboom data. | results/gnm_fleetsafe_v2_6/yahboom_finetune_report.json<br>models/yahboom_finetuned_gnm/manifest.json | Requires converted dataset, training command, checkpoint, and held-out evaluation. |
+| `fleetsafe_gnm_closed_loop_physical` | **BLOCKED** | FleetSafe-GNM closed-loop deployment has been validated on the physical Yahboom robot. | results/physical_yahboom/fleetsafe_closed_loop_certificate.json<br>results/physical_yahboom/episode_summary.json | Requires real robot evidence, safety certificate, and no dry-run-only claim. |
+| `trackb_language_grounding_completed` | **BLOCKED** | Track B language-grounding results are complete. | results/track_b_language_grounding/eval_summary.json<br>results/track_b_language_grounding/per_episode_language_grounding.csv | Requires held-out language-grounding evaluation, not only prepared gates. |
+| `global_superiority_over_gnm_vint_nomad_saferpath` | **BLOCKED** | Global superiority over GNM, ViNT, NoMaD, or SaferPath is proven. | results/comparative_benchmark_gnm_vint_nomad_saferpath/protocol.md<br>results/comparative_benchmark_gnm_vint_nomad_saferpath/per_episode_results.csv<br>results/comparative_benchmark_gnm_vint_nomad_saferpath/statistical_report.json | Do not claim this unless matched baselines, identical splits/seeds, enough episodes, and statistical tests exist. |
+
+## Rule
+
+A blocked claim must not be used in the paper, README, release notes, slides, or abstract as completed evidence.

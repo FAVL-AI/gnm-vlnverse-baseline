@@ -1,0 +1,80 @@
+[
+  {
+    "id": "tracka_aggregate_results_reported",
+    "claim": "Track A aggregate stop-policy results are reported.",
+    "status": "REPORTED",
+    "missing": [],
+    "notes": "Aggregate results exist. Full per-episode provenance must also pass for audit-ready status."
+  },
+  {
+    "id": "tracka_per_episode_provenance",
+    "claim": "Full per-episode provenance CSV exists for Track A methods.",
+    "status": "BLOCKED",
+    "missing": [
+      "results/research_audit/tracka_per_episode_metric_provenance.csv",
+      "results/research_audit/tracka_metric_provenance_report.json"
+    ],
+    "notes": "Must be generated from evaluator output, not manually invented."
+  },
+  {
+    "id": "yahboom_episode_001_rosbag2",
+    "claim": "A valid Yahboom episode_001 rosbag2 recording exists.",
+    "status": "BLOCKED",
+    "missing": [
+      "datasets/gnm_fleetsafe_rosbags/episode_001/episode_metadata.json",
+      "results/gnm_fleetsafe_v2_4/episode_001_validation.json"
+    ],
+    "notes": "The validation JSON must confirm all five canonical topics have message_count > 0 and duration >= 30s."
+  },
+  {
+    "id": "yahboom_rosbag_to_gnm_conversion",
+    "claim": "Yahboom rosbag2 has been converted to GNM dataset format.",
+    "status": "BLOCKED",
+    "missing": [
+      "datasets/gnm_fleetsafe_converted/episode_001/manifest.json",
+      "results/gnm_fleetsafe_v2_5/conversion_report.json"
+    ],
+    "notes": "Only valid after episode_001 rosbag2 validation passes."
+  },
+  {
+    "id": "gnm_finetune_on_yahboom",
+    "claim": "GNM has been fine-tuned on validated Yahboom data.",
+    "status": "BLOCKED",
+    "missing": [
+      "results/gnm_fleetsafe_v2_6/yahboom_finetune_report.json",
+      "models/yahboom_finetuned_gnm/manifest.json"
+    ],
+    "notes": "Requires converted dataset, training command, checkpoint, and held-out evaluation."
+  },
+  {
+    "id": "fleetsafe_gnm_closed_loop_physical",
+    "claim": "FleetSafe-GNM closed-loop deployment has been validated on the physical Yahboom robot.",
+    "status": "BLOCKED",
+    "missing": [
+      "results/physical_yahboom/fleetsafe_closed_loop_certificate.json",
+      "results/physical_yahboom/episode_summary.json"
+    ],
+    "notes": "Requires real robot evidence, safety certificate, and no dry-run-only claim."
+  },
+  {
+    "id": "trackb_language_grounding_completed",
+    "claim": "Track B language-grounding results are complete.",
+    "status": "BLOCKED",
+    "missing": [
+      "results/track_b_language_grounding/eval_summary.json",
+      "results/track_b_language_grounding/per_episode_language_grounding.csv"
+    ],
+    "notes": "Requires held-out language-grounding evaluation, not only prepared gates."
+  },
+  {
+    "id": "global_superiority_over_gnm_vint_nomad_saferpath",
+    "claim": "Global superiority over GNM, ViNT, NoMaD, or SaferPath is proven.",
+    "status": "BLOCKED",
+    "missing": [
+      "results/comparative_benchmark_gnm_vint_nomad_saferpath/protocol.md",
+      "results/comparative_benchmark_gnm_vint_nomad_saferpath/per_episode_results.csv",
+      "results/comparative_benchmark_gnm_vint_nomad_saferpath/statistical_report.json"
+    ],
+    "notes": "Do not claim this unless matched baselines, identical splits/seeds, enough episodes, and statistical tests exist."
+  }
+]
