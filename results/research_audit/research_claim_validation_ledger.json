@@ -16,12 +16,30 @@
   {
     "id": "tracka_all_methods_per_episode_provenance",
     "claim": "Per-episode provenance exists for all Track A stop-policy methods.",
-    "status": "BLOCKED",
-    "missing": [
-      "results/research_audit/tracka_all_methods_per_episode_metric_provenance.csv",
-      "results/research_audit/tracka_all_methods_metric_provenance_report.json"
-    ],
+    "status": "VALIDATED_IF_REPORT_PASSES",
+    "missing": [],
     "notes": "Must include baseline_gnm, hand_tuned_waypoint_gate, logistic_stop_head, temporal_neural_stop_head, and geometry_aware_oracle."
+  },
+  {
+    "id": "tracka_validation_split_locked",
+    "claim": "The 15-episode Track A validation split is locked so all methods use the same episodes.",
+    "status": "VALIDATED",
+    "missing": [],
+    "notes": "Split lock records the canonical 15 episode IDs and success radius."
+  },
+  {
+    "id": "stop_policy_feature_audit_complete",
+    "claim": "A feature audit confirms which stop-policy methods use oracle geometry and which are deployable.",
+    "status": "VALIDATED",
+    "missing": [],
+    "notes": "Audit must cover all five methods and confirm temporal stop head does not use oracle geometry."
+  },
+  {
+    "id": "paper_claim_to_evidence_map_complete",
+    "claim": "Every quantitative paper claim maps to a specific evidence file.",
+    "status": "VALIDATED",
+    "missing": [],
+    "notes": "Map must list source file and verifier script for every table entry."
   },
   {
     "id": "yahboom_episode_001_rosbag2",

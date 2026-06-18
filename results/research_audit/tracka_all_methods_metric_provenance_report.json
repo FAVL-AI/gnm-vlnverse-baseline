@@ -1,0 +1,142 @@
+{
+  "input_csv": "/home/favl/robotics/gnm-vlnverse-baseline/results/research_audit/tracka_all_methods_per_episode_metric_provenance.csv",
+  "n_rows": 75,
+  "n_methods": 5,
+  "bootstrap_resamples": 10000,
+  "bootstrap_seed": 42,
+  "ci_alpha": 0.05,
+  "status": "pass",
+  "methods": {
+    "baseline_gnm": {
+      "episodes": 15,
+      "final_successes": 3,
+      "oracle_successes": 7,
+      "sr": 20.0,
+      "osr": 46.666666666666664,
+      "ne": 6.510000000000001,
+      "sr_ci95": [
+        0.0,
+        40.0
+      ],
+      "osr_ci95": [
+        20.0,
+        73.33333333333333
+      ],
+      "ne_ci95": [
+        4.713333333333334,
+        8.497333333333334
+      ],
+      "stopping_gap": 26.666666666666664,
+      "stopping_gap_ci95": [
+        -20.0,
+        73.33333333333333
+      ],
+      "expected_match": "PASS"
+    },
+    "hand_tuned_waypoint_gate": {
+      "episodes": 15,
+      "final_successes": 4,
+      "oracle_successes": 4,
+      "sr": 26.666666666666668,
+      "osr": 26.666666666666668,
+      "ne": 5.3415799999999996,
+      "sr_ci95": [
+        6.666666666666667,
+        53.333333333333336
+      ],
+      "osr_ci95": [
+        6.666666666666667,
+        53.333333333333336
+      ],
+      "ne_ci95": [
+        4.156266666666666,
+        6.521426666666667
+      ],
+      "stopping_gap": 0.0,
+      "stopping_gap_ci95": [
+        -46.66666666666667,
+        46.66666666666667
+      ],
+      "expected_match": "PASS"
+    },
+    "logistic_stop_head": {
+      "episodes": 15,
+      "final_successes": 3,
+      "oracle_successes": 7,
+      "sr": 20.0,
+      "osr": 46.666666666666664,
+      "ne": 6.509073333333333,
+      "sr_ci95": [
+        0.0,
+        40.0
+      ],
+      "osr_ci95": [
+        20.0,
+        73.33333333333333
+      ],
+      "ne_ci95": [
+        4.713673333333333,
+        8.496786666666667
+      ],
+      "stopping_gap": 26.666666666666664,
+      "stopping_gap_ci95": [
+        -20.0,
+        73.33333333333333
+      ],
+      "expected_match": "PASS"
+    },
+    "temporal_neural_stop_head": {
+      "episodes": 15,
+      "final_successes": 5,
+      "oracle_successes": 5,
+      "sr": 33.33333333333333,
+      "osr": 33.33333333333333,
+      "ne": 4.4706,
+      "sr_ci95": [
+        13.333333333333334,
+        60.0
+      ],
+      "osr_ci95": [
+        13.333333333333334,
+        60.0
+      ],
+      "ne_ci95": [
+        3.1986133333333333,
+        6.02972
+      ],
+      "stopping_gap": 0.0,
+      "stopping_gap_ci95": [
+        -46.666666666666664,
+        46.666666666666664
+      ],
+      "expected_match": "PASS"
+    },
+    "geometry_aware_oracle": {
+      "episodes": 15,
+      "final_successes": 7,
+      "oracle_successes": 7,
+      "sr": 46.666666666666664,
+      "osr": 46.666666666666664,
+      "ne": 3.79,
+      "sr_ci95": [
+        20.0,
+        73.33333333333333
+      ],
+      "osr_ci95": [
+        20.0,
+        73.33333333333333
+      ],
+      "ne_ci95": [
+        2.755333333333333,
+        5.009333333333333
+      ],
+      "stopping_gap": 0.0,
+      "stopping_gap_ci95": [
+        -53.33333333333333,
+        53.33333333333333
+      ],
+      "expected_match": "PASS"
+    }
+  },
+  "small_sample_note": "Validation set is 15 episodes per method. Bootstrap 95% CIs reflect this small-sample uncertainty."
+}

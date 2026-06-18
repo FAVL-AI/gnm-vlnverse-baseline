@@ -1,0 +1,28 @@
+{
+  "description": "Canonical Track A validation split. All five methods must be evaluated on exactly these 15 episodes.",
+  "n_episodes": 15,
+  "success_radius_m": 3.0,
+  "scene_split": {
+    "kujiale_0092": 2,
+    "kujiale_0118": 3,
+    "kujiale_0203": 7,
+    "kujiale_0271": 3
+  },
+  "episode_ids": [
+    "kujiale_0092_kujiale_0092_91_1",
+    "kujiale_0092_kujiale_0092_9_2",
+    "kujiale_0118_kujiale_0118_25_3",
+    "kujiale_0118_kujiale_0118_31_0",
+    "kujiale_0118_kujiale_0118_40_4",
+    "kujiale_0203_kujiale_0203_15_3",
+    "kujiale_0203_kujiale_0203_16_3",
+    "kujiale_0203_kujiale_0203_22_4",
+    "kujiale_0203_kujiale_0203_25_0",
+    "kujiale_0203_kujiale_0203_32_2",
+    "kujiale_0203_kujiale_0203_43_1",
+    "kujiale_0203_kujiale_0203_49_3",
+    "kujiale_0271_kujiale_0271_15_1",
+    "kujiale_0271_kujiale_0271_24_4",
+    "kujiale_0271_kujiale_0271_7_3"
+  ]
+}
