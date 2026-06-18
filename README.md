@@ -1,7 +1,7 @@
 <!-- GNM_VLNVERSE_RELEASE_MATRIX_START -->
 ## Research release matrix
 
-This repository contains a staged GNM-VLNVerse Track A research release ladder. Each release adds a specific piece of evidence for navigation performance, stopping-policy diagnosis, ablation, Isaac live demonstration, and supervisor/reviewer validation.
+This repository is a staged GNM-VLNVerse Track A stopping-reliability and metric-provenance study. The release ladder records each piece of evidence added for navigation performance, stopping-policy diagnosis, metric provenance, ablation, Isaac live demonstration, and supervisor/reviewer validation.
 
 | Release | Focus | Main evidence |
 |---|---|---|
@@ -22,6 +22,7 @@ This repository contains a staged GNM-VLNVerse Track A research release ladder. 
 | v2.4 | First valid Yahboom Isaac rosbag2 episode (prerequisite) | Yahboom-specific episode collector with mandatory topic gate, episode validator (message_count > 0 on all five topics), Nova Carter contamination check, episode metadata and validation report |
 | v2.4.2 | Yahboom ROS 2 OmniGraph topic publishers | Isaac Sim Python script to create ROS 2 action graph (OnPlaybackTick → ROS2Context → 5 publisher/subscriber nodes), updated USDA with Camera sensor prim and OmniGraph stubs, GUI and script methods |
 | v2.4.1 | Visible Yahboom Isaac stage and ROS 2 publisher scaffold | Visible geometry-correct placeholder stage (base, deck, camera, lidar, 4 wheels, ground), programmatic USDA generator, five-node OmniGraph scaffold plan, no-absolute-path USDA |
+| v2.5 | Metric provenance claim gates and ICRA paper draft | Baseline per-episode provenance (15 episodes), research claim ledger separating validated from blocked claims, ICRA paper source |
 | upstream | Yahboom ROSMASTER M3 Pro upstream integration | Official Yahboom repo as external hardware reference, clone/setup script, upstream inspector, Yahboom-to-canonical topic mapping, OpenClaw architecture note |
 
 ### Key Track A results
@@ -56,14 +57,118 @@ Scene-level split:
 ```bash
 conda activate isaac
 python scripts/gnm/isaac_live_trajectory_demo.py
+```
 
 # GNM-VLNVerse Baseline
 
 Repository: https://github.com/FAVL-AI/gnm-vlnverse-baseline
 
-This repository provides a reproducible baseline proof path for evaluating a General Navigation Model (GNM) style visual-goal navigation pipeline on VLNVerse/Kujiale indoor navigation data.
+This repository is a **metric-provenance benchmark-style audit for termination reliability** in GNM-VLNVerse indoor navigation. It provides a reproducible baseline proof path, per-episode metric provenance, research claim gates, and an ICRA paper draft — all scoped to Track A (GNM on VLNVerse/Kujiale data).
 
 The official local verification path does **not** require Isaac Sim GUI. Isaac Sim replay is optional and environment-dependent.
+
+---
+
+## Current Study Focus
+
+This repository is a **GNM-VLNVerse Track A stopping-reliability and metric-provenance study**.
+
+The central finding is that baseline GNM navigation failure on VLNVerse is not purely a path-following failure: the model enters the goal region more often than it successfully terminates there. This is a stopping-reliability problem. The gap between SR (20.0%) and OSR (46.7%) directly measures it.
+
+The study provides:
+
+- per-episode provenance for all 15 validation episodes (SR, OSR, NE computed from raw per-episode rows);
+- a claim ledger that separates validated findings from blocked claims;
+- a stop-policy ablation ladder showing how termination reliability can be improved;
+- an ICRA paper draft on metric-provenance-based stopping analysis.
+
+---
+
+## Current Validated Baseline Result
+
+Track A validation evidence:
+
+```text
+Train trajectories : 238
+Validation episodes: 15
+Scenes             : kujiale_0092, kujiale_0118, kujiale_0203, kujiale_0271
+Success radius     : 3.0 m
+Final successes    : 3 / 15
+Oracle successes   : 7 / 15
+SR                 : 20.0%  (3 / 15 episodes, final distance <= 3.0 m)
+OSR                : 46.7%  (7 / 15 episodes ever within 3.0 m)
+NE                 : 6.51 m mean final distance to goal
+```
+
+These are reproduced baseline metrics, not a final SOTA claim.
+
+**What this means:** The model enters the goal region (OSR 46.7%) more than twice as often as it successfully finishes (SR 20.0%). The failure is not only navigation; it is also termination reliability. The agent reaches the vicinity of the goal but does not stop at the right time.
+
+---
+
+## Metric Provenance — Validated
+
+Baseline per-episode provenance is now validated. Each of the 15 validation episodes has a row in:
+
+```
+results/research_audit/tracka_per_episode_metric_provenance.csv
+```
+
+The verifier script recomputes SR, OSR, and NE directly from these 15 rows and checks that they match the reported aggregates:
+
+```bash
+python3 scripts/gnm/verify_tracka_metric_provenance.py
+```
+
+Expected output: all three aggregate metrics verified for `baseline_gnm`.
+
+Provenance report: `results/research_audit/tracka_metric_provenance_report.md`
+
+---
+
+## Research Claim Gates
+
+The claim ledger separates validated claims from blocked claims:
+
+```bash
+python3 scripts/gnm/check_research_claim_gates.py
+```
+
+**Validated claims (gates open):**
+
+- Baseline GNM SR = 20.0%, OSR = 46.7%, NE = 6.51 m on 15 validation episodes
+- Per-episode metric provenance exists for all 15 episodes
+- Stopping-reliability gap is real: OSR − SR = 26.7 percentage points
+- Temporal neural stop head improves deployable SR from 20.0% to 33.3%
+
+**Blocked claims (gates closed — evidence does not yet exist):**
+
+- valid Yahboom `episode_001` rosbag2 recording
+- Yahboom rosbag2 to GNM dataset conversion
+- GNM fine-tuning on validated Yahboom data
+- FleetSafe-GNM closed-loop physical Yahboom deployment
+- completed Track B language-grounding results
+- global superiority over GNM, ViNT, NoMaD, or SaferPath
+
+See `results/research_audit/research_claim_validation_ledger.md` for the full ledger.
+
+---
+
+## ICRA Paper
+
+Paper source: `paper/icra_metric_provenance_stopping/main.tex`
+
+This is a draft ICRA paper on metric-provenance-based stopping analysis for GNM-VLNVerse.
+
+Local compile (requires `pdflatex`):
+
+```bash
+cd paper/icra_metric_provenance_stopping
+pdflatex -interaction=nonstopmode main.tex
+pdflatex -interaction=nonstopmode main.tex
+```
+
+Run `pdflatex` twice so cross-references and citations resolve correctly. Generated PDFs, logs, and auxiliary files are listed in `paper/icra_metric_provenance_stopping/.gitignore` and must not be committed.
 
 ---
 
@@ -99,30 +204,20 @@ python3 scripts/gnm/replay_gnm_demo.py --export-live-dashboard
 python3 scripts/gnm/manual_testdrive.py --dry-run
 ```
 
-### Step 4 — Run tests
+### Step 4 — Verify metric provenance and claim gates
+
+```bash
+python3 scripts/gnm/verify_tracka_metric_provenance.py
+python3 scripts/gnm/check_research_claim_gates.py
+```
+
+### Step 5 — Run tests
 
 ```bash
 python3 -m pytest tests/gnm -q
 ```
 
 Expected result: all tests pass. Torch-dependent model tests skip only if PyTorch is absent.
-
----
-
-## Current Validated Baseline Result
-
-Track A validation evidence:
-
-```text
-Train trajectories : 238
-Validation episodes: 15
-Scenes             : kujiale_0092, kujiale_0118, kujiale_0203, kujiale_0271
-SR                 : 20.0%  (3 / 15 episodes, final distance <= 3.0 m)
-OSR                : 46.7%  (7 / 15 episodes ever within 3.0 m)
-NE                 : 6.51 m mean final distance to goal
-```
-
-These are reproduced baseline metrics, not a final SOTA claim.
 
 ---
 
@@ -136,13 +231,19 @@ These are reproduced baseline metrics, not a final SOTA claim.
 * Manual test-drive dry-run, replay, and GNM-format conversion.
 * Reviewer-facing implementation proof documents.
 * Local tests for the GNM/VLNVerse baseline pipeline.
+* Per-episode metric provenance for all 15 Track A validation episodes.
+* Research claim ledger separating validated from blocked claims.
+* ICRA paper draft on metric-provenance-based stopping analysis.
 
 ---
 
 ## What This Repository Does Not Claim
 
-* It does not claim completed ROS2 closed-loop robot control.
+* It does not claim a universal new benchmark. This is a metric-provenance benchmark-style audit for termination reliability.
+* It does not claim completed ROS 2 closed-loop robot control.
 * It does not claim the full FleetSafe safety stack.
+* It does not claim global superiority over GNM, ViNT, NoMaD, or SaferPath.
+* It does not claim completed Track B language-grounding results.
 * It does not commit large VLNVerse datasets, generated dashboard image sequences, checkpoints, or RGB frame dumps.
 * It does not treat Isaac Sim GUI replay as the required proof path.
 
@@ -193,46 +294,16 @@ results/bo_reviewer_packet/DEMO_SCRIPT_BO_RUI.md
 results/bo_reviewer_packet/13_live_gnm_input_dashboard.md
 results/bo_reviewer_packet/14_manual_testdrive_walkthrough.md
 results/bo_reviewer_packet/03_success_rate_breakdown.md
+results/bo_reviewer_packet/00_tracka_reviewer_summary.md
+results/bo_reviewer_packet/23_paper_results_table.md
+results/research_audit/tracka_per_episode_metric_provenance.csv
+results/research_audit/tracka_metric_provenance_report.md
+results/research_audit/research_claim_validation_ledger.md
+paper/icra_metric_provenance_stopping/main.tex
 ```
 
 ---
 
-## Citation
-
-```bibtex
-@misc{vanlaarhoven2026gnmvlnverse,
-  title  = {GNM-VLNVerse Baseline: Reproducible Visual Goal Navigation Pipeline},
-  author = {Van Laarhoven, F.},
-  year   = {2026},
-  note   = {Research implementation repository},
-  url    = {https://github.com/FAVL-AI/gnm-vlnverse-baseline}
-}
-```
-
----
-
-## Author
-
-F. Van Laarhoven
-Newcastle University
-
-## Optional Stable Isaac Live Trajectory Demo
-
-For a stable live Isaac Sim visual demo, use the lightweight trajectory renderer. This uses real VLNVerse/GNM trajectory data but renders it in a simplified Isaac stage instead of loading the full photorealistic VLNVerse USD scene.
-
-```bash
-conda activate isaac
-python scripts/gnm/isaac_live_trajectory_demo.py
-```
-
-Expected behaviour:
-
-- Isaac Sim opens.
-- A simple scene appears with floor, walls, obstacles, start marker, goal marker, and trajectory breadcrumbs.
-- A robot cube moves along a real recorded VLNVerse trajectory.
-- The window remains open until interrupted with `Ctrl+C`.
-
-The full photorealistic VLNVerse USD scene replay remains optional and environment-dependent.
 ## Track A Stop-Policy Improvement Result
 
 Beyond the reproduced GNM-VLNVerse baseline, this repository includes a staged stop-policy study showing that Track A performance is limited by stopping reliability.
@@ -241,7 +312,7 @@ Baseline Track A reaches:
 
 * SR: 20.0%
 * OSR: 46.7%
-* NE: 6.51m
+* NE: 6.51 m
 
 This gap shows that the agent often enters the goal region but fails to stop successfully.
 
@@ -409,9 +480,51 @@ python3 scripts/gnm/check_yahboom_topic_contract.py
 
 Both commands exit 0 without Isaac Sim or the physical robot connected.
 
+---
+
+## Optional Stable Isaac Live Trajectory Demo
+
+For a stable live Isaac Sim visual demo, use the lightweight trajectory renderer. This uses real VLNVerse/GNM trajectory data but renders it in a simplified Isaac stage instead of loading the full photorealistic VLNVerse USD scene.
+
+```bash
+conda activate isaac
+python scripts/gnm/isaac_live_trajectory_demo.py
+```
+
+Expected behaviour:
+
+- Isaac Sim opens.
+- A simple scene appears with floor, walls, obstacles, start marker, goal marker, and trajectory breadcrumbs.
+- A robot cube moves along a real recorded VLNVerse trajectory.
+- The window remains open until interrupted with `Ctrl+C`.
+
+The full photorealistic VLNVerse USD scene replay remains optional and environment-dependent.
+
+---
+
 ## Run the EDA / Training Notebook in Colab
 
 [![Open FleetSafe-GNM EDA Notebook in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FAVL-AI/gnm-vlnverse-baseline/blob/main/notebooks/fleetsafe_gnm_yahboom_eda_training_safety_notebook.ipynb)
 
 This notebook can run in Colab for data profiling, EDA, trajectory plots, stop-head training demonstrations, and FleetSafe safety-filter visualisation. Isaac Sim, live ROS 2 topics, and rosbag2 recording still require the local Ubuntu/Isaac/Yahboom environment.
 
+---
+
+## Citation
+
+```bibtex
+@misc{vanlaarhoven2026gnmvlnverse,
+  title  = {GNM-VLNVerse Baseline: Reproducible Visual Goal Navigation Pipeline},
+  author = {Van Laarhoven, F.},
+  year   = {2026},
+  note   = {Research implementation repository},
+  url    = {https://github.com/FAVL-AI/gnm-vlnverse-baseline}
+}
+```
+
+---
+
+## Author
+
+F. Van Laarhoven
+Newcastle University
