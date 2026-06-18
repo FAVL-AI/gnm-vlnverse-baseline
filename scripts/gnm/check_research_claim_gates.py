@@ -26,14 +26,24 @@ CLAIMS = [
         "notes": "Aggregate results exist. Full per-episode provenance must also pass for audit-ready status.",
     },
     {
-        "id": "tracka_per_episode_provenance",
-        "claim": "Full per-episode provenance CSV exists for Track A methods.",
+        "id": "tracka_baseline_per_episode_provenance",
+        "claim": "Baseline GNM per-episode provenance exists and regenerates SR, OSR, and NE.",
         "required_files": [
             "results/research_audit/tracka_per_episode_metric_provenance.csv",
             "results/research_audit/tracka_metric_provenance_report.json",
         ],
         "status_if_present": "validated_if_report_passes",
-        "notes": "Must be generated from evaluator output, not manually invented.",
+        "notes": "Currently validates baseline_gnm from 15 per-episode rows. All-method provenance is tracked separately.",
+    },
+    {
+        "id": "tracka_all_methods_per_episode_provenance",
+        "claim": "Per-episode provenance exists for all Track A stop-policy methods.",
+        "required_files": [
+            "results/research_audit/tracka_all_methods_per_episode_metric_provenance.csv",
+            "results/research_audit/tracka_all_methods_metric_provenance_report.json",
+        ],
+        "status_if_present": "validated_if_report_passes",
+        "notes": "Must include baseline_gnm, hand_tuned_waypoint_gate, logistic_stop_head, temporal_neural_stop_head, and geometry_aware_oracle.",
     },
     {
         "id": "yahboom_episode_001_rosbag2",
