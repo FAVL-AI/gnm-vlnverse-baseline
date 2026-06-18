@@ -1,0 +1,19 @@
+{
+  "input_csv": "results/research_audit/tracka_per_episode_metric_provenance.csv",
+  "status": "pass",
+  "methods": {
+    "baseline_gnm": {
+      "episodes": 15,
+      "success_radius_values": [
+        3.0
+      ],
+      "final_successes": 3,
+      "oracle_successes": 7,
+      "sr": 20.0,
+      "osr": 46.666666666666664,
+      "ne": 6.510000000000001,
+      "expected_match": "PASS"
+    }
+  },
+  "missing": []
+}

@@ -1,0 +1,418 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Metric-Provenance Runtime Stopping for Visual Navigation: Diagnosing the SR--OSR Gap in GNM-VLNVerse Track A}
+
+\author{
+\IEEEauthorblockN{Author Name\IEEEauthorrefmark{1}, Co-Author\IEEEauthorrefmark{2}}
+\IEEEauthorblockA{\IEEEauthorrefmark{1}Affiliation 1\\
+Email}
+\IEEEauthorblockA{\IEEEauthorrefmark{2}Affiliation 2\\
+Email}
+}
+
+\maketitle
+
+\begin{abstract}
+A robot can reach the right area and still fail if it does not stop at the right time. This paper studies that failure in a GNM-style visual navigation setup and introduces a metric-provenance evaluation protocol for diagnosing when goal reaching and task completion disagree.
+
+Modern visual navigation models are increasingly strong at producing plausible motion, but final termination remains easy to hide inside aggregate success scores. We investigate this issue in GNM-VLNVerse Track A, where the reproduced baseline achieves 20.0\% Success Rate (SR) but 46.7\% Oracle Success Rate (OSR), meaning the policy enters the goal region more often than it successfully completes the episode. We formulate this SR--OSR gap as a termination reliability problem and evaluate a sequence of stopping strategies: a hand-tuned waypoint gate, a logistic stop head, a temporal neural stop head, and a geometry-aware oracle upper bound. The temporal neural stop head is the strongest deployable method in the current evidence trail, improving SR from 20.0\% to 33.3\% and reducing Navigation Error (NE) from 6.51\,m to 4.47\,m without using oracle geometry. Beyond the result itself, the paper contributes a forensic metric-provenance protocol that links every reported number to raw episodes, formulas, code paths, commands, and evidence files. The contribution is intentionally narrow: it does not claim global superiority over GNM, ViNT, NoMaD, or SaferPath. Instead, it establishes a reproducible benchmark-style audit for a specific failure mode: reaching the goal region without stopping correctly.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Visual navigation, termination reliability, metric provenance, GNM, SR--OSR gap, stopping policy.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Visual robot navigation has advanced through general navigation policies and foundation-style models that use camera observations to guide robots toward goals. GNM shows that goal-conditioned navigation can be trained across data from multiple robots. ViNT extends this direction using a Transformer-based architecture for visual navigation. NoMaD uses diffusion policies to support both goal-directed navigation and goal-agnostic exploration. Safety-oriented methods such as SaferPath further refine learned visual guidance using safety-constrained optimisation and control.
+
+These systems are important, but they do not fully answer one narrower question: what happens when a robot reaches the goal area but still fails because it does not stop correctly?
+
+This paper focuses on that final execution problem. The central observation is that the baseline GNM-style policy in our VLNVerse Track A setup has a large gap between SR and OSR:
+\begin{itemize}
+    \item SR = 20.0\%
+    \item OSR = 46.7\%
+    \item NE = 6.51\,m
+\end{itemize}
+This means that only 3 out of 15 validation episodes finish successfully, while 7 out of 15 enter the goal region at some point. The model is therefore not always failing because it never reaches the target. In several cases, it reaches the goal region but fails to terminate correctly.
+
+That distinction changes the research question. Instead of asking only whether visual navigation can move toward a goal, we ask whether runtime stopping logic can reduce the gap between entering the goal region and successfully finishing the episode.
+
+The paper makes four contributions:
+\begin{enumerate}
+    \item A metric-provenance protocol for visual navigation evaluation, requiring formulas, commands, evidence files, and per-episode auditability.
+    \item A termination-reliability framing of the SR--OSR gap in GNM-VLNVerse Track A.
+    \item A comparative stop-policy investigation covering hand-tuned, learned, temporal, and oracle stopping variants.
+    \item A deployable temporal stop head that improves held-out SR and NE without relying on oracle geometry.
+\end{enumerate}
+
+\section{Related Work and Research Gap}
+
+\subsection{GNM-style visual navigation}
+GNM studies how a general goal-conditioned navigation policy can be trained from heterogeneous robot datasets. Its central strength is cross-robot visual navigation generalisation. In this work, GNM is not treated as a competitor to defeat globally. It is the baseline family used to expose the stopping failure.
+
+The research gap is not ``GNM cannot navigate.'' The gap is more specific: in the evaluated Track A setup, GNM can enter the goal region more often than it completes the episode, suggesting a termination reliability issue.
+
+\subsection{ViNT and foundation visual navigation}
+ViNT treats visual navigation as a foundation-model problem. Its Transformer-based architecture learns navigation affordances from diverse data and can adapt to downstream navigation tasks. This is relevant because stronger visual backbones can improve navigation behaviour.
+
+However, the failure studied here is not only visual feature quality. The key evidence is that OSR is higher than SR. That suggests the policy can sometimes reach the goal region, but the final stopping decision remains unreliable.
+
+\subsection{NoMaD and diffusion navigation}
+NoMaD uses diffusion policies to represent both goal-directed navigation and exploration. It addresses a broader navigation challenge: how to move and explore in unfamiliar environments.
+
+The present work is narrower. It does not claim better exploration. It studies whether temporal runtime stopping can improve final task completion when a baseline already shows evidence of reaching the goal region.
+
+\subsection{SaferPath and safety-constrained visual navigation}
+SaferPath is the most relevant safety comparison. It uses learned guidance and safety-constrained control to improve navigation in cluttered, narrow, and obstacle-rich environments.
+
+This paper is related but distinct. SaferPath mainly addresses safer trajectory generation and obstacle avoidance. Our current question is about termination reliability: If the robot enters the goal region, does it stop correctly?
+
+A robot can avoid obstacles and still fail the task if it overshoots the target or does not terminate. Therefore, the SR--OSR gap is a complementary diagnostic signal, not a replacement for collision or safety metrics.
+
+\section{Problem Formulation}
+
+Let the validation set contain $N$ episodes. For episode $i$, let:
+\begin{itemize}
+    \item $p_{i,t} = $ robot position at time $t$
+    \item $g_i = $ goal position
+    \item $r = $ success radius
+    \item $T_i = $ final time step
+\end{itemize}
+
+The Euclidean distance from the robot to the goal at time $t$ is:
+\[
+d_{i,t} = \sqrt{(x_{i,t} - x_{goal})^2 + (y_{i,t} - y_{goal})^2}
+\]
+
+An episode is counted as a final success if the final robot position is within the success radius:
+\[
+success_i = \mathbb{1}[d_{i,T_i} \le r]
+\]
+
+An episode is counted as an oracle success if the robot enters the goal region at any time:
+\[
+oracle_i = \mathbb{1}[\min_t d_{i,t} \le r]
+\]
+
+Navigation Error is the final distance to the goal:
+\[
+NE_i = d_{i,T_i}
+\]
+
+The aggregate metrics are:
+\[
+SR = \frac{1}{N} \sum_{i=1}^N success_i \times 100
+\]
+\[
+OSR = \frac{1}{N} \sum_{i=1}^N oracle_i \times 100
+\]
+\[
+NE = \frac{1}{N} \sum_{i=1}^N NE_i
+\]
+
+The stopping gap is:
+\[
+\Delta_{stop} = OSR - SR
+\]
+
+A large positive $\Delta_{stop}$ means the policy enters the goal region more often than it finishes successfully. This indicates a stopping or termination failure.
+
+\section{Metric-Provenance Protocol}
+
+A result is treated as audit-ready only if it satisfies the following chain:
+raw episode data $\to$ evaluation script $\to$ per-episode distances $\to$ success / oracle-success flags $\to$ aggregate metrics $\to$ result table $\to$ reproducibility command.
+
+This prevents the paper from making unsupported claims from a final table alone.
+
+For each reported metric, the evaluator should store:
+\begin{itemize}
+    \item episode\_id
+    \item scene\_id
+    \item final\_distance\_to\_goal
+    \item minimum\_distance\_to\_goal
+    \item success\_radius
+    \item success\_flag
+    \item oracle\_success\_flag
+    \item navigation\_error
+\end{itemize}
+
+This makes it possible to explain not only what the result is, but exactly how the result was calculated.
+
+For the baseline GNM result, the audit trail establishes:
+\begin{itemize}
+    \item Validation episodes: 15
+    \item Success radius: 3.0\,m
+    \item Final successes: 3
+    \item Oracle successes: 7
+    \item Mean final distance: 6.51\,m
+\end{itemize}
+
+Therefore:
+\[
+SR = \frac{3}{15} \times 100 = 20.0\%
+\]
+\[
+OSR = \frac{7}{15} \times 100 = 46.7\%
+\]
+\[
+NE = 6.51\,\text{m}
+\]
+
+This is the evidence basis for the stopping-gap diagnosis.
+
+\section{Experimental Setup}
+
+\subsection{Dataset}
+The experiments use the local GNM-VLNVerse Track A setup. The audited dataset contains:
+\begin{itemize}
+    \item 238 training trajectories
+    \item 15 held-out validation trajectories
+    \item 4 Kujiale/VLNVerse scenes
+\end{itemize}
+
+The validation split is fixed across the stopping methods so that comparisons are fair.
+
+\subsection{Baseline}
+The baseline is the reproduced GNM-style visual navigation policy. It provides the reference behaviour before adding alternative stop policies.
+
+\subsection{Success threshold}
+The success radius is $r = 3.0$\,m. A final episode is successful only if final\_distance\_to\_goal $\le 3.0$\,m. An oracle success occurs if minimum\_distance\_to\_goal\_during\_episode $\le 3.0$\,m.
+
+\subsection{Stop-policy variants}
+The evaluated variants are:
+\begin{itemize}
+    \item Baseline GNM stopping.
+    \item Hand-tuned waypoint gate.
+    \item Logistic stop head.
+    \item Temporal neural stop head.
+    \item Geometry-aware oracle stop.
+\end{itemize}
+
+\section{Algorithms}
+
+\subsection{Baseline evaluation algorithm}
+\textbf{Input:} validation episodes, baseline GNM policy, goal positions, success radius $r=3.0$\,m
+
+For each episode:
+\begin{enumerate}
+    \item Run or load baseline trajectory.
+    \item Extract robot position at every time step.
+    \item Compute distance to goal at every time step.
+    \item Compute final distance.
+    \item Compute minimum distance during the episode.
+    \item Mark final success if final distance $\le r$.
+    \item Mark oracle success if minimum distance $\le r$.
+    \item Store per-episode metrics.
+\end{enumerate}
+
+After all episodes:
+\begin{enumerate}
+    \setcounter{enumi}{8}
+    \item Compute SR.
+    \item Compute OSR.
+    \item Compute mean NE.
+    \item Interpret SR--OSR gap.
+\end{enumerate}
+
+\subsection{Hand-tuned waypoint gate}
+For each time step:
+\begin{enumerate}
+    \item Read predicted waypoint.
+    \item Compute waypoint norm.
+    \item If waypoint norm $\le$ threshold, stop.
+    \item Otherwise, continue moving.
+\end{enumerate}
+
+This tests whether a simple human rule can solve stopping.
+
+\subsection{Logistic stop head}
+For each time step:
+\begin{enumerate}
+    \item Extract current-step features.
+    \item Feed features into logistic classifier.
+    \item Get stop probability.
+    \item Stop if probability $\ge$ threshold.
+\end{enumerate}
+
+This tests whether a simple learned single-step classifier is enough.
+
+\subsection{Temporal neural stop head}
+For each time step:
+\begin{enumerate}
+    \item Collect a short history window of runtime features.
+    \item Include distance, waypoint, rolling means, and trends.
+    \item Feed the sequence into the temporal model.
+    \item Predict stop probability.
+    \item Stop if probability $\ge$ threshold.
+\end{enumerate}
+
+This tests whether recent motion history improves stopping.
+
+\subsection{Geometry-aware oracle}
+For each episode:
+\begin{enumerate}
+    \item Use true geometry to find whether the robot enters the goal region.
+    \item Select the best possible stopping point under geometry knowledge.
+    \item Compute upper-bound SR, OSR, and NE.
+\end{enumerate}
+
+This is not deployable because the robot does not normally have oracle geometry at runtime.
+
+\section{Results}
+
+\subsection{Main results}
+
+\begin{table}[h]
+\centering
+\caption{Main Results on Validation Split}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Method} & \textbf{SR} & \textbf{OSR} & \textbf{NE (m)} \\
+\midrule
+Baseline GNM & 20.0\% & 46.7\% & 6.51 \\
+Hand-tuned waypoint gate & 26.7\% & 26.7\% & 5.34 \\
+Logistic stop head & 20.0\% & 46.7\% & 6.51 \\
+Temporal neural stop head & \textbf{33.3\%} & 33.3\% & \textbf{4.47} \\
+Geometry-aware oracle (upper bound) & 46.7\% & 46.7\% & 3.79 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Interpretation}
+The baseline shows a large stopping gap:
+\[
+OSR - SR = 46.7\% - 20.0\% = 26.7 \text{ percentage points}
+\]
+This means the robot enters the goal region more often than it finishes the task.
+
+The hand-tuned waypoint gate improves SR slightly but reduces OSR, suggesting that a fixed rule may stop too early or behave too rigidly.
+
+The logistic stop head does not improve validation SR, showing that a simple current-step classifier is not sufficient.
+
+The temporal neural stop head improves SR and NE, suggesting that stopping depends on short-term movement history.
+
+The geometry-aware oracle shows that better stopping is possible, but it is only an upper bound because it uses non-deployable information.
+
+\section{Feature Ablation}
+
+\begin{table}[h]
+\centering
+\caption{Feature Ablation for Temporal Stop Head}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Feature set} & \textbf{SR} & \textbf{OSR} & \textbf{NE (m)} \\
+\midrule
+Full temporal & 33.3\% & 33.3\% & 4.47 \\
+Distance + waypoint & 26.7\% & 26.7\% & 4.81 \\
+Distance only & 20.0\% & 46.7\% & 6.38 \\
+Waypoint only & 20.0\% & 40.0\% & 6.04 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The ablation shows that distance alone is not enough and waypoint size alone is not enough. The strongest result requires temporal runtime features.
+
+\section{Forensic Research Timeline}
+
+The work was developed through a staged audit trail (selected commits):
+
+\begin{table}[h]
+\centering
+\caption{Development Timeline (Selected Commits)}
+\begin{tabular}{ll}
+\toprule
+\textbf{Timestamp} & \textbf{Stage} \\
+\midrule
+2026-06-10 21:10:58 & Track A stop-policy results merged \\
+2026-06-10 23:28:08 & Temporal stop-head ablation added \\
+2026-06-11 00:21:41 & Temporal feature-set ablation added \\
+2026-06-11 01:27:16 & Dataset and scene manifest added \\
+2026-06-11 01:59:31 & Reproducibility pack added \\
+2026-06-11 03:03:54 & End-to-end methodology walkthrough added \\
+2026-06-16 21:14:40 & FleetSafe-GNM Isaac ROS 2 dry-run pipeline added \\
+2026-06-17 03:20:24 & Yahboom rosbag2 recording gate added \\
+2026-06-17 05:46:44 & Visible Yahboom Isaac stage scaffold added \\
+2026-06-17 06:00:03 & Yahboom ROS 2 OmniGraph topic publishers added \\
+2026-06-17 17:43:12 & EDA/training/safety notebook merged \\
+2026-06-17 18:02:00 & Colab launch badge added \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This timeline matters because it shows that the result was not invented after the fact. The project moved from baseline diagnosis to ablation, reproducibility, simulation, Yahboom integration, and notebook-based audit.
+
+\section{Comparison With Existing Work}
+
+\subsection{Compared with GNM}
+GNM focuses on general goal-conditioned navigation across diverse robots and environments. This paper uses a GNM-style policy as the baseline and asks a more specific question: does the policy stop correctly once it enters the goal region?
+
+\subsection{Compared with ViNT}
+ViNT focuses on a foundation model architecture for visual navigation. This work does not claim to build a larger visual foundation model. Instead, it studies runtime termination reliability on top of a visual navigation baseline.
+
+\subsection{Compared with NoMaD}
+NoMaD uses a unified diffusion policy for navigation and exploration. This paper does not target exploration. It targets the gap between entering the goal region and successfully completing the episode.
+
+\subsection{Compared with SaferPath}
+SaferPath focuses on safer navigation through learned guidance and safety-constrained control. This paper is complementary: it focuses on the final termination decision. A robot may avoid obstacles but still fail if it overshoots the goal or does not stop correctly.
+
+The comparison is therefore:
+\begin{itemize}
+    \item GNM / ViNT / NoMaD: strong visual navigation policies.
+    \item SaferPath: safety-constrained path refinement and obstacle-aware navigation.
+    \item This paper: metric-provenance diagnosis of termination reliability.
+\end{itemize}
+
+\section{Sim-to-Real Extension}
+
+The paper also prepares a path toward Yahboom ROSMASTER M3 Pro validation. The current sim-to-real direction includes:
+\begin{itemize}
+    \item visible Yahboom Isaac stage
+    \item ROS 2 OmniGraph publisher scaffold
+    \item strict topic gate
+    \item rosbag2 recording gate
+    \item EDA/training/safety notebook
+\end{itemize}
+
+The required live topics are: \texttt{/camera/image\_raw}, \texttt{/odom}, \texttt{/tf}, \texttt{/scan}, \texttt{/cmd\_vel}.
+
+No valid Yahboom rosbag2 episode is claimed until the strict topic gate passes and the validator confirms non-zero messages for all five topics. This keeps the claim boundary honest.
+
+\section{Limitations}
+
+The current evidence has limitations.
+\begin{enumerate}
+    \item The validation split contains 15 episodes. This is enough to expose a clear stopping gap, but larger validation sets are needed before broad generalisation claims.
+    \item The baseline and stopping-method results need a complete per-episode provenance CSV to become fully audit-ready.
+    \item The Yahboom Isaac pipeline has not yet produced a validated episode\_001 rosbag2 recording.
+    \item This paper does not claim global superiority over GNM, ViNT, NoMaD, or SaferPath. The claim is narrower and evidence-based.
+\end{enumerate}
+
+\section{Conclusion}
+
+This paper introduces a metric-provenance view of runtime stopping in visual navigation. The key finding is that a GNM-style baseline can enter the goal region more often than it successfully completes the episode. In the audited Track A validation setup, the baseline achieves 20.0\% SR but 46.7\% OSR, producing a 26.7 percentage-point stopping gap.
+
+A hand-tuned waypoint gate gives only brittle improvement. A logistic stop head does not improve validation success. A temporal neural stop head improves deployable SR to 33.3\% and reduces NE to 4.47\,m. A geometry-aware oracle shows that further improvement is possible but should be treated only as a diagnostic upper bound.
+
+The main contribution is not a broad claim of universal navigation superiority. It is a specific, auditable benchmark-style result: termination reliability should be measured, proven, and improved as a first-class runtime problem in visual robot navigation.
+
+\begin{thebibliography}{00}
+\bibitem{gnm} D. Shah, A. Sridhar, A. Bhorkar, N. Hirose, and S. Levine, ``GNM: A General Navigation Model to Drive Any Robot,'' \textit{arXiv preprint arXiv:2210.03370}, 2022.
+\bibitem{vint} D. Shah, A. Sridhar, N. Dashora, K. Stachowicz, K. Black, N. Hirose, and S. Levine, ``ViNT: A Foundation Model for Visual Navigation,'' in \textit{Proceedings of the Conference on Robot Learning (CoRL)}, 2023.
+\bibitem{nomad} A. Sridhar, D. Shah, C. Glossop, and S. Levine, ``NoMaD: Goal Masked Diffusion Policies for Navigation and Exploration,'' \textit{arXiv preprint arXiv:2310.07896}, 2023.
+\bibitem{saferpath} L. Zhang, Z. Jiang, and C. Chen, ``SaferPath: Hierarchical Visual Navigation with Learned Guidance and Safety-Constrained Control,'' \textit{arXiv preprint arXiv:2603.01898}, 2026.
+\end{thebibliography}
+
+\end{document}
