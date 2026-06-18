@@ -1,0 +1,125 @@
+{
+  "n_episodes": 253,
+  "n_train": 238,
+  "n_val": 15,
+  "methods": {
+    "baseline_gnm": {
+      "aggregate": {
+        "n": 253,
+        "sr": 37.5,
+        "osr": 50.6,
+        "ne": 5.51,
+        "sr_ci_lo": 31.6,
+        "sr_ci_hi": 43.5,
+        "ne_ci_lo": 4.99,
+        "ne_ci_hi": 6.02,
+        "stopping_gap": 13.0
+      },
+      "per_scene": {
+        "kujiale_0092": {
+          "n": 68,
+          "sr": 38.2,
+          "osr": 42.6,
+          "ne": 5.91,
+          "sr_ci_lo": 26.5,
+          "sr_ci_hi": 50.0,
+          "ne_ci_lo": 4.7,
+          "ne_ci_hi": 7.17,
+          "stopping_gap": 4.4
+        },
+        "kujiale_0118": {
+          "n": 63,
+          "sr": 27.0,
+          "osr": 38.1,
+          "ne": 6.28,
+          "sr_ci_lo": 15.9,
+          "sr_ci_hi": 38.1,
+          "ne_ci_lo": 5.31,
+          "ne_ci_hi": 7.29,
+          "stopping_gap": 11.1
+        },
+        "kujiale_0203": {
+          "n": 72,
+          "sr": 47.2,
+          "osr": 65.3,
+          "ne": 4.45,
+          "sr_ci_lo": 36.1,
+          "sr_ci_hi": 58.3,
+          "ne_ci_lo": 3.71,
+          "ne_ci_hi": 5.27,
+          "stopping_gap": 18.1
+        },
+        "kujiale_0271": {
+          "n": 50,
+          "sr": 36.0,
+          "osr": 56.0,
+          "ne": 5.5,
+          "sr_ci_lo": 24.0,
+          "sr_ci_hi": 50.0,
+          "ne_ci_lo": 4.58,
+          "ne_ci_hi": 6.45,
+          "stopping_gap": 20.0
+        }
+      }
+    },
+    "geometry_aware_oracle": {
+      "aggregate": {
+        "n": 253,
+        "sr": 50.6,
+        "osr": 50.6,
+        "ne": 3.55,
+        "sr_ci_lo": 44.3,
+        "sr_ci_hi": 56.9,
+        "ne_ci_lo": 3.22,
+        "ne_ci_hi": 3.9,
+        "stopping_gap": 0.0
+      },
+      "per_scene": {
+        "kujiale_0092": {
+          "n": 68,
+          "sr": 42.6,
+          "osr": 42.6,
+          "ne": 3.93,
+          "sr_ci_lo": 30.9,
+          "sr_ci_hi": 54.4,
+          "ne_ci_lo": 3.18,
+          "ne_ci_hi": 4.71,
+          "stopping_gap": 0.0
+        },
+        "kujiale_0118": {
+          "n": 63,
+          "sr": 38.1,
+          "osr": 38.1,
+          "ne": 4.46,
+          "sr_ci_lo": 27.0,
+          "sr_ci_hi": 50.8,
+          "ne_ci_lo": 3.71,
+          "ne_ci_hi": 5.24,
+          "stopping_gap": 0.0
+        },
+        "kujiale_0203": {
+          "n": 72,
+          "sr": 65.3,
+          "osr": 65.3,
+          "ne": 2.83,
+          "sr_ci_lo": 54.2,
+          "sr_ci_hi": 76.4,
+          "ne_ci_lo": 2.36,
+          "ne_ci_hi": 3.32,
+          "stopping_gap": 0.0
+        },
+        "kujiale_0271": {
+          "n": 50,
+          "sr": 56.0,
+          "osr": 56.0,
+          "ne": 2.93,
+          "sr_ci_lo": 42.0,
+          "sr_ci_hi": 70.0,
+          "ne_ci_lo": 2.42,
+          "ne_ci_hi": 3.45,
+          "stopping_gap": 0.0
+        }
+      }
+    }
+  }
+}

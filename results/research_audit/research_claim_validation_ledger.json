@@ -63,11 +63,17 @@
     "notes": "Summary explicitly states no additional held-out data exists and documents train-split contamination reason."
   },
   {
+    "id": "tracka_expanded_253ep_provenance_complete",
+    "claim": "Expanded 253-episode provenance for baseline_gnm and geometry_aware_oracle across all 4 Kujiale scenes with CI report.",
+    "status": "VALIDATED",
+    "missing": [],
+    "notes": "506-row CSV (253 ep \u00d7 2 methods). Only baseline and oracle expanded; waypoint/logistic/temporal remain at 15-ep val. Stopping-gap confirmed at N=253: baseline OSR\u2212SR = 13 pp, CI width narrows from \u00b120 pp (val) to \u00b16 pp (expanded)."
+  },
+  {
     "id": "yahboom_episode_001_rosbag2",
     "claim": "A valid Yahboom episode_001 rosbag2 recording exists.",
     "status": "BLOCKED",
     "missing": [
-      "datasets/gnm_fleetsafe_rosbags/episode_001/episode_metadata.json",
       "results/gnm_fleetsafe_v2_4/episode_001_validation.json"
     ],
     "notes": "The validation JSON must confirm all five canonical topics have message_count > 0 and duration >= 30s."

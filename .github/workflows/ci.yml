@@ -103,7 +103,13 @@ jobs:
       - name: "[6/7] Robustness summary"
         run: python scripts/gnm/compute_tracka_robustness_summary.py
 
-      - name: "[7/7] Check research claim gates"
+      - name: "[7/9] Generate expanded 253-episode provenance (baseline + oracle)"
+        run: python scripts/gnm/generate_expanded_tracka_provenance.py
+
+      - name: "[8/9] Verify expanded provenance"
+        run: python scripts/gnm/verify_expanded_tracka_provenance.py
+
+      - name: "[9/9] Check research claim gates"
         run: python scripts/gnm/check_research_claim_gates.py
 
   paper-pdf:

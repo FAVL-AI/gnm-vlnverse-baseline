@@ -210,3 +210,75 @@ def test_robustness_summary_blocks_global_superiority():
     assert "No global superiority" in text, (
         "Robustness summary must list 'no global superiority' as a non-supported claim"
     )
+
+
+# ── Expanded 253-episode split sanity ─────────────────────────────────────────
+
+EXP_CSV = AUDIT / "tracka_expanded_253ep_baseline_oracle_provenance.csv"
+EXP_LOCK = AUDIT / "tracka_expanded_split_lock.json"
+EXP_REPORT = AUDIT / "tracka_expanded_provenance_report.json"
+EXP_METHOD_NOTE = AUDIT / "tracka_expanded_methodology_note.md"
+
+EXPECTED_SCENES_EXP = {"kujiale_0092", "kujiale_0118", "kujiale_0203", "kujiale_0271"}
+
+
+def test_expanded_csv_exists():
+    assert EXP_CSV.exists(), f"Expanded provenance CSV missing: {EXP_CSV}"
+
+
+def test_expanded_csv_row_count():
+    rows = list(csv.DictReader(EXP_CSV.open()))
+    assert len(rows) == 506, f"Expected 506 rows (253 ep × 2 methods), got {len(rows)}"
+
+
+def test_expanded_csv_only_two_methods():
+    rows = list(csv.DictReader(EXP_CSV.open()))
+    methods = {r["method"] for r in rows}
+    assert methods == {"baseline_gnm", "geometry_aware_oracle"}, (
+        f"Expanded CSV must contain exactly baseline_gnm and geometry_aware_oracle, got {methods}"
+    )
+
+
+def test_expanded_csv_has_all_four_scenes():
+    rows = list(csv.DictReader(EXP_CSV.open()))
+    scenes = {r["scene_id"] for r in rows}
+    assert scenes == EXPECTED_SCENES_EXP, f"Scene mismatch: {scenes}"
+
+
+def test_expanded_lock_episode_count():
+    lock = json.loads(EXP_LOCK.read_text())
+    assert lock["n_episodes_total"] == 253, (
+        f"Lock must have 253 total episodes, got {lock['n_episodes_total']}"
+    )
+    assert lock["n_train"] == 238, f"Expected 238 train episodes, got {lock['n_train']}"
+    assert lock["n_val"] == 15, f"Expected 15 val episodes, got {lock['n_val']}"
+
+
+def test_expanded_stopping_gap_persists():
+    """Stopping gap (OSR−SR) must be positive for baseline_gnm at N=253."""
+    report = json.loads(EXP_REPORT.read_text())
+    agg = report["methods"]["baseline_gnm"]["aggregate"]
+    gap = agg["osr"] - agg["sr"]
+    assert gap > 0, (
+        f"Stopping gap must be positive at N=253; got OSR={agg['osr']}, SR={agg['sr']}"
+    )
+
+
+def test_expanded_methodology_note_blocks_three_methods():
+    """Methodology note must document that 3 methods cannot be expanded."""
+    text = EXP_METHOD_NOTE.read_text()
+    for method in ("hand_tuned_waypoint_gate", "logistic_stop_head", "temporal_neural_stop_head"):
+        assert method in text, (
+            f"Methodology note must explain why '{method}' cannot be expanded"
+        )
+
+
+def test_expanded_provenance_claim_validated():
+    """The expanded provenance claim must be VALIDATED (not BLOCKED) in the ledger."""
+    rows = json.loads(LEDGER_JSON.read_text())
+    ledger = {r["id"]: r["status"] for r in rows}
+    claim_id = "tracka_expanded_253ep_provenance_complete"
+    assert claim_id in ledger, f"Claim '{claim_id}' missing from ledger"
+    assert ledger[claim_id] != "BLOCKED", (
+        f"Claim '{claim_id}' must not be BLOCKED — evidence files should be present"
+    )

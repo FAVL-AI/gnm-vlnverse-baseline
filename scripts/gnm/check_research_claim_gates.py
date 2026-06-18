@@ -102,6 +102,23 @@ CLAIMS = [
         "notes": "Summary explicitly states no additional held-out data exists and documents train-split contamination reason.",
     },
     {
+        "id": "tracka_expanded_253ep_provenance_complete",
+        "claim": "Expanded 253-episode provenance for baseline_gnm and geometry_aware_oracle across all 4 Kujiale scenes with CI report.",
+        "required_files": [
+            "results/research_audit/tracka_expanded_253ep_baseline_oracle_provenance.csv",
+            "results/research_audit/tracka_expanded_split_lock.json",
+            "results/research_audit/tracka_expanded_provenance_report.md",
+            "results/research_audit/tracka_expanded_provenance_report.json",
+            "results/research_audit/tracka_expanded_methodology_note.md",
+        ],
+        "status_if_present": "validated",
+        "notes": (
+            "506-row CSV (253 ep × 2 methods). Only baseline and oracle expanded; "
+            "waypoint/logistic/temporal remain at 15-ep val. Stopping-gap confirmed at N=253: "
+            "baseline OSR−SR = 13 pp, CI width narrows from ±20 pp (val) to ±6 pp (expanded)."
+        ),
+    },
+    {
         "id": "yahboom_episode_001_rosbag2",
         "claim": "A valid Yahboom episode_001 rosbag2 recording exists.",
         "required_files": [

@@ -24,6 +24,7 @@ This repository is a staged GNM-VLNVerse Track A stopping-reliability and metric
 | v2.4.1 | Visible Yahboom Isaac stage and ROS 2 publisher scaffold | Visible geometry-correct placeholder stage (base, deck, camera, lidar, 4 wheels, ground), programmatic USDA generator, five-node OmniGraph scaffold plan, no-absolute-path USDA |
 | v2.5 | Metric provenance claim gates and ICRA stopping paper — validated for Track A paper scope | All-methods per-episode provenance (75 rows, 5 methods × 15 episodes), research claim ledger, validation split lock, bootstrap CIs, stop-head feature audit, paper claim-to-evidence map, one-command pack, ICRA paper source |
 | v2.6 | Expanded Track A robustness evidence | Per-scene SR/OSR/NE (20 rows, 5 methods × 4 scenes), paired Wilcoxon + sign test (baseline vs temporal), bootstrap seed stability (seeds 41–44), robustness summary with explicit data-availability audit and honest claim boundaries |
+| v2.7 | Expanded 253-episode Track A split (baseline + oracle) | 506-row provenance CSV (253 episodes × 2 methods), CI width narrows from ±20 pp to ±6 pp for SR, stopping-gap confirmed at N=253 (OSR−SR = 13 pp), methodology note documents why 3 methods cannot be expanded, split lock, verifier, 8 new CI-enforced tests |
 | upstream | Yahboom ROSMASTER M3 Pro upstream integration | Official Yahboom repo as external hardware reference, clone/setup script, upstream inspector, Yahboom-to-canonical topic mapping, OpenClaw architecture note |
 
 ### Key Track A results
@@ -234,6 +235,7 @@ python3 scripts/gnm/check_research_claim_gates.py
 - Per-scene breakdown exists for all 5 methods × 4 scenes
 - Paired Wilcoxon test confirms temporal improvement direction (T+=95, p≈0.047, n=15)
 - Bootstrap CIs are stable across seeds 41–44
+- Stopping-gap confirmed at N=253: baseline OSR−SR = 13 pp, SR CI narrows from ±20 pp to ±6 pp
 
 **Blocked claims (gates closed — evidence does not yet exist):**
 
