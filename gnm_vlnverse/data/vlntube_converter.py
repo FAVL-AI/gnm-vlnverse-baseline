@@ -67,7 +67,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
-import cv2
 import numpy as np
 
 logger = logging.getLogger(__name__)
@@ -357,6 +356,8 @@ class VLNTubeConverter:
         frames: list[Path],
         meta: dict,
     ) -> None:
+        import cv2  # lazy — not needed at import time; opencv not required in CI
+
         out_dir.mkdir(parents=True, exist_ok=True)
         T = min(len(frames), len(positions))
 
