@@ -6,6 +6,7 @@ machine-checked assertions so leakage or regression is caught automatically.
 """
 from __future__ import annotations
 
+import csv
 import json
 from pathlib import Path
 
@@ -139,8 +140,73 @@ def test_tracka_provenance_claims_not_blocked():
     for claim_id in (
         "tracka_baseline_per_episode_provenance",
         "tracka_all_methods_per_episode_provenance",
+        "tracka_per_scene_breakdown_complete",
+        "tracka_paired_comparison_complete",
+        "tracka_robustness_summary_complete",
     ):
         assert claim_id in ledger, f"Claim '{claim_id}' missing from ledger"
         assert ledger[claim_id] != "BLOCKED", (
             f"Claim '{claim_id}' must not be BLOCKED — evidence should be present"
         )
+
+
+# ── Per-scene breakdown sanity ────────────────────────────────────────────────
+
+SCENE_CSV = AUDIT / "tracka_per_scene_breakdown.csv"
+
+EXPECTED_SCENES = {"kujiale_0092", "kujiale_0118", "kujiale_0203", "kujiale_0271"}
+EXPECTED_METHODS_SCENE = {
+    "baseline_gnm", "hand_tuned_waypoint_gate", "logistic_stop_head",
+    "temporal_neural_stop_head", "geometry_aware_oracle",
+}
+
+
+def test_per_scene_breakdown_exists():
+    assert SCENE_CSV.exists(), f"Per-scene CSV missing: {SCENE_CSV}"
+
+
+def test_per_scene_breakdown_structure():
+    rows = list(csv.DictReader(SCENE_CSV.open()))
+    assert rows, "Per-scene CSV is empty"
+    assert len(rows) == 20, f"Expected 20 rows (5 methods × 4 scenes), got {len(rows)}"
+    scenes = {r["scene_id"] for r in rows}
+    methods = {r["method"] for r in rows}
+    assert scenes == EXPECTED_SCENES, f"Scene mismatch: {scenes}"
+    assert methods == EXPECTED_METHODS_SCENE, f"Method mismatch: {methods}"
+
+
+def test_per_scene_kujiale_0118_hard():
+    """kujiale_0118 must show 0% SR for all deployable methods — a known hard scene."""
+    rows = list(csv.DictReader(SCENE_CSV.open()))
+    for row in rows:
+        if row["scene_id"] == "kujiale_0118" and row["method"] != "geometry_aware_oracle":
+            assert float(row["sr_pct"]) == 0.0, (
+                f"kujiale_0118 {row['method']} SR should be 0% "
+                f"(hard scene, no episodes succeeded), got {row['sr_pct']}"
+            )
+
+
+# ── Robustness summary sanity ─────────────────────────────────────────────────
+
+ROBUSTNESS_MD = AUDIT / "tracka_robustness_summary.md"
+
+
+def test_robustness_summary_exists():
+    assert ROBUSTNESS_MD.exists(), f"Robustness summary missing: {ROBUSTNESS_MD}"
+
+
+def test_robustness_summary_acknowledges_no_extra_data():
+    text = ROBUSTNESS_MD.read_text()
+    assert "No additional held-out trajectories" in text, (
+        "Robustness summary must explicitly state that no extra held-out data exists"
+    )
+    assert "train-split contamination" in text or "in-distribution" in text, (
+        "Robustness summary must state why train split cannot be used"
+    )
+
+
+def test_robustness_summary_blocks_global_superiority():
+    text = ROBUSTNESS_MD.read_text()
+    assert "No global superiority" in text, (
+        "Robustness summary must list 'no global superiority' as a non-supported claim"
+    )

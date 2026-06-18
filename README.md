@@ -23,6 +23,7 @@ This repository is a staged GNM-VLNVerse Track A stopping-reliability and metric
 | v2.4.2 | Yahboom ROS 2 OmniGraph topic publishers | Isaac Sim Python script to create ROS 2 action graph (OnPlaybackTick → ROS2Context → 5 publisher/subscriber nodes), updated USDA with Camera sensor prim and OmniGraph stubs, GUI and script methods |
 | v2.4.1 | Visible Yahboom Isaac stage and ROS 2 publisher scaffold | Visible geometry-correct placeholder stage (base, deck, camera, lidar, 4 wheels, ground), programmatic USDA generator, five-node OmniGraph scaffold plan, no-absolute-path USDA |
 | v2.5 | Metric provenance claim gates and ICRA stopping paper — validated for Track A paper scope | All-methods per-episode provenance (75 rows, 5 methods × 15 episodes), research claim ledger, validation split lock, bootstrap CIs, stop-head feature audit, paper claim-to-evidence map, one-command pack, ICRA paper source |
+| v2.6 | Expanded Track A robustness evidence | Per-scene SR/OSR/NE (20 rows, 5 methods × 4 scenes), paired Wilcoxon + sign test (baseline vs temporal), bootstrap seed stability (seeds 41–44), robustness summary with explicit data-availability audit and honest claim boundaries |
 | upstream | Yahboom ROSMASTER M3 Pro upstream integration | Official Yahboom repo as external hardware reference, clone/setup script, upstream inspector, Yahboom-to-canonical topic mapping, OpenClaw architecture note |
 
 ### Key Track A results
@@ -132,7 +133,7 @@ Run the full validation in one command:
 bash scripts/gnm/run_tracka_metric_provenance_pack.sh
 ```
 
-This runs: generate all-methods CSV → verify baseline provenance → verify all-methods provenance (with bootstrap CIs) → update claim ledger → compile paper. All steps must pass.
+This runs 8 steps: generate all-methods CSV → verify baseline provenance → verify all-methods provenance (bootstrap CIs) → per-scene breakdown → paired comparison + seed stability → robustness summary → update claim ledger → compile paper. All steps must pass.
 
 ### Per-episode provenance — all five methods
 
@@ -186,6 +187,31 @@ Every quantitative claim in the paper links to an evidence file and verifier:
 results/research_audit/paper_claim_to_evidence_map.md
 ```
 
+### Robustness evidence (v2.6)
+
+Per-scene breakdown, paired statistical test, and bootstrap seed stability:
+
+```bash
+python3 scripts/gnm/compute_tracka_per_scene_breakdown.py
+python3 scripts/gnm/compute_tracka_paired_comparison.py
+python3 scripts/gnm/compute_tracka_robustness_summary.py
+```
+
+Key findings:
+
+- kujiale_0118: 0% SR for all deployable methods (genuinely hard scene)
+- kujiale_0271: temporal stop head SR 0% → 67% (largest per-scene gain)
+- Paired test (baseline vs temporal, n=15): Wilcoxon T+=95, z=1.99, p≈0.047; temporal reduces NE in 11/15 episodes
+- Bootstrap CIs stable across seeds 41–44 (SR CI varies by 0 pp, NE CI by < 0.05 m)
+- No additional held-out data beyond the 15 val episodes (train split is contaminated for logistic/temporal methods)
+
+```
+results/research_audit/tracka_per_scene_breakdown.csv
+results/research_audit/tracka_paired_comparison.md
+results/research_audit/tracka_bootstrap_seed_stability.md
+results/research_audit/tracka_robustness_summary.md
+```
+
 ---
 
 ## Research Claim Gates
@@ -205,6 +231,9 @@ python3 scripts/gnm/check_research_claim_gates.py
 - Temporal stop head uses only runtime GNM signals — no oracle geometry at inference
 - All five methods evaluated on the same locked 15-episode validation split
 - Every paper table entry maps to a source file and verifier script
+- Per-scene breakdown exists for all 5 methods × 4 scenes
+- Paired Wilcoxon test confirms temporal improvement direction (T+=95, p≈0.047, n=15)
+- Bootstrap CIs are stable across seeds 41–44
 
 **Blocked claims (gates closed — evidence does not yet exist):**
 

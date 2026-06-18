@@ -42,6 +42,27 @@
     "notes": "Map must list source file and verifier script for every table entry."
   },
   {
+    "id": "tracka_per_scene_breakdown_complete",
+    "claim": "Per-scene SR/OSR/NE breakdown exists for all 5 Track A methods across all 4 Kujiale scenes.",
+    "status": "VALIDATED",
+    "missing": [],
+    "notes": "20-row CSV (5 methods \u00d7 4 scenes). Used for robustness inspection; per-scene CIs are wide for n \u2264 3."
+  },
+  {
+    "id": "tracka_paired_comparison_complete",
+    "claim": "Paired Wilcoxon signed-rank and sign test comparing baseline_gnm vs temporal_neural_stop_head on 15 val episodes.",
+    "status": "VALIDATED",
+    "missing": [],
+    "notes": "Wilcoxon T+=95, p\u22480.047. Sign test p=0.119. Small-sample caution stated."
+  },
+  {
+    "id": "tracka_robustness_summary_complete",
+    "claim": "A robustness summary documents data availability, per-scene findings, paired comparison, and honest claim boundaries.",
+    "status": "VALIDATED",
+    "missing": [],
+    "notes": "Summary explicitly states no additional held-out data exists and documents train-split contamination reason."
+  },
+  {
     "id": "yahboom_episode_001_rosbag2",
     "claim": "A valid Yahboom episode_001 rosbag2 recording exists.",
     "status": "BLOCKED",

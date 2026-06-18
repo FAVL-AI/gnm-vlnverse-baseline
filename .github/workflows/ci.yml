@@ -85,16 +85,25 @@ jobs:
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
 
-      - name: "[1/4] Generate all-methods per-episode provenance"
+      - name: "[1/7] Generate all-methods per-episode provenance"
         run: python scripts/gnm/generate_all_methods_provenance.py
 
-      - name: "[2/4] Verify baseline provenance"
+      - name: "[2/7] Verify baseline provenance"
         run: python scripts/gnm/verify_tracka_metric_provenance.py
 
-      - name: "[3/4] Verify all-methods provenance"
+      - name: "[3/7] Verify all-methods provenance"
         run: python scripts/gnm/verify_tracka_all_methods_metric_provenance.py
 
-      - name: "[4/4] Check research claim gates"
+      - name: "[4/7] Per-scene breakdown"
+        run: python scripts/gnm/compute_tracka_per_scene_breakdown.py
+
+      - name: "[5/7] Paired comparison and bootstrap seed stability"
+        run: python scripts/gnm/compute_tracka_paired_comparison.py
+
+      - name: "[6/7] Robustness summary"
+        run: python scripts/gnm/compute_tracka_robustness_summary.py
+
+      - name: "[7/7] Check research claim gates"
         run: python scripts/gnm/check_research_claim_gates.py
 
   paper-pdf:
