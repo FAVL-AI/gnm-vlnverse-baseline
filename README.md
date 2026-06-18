@@ -22,7 +22,7 @@ This repository is a staged GNM-VLNVerse Track A stopping-reliability and metric
 | v2.4 | First valid Yahboom Isaac rosbag2 episode (prerequisite) | Yahboom-specific episode collector with mandatory topic gate, episode validator (message_count > 0 on all five topics), Nova Carter contamination check, episode metadata and validation report |
 | v2.4.2 | Yahboom ROS 2 OmniGraph topic publishers | Isaac Sim Python script to create ROS 2 action graph (OnPlaybackTick → ROS2Context → 5 publisher/subscriber nodes), updated USDA with Camera sensor prim and OmniGraph stubs, GUI and script methods |
 | v2.4.1 | Visible Yahboom Isaac stage and ROS 2 publisher scaffold | Visible geometry-correct placeholder stage (base, deck, camera, lidar, 4 wheels, ground), programmatic USDA generator, five-node OmniGraph scaffold plan, no-absolute-path USDA |
-| v2.5 | Metric provenance claim gates and ICRA paper draft | Baseline per-episode provenance (15 episodes), research claim ledger separating validated from blocked claims, ICRA paper source |
+| v2.5 | Metric provenance claim gates and ICRA stopping paper — validated for Track A paper scope | All-methods per-episode provenance (75 rows, 5 methods × 15 episodes), research claim ledger, validation split lock, bootstrap CIs, stop-head feature audit, paper claim-to-evidence map, one-command pack, ICRA paper source |
 | upstream | Yahboom ROSMASTER M3 Pro upstream integration | Official Yahboom repo as external hardware reference, clone/setup script, upstream inspector, Yahboom-to-canonical topic mapping, OpenClaw architecture note |
 
 ### Key Track A results
@@ -63,24 +63,40 @@ python scripts/gnm/isaac_live_trajectory_demo.py
 
 Repository: https://github.com/FAVL-AI/gnm-vlnverse-baseline
 
-This repository is a **metric-provenance benchmark-style audit for termination reliability** in GNM-VLNVerse indoor navigation. It provides a reproducible baseline proof path, per-episode metric provenance, research claim gates, and an ICRA paper draft — all scoped to Track A (GNM on VLNVerse/Kujiale data).
+This repository contains a **complete validation package for the GNM-VLNVerse Track A stopping-reliability paper**. The paper is a metric-provenance benchmark-style audit for termination reliability — not a global superiority claim over GNM, ViNT, NoMaD, or SaferPath. All five stop-policy methods are validated at per-episode level. The full package is reproducible with one command.
 
 The official local verification path does **not** require Isaac Sim GUI. Isaac Sim replay is optional and environment-dependent.
 
 ---
 
+## Validation Status
+
+| Work item | Status |
+|---|---|
+| Track A stopping paper (metric-provenance scope) | **Validated** |
+| Yahboom sim-to-real recording | Blocked — requires valid `episode_001` rosbag2 |
+| Track B language grounding | Blocked — requires held-out Track B evaluation |
+| Global superiority over GNM, ViNT, NoMaD, SaferPath | Blocked — requires matched external benchmark |
+
+---
+
 ## Current Study Focus
 
-This repository is a **GNM-VLNVerse Track A stopping-reliability and metric-provenance study**.
+This repository contains a **complete validation package for the GNM-VLNVerse Track A stopping-reliability paper**.
 
-The central finding is that baseline GNM navigation failure on VLNVerse is not purely a path-following failure: the model enters the goal region more often than it successfully terminates there. This is a stopping-reliability problem. The gap between SR (20.0%) and OSR (46.7%) directly measures it.
+The validated paper claim: baseline GNM navigation failure on VLNVerse is not purely a path-following failure — the model enters the goal region more often than it successfully terminates there. This is a stopping-reliability problem. The gap between SR (20.0%) and OSR (46.7%) directly measures it.
 
-The study provides:
+The full Track A validation package includes:
 
-- per-episode provenance for all 15 validation episodes (SR, OSR, NE computed from raw per-episode rows);
-- a claim ledger that separates validated findings from blocked claims;
-- a stop-policy ablation ladder showing how termination reliability can be improved;
-- an ICRA paper draft on metric-provenance-based stopping analysis.
+- all five stop-policy methods with per-episode provenance (75 rows, 5 methods × 15 episodes);
+- exact final distance and minimum distance rows for all 15 validation episodes per method;
+- baseline verifier and all-methods verifier, both with expected-value checks;
+- bootstrap 95% confidence intervals for SR, OSR, NE, and SR–OSR gap;
+- validation split lock (same 15 episodes used for all methods);
+- temporal stop-head feature audit confirming no oracle-geometry leakage;
+- paper claim-to-evidence map linking every table entry to a source file;
+- one-command validation pack;
+- ICRA/IEEE-style paper source that compiles to a local 5-page PDF.
 
 ---
 
@@ -106,23 +122,69 @@ These are reproduced baseline metrics, not a final SOTA claim.
 
 ---
 
-## Metric Provenance — Validated
+## Track A Validation Package
 
-Baseline per-episode provenance is now validated. Each of the 15 validation episodes has a row in:
+### One-command pack
+
+Run the full validation in one command:
+
+```bash
+bash scripts/gnm/run_tracka_metric_provenance_pack.sh
+```
+
+This runs: generate all-methods CSV → verify baseline provenance → verify all-methods provenance (with bootstrap CIs) → update claim ledger → compile paper. All steps must pass.
+
+### Per-episode provenance — all five methods
+
+Every entry in the paper result table has a source row. The 75-row CSV covers all five methods × 15 validation episodes:
 
 ```
-results/research_audit/tracka_per_episode_metric_provenance.csv
+results/research_audit/tracka_all_methods_per_episode_metric_provenance.csv
 ```
 
-The verifier script recomputes SR, OSR, and NE directly from these 15 rows and checks that they match the reported aggregates:
+Generate (from existing source CSVs in `results/bo_reviewer_packet/`):
+
+```bash
+python3 scripts/gnm/generate_all_methods_provenance.py
+```
+
+Verify all five methods with bootstrap 95% CIs:
+
+```bash
+python3 scripts/gnm/verify_tracka_all_methods_metric_provenance.py
+```
+
+Expected: all five methods report `PASS` with SR, OSR, and NE within tolerance.
+
+Baseline-only verifier (faster sanity check):
 
 ```bash
 python3 scripts/gnm/verify_tracka_metric_provenance.py
 ```
 
-Expected output: all three aggregate metrics verified for `baseline_gnm`.
+### Validation split lock
 
-Provenance report: `results/research_audit/tracka_metric_provenance_report.md`
+All five methods use the same 15 episode IDs:
+
+```
+results/research_audit/tracka_validation_split_lock.json
+```
+
+### Feature audit — no oracle leakage
+
+The temporal stop head uses only runtime GNM-derived signals (distance trend, waypoint norm, stability window). It does not use true goal geometry at inference time:
+
+```
+results/research_audit/stop_policy_feature_audit.md
+```
+
+### Paper claim-to-evidence map
+
+Every quantitative claim in the paper links to an evidence file and verifier:
+
+```
+results/research_audit/paper_claim_to_evidence_map.md
+```
 
 ---
 
@@ -137,9 +199,12 @@ python3 scripts/gnm/check_research_claim_gates.py
 **Validated claims (gates open):**
 
 - Baseline GNM SR = 20.0%, OSR = 46.7%, NE = 6.51 m on 15 validation episodes
-- Per-episode metric provenance exists for all 15 episodes
+- Per-episode metric provenance exists for all 15 episodes (baseline and all five methods)
 - Stopping-reliability gap is real: OSR − SR = 26.7 percentage points
 - Temporal neural stop head improves deployable SR from 20.0% to 33.3%
+- Temporal stop head uses only runtime GNM signals — no oracle geometry at inference
+- All five methods evaluated on the same locked 15-episode validation split
+- Every paper table entry maps to a source file and verifier script
 
 **Blocked claims (gates closed — evidence does not yet exist):**
 
@@ -158,7 +223,7 @@ See `results/research_audit/research_claim_validation_ledger.md` for the full le
 
 Paper source: `paper/icra_metric_provenance_stopping/main.tex`
 
-This is a draft ICRA paper on metric-provenance-based stopping analysis for GNM-VLNVerse.
+This is an ICRA/IEEE-format paper on metric-provenance-based stopping analysis for GNM-VLNVerse Track A. The paper scope is a metric-provenance benchmark-style audit for termination reliability. All quantitative claims in the paper are fully validated at per-episode level.
 
 Local compile (requires `pdflatex`):
 
@@ -174,7 +239,13 @@ Run `pdflatex` twice so cross-references and citations resolve correctly. Genera
 
 ## Official Baseline Verification Path
 
-Use these command groups to verify the baseline locally.
+For metric provenance and paper validation, use the single pack command:
+
+```bash
+bash scripts/gnm/run_tracka_metric_provenance_pack.sh
+```
+
+For the full GNM dataset proof path, use the steps below.
 
 ### Step 1 — Bootstrap
 
@@ -231,9 +302,14 @@ Expected result: all tests pass. Torch-dependent model tests skip only if PyTorc
 * Manual test-drive dry-run, replay, and GNM-format conversion.
 * Reviewer-facing implementation proof documents.
 * Local tests for the GNM/VLNVerse baseline pipeline.
-* Per-episode metric provenance for all 15 Track A validation episodes.
+* Per-episode metric provenance for all five Track A stop-policy methods (75 rows).
+* Bootstrap 95% confidence intervals for SR, OSR, NE, and SR–OSR gap.
+* Validation split lock confirming all methods use the same 15 episodes.
+* Stop-policy feature audit confirming temporal stop head has no oracle-geometry leakage.
+* Paper claim-to-evidence map linking every table entry to a source file and verifier.
 * Research claim ledger separating validated from blocked claims.
-* ICRA paper draft on metric-provenance-based stopping analysis.
+* One-command validation pack.
+* ICRA paper source validated at per-episode level for all five methods.
 
 ---
 
@@ -287,19 +363,28 @@ python3 scripts/gnm/replay_gnm_demo.py --export-live-dashboard
 
 ## Key Review Documents
 
+**Track A paper validation:**
+
+```text
+results/research_audit/tracka_all_methods_per_episode_metric_provenance.csv
+results/research_audit/tracka_all_methods_metric_provenance_report.md
+results/research_audit/tracka_per_episode_metric_provenance.csv
+results/research_audit/tracka_metric_provenance_report.md
+results/research_audit/tracka_validation_split_lock.json
+results/research_audit/stop_policy_feature_audit.md
+results/research_audit/paper_claim_to_evidence_map.md
+results/research_audit/research_claim_validation_ledger.md
+paper/icra_metric_provenance_stopping/main.tex
+```
+
+**GNM baseline implementation evidence:**
+
 ```text
 results/bo_reviewer_packet/BO_RUI_FULL_IMPLEMENTATION_PROOF.md
 results/bo_reviewer_packet/BO_RUI_SOURCE_CODE_INDEX.md
-results/bo_reviewer_packet/DEMO_SCRIPT_BO_RUI.md
-results/bo_reviewer_packet/13_live_gnm_input_dashboard.md
-results/bo_reviewer_packet/14_manual_testdrive_walkthrough.md
-results/bo_reviewer_packet/03_success_rate_breakdown.md
 results/bo_reviewer_packet/00_tracka_reviewer_summary.md
 results/bo_reviewer_packet/23_paper_results_table.md
-results/research_audit/tracka_per_episode_metric_provenance.csv
-results/research_audit/tracka_metric_provenance_report.md
-results/research_audit/research_claim_validation_ledger.md
-paper/icra_metric_provenance_stopping/main.tex
+results/bo_reviewer_packet/03_success_rate_breakdown.md
 ```
 
 ---
