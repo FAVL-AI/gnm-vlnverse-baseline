@@ -60,6 +60,70 @@ jobs:
             && echo "FAIL: binary/generated files tracked" && exit 1 \
             || echo "OK: repo is source-code clean"
 
+  metric-provenance:
+    name: "Track A metric-provenance pack"
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-provenance-${{ hashFiles('pyproject.toml') }}
+
+      - name: Install dependencies
+        run: pip install numpy>=1.26 scipy>=1.12
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
+      - name: "[1/4] Generate all-methods per-episode provenance"
+        run: python scripts/gnm/generate_all_methods_provenance.py
+
+      - name: "[2/4] Verify baseline provenance"
+        run: python scripts/gnm/verify_tracka_metric_provenance.py
+
+      - name: "[3/4] Verify all-methods provenance"
+        run: python scripts/gnm/verify_tracka_all_methods_metric_provenance.py
+
+      - name: "[4/4] Check research claim gates"
+        run: python scripts/gnm/check_research_claim_gates.py
+
+  paper-pdf:
+    name: "ICRA paper PDF build"
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install TeX Live (minimal)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-base texlive-latex-recommended \
+            texlive-latex-extra texlive-science texlive-fonts-recommended
+
+      - name: Build paper PDF (two passes)
+        working-directory: paper/icra_metric_provenance_stopping
+        run: |
+          pdflatex -interaction=nonstopmode main.tex
+          pdflatex -interaction=nonstopmode main.tex
+
+      - name: Verify PDF was produced
+        run: |
+          test -f paper/icra_metric_provenance_stopping/main.pdf \
+            && echo "OK: main.pdf produced ($(wc -c < paper/icra_metric_provenance_stopping/main.pdf) bytes)" \
+            || (echo "FAIL: main.pdf not found" && exit 1)
+
   lint:
     name: "Lint (ruff)"
     runs-on: ubuntu-22.04
