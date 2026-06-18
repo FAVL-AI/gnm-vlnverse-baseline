@@ -5,7 +5,7 @@ This file separates validated claims from blocked claims.
 | Claim ID | Status | Claim | Missing evidence | Notes |
 |---|---|---|---|---|
 | `tracka_aggregate_results_reported` | **REPORTED** | Track A aggregate stop-policy results are reported. | None | Aggregate results exist. Full per-episode provenance must also pass for audit-ready status. |
-| `tracka_per_episode_provenance` | **BLOCKED** | Full per-episode provenance CSV exists for Track A methods. | results/research_audit/tracka_per_episode_metric_provenance.csv<br>results/research_audit/tracka_metric_provenance_report.json | Must be generated from evaluator output, not manually invented. |
+| `tracka_per_episode_provenance` | **VALIDATED_IF_REPORT_PASSES** | Full per-episode provenance CSV exists for Track A methods. | None | Must be generated from evaluator output, not manually invented. |
 | `yahboom_episode_001_rosbag2` | **BLOCKED** | A valid Yahboom episode_001 rosbag2 recording exists. | datasets/gnm_fleetsafe_rosbags/episode_001/episode_metadata.json<br>results/gnm_fleetsafe_v2_4/episode_001_validation.json | The validation JSON must confirm all five canonical topics have message_count > 0 and duration >= 30s. |
 | `yahboom_rosbag_to_gnm_conversion` | **BLOCKED** | Yahboom rosbag2 has been converted to GNM dataset format. | datasets/gnm_fleetsafe_converted/episode_001/manifest.json<br>results/gnm_fleetsafe_v2_5/conversion_report.json | Only valid after episode_001 rosbag2 validation passes. |
 | `gnm_finetune_on_yahboom` | **BLOCKED** | GNM has been fine-tuned on validated Yahboom data. | results/gnm_fleetsafe_v2_6/yahboom_finetune_report.json<br>models/yahboom_finetuned_gnm/manifest.json | Requires converted dataset, training command, checkpoint, and held-out evaluation. |

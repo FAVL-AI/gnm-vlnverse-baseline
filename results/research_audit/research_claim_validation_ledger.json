@@ -9,11 +9,8 @@
   {
     "id": "tracka_per_episode_provenance",
     "claim": "Full per-episode provenance CSV exists for Track A methods.",
-    "status": "BLOCKED",
-    "missing": [
-      "results/research_audit/tracka_per_episode_metric_provenance.csv",
-      "results/research_audit/tracka_metric_provenance_report.json"
-    ],
+    "status": "VALIDATED_IF_REPORT_PASSES",
+    "missing": [],
     "notes": "Must be generated from evaluator output, not manually invented."
   },
   {

@@ -1,13 +1,21 @@
 # Track A Metric Provenance Report
 
-## Status
+This report regenerates SR, OSR, and NE from per-episode rows.
 
-FAIL — per-episode provenance CSV is missing.
+Required columns:
 
-Expected file:
+episode_id, final_distance_to_goal, method, minimum_distance_to_goal, scene_id, success_radius
 
-```text
-results/research_audit/tracka_per_episode_metric_provenance.csv
-```
+## Formula
 
-This means the aggregate Track A results remain reported, but not fully auditable at per-episode level until this CSV is generated.
+- final success: `final_distance_to_goal <= success_radius`
+- oracle success: `minimum_distance_to_goal <= success_radius`
+- SR: `sum(success_flag) / episodes * 100`
+- OSR: `sum(oracle_success_flag) / episodes * 100`
+- NE: `mean(final_distance_to_goal)`
+
+## Method results
+
+| Method | Episodes | Success radius | Final successes | Oracle successes | SR | OSR | NE | Expected match |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| baseline_gnm | 15 | 3 | 3 | 7 | 20.0% | 46.7% | 6.51 | PASS |
