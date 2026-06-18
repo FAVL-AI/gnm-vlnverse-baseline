@@ -46,6 +46,33 @@ CLAIMS = [
         "notes": "Must include baseline_gnm, hand_tuned_waypoint_gate, logistic_stop_head, temporal_neural_stop_head, and geometry_aware_oracle.",
     },
     {
+        "id": "tracka_validation_split_locked",
+        "claim": "The 15-episode Track A validation split is locked so all methods use the same episodes.",
+        "required_files": [
+            "results/research_audit/tracka_validation_split_lock.json",
+        ],
+        "status_if_present": "validated",
+        "notes": "Split lock records the canonical 15 episode IDs and success radius.",
+    },
+    {
+        "id": "stop_policy_feature_audit_complete",
+        "claim": "A feature audit confirms which stop-policy methods use oracle geometry and which are deployable.",
+        "required_files": [
+            "results/research_audit/stop_policy_feature_audit.md",
+        ],
+        "status_if_present": "validated",
+        "notes": "Audit must cover all five methods and confirm temporal stop head does not use oracle geometry.",
+    },
+    {
+        "id": "paper_claim_to_evidence_map_complete",
+        "claim": "Every quantitative paper claim maps to a specific evidence file.",
+        "required_files": [
+            "results/research_audit/paper_claim_to_evidence_map.md",
+        ],
+        "status_if_present": "validated",
+        "notes": "Map must list source file and verifier script for every table entry.",
+    },
+    {
         "id": "yahboom_episode_001_rosbag2",
         "claim": "A valid Yahboom episode_001 rosbag2 recording exists.",
         "required_files": [

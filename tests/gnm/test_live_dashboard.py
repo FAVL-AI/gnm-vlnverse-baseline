@@ -49,6 +49,7 @@ def test_export_live_dashboard_creates_frames():
     assert frames, "No dashboard_*.png frames found"
 
 
+@needs_dataset
 def test_export_live_dashboard_first_frame_exists():
     first = REPO / "results/bo_reviewer_packet/live_dashboard/dashboard_000000.png"
     assert first.exists(), "dashboard_000000.png (frame 0) missing — run --export-live-dashboard on a machine with the dataset"
