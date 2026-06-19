@@ -74,6 +74,7 @@
     "claim": "A valid Yahboom episode_001 rosbag2 recording exists.",
     "status": "BLOCKED",
     "missing": [
+      "datasets/gnm_fleetsafe_rosbags/episode_001/episode_metadata.json",
       "results/gnm_fleetsafe_v2_4/episode_001_validation.json"
     ],
     "notes": "The validation JSON must confirm all five canonical topics have message_count > 0 and duration >= 30s."
