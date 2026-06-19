@@ -80,27 +80,29 @@ jobs:
           key: ${{ runner.os }}-pip-provenance-${{ hashFiles('pyproject.toml') }}
 
       - name: Install dependencies
-        run: pip install numpy>=1.26 scipy>=1.12
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "numpy>=1.26" "scipy>=1.12" pandas
 
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
 
-      - name: "[1/7] Generate all-methods per-episode provenance"
+      - name: "[1/9] Generate all-methods per-episode provenance"
         run: python scripts/gnm/generate_all_methods_provenance.py
 
-      - name: "[2/7] Verify baseline provenance"
+      - name: "[2/9] Verify baseline provenance"
         run: python scripts/gnm/verify_tracka_metric_provenance.py
 
-      - name: "[3/7] Verify all-methods provenance"
+      - name: "[3/9] Verify all-methods provenance"
         run: python scripts/gnm/verify_tracka_all_methods_metric_provenance.py
 
-      - name: "[4/7] Per-scene breakdown"
+      - name: "[4/9] Per-scene breakdown"
         run: python scripts/gnm/compute_tracka_per_scene_breakdown.py
 
-      - name: "[5/7] Paired comparison and bootstrap seed stability"
+      - name: "[5/9] Paired comparison and bootstrap seed stability"
         run: python scripts/gnm/compute_tracka_paired_comparison.py
 
-      - name: "[6/7] Robustness summary"
+      - name: "[6/9] Robustness summary"
         run: python scripts/gnm/compute_tracka_robustness_summary.py
 
       - name: "[7/9] Generate expanded 253-episode provenance (baseline + oracle)"
@@ -120,10 +122,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install TeX Live (minimal)
+      - name: Install TeX Live dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
+            texlive-publishers \
             texlive-latex-base texlive-latex-recommended \
             texlive-latex-extra texlive-science texlive-fonts-recommended
 
