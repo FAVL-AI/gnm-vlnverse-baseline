@@ -6,12 +6,13 @@ app = SimulationApp({
     "height": 720,
 })
 
+import math
 import time
 import pickle
 from pathlib import Path
 
 import omni.usd
-from pxr import UsdGeom, Gf
+from pxr import UsdGeom, UsdLux, Gf
 
 
 def find_trajectory():
@@ -67,6 +68,11 @@ stage.SetDefaultPrim(world.GetPrim())
 UsdGeom.SetStageUpAxis(stage, UsdGeom.Tokens.z)
 UsdGeom.SetStageMetersPerUnit(stage, 1.0)
 
+# The hospital environment ships its own light rig; this low-intensity
+# dome is a safety net so markers never render black if that rig changes.
+dome = UsdLux.DomeLight.Define(stage, "/World/DomeLight")
+dome.CreateIntensityAttr(1000.0)
+
 traj_path, positions = find_trajectory()
 positions = list(positions)
 
@@ -74,12 +80,26 @@ print(f"GNM LIVE ISAAC TRAJECTORY")
 print(f"Trajectory: {traj_path}")
 print(f"Frames: {len(positions)}")
 
-# Floor and simple environment
-make_cube(stage, "/World/Floor", (0, 0, -0.03), (25, 25, 0.04), (0.35, 0.35, 0.35))
-make_cube(stage, "/World/Wall_Back", (0, 10, 1.0), (25, 0.2, 2.0), (0.55, 0.55, 0.55))
-make_cube(stage, "/World/Wall_Left", (-10, 0, 1.0), (0.2, 25, 2.0), (0.55, 0.55, 0.55))
-make_cube(stage, "/World/Obstacle_1", (2, -1, 0.5), (1.0, 1.0, 1.0), (0.6, 0.25, 0.25))
-make_cube(stage, "/World/Obstacle_2", (-2, 2, 0.5), (1.2, 0.8, 1.0), (0.25, 0.25, 0.6))
+# Isaac 5.1 Hospital environment, streamed from the official asset bucket
+# (cached locally by omni.client after the first download).
+HOSPITAL_USD = (
+    "https://omniverse-content-production.s3-us-west-2.amazonaws.com"
+    "/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd"
+)
+env = stage.DefinePrim("/World/Hospital")
+env.GetReferences().AddReference(HOSPITAL_USD)
+print(f"Loading hospital environment (first run downloads assets): {HOSPITAL_USD}")
+for _ in range(60):
+    app.update()
+for _ in range(3000):
+    app.update()
+    try:
+        _, loading, total = ctx.get_stage_loading_status()
+    except Exception:
+        break
+    if loading == 0 and total == 0:
+        break
+print("Hospital environment loaded.")
 
 # Scale path into view if needed
 xy = [(float(p[0]), float(p[1])) for p in positions]
@@ -106,10 +126,48 @@ for i, (x, y) in enumerate(mapped[::5]):
 
 robot = make_cube(stage, "/World/GNM_Robot", (sx, sy, 0.35), (0.45, 0.35, 0.25), (1.0, 0.8, 0.1))
 
-# Camera
+def aim_at(cam_xyz, target_xyz):
+    """rotateXYZ (deg) that points a camera at target: X pitches down from
+    horizontal, Z yaws it (a zero-yaw camera in this Z-up stage looks
+    along +Y)."""
+    dx, dy, dz = (t - c for c, t in zip(cam_xyz, target_xyz))
+    yaw = math.degrees(math.atan2(dy, dx)) - 90.0
+    pitch = 90.0 - math.degrees(math.atan2(-dz, math.hypot(dx, dy)))
+    return Gf.Vec3f(pitch, 0.0, yaw)
+
+
+# Elevated over-the-shoulder camera behind the start marker, aimed at the
+# goal so the whole start-to-goal line of sight is in frame.
+dx, dy = gx - sx, gy - sy
+dist = math.hypot(dx, dy) or 1.0
+ux, uy = dx / dist, dy / dist
+start_eye = (sx - 2.8 * ux + 1.2 * uy, sy - 2.8 * uy - 1.2 * ux, 2.4)
+start_cam = UsdGeom.Camera.Define(stage, "/World/StartViewCamera")
+start_cam.CreateFocalLengthAttr(18.0)
+UsdGeom.XformCommonAPI(start_cam).SetTranslate(Gf.Vec3d(*start_eye))
+UsdGeom.XformCommonAPI(start_cam).SetRotate(aim_at(start_eye, (gx, gy, 0.25)))
+
+# Overview camera for the replay. The reception lobby is small and its
+# south-east wall sits just behind the start-view camera, so both the
+# entrance vestibule at (0, -6.5) and (5.5, -4.8) are outside the room.
+# Stay on the start-to-goal sight line (known-open interior), slightly
+# forward of the start-view eye and just below the ~3 m ceiling.
+over_eye = (sx - 1.6 * ux + 1.2 * uy, sy - 1.6 * uy - 1.2 * ux, 2.65)
 camera = UsdGeom.Camera.Define(stage, "/World/Camera")
-UsdGeom.XformCommonAPI(camera).SetTranslate(Gf.Vec3d(0, -14, 11))
-UsdGeom.XformCommonAPI(camera).SetRotate(Gf.Vec3f(55, 0, 0))
+camera.CreateFocalLengthAttr(18.0)
+UsdGeom.XformCommonAPI(camera).SetTranslate(Gf.Vec3d(*over_eye))
+# Aim midway between the trajectory centre (origin) and the goal so the
+# whole breadcrumb trail plus the goal sit comfortably in frame.
+UsdGeom.XformCommonAPI(camera).SetRotate(
+    aim_at(over_eye, (gx / 2, gy / 2, 0.3)))
+
+try:
+    import carb.settings
+    _settings = carb.settings.get_settings()
+    _settings.set("/app/viewport/grid/enabled", False)
+    _settings.set("/persistent/app/viewport/displayOptions", 0)
+except Exception as e:
+    print("Grid overlay disable skipped:", e)
 
 try:
     import omni.kit.viewport.utility as vp_utils
@@ -119,6 +177,46 @@ try:
 except Exception as e:
     print("Viewport camera set skipped:", e)
 
+def capture_deck_screenshot(output_path, camera_path=None, settle_frames=60):
+    from omni.kit.viewport.utility import get_active_viewport, capture_viewport_to_file
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    viewport = get_active_viewport()
+    if camera_path:
+        viewport.camera_path = camera_path
+        # Let the RTX renderer converge on the new view before capturing.
+        for _ in range(settle_frames):
+            app.update()
+    capture_viewport_to_file(viewport, str(output_path))
+
+    # Allow Isaac / Omniverse enough rendered frames to complete the capture.
+    for _ in range(60):
+        app.update()
+
+    print(f"[deck] Isaac Sim screenshot saved to: {output_path}")
+
+
+# Persist the composed experiment scene (hospital reference + trajectory
+# markers + cameras) so every run leaves a reopenable stage in the repo.
+SCENE_EXPORT = Path("assets/isaac/tracka_hospital_replay_stage.usda")
+SCENE_EXPORT.parent.mkdir(parents=True, exist_ok=True)
+stage.GetRootLayer().Export(str(SCENE_EXPORT))
+print(f"[scene] Stage saved to: {SCENE_EXPORT}")
+
+capture_deck_screenshot(
+    "assets/deck/isaac_sim_tracka_start_view_toward_goal.png",
+    camera_path="/World/StartViewCamera",
+)
+
+try:
+    vp_utils.get_active_viewport().camera_path = "/World/Camera"
+    for _ in range(20):
+        app.update()
+except Exception as e:
+    print("Viewport camera restore skipped:", e)
+
 print("Starting live replay...")
 for i, (x, y) in enumerate(mapped):
     UsdGeom.XformCommonAPI(robot).SetTranslate(Gf.Vec3d(x, y, 0.35))
@@ -126,6 +224,12 @@ for i, (x, y) in enumerate(mapped):
     if i % 10 == 0:
         print(f"frame {i:03d}/{len(mapped)-1}  x={x:.2f} y={y:.2f}")
     time.sleep(0.07)
+
+capture_deck_screenshot(
+    "assets/deck/isaac_sim_tracka_trajectory_replay.png",
+    camera_path="/World/Camera",
+    settle_frames=20,
+)
 
 print("Replay complete. Holding Isaac window open. Press Ctrl+C in terminal to close.")
 

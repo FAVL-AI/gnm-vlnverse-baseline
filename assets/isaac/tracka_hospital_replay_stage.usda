@@ -1,0 +1,212 @@
+#usda 1.0
+(
+    defaultPrim = "World"
+    endTimeCode = 1000000
+    metersPerUnit = 1
+    startTimeCode = 0
+    timeCodesPerSecond = 60
+    upAxis = "Z"
+)
+
+def "Render" (
+    hide_in_stage_window = true
+    no_delete = true
+)
+{
+    def "OmniverseKit"
+    {
+        def "HydraTextures" (
+            hide_in_stage_window = true
+            no_delete = true
+        )
+        {
+            def RenderProduct "omni_kit_widget_viewport_ViewportTexture_0" (
+                prepend apiSchemas = ["OmniRtxSettingsCommonAdvancedAPI_1", "OmniRtxSettingsRtAdvancedAPI_1", "OmniRtxSettingsPtAdvancedAPI_1", "OmniRtxPostColorGradingAPI_1", "OmniRtxPostChromaticAberrationAPI_1", "OmniRtxPostBloomPhysicalAPI_1", "OmniRtxPostMatteObjectAPI_1", "OmniRtxPostCompositingAPI_1", "OmniRtxPostDofAPI_1", "OmniRtxPostMotionBlurAPI_1", "OmniRtxPostTvNoiseAPI_1", "OmniRtxPostTonemapIrayReinhardAPI_1", "OmniRtxPostDebugSettingsAPI_1", "OmniRtxDebugSettingsAPI_1"]
+                hide_in_stage_window = true
+                no_delete = true
+            )
+            {
+                rel camera = </OmniverseKit_Persp>
+                token omni:rtx:background:source:texture:textureMode = "repeatMirrored"
+                token omni:rtx:background:source:type = "domeLight"
+                bool omni:rtx:dlss:frameGeneration = 0
+                bool omni:rtx:material:db:nonVisualMaterialCSV:enabled = 0
+                bool omni:rtx:material:db:syncLoads = 1
+                token omni:rtx:post:dlss:execMode = "performance"
+                bool omni:rtx:post:registeredCompositing:invertColorCorrection = 1
+                bool omni:rtx:post:registeredCompositing:invertToneMap = 1
+                int omni:rtx:pt:clampSpp = 64
+                bool omni:rtx:pt:lightcache:cached:dontResolveConflicts = 1
+                int omni:rtx:pt:maxSamplesPerLaunch = 2073600
+                int omni:rtx:pt:maxVolumeBounces = 4
+                int omni:rtx:pt:mgpu:maxPixelsPerRegionExponent = 12
+                int omni:rtx:pt:samplesPerIteration = 64
+                int omni:rtx:pt:samplesPerPixel = 64
+                color3f omni:rtx:rt:ambientLight:color = (0.1, 0.1, 0.1)
+                bool omni:rtx:rt:demoire = 0
+                bool omni:rtx:rt:lightcache:spatialCache:dontResolveConflicts = 1
+                bool omni:rtx:scene:hydra:materialSyncLoads = 1
+                bool omni:rtx:scene:hydra:mdlMaterialWarmup = 1
+                uint omni:rtx:viewTile:limit = 4294967295
+                rel orderedVars = </Render/Vars/LdrColor>
+                custom bool overrideClipRange = 0
+                uniform int2 resolution = (1280, 720)
+            }
+        }
+    }
+
+    def RenderSettings "OmniverseGlobalRenderSettings" (
+        prepend apiSchemas = ["OmniRtxSettingsGlobalRtAdvancedAPI_1", "OmniRtxSettingsGlobalPtAdvancedAPI_1"]
+        no_delete = true
+    )
+    {
+        rel products = </Render/OmniverseKit/HydraTextures/omni_kit_widget_viewport_ViewportTexture_0>
+    }
+
+    def "Vars"
+    {
+        def RenderVar "LdrColor" (
+            hide_in_stage_window = true
+            no_delete = true
+        )
+        {
+            uniform string sourceName = "LdrColor"
+        }
+    }
+}
+
+def Xform "World"
+{
+    def DomeLight "DomeLight"
+    {
+        float inputs:intensity = 1000
+    }
+
+    def "Hospital" (
+        prepend references = @https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd@
+    )
+    {
+    }
+
+    def Sphere "Start"
+    {
+        color3f[] primvars:displayColor = [(0.1, 0.8, 0.1)]
+        double radius = 0.28
+        double3 xformOp:translate = (2.8646942377090454, -1.9933157563209534, 0.25)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Goal"
+    {
+        color3f[] primvars:displayColor = [(0.9, 0.1, 0.1)]
+        double radius = 0.35
+        double3 xformOp:translate = (-2.8646942377090454, 1.6513331532478333, 0.25)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Path_000"
+    {
+        color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+        double radius = 0.08
+        double3 xformOp:translate = (2.8646942377090454, -1.9933157563209534, 0.08)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Path_001"
+    {
+        color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+        double radius = 0.08
+        double3 xformOp:translate = (2.144233822822571, -2.093031108379364, 0.08)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Path_002"
+    {
+        color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+        double radius = 0.08
+        double3 xformOp:translate = (1.7239404916763306, -1.9013496041297913, 0.08)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Path_003"
+    {
+        color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+        double radius = 0.08
+        double3 xformOp:translate = (1.4942963123321533, -1.1933629512786865, 0.08)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Path_004"
+    {
+        color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+        double radius = 0.08
+        double3 xformOp:translate = (1.0250732898712158, -0.31028327345848083, 0.08)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Path_005"
+    {
+        color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+        double radius = 0.08
+        double3 xformOp:translate = (0.43854448199272156, 0.7935664057731628, 0.08)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Path_006"
+    {
+        color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+        double radius = 0.08
+        double3 xformOp:translate = (-0.030678551644086838, 1.6766460537910461, 0.08)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Path_007"
+    {
+        color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+        double radius = 0.08
+        double3 xformOp:translate = (-0.7207645177841187, 1.955505907535553, 0.08)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Path_008"
+    {
+        color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+        double radius = 0.08
+        double3 xformOp:translate = (-1.448720932006836, 2.1106215119361877, 0.08)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Path_009"
+    {
+        color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+        double radius = 0.08
+        double3 xformOp:translate = (-2.4231542348861694, 1.885944902896881, 0.08)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "GNM_Robot"
+    {
+        color3f[] primvars:displayColor = [(1, 0.8, 0.1)]
+        double size = 1
+        float3 xformOp:scale = (0.45, 0.35, 0.25)
+        double3 xformOp:translate = (2.8646942377090454, -1.9933157563209534, 0.35)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Camera "StartViewCamera"
+    {
+        float focalLength = 18
+        float3 xformOp:rotateXYZ = (77.458855, 0, 64.67033)
+        double3 xformOp:translate = (5.871277794543683, -2.4836781893963034, 2.4)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
+    }
+
+    def Camera "Camera"
+    {
+        float focalLength = 18
+        float3 xformOp:rotateXYZ = (71.01941, 0, 67.039856)
+        double3 xformOp:translate = (4.858777918753179, -1.8395943427395087, 2.65)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
+    }
+}
+
