@@ -1,0 +1,1552 @@
+#usda 1.0
+(
+    defaultPrim = "World"
+    endTimeCode = 1000000
+    metersPerUnit = 1
+    startTimeCode = 0
+    timeCodesPerSecond = 60
+    upAxis = "Z"
+)
+
+def "Render" (
+    hide_in_stage_window = true
+    no_delete = true
+)
+{
+    def "OmniverseKit"
+    {
+        def "HydraTextures" (
+            hide_in_stage_window = true
+            no_delete = true
+        )
+        {
+            def RenderProduct "omni_kit_widget_viewport_ViewportTexture_0" (
+                prepend apiSchemas = ["OmniRtxSettingsCommonAdvancedAPI_1", "OmniRtxSettingsRtAdvancedAPI_1", "OmniRtxSettingsPtAdvancedAPI_1", "OmniRtxPostColorGradingAPI_1", "OmniRtxPostChromaticAberrationAPI_1", "OmniRtxPostBloomPhysicalAPI_1", "OmniRtxPostMatteObjectAPI_1", "OmniRtxPostCompositingAPI_1", "OmniRtxPostDofAPI_1", "OmniRtxPostMotionBlurAPI_1", "OmniRtxPostTvNoiseAPI_1", "OmniRtxPostTonemapIrayReinhardAPI_1", "OmniRtxPostDebugSettingsAPI_1", "OmniRtxDebugSettingsAPI_1"]
+                hide_in_stage_window = true
+                no_delete = true
+            )
+            {
+                rel camera = </World/Viz/OverviewCamera>
+                token omni:rtx:background:source:texture:textureMode = "repeatMirrored"
+                token omni:rtx:background:source:type = "domeLight"
+                bool omni:rtx:dlss:frameGeneration = 0
+                bool omni:rtx:material:db:nonVisualMaterialCSV:enabled = 0
+                bool omni:rtx:material:db:syncLoads = 1
+                token omni:rtx:post:dlss:execMode = "performance"
+                bool omni:rtx:post:registeredCompositing:invertColorCorrection = 1
+                bool omni:rtx:post:registeredCompositing:invertToneMap = 1
+                int omni:rtx:pt:clampSpp = 64
+                bool omni:rtx:pt:lightcache:cached:dontResolveConflicts = 1
+                int omni:rtx:pt:maxSamplesPerLaunch = 2073600
+                int omni:rtx:pt:maxVolumeBounces = 4
+                int omni:rtx:pt:mgpu:maxPixelsPerRegionExponent = 12
+                int omni:rtx:pt:samplesPerIteration = 64
+                int omni:rtx:pt:samplesPerPixel = 64
+                color3f omni:rtx:rt:ambientLight:color = (0.1, 0.1, 0.1)
+                bool omni:rtx:rt:demoire = 0
+                bool omni:rtx:rt:lightcache:spatialCache:dontResolveConflicts = 1
+                bool omni:rtx:scene:hydra:materialSyncLoads = 1
+                bool omni:rtx:scene:hydra:mdlMaterialWarmup = 1
+                uint omni:rtx:viewTile:limit = 4294967295
+                rel orderedVars = </Render/Vars/LdrColor>
+                custom bool overrideClipRange = 0
+                uniform int2 resolution = (1280, 720)
+            }
+        }
+    }
+
+    def RenderSettings "OmniverseGlobalRenderSettings" (
+        prepend apiSchemas = ["OmniRtxSettingsGlobalRtAdvancedAPI_1", "OmniRtxSettingsGlobalPtAdvancedAPI_1"]
+        no_delete = true
+    )
+    {
+        rel products = </Render/OmniverseKit/HydraTextures/omni_kit_widget_viewport_ViewportTexture_0>
+    }
+
+    def "Vars"
+    {
+        def RenderVar "LdrColor" (
+            hide_in_stage_window = true
+            no_delete = true
+        )
+        {
+            uniform string sourceName = "LdrColor"
+        }
+    }
+}
+
+def Xform "World"
+{
+    def DomeLight "DomeLight"
+    {
+        float inputs:intensity = 1000
+    }
+
+    def "Hospital" (
+        prepend references = @https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd@
+    )
+    {
+    }
+
+    def Xform "Viz"
+    {
+        def Sphere "Start"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.8, 0.1)]
+            double radius = 0.22
+            double3 xformOp:translate = (1.1529961228370667, 3.933022141456604, 0.25)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Goal"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.1, 0.1)]
+            double radius = 0.28
+            double3 xformOp:translate = (-1.2092633843421936, -3.7918734550476074, 0.25)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_00"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.7907366156578064, -3.7918734550476074, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_01"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.776290795674397, -3.4978220340589257, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_02"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.7330924568674977, -3.2066024889992226, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_03"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.661557622854433, -2.9210194232842204, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_04"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.5623752131916664, -2.643823157952338, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_05"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.4365004087028717, -2.3776832445696146, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_06"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.285145452565442, -2.125162755988801, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_07"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.1097679757460175, -1.888693602556671, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_08"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (0.9120569592174492, -1.670553111487965, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_09"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (0.6939164681487429, -1.4728420949593963, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_10"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (0.4574473147166134, -1.2974646181399718, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_11"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (0.2049268261357997, -1.1461096620025426, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_12"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-0.06121308724692409, -1.0202348575137474, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_13"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-0.33840935257880655, -0.9210524478509807, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_14"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-0.6239924182938086, -0.8495176138379161, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_15"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-0.9152119633535113, -0.8063192750310169, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_16"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-1.2092633843421934, -0.7918734550476074, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_17"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-1.5033148053308756, -0.8063192750310169, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_18"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-1.7945343503905782, -0.8495176138379161, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_19"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-2.08011741610558, -0.9210524478509807, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_20"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-2.357313681437463, -1.0202348575137474, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_21"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-2.6234535948201865, -1.1461096620025422, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_22"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-2.8759740834009992, -1.297464618139971, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_23"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.11244323683313, -1.4728420949593959, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_24"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.330583727901836, -1.6705531114879646, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_25"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.5282947444304047, -1.888693602556671, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_26"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.7036722212498296, -2.125162755988801, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_27"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.8550271773872584, -2.3776832445696137, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_28"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.9809019818760536, -2.6438231579523377, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_29"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-4.08008439153882, -2.9210194232842204, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_30"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-4.151619225551885, -3.2066024889992217, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_31"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-4.194817564358784, -3.497822034058925, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_32"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-4.209263384342194, -3.791873455047607, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_33"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-4.194817564358784, -4.085924876036289, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_34"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-4.151619225551885, -4.377144421095992, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_35"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-4.08008439153882, -4.662727486810994, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_36"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.980901981876054, -4.939923752142876, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_37"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.855027177387259, -5.2060636655256, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_38"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.70367222124983, -5.458584154106413, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_39"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.528294744430405, -5.695053307538544, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_40"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.3305837279018364, -5.913193798607249, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_41"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-3.1124432368331316, -6.110904815135817, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_42"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-2.875974083401, -6.286282291955243, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_43"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-2.6234535948201874, -6.437637248092672, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_44"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-2.3573136814374647, -6.563512052581467, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_45"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-2.0801174161055807, -6.662694462244234, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_46"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-1.7945343503905797, -6.734229296257299, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_47"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-1.503314805330875, -6.777427635064198, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_48"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-1.209263384342194, -6.791873455047607, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_49"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-0.9152119633535134, -6.777427635064198, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_50"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-0.6239924182938087, -6.734229296257299, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_51"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-0.33840935257880744, -6.662694462244234, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_52"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (-0.06121308724692365, -6.563512052581467, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_53"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (0.20492682613579927, -6.437637248092672, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_54"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (0.45744731471661204, -6.286282291955244, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_55"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (0.6939164681487431, -6.110904815135818, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_56"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (0.9120569592174483, -5.91319379860725, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_57"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.1097679757460162, -5.695053307538545, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_58"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.285145452565442, -5.458584154106414, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_59"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.4365004087028708, -5.206063665525601, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_60"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.562375213191666, -4.939923752142878, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_61"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.661557622854433, -4.662727486810995, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_62"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.7330924568674972, -4.377144421095993, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Ring_63"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.2, 0.2)]
+            double radius = 0.045
+            double3 xformOp:translate = (1.776290795674397, -4.085924876036289, 0.03)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_000"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.1529961228370667, 3.933022141456604, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_001"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.2005688548088074, 3.439587712287903, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_002"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.1744851469993591, 2.690041184425354, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_003"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.1484014391899109, 1.9404951333999634, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_004"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.1223177313804626, 1.1909488439559937, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_005"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.0962340235710144, 0.4414025545120239, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_006"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.0701501965522766, -0.3081437349319458, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_007"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.0440664887428284, -1.057690143585205, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_008"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.091639220714569, -1.5511245727539062, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_009"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.0742501616477966, -2.0508221089839935, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_010"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.0481664538383484, -2.8003683984279633, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_011"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (1.0307772755622864, -3.3000659346580505, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_012"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (0.9577133059501648, -3.5391509532928467, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_013"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (0.7141276597976685, -3.595418334007263, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_014"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (-0.016629427671432495, -3.7642202377319336, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_015"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (-0.7473865151405334, -3.933022141456604, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Path_016"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.45, 0.9)]
+            double radius = 0.06
+            double3 xformOp:translate = (-0.9972352981567383, -3.9243276119232178, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_00"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.852636615657806, -3.7918734550476074, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_01"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.8178864980720864, -3.2616891148689797, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_02"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.714230729461373, -2.7405763757456785, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_03"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.5434428887654015, -2.2374516211238493, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_04"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.3084452032898177, -1.760923455047608, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_05"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.013258548586774, -1.3191454065570851, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_06"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (1.6629336501594438, -0.9196764205459704, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_07"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (1.2634646641483287, -0.5693515221186396, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_08"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (0.8216866156578067, -0.27416486741559654, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_09"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (0.3451584495815647, -0.03916718194001234, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_10"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-0.15796630504026465, 0.13162065875595896, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_11"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-0.6790790441635656, 0.23527642736667254, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_12"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-1.2092633843421934, 0.2700265449523922, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_13"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-1.7394477245208213, 0.23527642736667254, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_14"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-2.260560463644122, 0.13162065875595896, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_15"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-2.763685218265951, -0.0391671819400119, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_16"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-3.2402133843421925, -0.2741648674155961, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_17"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-3.681991432832716, -0.5693515221186396, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_18"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.081460418843831, -0.91967642054597, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_19"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.431785317271161, -1.3191454065570842, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_20"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.726971971974205, -1.760923455047608, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_21"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.961969657449789, -2.237451621123849, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_22"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.132757498145759, -2.740576375745677, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_23"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.236413266756474, -3.2616891148689784, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_24"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.271163384342193, -3.791873455047607, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_25"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.236413266756474, -4.322057795226236, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_26"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.13275749814576, -4.843170534349537, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_27"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.961969657449789, -5.3462952889713655, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_28"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.726971971974205, -5.822823455047606, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_29"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.431785317271162, -6.264601503538129, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_30"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.081460418843832, -6.664070489549243, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_31"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-3.681991432832717, -7.014395387976574, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_32"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-3.240213384342195, -7.309582042679617, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_33"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-2.763685218265951, -7.5445797281552025, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_34"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-2.260560463644122, -7.715367568851174, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_35"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-1.7394477245208213, -7.819023337461887, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_36"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-1.2092633843421943, -7.853773455047607, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_37"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-0.6790790441635675, -7.819023337461888, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_38"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (-0.15796630504026643, -7.715367568851175, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_39"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (0.34515844958156205, -7.544579728155203, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_40"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (0.8216866156578067, -7.309582042679619, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_41"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (1.2634646641483256, -7.0143953879765775, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_42"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (1.662933650159443, -6.664070489549245, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_43"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.0132585485867733, -6.264601503538131, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_44"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.3084452032898164, -5.822823455047609, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_45"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.543442888765402, -5.346295288971365, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_46"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.714230729461372, -4.8431705343495395, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_temporal_stop_head_47"
+        {
+            color3f[] primvars:displayColor = [(0.55, 0.15, 0.75)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.8178864980720864, -4.322057795226235, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_00"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (3.0674366156578063, -3.7918734550476074, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_01"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (3.030848854295181, -3.233652088780113, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_02"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.921711596948265, -2.684982044857657, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_03"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.7418922123488265, -2.155251219851828, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_04"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.4944674600227152, -1.653523455047608, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_05"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.183670846081332, -1.1883834516060117, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_06"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (1.8148201867583142, -0.7677898839471, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_07"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (1.3942266190994022, -0.39893922462408193, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_08"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (0.9290866156578068, -0.08814261068269902, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_09"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (0.42735885085358616, 0.1592821416434127, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_10"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-0.10237197415224308, 0.3391015262428514, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_11"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-0.6510420180746984, 0.4482387835897672, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_12"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-1.2092633843421934, 0.4848265449523925, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_13"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-1.7674847506096882, 0.4482387835897672, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_14"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-2.3161547945321432, 0.3391015262428514, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_15"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-2.845885619537972, 0.15928214164341314, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_16"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-3.3476133843421927, -0.08814261068269857, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_17"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-3.8127533877837894, -0.39893922462408193, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_18"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.233346955442701, -0.7677898839470996, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_19"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.602197614765719, -1.1883834516060108, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_20"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.9129942287071025, -1.653523455047608, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_21"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.160418981033214, -2.155251219851827, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_22"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.3402383656326515, -2.684982044857656, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_23"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.449375622979568, -3.233652088780111, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_24"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.4859633843421935, -3.791873455047607, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_25"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.449375622979568, -4.3500948213151025, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_26"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.340238365632652, -4.898764865237558, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_27"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-5.160418981033214, -5.428495690243386, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_28"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.9129942287071025, -5.9302234550476065, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_29"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.6021976147657195, -6.395363458489204, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_30"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-4.233346955442703, -6.815957026148114, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_31"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-3.8127533877837902, -7.184807685471132, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_32"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-3.3476133843421954, -7.4956042994125145, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_33"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-2.845885619537972, -7.7430290517386275, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_34"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-2.3161547945321432, -7.922848436338066, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_35"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-1.7674847506096882, -8.031985693684982, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_36"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-1.2092633843421945, -8.068573455047607, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_37"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-0.6510420180747003, -8.031985693684984, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_38"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (-0.10237197415224508, -7.922848436338066, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_39"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (0.42735885085358327, -7.743029051738628, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_40"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (0.9290866156578068, -7.495604299412516, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_41"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (1.3942266190993986, -7.184807685471135, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_42"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (1.8148201867583134, -6.815957026148116, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_43"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.183670846081331, -6.395363458489204, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_44"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.494467460022714, -5.930223455047609, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_45"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.741892212348827, -5.428495690243386, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_46"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (2.9217115969482634, -4.8987648652375615, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Sphere "Dist_deployable_stop_policy_47"
+        {
+            color3f[] primvars:displayColor = [(0.95, 0.55, 0.1)]
+            double radius = 0.055
+            double3 xformOp:translate = (3.030848854295181, -4.3500948213151025, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Camera "StartViewCamera"
+        {
+            float focalLength = 18
+            float3 xformOp:rotateXYZ = (78.88552, 0, -190.70845)
+            double3 xformOp:translate = (0.8242583080624601, 6.9615418209596465, 2.4)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
+        }
+
+        def Camera "OverviewCamera"
+        {
+            float focalLength = 18
+            float3 xformOp:rotateXYZ = (67.81173, 0, -173.7259)
+            double3 xformOp:translate = (0.04813938951320185, 5.107454599637541, 2.75)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
+        }
+
+        def "Robot" (
+            prepend references = @/home/favl/robotics/gnm-vlnverse-baseline/assets/robots/yahboom_m3_pro/yahboom_m3pro_visible_placeholder.usda@</World/YahboomM3Pro>
+        )
+        {
+            float3 xformOp:rotateXYZ = (0, 0, -76.99305)
+            float3 xformOp:scale = (0.78488374, 0.78488374, 0.78488374)
+            double3 xformOp:translate = (1.1529961228370667, 3.933022141456604, 0.02)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+    }
+}
+

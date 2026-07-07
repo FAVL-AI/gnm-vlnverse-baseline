@@ -1,0 +1,22 @@
+{
+  "episode_id": "kujiale_0092_kujiale_0092_91_1",
+  "success_radius_m": 3.0,
+  "display_scale": 1.0,
+  "visualization_note": "policy circles show recorded termination DISTANCE to goal (final_dist_m); agent rollout paths were not persisted by the evaluation, so termination positions are not shown. The blue path is the dataset demonstration trajectory.",
+  "policies": {
+    "temporal_stop_head": {
+      "stop_fired": true,
+      "stop_step": 39,
+      "n_steps": 41,
+      "final_dist_m": 4.0619,
+      "success": false
+    },
+    "deployable_stop_policy": {
+      "stop_fired": false,
+      "stop_step": null,
+      "n_steps": 51,
+      "final_dist_m": 4.2767,
+      "success": false
+    }
+  }
+}

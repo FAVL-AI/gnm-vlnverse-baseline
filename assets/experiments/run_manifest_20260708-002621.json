@@ -1,0 +1,50 @@
+{
+  "campaign": "isaac_hospital_stop_decision_replay",
+  "timestamp_utc": "2026-07-07T23:26:21.579884+00:00",
+  "hypothesis": "The temporal stop head terminates within the 3 m success radius on episodes where the deployable baseline stop rule fails to fire or fires outside it; visualising real per-episode stop decisions in the locked hospital scene makes those failure modes legible.",
+  "environment": {
+    "scene": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+    "gpu": "NVIDIA GeForce RTX 4080 SUPER, 580.159.03",
+    "isaac_sim": "isaacsim 5.1.0 (pip, conda env 'isaac')",
+    "headless": true,
+    "resolution": "1280x720"
+  },
+  "robot": {
+    "platform": "Yahboom ROSMASTER M3 Pro",
+    "asset": "assets/robots/yahboom_m3_pro/yahboom_m3pro_visible_placeholder.usda",
+    "note": "primitive visible-placeholder model (see docs/YAHBOOM_URDF_TO_USD_IMPORT.md); display scale 1.5x for camera legibility"
+  },
+  "models_evaluated": {
+    "temporal_stop_head": {
+      "details_csv": "results/bo_reviewer_packet/temporal_stop_head/22_temporal_stop_head_details.csv",
+      "sha256_12": "929881e0e8ab"
+    },
+    "deployable_stop_policy": {
+      "details_csv": "results/bo_reviewer_packet/deployable_stop_policy/17_deployable_stop_policy_details.csv",
+      "sha256_12": "6290a8c58b48"
+    }
+  },
+  "data": {
+    "trajectories": "datasets/vlntube/val/<episode_id>/traj_data.pkl",
+    "provenance": "stop decisions taken verbatim from the Track A per-episode results; nothing re-simulated",
+    "success_radius_m": 3.0,
+    "display_note": "trajectories uniformly scaled to fit the lobby (max span 8.0 m); scale recorded per episode in metrics.json"
+  },
+  "git_head": "9436164",
+  "episodes": [
+    "kujiale_0203_kujiale_0203_25_0",
+    "kujiale_0203_kujiale_0203_16_3",
+    "kujiale_0092_kujiale_0092_91_1"
+  ],
+  "outputs_per_episode": [
+    "start_view.png",
+    "overview.png",
+    "replay.mp4",
+    "keyframe_start.png",
+    "keyframe_mid.png",
+    "keyframe_temporal_stop.png",
+    "keyframe_end.png",
+    "metrics.json",
+    "scene.usda"
+  ]
+}
