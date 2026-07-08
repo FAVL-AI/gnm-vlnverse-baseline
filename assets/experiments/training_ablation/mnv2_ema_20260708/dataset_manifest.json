@@ -1,0 +1,392 @@
+{
+  "dataset_name": "VLNVerse/VLNTube",
+  "data_root": "datasets/vlntube",
+  "config": "configs/gnm/gnm_base.yaml",
+  "evaluator": "scripts/gnm/06_evaluate.py (Track A, val split, success_threshold 3.0 m, stop_threshold 0.15, max_steps 500)",
+  "image_size": [
+    96,
+    96
+  ],
+  "preprocessing": "resize to 96x96, dataset transform per gnm_vlnverse/data (augment=true train only), action_std [0.115528, 0.115528]",
+  "git_commit": "e7222b4",
+  "git_branch": "isaac-hospital-demo",
+  "split_summary": {
+    "train_episodes": 238,
+    "heldout_eval_episodes": 15,
+    "train_samples": 12421,
+    "val_samples": 817
+  },
+  "scenes": {
+    "available": [
+      "kujiale_0092",
+      "kujiale_0118",
+      "kujiale_0203",
+      "kujiale_0271"
+    ],
+    "train": [
+      "kujiale_0092",
+      "kujiale_0118",
+      "kujiale_0203",
+      "kujiale_0271"
+    ],
+    "heldout_eval": [
+      "kujiale_0092",
+      "kujiale_0118",
+      "kujiale_0203",
+      "kujiale_0271"
+    ]
+  },
+  "heldout_eval_episodes": [
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_91_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_91_1",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0092_kujiale_0092_91_1",
+      "instruction_id": null,
+      "start_pose": [
+        1.437,
+        6.284,
+        0.0
+      ],
+      "goal_pose": [
+        -0.925,
+        -1.44,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0092_kujiale_0092_91_1/50.jpg",
+      "num_frames": 51,
+      "path_length_m": 8.456,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_9_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_9_2",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0092_kujiale_0092_9_2",
+      "instruction_id": null,
+      "start_pose": [
+        1.487,
+        -2.601,
+        0.0
+      ],
+      "goal_pose": [
+        1.934,
+        6.32,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0092_kujiale_0092_9_2/38.jpg",
+      "num_frames": 39,
+      "path_length_m": 6.982,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_25_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_25_3",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_25_3",
+      "instruction_id": null,
+      "start_pose": [
+        4.3,
+        1.612,
+        0.0
+      ],
+      "goal_pose": [
+        6.802,
+        -1.012,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_25_3/49.jpg",
+      "num_frames": 50,
+      "path_length_m": 7.362,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_31_0",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_31_0",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_31_0",
+      "instruction_id": null,
+      "start_pose": [
+        2.544,
+        3.375,
+        0.0
+      ],
+      "goal_pose": [
+        6.13,
+        -3.681,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_31_0/50.jpg",
+      "num_frames": 51,
+      "path_length_m": 7.797,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_40_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_40_4",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_40_4",
+      "instruction_id": null,
+      "start_pose": [
+        4.401,
+        -1.763,
+        0.0
+      ],
+      "goal_pose": [
+        -5.871,
+        -0.891,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_40_4/68.jpg",
+      "num_frames": 69,
+      "path_length_m": 10.389,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_15_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_15_3",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_15_3",
+      "instruction_id": null,
+      "start_pose": [
+        -6.966,
+        5.573,
+        0.0
+      ],
+      "goal_pose": [
+        -4.658,
+        0.515,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_15_3/40.jpg",
+      "num_frames": 41,
+      "path_length_m": 5.589,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_16_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_16_3",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_16_3",
+      "instruction_id": null,
+      "start_pose": [
+        -6.714,
+        1.598,
+        0.0
+      ],
+      "goal_pose": [
+        -7.638,
+        -3.487,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_16_3/53.jpg",
+      "num_frames": 54,
+      "path_length_m": 7.337,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_22_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_22_4",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_22_4",
+      "instruction_id": null,
+      "start_pose": [
+        -2.327,
+        -0.565,
+        0.0
+      ],
+      "goal_pose": [
+        -7.776,
+        -2.915,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_22_4/61.jpg",
+      "num_frames": 62,
+      "path_length_m": 6.906,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_25_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_25_0",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_25_0",
+      "instruction_id": null,
+      "start_pose": [
+        -6.563,
+        -0.364,
+        0.0
+      ],
+      "goal_pose": [
+        -7.719,
+        -2.873,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_25_0/46.jpg",
+      "num_frames": 47,
+      "path_length_m": 6.711,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_32_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_32_2",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_32_2",
+      "instruction_id": null,
+      "start_pose": [
+        -7.369,
+        -0.364,
+        0.0
+      ],
+      "goal_pose": [
+        -6.489,
+        1.925,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_32_2/58.jpg",
+      "num_frames": 59,
+      "path_length_m": 7.192,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_43_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_43_1",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_43_1",
+      "instruction_id": null,
+      "start_pose": [
+        -3.134,
+        4.063,
+        0.0
+      ],
+      "goal_pose": [
+        -3.836,
+        -2.288,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_43_1/43.jpg",
+      "num_frames": 44,
+      "path_length_m": 4.649,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_49_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_49_3",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_49_3",
+      "instruction_id": null,
+      "start_pose": [
+        -6.966,
+        -0.867,
+        0.0
+      ],
+      "goal_pose": [
+        -1.936,
+        -5.044,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_49_3/62.jpg",
+      "num_frames": 63,
+      "path_length_m": 7.323,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_15_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_15_1",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_15_1",
+      "instruction_id": null,
+      "start_pose": [
+        -3.707,
+        1.518,
+        0.0
+      ],
+      "goal_pose": [
+        2.96,
+        2.3,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_15_1/66.jpg",
+      "num_frames": 67,
+      "path_length_m": 11.672,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_24_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_24_4",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_24_4",
+      "instruction_id": null,
+      "start_pose": [
+        -2.662,
+        3.01,
+        0.0
+      ],
+      "goal_pose": [
+        4.273,
+        -2.906,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_24_4/60.jpg",
+      "num_frames": 61,
+      "path_length_m": 9.745,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_7_3",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_7_3",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_7_3",
+      "instruction_id": null,
+      "start_pose": [
+        -0.473,
+        3.508,
+        0.0
+      ],
+      "goal_pose": [
+        -2.654,
+        3.398,
+        0.0
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_7_3/73.jpg",
+      "num_frames": 74,
+      "path_length_m": 13.102,
+      "success_radius_m": 3.0,
+      "split": "heldout_eval",
+      "used_in_training": false
+    }
+  ],
+  "leakage_check": {
+    "train_eval_episode_overlap": 0,
+    "train_eval_trajectory_overlap": 0,
+    "scene_level_holdout": false,
+    "note": "Four-scene setup: the same kujiale scenes appear in train and held-out splits, so holdout is TRAJECTORY-LEVEL, not scene-level. Stated honestly; scene-level holdout requires the planned data expansion."
+  }
+}

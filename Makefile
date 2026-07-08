@@ -1156,3 +1156,9 @@ validate-isaac-physics-eval:
 
 validate-training-mlops:
 	python3 scripts/gnm/validate_training_mlops.py
+
+validate-dataset-manifest:
+	python3 scripts/gnm/validate_dataset_manifest.py
+
+validate-protocol-alignment:
+	python3 scripts/gnm/validate_protocol_alignment.py

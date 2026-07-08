@@ -70,3 +70,20 @@ changes (see appendix_efficientnet.md). **Next:** expand VLNVerse
 training/validation data; resume EfficientNet after this controlled
 baseline is reproducible; full campaign-level physics benchmark remains
 future work.
+
+## Offline VLN split provenance
+The Offline VLN table was evaluated on the held-out episode list recorded
+in `dataset_manifest.json` (scene ID, trajectory ID, episode ID,
+start/goal pose, trajectory path and split assignment for every
+evaluation episode; leakage check: zero train/eval overlap;
+trajectory-level holdout, stated honestly). The current held-out split
+contains 15 episodes from the four-scene VLNVerse/VLNTube setup, so the
+result is treated as preliminary and high-variance.
+
+## Protocol scope
+The original VLNVerse/VLNTube protocol is broader than our current
+controlled ablation. Our current experiment uses a documented subset and
+two-stage evaluation: offline VLN metrics for training comparison and
+Isaac physics rollout for collision-aware validation. See
+`protocol_alignment_vlnverse_vlntube.md` and
+`method_choice_justification.md`.

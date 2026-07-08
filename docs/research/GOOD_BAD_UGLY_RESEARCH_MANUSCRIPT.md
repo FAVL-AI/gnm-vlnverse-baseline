@@ -258,3 +258,23 @@ lightweight controlled baseline first.
 `docs/experiments/PROJECT_BASELINE_STATUS.md` and must not be cited as
 current. This manuscript records interpretation; the validators and
 per-episode artifacts record the evidence.*
+
+## 18. Method-choice decision: adapted VLNVerse/VLNTube subset before full protocol
+**Hypothesis/Question:** isolate EMA's effect before scaling to the full
+benchmark protocol. **Setup:** documented four-scene subset
+(`dataset_manifest.json`: 238 train / 15 held-out episodes, zero overlap,
+trajectory-level holdout stated honestly); two-stage evaluation.
+**Good:** clean ablation, reproducibility (episode-level manifest,
+leakage check), real CR from Isaac. **Bad:** smaller data, preliminary
+statistics, not a full benchmark; scene-level holdout not yet possible.
+**Ugly:** the offline evaluator's fake-CR risk (prints 0.000 by
+construction); the yaw-control limitation restricting physics routes;
+prior out-of-sample stop-rule failures showing what happens without
+held-out gates. **Mitigation:** dataset manifest, protocol-alignment
+appendix, method-choice justification, Isaac physics CR with positive
+control, held-out validation everywhere. **Decision:** adapted subset
+retained; full protocol is the explicit next stage. **Insight:** every
+method choice must answer why this protocol, what we gain/lose, what
+failed, and what claim is now valid. **Next gate:** data expansion with
+scene-level holdout. Evidence:
+`assets/experiments/training_ablation/mnv2_ema_20260708/{dataset_manifest.json,protocol_alignment_vlnverse_vlntube.md,method_choice_justification.md}`.
