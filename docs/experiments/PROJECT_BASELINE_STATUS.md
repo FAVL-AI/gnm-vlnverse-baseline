@@ -188,13 +188,37 @@ pipeline described below.
   **Valid claim:** the live pipeline can evaluate stop-head shadow
   behaviour during GNM-controlled hospital-scene straight/low-
   curvature episodes.
+- **Firing-boundary recalibration study: VALID (2026-07-08).** Offline
+  analysis of the three live shadow episodes
+  (`assets/experiments/recalibration/stop_head_boundary_20260708/`,
+  `make validate-stop-boundary-study`). Boundary characterized: the
+  learned head fires only when GNM's predicted goal-distance enters
+  its trained near-goal regime (episode A: min 1.23; B/C floors
+  2.19/4.37 → no fire), and in episode B the prediction's minimum
+  occurs *early* (at-nearest value 5.45), so probability-threshold
+  sweeps cannot recover B/C (still 1/3). Candidate sweep across 12
+  rules (probability, predicted-distance gates, trend-reversal,
+  hybrids) with measured trade-offs: **recommended recalibration
+  candidate `dist_pred<=4.5, k=3` fires 3/3 with zero false stops
+  (mean true stop distance 0.576 m, overshoot avoided in all three,
+  max late-stop 0.655 m)**; early trend-reversal rules carry a
+  measured false-stop (fires at true d2g ≈ 2.8 m in B). **Caveats
+  stated:** n=3 episodes, one lobby, threshold selected in-sample —
+  the candidate must be validated on held-out goals/routes before
+  authority use. Notable honest observation: live, a simple
+  predicted-distance gate is currently more robust than the learned
+  head under this input-distribution shift (offline the learned head
+  won) — a distribution-shift finding, not an improvement claim.
+  **Valid claim:** live hospital shadow data identifies a calibratable
+  firing boundary for the stop head. **Authority not yet tested;
+  improvement not yet valid.**
 - **Still not valid:** stop-head improvement of navigation or safety
-  (needs authority episodes), FleetSafe improvement, success rate,
+  (authority not yet tested), FleetSafe improvement, success rate,
   SPL, robust hospital navigation, goal reaching as an achievement,
   curved-path navigation claims, six-run campaign.
-- **Next required work, in order:** stop-head shadow recalibration
-  study (firing-boundary characterization across goals/routes) → GNM
-  + stop head comparison (first authority episodes, bounded) →
+- **Next required work, in order:** first bounded stop-head AUTHORITY
+  episodes — GNM baseline (authority disabled) vs GNM + recalibrated
+  stop candidate on held-out goals — → GNM + stop head comparison →
   revalidate the campaign runs (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence

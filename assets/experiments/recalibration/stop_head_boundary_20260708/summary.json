@@ -1,0 +1,445 @@
+{
+  "study": "stop_head_firing_boundary_recalibration",
+  "label": "recalibration_candidates_only_no_authority_no_improvement_claim",
+  "source_episodes": [
+    "hospital_straight_short_A_20260708_142753",
+    "hospital_straight_medium_B_20260708_142905",
+    "hospital_low_curvature_C_20260708_143004"
+  ],
+  "characterization": [
+    {
+      "name": "hospital_straight_short_A",
+      "dir": "hospital_straight_short_A_20260708_142753",
+      "start_d2g": 2.0001,
+      "min_d2g": 0.0018,
+      "final_d2g": 0.3903,
+      "min_dist_pred": 1.23,
+      "dist_pred_at_nearest": 1.32,
+      "eval_hz_sim": 19.1
+    },
+    {
+      "name": "hospital_straight_medium_B",
+      "dir": "hospital_straight_medium_B_20260708_142905",
+      "start_d2g": 4.0026,
+      "min_d2g": 0.0039,
+      "final_d2g": 0.9805,
+      "min_dist_pred": 2.19,
+      "dist_pred_at_nearest": 5.45,
+      "eval_hz_sim": 18.7
+    },
+    {
+      "name": "hospital_low_curvature_C",
+      "dir": "hospital_low_curvature_C_20260708_143004",
+      "start_d2g": 3.0246,
+      "min_d2g": 0.3943,
+      "final_d2g": 0.7078,
+      "min_dist_pred": 4.37,
+      "dist_pred_at_nearest": 5.14,
+      "eval_hz_sim": 18.7
+    }
+  ],
+  "rules": [
+    {
+      "rule": "current_prob0.5_k3",
+      "kind": "probability",
+      "label": "recalibration_candidate",
+      "episodes_fired": 1,
+      "episodes_missed": 2,
+      "mean_true_d2g_at_stop": 0.258,
+      "mean_overshoot_avoided_m": 0.133,
+      "false_stops": 0,
+      "max_late_stop_m": 0.256,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": true,
+          "stop_step": 525,
+          "true_d2g_at_stop": 0.258,
+          "overshoot_avoided_m": 0.133,
+          "late_stop_m_past_nearest": 0.256,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": false
+        }
+      ]
+    },
+    {
+      "rule": "prob0.05_k3",
+      "kind": "probability",
+      "label": "recalibration_candidate",
+      "episodes_fired": 1,
+      "episodes_missed": 2,
+      "mean_true_d2g_at_stop": 0.287,
+      "mean_overshoot_avoided_m": 0.103,
+      "false_stops": 0,
+      "max_late_stop_m": 0.286,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": true,
+          "stop_step": 516,
+          "true_d2g_at_stop": 0.287,
+          "overshoot_avoided_m": 0.103,
+          "late_stop_m_past_nearest": 0.286,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": false
+        }
+      ]
+    },
+    {
+      "rule": "prob0.2_k3",
+      "kind": "probability",
+      "label": "recalibration_candidate",
+      "episodes_fired": 1,
+      "episodes_missed": 2,
+      "mean_true_d2g_at_stop": 0.278,
+      "mean_overshoot_avoided_m": 0.113,
+      "false_stops": 0,
+      "max_late_stop_m": 0.276,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": true,
+          "stop_step": 519,
+          "true_d2g_at_stop": 0.278,
+          "overshoot_avoided_m": 0.113,
+          "late_stop_m_past_nearest": 0.276,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": false
+        }
+      ]
+    },
+    {
+      "rule": "dist_pred<=1.5_k3",
+      "kind": "predicted-distance",
+      "label": "recalibration_candidate",
+      "episodes_fired": 1,
+      "episodes_missed": 2,
+      "mean_true_d2g_at_stop": 0.268,
+      "mean_overshoot_avoided_m": 0.123,
+      "false_stops": 0,
+      "max_late_stop_m": 0.266,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": true,
+          "stop_step": 522,
+          "true_d2g_at_stop": 0.268,
+          "overshoot_avoided_m": 0.123,
+          "late_stop_m_past_nearest": 0.266,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": false
+        }
+      ]
+    },
+    {
+      "rule": "dist_pred<=2.5_k3",
+      "kind": "predicted-distance",
+      "label": "recalibration_candidate",
+      "episodes_fired": 2,
+      "episodes_missed": 1,
+      "mean_true_d2g_at_stop": 0.59,
+      "mean_overshoot_avoided_m": 0.096,
+      "false_stops": 0,
+      "max_late_stop_m": 0.708,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": true,
+          "stop_step": 462,
+          "true_d2g_at_stop": 0.467,
+          "overshoot_avoided_m": -0.077,
+          "late_stop_m_past_nearest": 0.465,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": true,
+          "stop_step": 1419,
+          "true_d2g_at_stop": 0.712,
+          "overshoot_avoided_m": 0.269,
+          "late_stop_m_past_nearest": 0.708,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": false
+        }
+      ]
+    },
+    {
+      "rule": "dist_pred<=3.5_k3",
+      "kind": "predicted-distance",
+      "label": "recalibration_candidate",
+      "episodes_fired": 2,
+      "episodes_missed": 1,
+      "mean_true_d2g_at_stop": 0.62,
+      "mean_overshoot_avoided_m": 0.066,
+      "false_stops": 0,
+      "max_late_stop_m": 0.678,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": true,
+          "stop_step": 435,
+          "true_d2g_at_stop": 0.557,
+          "overshoot_avoided_m": -0.166,
+          "late_stop_m_past_nearest": 0.555,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": true,
+          "stop_step": 1410,
+          "true_d2g_at_stop": 0.682,
+          "overshoot_avoided_m": 0.298,
+          "late_stop_m_past_nearest": 0.678,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": false
+        }
+      ]
+    },
+    {
+      "rule": "dist_pred<=4.5_k3",
+      "kind": "predicted-distance",
+      "label": "recalibration_candidate",
+      "episodes_fired": 3,
+      "episodes_missed": 0,
+      "mean_true_d2g_at_stop": 0.576,
+      "mean_overshoot_avoided_m": 0.117,
+      "false_stops": 0,
+      "max_late_stop_m": 0.655,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": true,
+          "stop_step": 405,
+          "true_d2g_at_stop": 0.656,
+          "overshoot_avoided_m": -0.266,
+          "late_stop_m_past_nearest": 0.655,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": true,
+          "stop_step": 1371,
+          "true_d2g_at_stop": 0.552,
+          "overshoot_avoided_m": 0.428,
+          "late_stop_m_past_nearest": 0.548,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": true,
+          "stop_step": 801,
+          "true_d2g_at_stop": 0.52,
+          "overshoot_avoided_m": 0.188,
+          "late_stop_m_past_nearest": 0.126,
+          "false_stop": false
+        }
+      ]
+    },
+    {
+      "rule": "trend_reversal+0.5_k3",
+      "kind": "trend-after-minimum",
+      "label": "recalibration_candidate",
+      "episodes_fired": 2,
+      "episodes_missed": 1,
+      "mean_true_d2g_at_stop": 2.776,
+      "mean_overshoot_avoided_m": -1.932,
+      "false_stops": 1,
+      "max_late_stop_m": 3.014,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": true,
+          "stop_step": 297,
+          "true_d2g_at_stop": 3.018,
+          "overshoot_avoided_m": -2.038,
+          "late_stop_m_past_nearest": 3.014,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": true,
+          "stop_step": 150,
+          "true_d2g_at_stop": 2.534,
+          "overshoot_avoided_m": -1.826,
+          "late_stop_m_past_nearest": 2.139,
+          "false_stop": true
+        }
+      ]
+    },
+    {
+      "rule": "trend_reversal+1.0_k3",
+      "kind": "trend-after-minimum",
+      "label": "recalibration_candidate",
+      "episodes_fired": 2,
+      "episodes_missed": 1,
+      "mean_true_d2g_at_stop": 2.736,
+      "mean_overshoot_avoided_m": -1.893,
+      "false_stops": 1,
+      "max_late_stop_m": 2.974,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": true,
+          "stop_step": 309,
+          "true_d2g_at_stop": 2.978,
+          "overshoot_avoided_m": -1.998,
+          "late_stop_m_past_nearest": 2.974,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": true,
+          "stop_step": 162,
+          "true_d2g_at_stop": 2.494,
+          "overshoot_avoided_m": -1.787,
+          "late_stop_m_past_nearest": 2.1,
+          "false_stop": true
+        }
+      ]
+    },
+    {
+      "rule": "trend_reversal+2.0_k3",
+      "kind": "trend-after-minimum",
+      "label": "recalibration_candidate",
+      "episodes_fired": 2,
+      "episodes_missed": 1,
+      "mean_true_d2g_at_stop": 0.638,
+      "mean_overshoot_avoided_m": 0.206,
+      "false_stops": 0,
+      "max_late_stop_m": 0.84,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": true,
+          "stop_step": 951,
+          "true_d2g_at_stop": 0.844,
+          "overshoot_avoided_m": 0.137,
+          "late_stop_m_past_nearest": 0.84,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": true,
+          "stop_step": 957,
+          "true_d2g_at_stop": 0.433,
+          "overshoot_avoided_m": 0.275,
+          "late_stop_m_past_nearest": 0.039,
+          "false_stop": false
+        }
+      ]
+    },
+    {
+      "rule": "hybrid_pred<=5.0_rev+0.5_k3",
+      "kind": "hybrid",
+      "label": "recalibration_candidate",
+      "episodes_fired": 1,
+      "episodes_missed": 2,
+      "mean_true_d2g_at_stop": 0.762,
+      "mean_overshoot_avoided_m": 0.219,
+      "false_stops": 0,
+      "max_late_stop_m": 0.758,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": true,
+          "stop_step": 1434,
+          "true_d2g_at_stop": 0.762,
+          "overshoot_avoided_m": 0.219,
+          "late_stop_m_past_nearest": 0.758,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": false
+        }
+      ]
+    },
+    {
+      "rule": "hybrid_pred<=6.0_rev+1.0_k3",
+      "kind": "hybrid",
+      "label": "recalibration_candidate",
+      "episodes_fired": 2,
+      "episodes_missed": 1,
+      "mean_true_d2g_at_stop": 0.651,
+      "mean_overshoot_avoided_m": 0.193,
+      "false_stops": 0,
+      "max_late_stop_m": 0.887,
+      "per_episode": [
+        {
+          "episode": "hospital_straight_short_A",
+          "fires": false
+        },
+        {
+          "episode": "hospital_straight_medium_B",
+          "fires": true,
+          "stop_step": 1473,
+          "true_d2g_at_stop": 0.891,
+          "overshoot_avoided_m": 0.089,
+          "late_stop_m_past_nearest": 0.887,
+          "false_stop": false
+        },
+        {
+          "episode": "hospital_low_curvature_C",
+          "fires": true,
+          "stop_step": 939,
+          "true_d2g_at_stop": 0.412,
+          "overshoot_avoided_m": 0.296,
+          "late_stop_m_past_nearest": 0.018,
+          "false_stop": false
+        }
+      ]
+    }
+  ],
+  "recommended_candidate": "dist_pred<=4.5_k3",
+  "recommendation_basis": "fires in all episodes with zero false stops and the smallest mean true distance at stop; candidate only \u2014 authority episodes must measure actual behaviour before any improvement claim"
+}

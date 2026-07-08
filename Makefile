@@ -1138,3 +1138,6 @@ validate-yaw-authority:
 
 validate-hospital-shadow-episodes:
 	python3 scripts/gnm/validate_hospital_shadow_episodes.py $(EPISODES)
+
+validate-stop-boundary-study:
+	python3 scripts/gnm/validate_stop_boundary_study.py $(STUDY)

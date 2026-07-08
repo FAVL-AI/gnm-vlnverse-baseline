@@ -1,0 +1,13 @@
+rule,kind,fires,missed,mean_d2g_at_stop,mean_overshoot_avoided_m,false_stops,max_late_stop_m
+current_prob0.5_k3,probability,1,2,0.258,0.133,0,0.256
+prob0.05_k3,probability,1,2,0.287,0.103,0,0.286
+prob0.2_k3,probability,1,2,0.278,0.113,0,0.276
+dist_pred<=1.5_k3,predicted-distance,1,2,0.268,0.123,0,0.266
+dist_pred<=2.5_k3,predicted-distance,2,1,0.59,0.096,0,0.708
+dist_pred<=3.5_k3,predicted-distance,2,1,0.62,0.066,0,0.678
+dist_pred<=4.5_k3,predicted-distance,3,0,0.576,0.117,0,0.655
+trend_reversal+0.5_k3,trend-after-minimum,2,1,2.776,-1.932,1,3.014
+trend_reversal+1.0_k3,trend-after-minimum,2,1,2.736,-1.893,1,2.974
+trend_reversal+2.0_k3,trend-after-minimum,2,1,0.638,0.206,0,0.84
+hybrid_pred<=5.0_rev+0.5_k3,hybrid,1,2,0.762,0.219,0,0.758
+hybrid_pred<=6.0_rev+1.0_k3,hybrid,2,1,0.651,0.193,0,0.887
