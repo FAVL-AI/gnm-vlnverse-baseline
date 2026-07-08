@@ -1,0 +1,1 @@
+{"scene": "hospital", "goal_id": "hospital_goal_A", "checkpoint": "checkpoints/ablation_mnv2_baseline/best.pt", "policy_running": false, "recording": true, "stop_reason": "episode_complete", "episode_name": "dash_hospital_goal_A_214942", "pose": [0.593, -0.592, -0.0], "d2g": 0.0091, "cmd_v": 0.0, "cmd_w": 0.0, "contacts": 0, "camera_age_s": 8.2}
