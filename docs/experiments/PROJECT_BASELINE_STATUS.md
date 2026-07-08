@@ -133,13 +133,42 @@ pipeline described below.
   episodes (closer to training distribution), cadence-matched
   evaluation, and/or threshold recalibration — each must be reported
   as recalibration, not improvement.
+- **Yaw-authority investigation: COMPLETE (2026-07-08) — honest
+  characterization, capability FAIL/PASS-WEAK.** Scripted harness
+  (`--yaw-test`, `make validate-yaw-authority`) measured
+  `yaw_tracking_ratio = measured_yaw_rate / commanded_yaw_rate` across
+  pure rotations, arcs and a friction sweep:
+
+  | wheel μ | pure rot 0.4 (L/R) | arc 0.3 (L/R) | pure rot 1.0 |
+  |---|---|---|---|
+  | default | 0.026 / 0.073 | 0.011 / 0.011 | 0.226 |
+  | 0.35 | 0.066 / 0.118 | 0.016 / 0.019 | 0.256 |
+  | 0.15 | 0.126 / 0.154 | 0.035 / 0.042 | 0.274 |
+
+  Signs always correct; zeroing always clean; straight-line traction
+  unaffected (probe 1.19 m in all runs). **Mechanism identified:** the
+  sublinear response to friction proves a *geometric* moment balance —
+  with plain sphere wheel colliders at wheelbase/track 0.155/0.17,
+  lateral grip cancels the skid-steer yaw moment; the real M3Pro's
+  mecanum rollers shed exactly this lateral load. Committed default:
+  wheel μ 0.35 (balanced). **Ranked next fixes:** (1) model mecanum
+  rollers properly (high fidelity, significant effort); (2) explicit
+  sim-side lateral-compliance aid, clearly labelled as a simulation
+  control aid; (3) constrain near-term studies to straight/low-
+  curvature paths, which the stop-head research does not need turning
+  for. **Scientific separation (for the paper):** hospital-scene
+  failures on curved paths would be partly execution-layer control
+  failures, not policy or stop-head failures — this characterization
+  is the evidence that separates them.
 - **Still not valid:** stop-head improvement of navigation or safety,
   FleetSafe improvement, success rate, SPL, robust hospital
-  navigation, goal reaching as an achievement, six-run campaign.
-- **Next required work, in order:** yaw-authority investigation →
-  hospital-scene episodes (stop head still in shadow, expected closer
-  to its training distribution) → GNM + stop head comparison →
-  revalidate the campaign runs (`PHASE2_REQUIREMENTS.md`).
+  navigation, goal reaching as an achievement, curved-path navigation
+  claims, six-run campaign.
+- **Next required work, in order:** hospital-scene straight/low-
+  curvature episodes (stop head still in shadow, closer to its
+  training distribution) → stop-head shadow recalibration study → GNM
+  + stop head comparison → revalidate the campaign runs
+  (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence
 

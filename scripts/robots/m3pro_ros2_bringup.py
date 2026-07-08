@@ -19,6 +19,7 @@ from isaacsim import SimulationApp
 app = SimulationApp({"headless": True, "width": 1280, "height": 720})
 
 import math
+import os
 import sys
 import numpy as np
 import subprocess
@@ -257,6 +258,140 @@ arti.apply_action(ArticulationAction(
     joint_indices=[arti.get_dof_index(j) for j in WHEEL_JOINTS]))
 for _ in range(60):
     sim.step(render=False)
+
+if "--yaw-test" in sys.argv:
+    # ── Yaw-authority test harness (scripted, no GNM) ───────────────────
+    from datetime import datetime as _dty
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from trajectory_logger import TrajectoryLogger as _TL
+
+    YAW_FIELDS = ["test_phase", "cmd_vx", "cmd_wz", "wheel_target_left",
+                  "wheel_target_right", "measured_yaw_rate",
+                  "odom_yaw_rate", "yaw_tracking_ratio_inst"]
+    EP = f"yaw_test_{_dty.now():%Y%m%d_%H%M%S}"
+    ylog = _TL(EP, REPO, policy_mode="yaw_test_scripted",
+               extra_fields=YAW_FIELDS)
+
+    ybag = REPO / "assets/experiments/rosbags" / EP
+    ybag_proc = subprocess.Popen(
+        ["env", "-i", f"HOME={os.environ['HOME']}",
+         "PATH=/usr/bin:/bin:/usr/local/bin", "bash", "-c",
+         "source /opt/ros/humble/setup.bash && "
+         f"ros2 bag record -o {ybag} /odom /tf /clock"],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    yw = [arti.get_dof_index(j) for j in WHEEL_JOINTS]
+
+    def y_apply(vx, wz):
+        wl = (vx - wz * TRACK_WIDTH / 2.0) / WHEEL_RADIUS
+        wr = (vx + wz * TRACK_WIDTH / 2.0) / WHEEL_RADIUS
+        arti.apply_action(ArticulationAction(
+            joint_velocities=[wl, wr, wl, wr], joint_indices=yw))
+        return wl, wr
+
+    def y_pose():
+        pos, quat = arti.get_world_pose()
+        w, qx, qy, qz = (float(v) for v in quat)
+        yaw = math.atan2(2.0 * (w * qz + qx * qy),
+                         1.0 - 2.0 * (qy * qy + qz * qz))
+        return float(pos[0]), float(pos[1]), float(pos[2]), yaw
+
+    PHASES = [
+        ("pure_rot_left", 0.0, 0.4),
+        ("pure_rot_right", 0.0, -0.4),
+        ("arc_left", 0.15, 0.3),
+        ("arc_right", 0.15, -0.3),
+        ("pure_rot_left_fast", 0.0, 1.0),
+        ("zero_hold", 0.0, 0.0),
+    ]
+    STEPS = 240          # 4 s per phase
+    SETTLE = 60          # steady-state window skips the first second
+    DT = 1.0 / 60.0
+    summary = []
+    gstep = 0
+    for phase, vx, wz in PHASES:
+        rates, orates = [], []
+        _, _, z_start, prev_yaw = y_pose()
+        x_s, y_s, _, _ = y_pose()
+        for i in range(STEPS):
+            wl, wr = y_apply(vx, wz)
+            sim.step(render=(i % 6 == 0))
+            px_, py_, pz_, yaw_ = y_pose()
+            dyaw = math.atan2(math.sin(yaw_ - prev_yaw),
+                              math.cos(yaw_ - prev_yaw))
+            rate = dyaw / DT
+            prev_yaw = yaw_
+            od_a = og.Controller.get(
+                "/World/ROS2Graph/odom.outputs:angularVelocity")
+            orate = float(od_a[2]) if od_a is not None else 0.0
+            if i >= SETTLE:
+                rates.append(rate)
+                orates.append(orate)
+            ylog.log_step(
+                step_idx=gstep, sim_time=sim.current_time,
+                x=px_, y=py_, z=pz_, yaw=yaw_,
+                linear_cmd=vx, angular_cmd=wz,
+                odom_lin=0.0, odom_ang=orate,
+                image_timestamp=sim.current_time,
+                safety_state="nominal", notes=phase,
+                extra={"test_phase": phase, "cmd_vx": vx, "cmd_wz": wz,
+                       "wheel_target_left": round(wl, 3),
+                       "wheel_target_right": round(wr, 3),
+                       "measured_yaw_rate": round(rate, 4),
+                       "odom_yaw_rate": round(orate, 4),
+                       "yaw_tracking_ratio_inst":
+                           round(rate / wz, 3) if abs(wz) > 1e-6 else None})
+            gstep += 1
+        x_e, y_e, z_e, _ = y_pose()
+        mean_rate = sum(rates) / len(rates)
+        mean_orate = sum(orates) / len(orates)
+        ratio = mean_rate / wz if abs(wz) > 1e-6 else None
+        summary.append({
+            "phase": phase, "cmd_vx": vx, "cmd_wz": wz,
+            "mean_measured_yaw_rate": round(mean_rate, 4),
+            "mean_odom_yaw_rate": round(mean_orate, 4),
+            "yaw_tracking_ratio": round(ratio, 3) if ratio is not None else None,
+            "sign_correct": (ratio is None or ratio > 0),
+            "xy_drift_m": round(math.hypot(x_e - x_s, y_e - y_s), 4),
+            "z_drift_m": round(abs(z_e - z_start), 6),
+        })
+        print(f"[yaw] {phase}: cmd_wz={wz} measured={mean_rate:.3f} "
+              f"odom={mean_orate:.3f} ratio="
+              f"{ratio if ratio is None else round(ratio, 3)}")
+        y_apply(0.0, 0.0)
+        for _ in range(60):
+            sim.step(render=False)
+
+    # stale-motion check after final zeroing
+    xs, ys_, _, yaw_s = y_pose()
+    for _ in range(120):
+        sim.step(render=False)
+    xe, ye, _, yaw_e = y_pose()
+    stale = {"hold_disp_m": round(math.hypot(xe - xs, ye - ys_), 5),
+             "hold_yaw_delta_rad": round(abs(math.atan2(
+                 math.sin(yaw_e - yaw_s), math.cos(yaw_e - yaw_s))), 5)}
+    print(f"[yaw] post-test zero hold: {stale}")
+
+    ybag_proc.terminate()
+    try:
+        ybag_proc.wait(timeout=15)
+    except Exception:
+        ybag_proc.kill()
+
+    import json as _yj
+    ylog.finalize(
+        scene_path="procedural bring-up stage (physics ground plane)",
+        robot_asset=ROBOT_USD.relative_to(REPO),
+        rosbag_path=ybag.relative_to(REPO),
+        command_profile="scripted yaw-authority phases",
+        topics_recorded=["/odom", "/tf", "/clock"],
+        extra_meta={"yaw_phases": summary, "post_zero_hold": stale})
+    with open(ylog.dir / "yaw_summary.json", "w") as f:
+        _yj.dump({"phases": summary, "post_zero_hold": stale}, f, indent=2)
+    print(f"[yaw] summary written: {ylog.dir}/yaw_summary.json")
+    sim.stop()
+    app.close()
+    raise SystemExit(0)
 
 if "--capture-goal" in sys.argv:
     # ── Scene-aligned goal capture ───────────────────────────────────────

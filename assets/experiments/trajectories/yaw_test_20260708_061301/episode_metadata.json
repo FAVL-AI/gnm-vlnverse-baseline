@@ -1,0 +1,97 @@
+{
+  "episode_id": "yaw_test_20260708_061301",
+  "git_commit": "a48d3e4",
+  "git_branch": "isaac-hospital-demo",
+  "scene_stage_path": "procedural bring-up stage (physics ground plane)",
+  "robot_asset_path": "assets/robots/yahboom_m3_pro/yahboom_m3pro.usd",
+  "rosbag_path": "assets/experiments/rosbags/yaw_test_20260708_061301",
+  "trajectory_jsonl": "assets/experiments/trajectories/yaw_test_20260708_061301/trajectory.jsonl",
+  "trajectory_csv": "assets/experiments/trajectories/yaw_test_20260708_061301/trajectory.csv",
+  "command_profile": "scripted yaw-authority phases",
+  "policy_mode": "yaw_test_scripted",
+  "start_wall_time": 1783487581.6555722,
+  "end_wall_time": 1783487587.1364174,
+  "wall_duration_s": 5.481,
+  "sim_duration_s": 28.983,
+  "steps_logged": 1440,
+  "total_distance_m": 1.3763,
+  "max_abs_z_drift_m": 0.000173,
+  "max_yaw_rate_rad_s": 0.4241,
+  "topics_recorded": [
+    "/odom",
+    "/tf",
+    "/clock"
+  ],
+  "yaw_phases": [
+    {
+      "phase": "pure_rot_left",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.4,
+      "mean_measured_yaw_rate": 0.0505,
+      "mean_odom_yaw_rate": 0.0967,
+      "yaw_tracking_ratio": 0.126,
+      "sign_correct": true,
+      "xy_drift_m": 0.0325,
+      "z_drift_m": 0.0
+    },
+    {
+      "phase": "pure_rot_right",
+      "cmd_vx": 0.0,
+      "cmd_wz": -0.4,
+      "mean_measured_yaw_rate": -0.0617,
+      "mean_odom_yaw_rate": -0.0986,
+      "yaw_tracking_ratio": 0.154,
+      "sign_correct": true,
+      "xy_drift_m": 0.0291,
+      "z_drift_m": 0.0
+    },
+    {
+      "phase": "arc_left",
+      "cmd_vx": 0.15,
+      "cmd_wz": 0.3,
+      "mean_measured_yaw_rate": 0.0104,
+      "mean_odom_yaw_rate": 0.0283,
+      "yaw_tracking_ratio": 0.035,
+      "sign_correct": true,
+      "xy_drift_m": 0.5912,
+      "z_drift_m": 0.0
+    },
+    {
+      "phase": "arc_right",
+      "cmd_vx": 0.15,
+      "cmd_wz": -0.3,
+      "mean_measured_yaw_rate": -0.0126,
+      "mean_odom_yaw_rate": -0.0361,
+      "yaw_tracking_ratio": 0.042,
+      "sign_correct": true,
+      "xy_drift_m": 0.5916,
+      "z_drift_m": 0.0
+    },
+    {
+      "phase": "pure_rot_left_fast",
+      "cmd_vx": 0.0,
+      "cmd_wz": 1.0,
+      "mean_measured_yaw_rate": 0.2736,
+      "mean_odom_yaw_rate": 0.3234,
+      "yaw_tracking_ratio": 0.274,
+      "sign_correct": true,
+      "xy_drift_m": 0.0913,
+      "z_drift_m": 0.0
+    },
+    {
+      "phase": "zero_hold",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.0,
+      "mean_measured_yaw_rate": -0.0,
+      "mean_odom_yaw_rate": 0.0026,
+      "yaw_tracking_ratio": null,
+      "sign_correct": true,
+      "xy_drift_m": 0.0026,
+      "z_drift_m": 0.0
+    }
+  ],
+  "post_zero_hold": {
+    "hold_disp_m": 0.00033,
+    "hold_yaw_delta_rad": 0.0
+  }
+}

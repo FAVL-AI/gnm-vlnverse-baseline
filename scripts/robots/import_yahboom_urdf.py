@@ -178,6 +178,25 @@ for prim in stage.Traverse():
         drive.CreateMaxForceAttr(20.0)
         drives += 1
 
+# Low-friction wheel material: the real M3Pro has mecanum rollers that
+# shed lateral load; with plain sphere colliders the wheelbase/track
+# ratio makes lateral grip cancel the skid-steer yaw moment (measured
+# yaw_tracking_ratio 0.03-0.23 at default friction). Reducing wheel
+# friction approximates the rollers' lateral compliance.
+from pxr import UsdShade
+wheel_mat = UsdShade.Material.Define(stage, f"{robot_root}/Materials/WheelMat")
+mat_api = _UsdPhysics.MaterialAPI.Apply(wheel_mat.GetPrim())
+mat_api.CreateStaticFrictionAttr(0.35)
+mat_api.CreateDynamicFrictionAttr(0.35)
+mat_api.CreateRestitutionAttr(0.0)
+bound = 0
+for prim in stage.Traverse():
+    if prim.GetName().startswith("col_") and "_wheel/" in str(prim.GetPath()):
+        UsdShade.MaterialBindingAPI.Apply(prim).Bind(
+            wheel_mat, materialPurpose="physics")
+        bound += 1
+print(f"[material] low-friction wheel material bound to {bound} colliders")
+
 from pxr import PhysxSchema
 root_link = stage.GetPrimAtPath(f"{robot_root}/base_footprint")
 if root_link:

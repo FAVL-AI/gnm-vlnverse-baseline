@@ -1132,3 +1132,6 @@ validate-goal-conditioned-gnm:
 
 validate-stop-head-shadow:
 	PYTHONPATH=$(CURDIR) $(PYTHON_ISAAC) scripts/gnm/validate_stop_head_shadow.py $(EPISODE)
+
+validate-yaw-authority:
+	python3 scripts/gnm/validate_yaw_authority.py $(EPISODE)
