@@ -537,3 +537,31 @@ multi-room routes mimicking original trajectory statistics) OR the
 Isaac-Hospital internal dataset track — Frank's call.
 Evidence: `assets/experiments/training/expanded_topdown_20260708/`,
 `make validate-expanded-data-training`.
+
+## 26. Internal Dataset: Isaac-Hospital-ImageNav-v0
+**Hypothesis (RQ-H):** training on our own front-camera Isaac hospital
+episodes can improve live hospital ImageNav behaviour vs the
+top-down-trained model — testable only with a properly split internal
+dataset. **Setup:** inventory of all hospital episodes with rosbags
+(24 across 7 goals), rosbag→GNM-format converter (frames from
+/camera/image_raw, poses/actions from trajectory logs), route/goal-level
+provisional split — train {A, F} 12 eps / val {B, C} 4 / test
+{D, E, G} 8, no goal in two splits, frame-level splits banned.
+**Current evidence:** proof episode converted (52 frames + traj + goal
++ action labels + checksums); `make validate-hospital-dataset` PASS.
+**Good:** the corpus already exists as a by-product of the evidence
+discipline — every live episode carried bag + trajectory + metadata.
+**Bad:** 24 episodes is small; split marked PROVISIONAL until more are
+recorded; most episodes were driven by policies (imitation caution: do
+not learn only the old model's mistakes).
+**Ugly:** none yet — batch conversion and any training are gated behind
+the validator and a declared experiment.
+**Limitations:** internal simulation dataset; Yahboom front-camera
+convention; not a public benchmark; not real-robot evidence; never
+mixed with the Kujiale top-down regime except in a declared
+domain-adaptation experiment.
+**Next Evidence Gate:** batch-convert all 24 episodes → H1 fine-tune on
+train goals → H3 one-shot evaluation on held-out goals D/E/G vs the
+top-down-trained incumbent (H2).
+Evidence: `assets/datasets/isaac_hospital_imagenav_v0/`,
+`scripts/datasets/convert_hospital_rosbags_to_gnm.py`.

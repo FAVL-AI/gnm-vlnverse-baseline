@@ -1189,3 +1189,6 @@ validate-reference-dataset-audit:
 
 validate-expanded-data-training:
 	python3 scripts/gnm/validate_expanded_data_training.py
+
+validate-hospital-dataset:
+	python3 scripts/gnm/validate_hospital_dataset.py
