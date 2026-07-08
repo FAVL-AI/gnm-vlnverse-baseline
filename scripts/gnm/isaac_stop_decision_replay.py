@@ -251,6 +251,9 @@ for episode_id in EPISODES:
     start_eye = (sx - 2.8 * ux + 1.2 * uy, sy - 2.8 * uy - 1.2 * ux, 2.4)
     start_cam = UsdGeom.Camera.Define(stage, "/World/Viz/StartViewCamera")
     start_cam.CreateFocalLengthAttr(18.0)
+    # UsdGeom.Camera's default near clip is 1.0 stage units — anything
+    # closer (e.g. the 0.3 m robot passing near the camera) vanishes.
+    start_cam.CreateClippingRangeAttr(Gf.Vec2f(0.02, 10000.0))
     UsdGeom.XformCommonAPI(start_cam).SetTranslate(Gf.Vec3d(*start_eye))
     UsdGeom.XformCommonAPI(start_cam).SetRotate(aim_at(start_eye, (gx, gy, 0.25)))
 
@@ -261,6 +264,7 @@ for episode_id in EPISODES:
     over_eye = (sx - 0.8 * ux + 1.4 * uy, sy - 0.8 * uy - 1.4 * ux, 2.75)
     over_cam = UsdGeom.Camera.Define(stage, "/World/Viz/OverviewCamera")
     over_cam.CreateFocalLengthAttr(18.0)
+    over_cam.CreateClippingRangeAttr(Gf.Vec2f(0.02, 10000.0))
     UsdGeom.XformCommonAPI(over_cam).SetTranslate(Gf.Vec3d(*over_eye))
     UsdGeom.XformCommonAPI(over_cam).SetRotate(
         aim_at(over_eye, (cxm, cym, 0.2)))

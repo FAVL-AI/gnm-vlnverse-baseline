@@ -117,6 +117,9 @@ Outputs per episode: `assets/experiments/<episode_id>/`.
 | 8 | One texture warning: `TX_Cart_01a_NRM.png` failed to read | Asset bucket file empty/unreadable | Cosmetic (a cart normal map); noted, not blocking |
 | 9 | Deck update script single-use | It keys on placeholder text that its first run removes | Documented; subsequent swaps replace the picture shape by name, keeping geometry |
 | 10 | Stop markers initially pinned to the wrong path | `stop_step` indexes the agent rollout, but rollout trajectories were never persisted — cross-checking `final_dist_m` against demonstration-frame distances exposed the mismatch | Switched to exact termination-distance circles; Phase 2 requirement added: log agent paths per episode |
+| 11 | Imported M3Pro USD composed empty when referenced | Isaac 5.1 URDF importer leaves `defaultPrim` unset in the modular root layer | Import script sets `defaultPrim=/yahboom_m3pro` post-import |
+| 12 | Robot invisible in every close-range render (looked like a composition bug) | `UsdGeom.Camera` default near-clip is 1.0 stage units — a 0.3 m robot within 1 m of the camera is entirely clipped | All authored cameras now set `clippingRange (0.02, 10000)`; recorded as a standing Isaac gotcha |
+| 13 | Importer dropped all primitive URDF visuals (7 unresolved references) | Isaac 5.1 modular importer only materialises mesh visuals | Import script re-authors box/cylinder/sphere visuals from the URDF spec into the imported stage |
 
 ## 7. Insights
 
@@ -147,11 +150,28 @@ Outputs per episode: `assets/experiments/<episode_id>/`.
 - Deck images and their real-data counterparts on the Desktop and in
   `assets/deck/`.
 
-## 9. Next steps (Phase 2 — agreed, not started)
+## 9. Phase 2 progress (2026-07-08)
 
-1. Wire the M3Pro placeholder's ROS 2 OmniGraph stubs to real publishers in
-   the hospital scene (`/camera/image_raw`, `/odom`, `/tf`, `/cmd_vel`).
+**Done — articulated M3Pro USD exists and is verified.**
+`scripts/robots/import_yahboom_urdf.py` converts the spec-derived URDF
+headlessly (settings per `docs/YAHBOOM_URDF_TO_USD_IMPORT.md`) into the
+canonical `assets/robots/yahboom_m3_pro/yahboom_m3pro.usd` (modular layout
+with `configuration/` layers), then post-fixes two importer defects:
+missing `defaultPrim` and dropped primitive visuals (challenges 11/13).
+Verified: 7 visuals + 4 continuous mecanum wheel joints + articulation root
+at `/yahboom_m3pro/base_footprint`; composes when referenced; renders at
+true 0.29 m footprint. No Yahboom-provided URDF/meshes exist anywhere
+(previously searched), so the spec-derived URDF with documented dimension
+provenance remains the source of truth. ROS 2 Humble confirmed installed.
+
+**Remaining:**
+
+1. Wire ROS 2 publishers on the articulated robot in the hospital scene
+   (`/camera/image_raw`, `/odom`, `/tf`, `/cmd_vel`; OmniGraph stubs in the
+   visible-placeholder stage are the reference).
 2. Run GNM inference on the simulated camera feed; record genuine rosbags
-   per episode (the six-run campaign table becomes real).
-3. Import or model a photoreal M3Pro mesh to replace the placeholder.
+   per episode (the six-run campaign table becomes real), logging agent
+   trajectories per `PHASE2_REQUIREMENTS.md`.
+3. Photoreal M3Pro mesh (nice-to-have; primitive model is honest and
+   dimensionally traceable).
 4. Extend the manifest schema to rosbag runs (topics, durations, bag hashes).
