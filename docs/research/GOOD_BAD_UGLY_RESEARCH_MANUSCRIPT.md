@@ -565,3 +565,20 @@ train goals → H3 one-shot evaluation on held-out goals D/E/G vs the
 top-down-trained incumbent (H2).
 Evidence: `assets/datasets/isaac_hospital_imagenav_v0/`,
 `scripts/datasets/convert_hospital_rosbags_to_gnm.py`.
+
+## 27. Terminology and camera/task convention lock
+**Decision milestone (no new experiment).** The project now has two
+camera regimes and a five-track taxonomy, locked in
+`docs/research/CAMERA_TASK_CONVENTIONS.md`: Track A ImageNav (top-down
+Kujiale line for the current controlled experiments; front-facing
+hospital/Yahboom line for the live demo and future sim-to-real),
+Track B LanguageNav (future), Track C Vision-Language ImageNav (merge),
+Track D FleetSafe safety layer (final thesis layer), Track E real
+Yahboom sim-to-real. "VLN" is no longer used loosely — the active task
+is image-goal navigation. Dashboard labels updated to the required
+front-facing wording; the hospital dataset manifest carries its track
+label. Claim boundary (exact): current Kujiale/VLNTube experiments use
+a top-down RGB camera convention; the hospital live dashboard and
+future Yahboom sim-to-real work use a front-facing robot RGB camera
+convention; regimes are kept separate unless a domain-adaptation
+experiment is explicitly declared.

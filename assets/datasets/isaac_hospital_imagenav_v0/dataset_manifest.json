@@ -390,5 +390,7 @@
     }
   ],
   "converter": "scripts/datasets/convert_hospital_rosbags_to_gnm.py (proof episode converted; batch conversion pending)",
-  "claim_boundary": "Isaac-Hospital-ImageNav-v0 is an internal simulation dataset collected from our Isaac Sim hospital environment using the Yahboom front-facing RGB camera convention. It is not a public benchmark and does not constitute real-robot evidence."
+  "claim_boundary": "Isaac-Hospital-ImageNav-v0 is an internal simulation dataset collected from our Isaac Sim hospital environment using the Yahboom front-facing RGB camera convention. It is not a public benchmark and does not constitute real-robot evidence.",
+  "track": "Track A \u2014 ImageNav (hospital/Yahboom front-camera line)",
+  "conventions_doc": "docs/research/CAMERA_TASK_CONVENTIONS.md"
 }

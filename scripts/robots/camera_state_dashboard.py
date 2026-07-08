@@ -196,13 +196,13 @@ body{font-family:sans-serif;margin:0;display:grid;
  events.</div>
 </div>
 <div id="main">
- <h3>Yahboom Front RGB Camera — Current State (live)</h3>
+ <h3>Main View: Yahboom Front RGB Camera — Task: Image-Goal Navigation (ImageNav)</h3>
  <img id="live" src="/stream.mjpg">
- <div class="caption">what the robot sees at its current pose</div>
+ <div class="caption">Current State: live front-facing RGB image from /camera/image_raw — the robot-eye view, not a 3D spectator view or top-down map</div>
  <div id="strip">
-  <div><img id="startimg" src="/start_state.jpg"><div class="caption">Start State</div></div>
-  <div><img id="curimg" src="/current.jpg"><div class="caption">Current State (snapshot)</div></div>
-  <div><img id="goalimg" src="/goal_state.jpg"><div class="caption">Goal State</div></div>
+  <div><img id="startimg" src="/start_state.jpg"><div class="caption">Start State: front-facing RGB at start pose</div></div>
+  <div><img id="curimg" src="/current.jpg"><div class="caption">Current State: live front-facing RGB (snapshot)</div></div>
+  <div><img id="goalimg" src="/goal_state.jpg"><div class="caption">Goal State: front-facing RGB goal at target pose</div></div>
  </div>
  <div id="metrics">loading…</div>
 </div>
