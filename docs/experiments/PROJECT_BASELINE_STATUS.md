@@ -22,12 +22,20 @@ pipeline described below.
 - **Valid visual evidence:** the locked hospital deck captures and the
   stop-decision distance-circle renders — as *visualisations of recorded
   data only*, so captioned.
-- **Open blocker:** outbound DDS visibility is asymmetric — Isaac receives
-  CLI `/cmd_vel`, but the system CLI cannot yet see Isaac's `/odom` or
-  `/clock` publishers. Blocks rosbag recording.
-- **Next required work, in order:** fix outbound DDS visibility →
-  `/camera/image_raw` publisher → rosbag recording → GNM inference loop →
-  mandatory per-step trajectory logging (`PHASE2_REQUIREMENTS.md`).
+- **DDS visibility: RESOLVED (2026-07-08).** The "asymmetric visibility"
+  was a stale `ros2` daemon cache (plus a too-short discovery spin in the
+  test harness), not a transport problem. After `ros2 daemon stop` from a
+  clean shell, `/clock`, `/odom`, `/tf`, `/cmd_vel` are all visible and
+  echo live data bidirectionally.
+- **First real rosbag recorded (2026-07-08):**
+  `assets/experiments/rosbags/smoke_drive_20260708` (gitignored data,
+  3.4 MB) — 17.6 s, 9,906 messages while the robot drove a commanded arc:
+  `/odom` 3,259, `/tf` 3,257, `/clock` 3,257, `/cmd_vel` 133. No camera
+  topic yet.
+- **Next required work, in order:** `/camera/image_raw` publisher →
+  full-topic rosbag → mandatory per-step trajectory logging → GNM
+  inference loop on the simulated camera feed → revalidate the campaign
+  runs (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence
 

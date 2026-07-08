@@ -126,9 +126,16 @@ Outputs per episode: `assets/experiments/<episode_id>/`.
 | 16 | Still beached with colliders present | Cylinder gprim colliders cook to degenerate convexes at 5 cm wheel size | Sphere colliders for wheels (native PhysX shape) + PhysX contact offsets (0.005/0) + solver iterations 32/4 → perfect rest at z=0, 1.19 m per 4 s tracking |
 | 17 | Graph-driven actuation dead although wheel commands were correct | og ArticulationController node no-ops silently; lazily-evaluated array nodes never compute without a consumer | Actuation moved to Python: read the diff-controller output each step, `apply_action` on the articulation (the Phase 2 pipeline needs programmatic control anyway) |
 
-**Open item:** sim→CLI DDS visibility is asymmetric — Isaac receives
-`/cmd_vel` from the CLI, but `ros2 topic list`/`echo` do not yet see Isaac's
-publishers. Must be resolved for rosbag recording (R2).
+**RESOLVED (2026-07-08):** the "asymmetric DDS visibility" was a stale
+`ros2` daemon cache plus a too-short `--no-daemon` discovery spin inside the
+test harness — not a transport problem. From a clean shell after
+`ros2 daemon stop`, all Isaac topics list and echo live data. First real
+rosbag recorded immediately after
+(`assets/experiments/rosbags/smoke_drive_20260708`: 17.6 s, 9,906 msgs,
+`/odom`/`/tf`/`/clock`/`/cmd_vel` all non-zero, robot driving a commanded
+arc). Bonus finding from the long-hold probe: wheels keep their last
+velocity targets, so an unattended robot drove off the 40 m test ground and
+free-fell — hold mode now zeroes the wheels first (challenge 18).
 
 ## 7. Insights
 

@@ -256,5 +256,17 @@ print(f"[test] /odom sample:\n{odom_sample}")
 verdict = "PASS" if moved > 0.5 else "FAIL"
 print(f"[test] ACCEPTANCE {verdict}: robot {'moved' if moved > 0.5 else 'did not move enough'}")
 
+import sys
+if "--hold" in sys.argv:
+    # Zero the wheels first or the robot keeps its last velocity targets
+    # and eventually drives off the edge of the test ground.
+    arti.apply_action(ArticulationAction(
+        joint_velocities=[0.0] * 4, joint_indices=wheel_idx))
+    print("[hold] sim stays up for external DDS probing; kill to stop")
+    i = 0
+    while True:
+        sim.step(render=(i % 3 == 0))
+        i += 1
+
 sim.stop()
 app.close()
