@@ -75,11 +75,12 @@ rendering out; nothing re-simulated):
 primitive visible-placeholder USD
 (`assets/robots/yahboom_m3_pro/yahboom_m3pro_visible_placeholder.usda`,
 displayed at 1.5× for camera legibility — recorded in the manifest); no
-photoreal mesh import exists yet. The physical M3Pro has a real recorded
-rosbag episode (`docs/v2.4_yahboom_first_rosbag_episode.md`) and ROS 2
-OmniGraph publisher stubs are already sketched in the placeholder stage
-(`/camera/image_raw`, `/odom`, `/tf`, `/scan`, `/cmd_vel`) — the on-ramp
-for Phase 2.
+photoreal mesh import exists yet. **Correction (2026-07-08):** an earlier
+version of this paragraph claimed a "real recorded rosbag episode" — the
+v2.4 rosbag gate is in fact *Pending* per its own status table and no bag
+file exists in the repo; the v2.x docs are procedure docs against the
+placeholder stage and are deprecated pending revalidation (see
+`PROJECT_BASELINE_STATUS.md`).
 
 ## 4. Episodes selected (real per-episode outcomes)
 
