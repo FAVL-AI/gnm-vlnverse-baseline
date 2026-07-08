@@ -1,0 +1,6 @@
+{
+  "torch": "2.11.0+cu128",
+  "cuda_available": true,
+  "gpu": "NVIDIA GeForce RTX 4080 SUPER",
+  "trainer_log_evidence": "'Training on cuda' in logs/stage4_train.log"
+}

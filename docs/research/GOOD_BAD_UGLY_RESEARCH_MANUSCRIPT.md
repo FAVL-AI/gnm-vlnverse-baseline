@@ -479,3 +479,61 @@ val-only selection) → Stage 5 one-shot evaluation on kujiale_0271 vs
 SR 32.0 / OSR 56.0 / NE 5.58 / SPL 0.315.
 Evidence: `assets/experiments/data_expansion/generated_train_expanded_20260708/`,
 `make validate-generated-train-expanded`.
+
+## 24. Reference Dataset Audit: GNM, ViNT, NoMaD, and VLNTube/Kujiale training-data choice
+**Hypothesis:** the project's data choices must be positioned against
+the GNM/ViNT/NoMaD data philosophy before any method comparison.
+**Setup/Result:** audit doc + 9-row dataset matrix + small experiment
+plan (`make validate-reference-dataset-audit` PASS). GNM's public
+training data (RECON, TartanDrive, SCAND, modified GoStanford2 — plus
+unreleased data), ViNT's foundation-scale mixture and NoMaD's addition
+of HuRoN/SACSoN are all front-camera real-robot regimes; our local
+VLNTube/Kujiale corpus is top-down synthetic.
+**Good:** the two-regime firewall now has a documented external
+justification; Experiment C (adapter-based compatibility smoke on
+GoStanford2) is scoped without touching training.
+**Bad:** the GNM mixture is partly unreleased — exact-data reproduction
+is impossible and bounds all comparison claims.
+**Ugly:** none — this is a paper-positioning stage.
+**Decision:** Level-1 internal data comparison only for now; "we beat
+GNM/ViNT/NoMaD" is a banned claim, validator-enforced.
+**Next gate:** Experiment C compatibility smoke, after the Stage 4/5
+result is closed.
+
+## 25. Expanded top-down training data: scene-held-out result (Stage 4/5)
+**Hypothesis:** adding matched-camera, top-down generated train-side
+VLNTube-style episodes improves scene-held-out generalization on the
+frozen kujiale_0271 test scene.
+**Setup:** 321 train episodes (191 original + 130 generated, symlinked
+combined root, zero 0271 leakage), same 12-episode val for selection
+only, seed 42, ONE post-training test evaluation.
+**Result — HYPOTHESIS REJECTED:** expanded model SR 26.0 / OSR 56.0 /
+NE 6.90 / SPL 0.247 / TL 9.32 vs incumbent SR 32.0 / OSR 56.0 /
+NE 5.58 / SPL 0.315 / TL 7.47. Worse on SR, SPL and NE; longer
+trajectories. Incumbent retained.
+**The Good:** the ladder worked exactly as designed — a controlled
+one-shot frozen-scene test caught that perfectly-validated generated
+data (130/130 goal content, matched camera, loader-clean) does not
+automatically transfer; the independent governance chain concurred
+(DriftGuard reject on all three checks, VerdictPlane deny, Sentinel
+proxy-gap incident).
+**The Bad:** a full generation stage produced no downstream gain.
+**The Ugly:** every data-quality gate we built passed while the data
+still hurt performance — data validity and data USEFULNESS are
+different properties, and only the held-out test separates them.
+**Root-cause hypotheses (testable, ranked):** (1) A*-smooth generated
+routes are information-poor vs original human-tour-style trajectories;
+(2) 4-scene coverage was already saturated at 191 episodes;
+(3) the 12-episode val split cannot select for unseen-scene behaviour.
+**Decision:** incumbent 191-episode baseline remains the reference;
+expanded candidate rejected; no retraining variations without a new
+pre-registered hypothesis.
+**Insight:** "more validated data" is not "better data" — route/view
+diversity, not volume, is the next lever.
+**Limitation:** result is one scene (kujiale_0271); claim wording per
+the pre-registered boundary.
+**Next Evidence Gate:** route-diversity generation experiment (curved/
+multi-room routes mimicking original trajectory statistics) OR the
+Isaac-Hospital internal dataset track — Frank's call.
+Evidence: `assets/experiments/training/expanded_topdown_20260708/`,
+`make validate-expanded-data-training`.

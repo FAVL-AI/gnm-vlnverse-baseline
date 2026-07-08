@@ -1,0 +1,10 @@
+dataset_name,used_by,public_or_unreleased,environment_type,camera_view_if_known,robot_platform_if_known,task_type,compatible_with_current_topdown_gnm,requires_adapter,proposed_use,claim_boundary
+VLNTube/Kujiale local subset,this project,local,synthetic indoor (Kujiale),top-down/nadir rendered,none (rendered),image-goal navigation,yes,no,current training + frozen scene-holdout test,no full VLNVerse benchmark claim
+Generated Kujiale top-down episodes,this project,local,synthetic indoor (Kujiale),top-down/nadir rendered (verified match),none (rendered),image-goal navigation,yes,no,train-side expansion (Stage 3C/3D),no performance claim before Stage 4/5
+Isaac-Hospital-ImageNav-v0,this project,local,Isaac Sim hospital,Yahboom front RGB,simulated Yahboom M3Pro,image-goal navigation (live demo),no - different camera regime,yes (regime firewall),internal fine-tune/stop-head/live-demo dataset,simulation dataset; not real-robot evidence
+RECON,GNM/ViNT/NoMaD,public,outdoor/off-road real,front egocentric,Jackal-class UGV,goal-image navigation/exploration,no,yes,reference audit; possible separate front-camera experiment,no training mix without adapter
+TartanDrive,GNM/ViNT/NoMaD,public,off-road driving real,front egocentric,ATV,driving/navigation,no,yes,reference audit; domain-gap study,no training mix without adapter
+SCAND,GNM/ViNT/NoMaD,public,campus social navigation real,front egocentric,Spot/Jackal,social navigation demonstrations,no,yes,reference audit; social/dynamic domain,no training mix without adapter
+GoStanford2 (modified),GNM/ViNT/NoMaD,public (modified form),indoor real,front egocentric,TurtleBot-class,indoor navigation,no,yes,reference audit; closest indoor navigation comparison,no training mix without adapter
+HuRoN/SACSoN,NoMaD,public,indoor/social real,front egocentric,TurtleBot-class,social navigation,no,yes,reference audit; NoMaD-style social comparison,no training mix without adapter
+GNM unreleased portion,GNM,unreleased,mixed real,front egocentric,multiple,navigation,no,n/a,cannot audit; bounds same-data reproduction claims,exact GNM mixture not reproducible

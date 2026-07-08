@@ -1,0 +1,31 @@
+{
+  "experiment": "expanded_topdown_20260708",
+  "hypothesis": "matched-camera generated train-side data improves scene-held-out generalization on frozen kujiale_0271",
+  "rows": [
+    {
+      "model": "incumbent_191",
+      "SR": 0.32,
+      "OSR": 0.56,
+      "NE_m": 5.58,
+      "SPL": 0.315,
+      "TL_m": 7.47,
+      "CR": "N/A \u2014 offline evaluator",
+      "weights": "live model",
+      "n": 50
+    },
+    {
+      "model": "expanded_321",
+      "SR": 0.26,
+      "OSR": 0.56,
+      "NE_m": 6.8982,
+      "SPL": 0.247,
+      "TL_m": 9.3233,
+      "CR": "N/A \u2014 offline evaluator",
+      "weights": "live model",
+      "n": 50
+    }
+  ],
+  "outcome": "metrics worsen (SR -6pp, SPL -0.068, NE +1.32 m, longer trajectories)",
+  "pre_registered_interpretation": "generated data increases volume but not useful distributional coverage; keep incumbent",
+  "claim": "The expanded-data model was trained with 191 original plus 130 generated top-down train-side episodes and evaluated once on the frozen scene-held-out test scene kujiale_0271. This tests the effect of matched-camera generated training data. It is not a full VLNVerse benchmark submission."
+}

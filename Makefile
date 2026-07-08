@@ -1183,3 +1183,9 @@ validate-generated-train-batch:
 
 validate-generated-train-expanded:
 	python3 scripts/gnm/validate_generated_train_expanded.py
+
+validate-reference-dataset-audit:
+	python3 scripts/gnm/validate_reference_dataset_audit.py
+
+validate-expanded-data-training:
+	python3 scripts/gnm/validate_expanded_data_training.py

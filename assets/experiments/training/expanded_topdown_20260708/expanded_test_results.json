@@ -1,0 +1,18 @@
+{
+  "SR": 0.26,
+  "OSR": 0.56,
+  "SPL": 0.247,
+  "NE": 6.8982,
+  "TL": 9.3233,
+  "nDTW": 0.4537,
+  "CLS": 0.7138,
+  "CR": 0.0,
+  "SRn": 0.0,
+  "n_episodes": 50,
+  "checkpoint": "/home/favl/robotics/gnm-vlnverse-baseline/checkpoints/expanded_topdown_mnv2/best.pt",
+  "split": "test",
+  "track": "A",
+  "data_root": "/home/favl/robotics/gnm-vlnverse-baseline/datasets/vlntube_expanded",
+  "stop_threshold": 0.15,
+  "success_threshold": 3.0
+}

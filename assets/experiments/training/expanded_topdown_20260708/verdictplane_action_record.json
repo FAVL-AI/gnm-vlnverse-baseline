@@ -1,0 +1,13 @@
+{
+  "action": "promote_model",
+  "requested_candidate": "MobileNetV2-GNM expanded 321-episode model",
+  "verdict": "deny",
+  "reason": "expanded candidate failed the scene-held-out promotion gate (SR/SPL down, NE materially worse); incumbent 191-episode baseline remains the accepted reference.",
+  "matched_rule": {
+    "match": {
+      "tool": "model.promote",
+      "args.driftguard_decision": "reject"
+    },
+    "decision": "deny"
+  }
+}

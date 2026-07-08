@@ -1,0 +1,24 @@
+[
+  {
+    "proposal_id": "gnmv-a2c94e55",
+    "incident": {
+      "scenario": "scene_holdout_generalization_failure"
+    },
+    "root_service": "gnm-vlnverse-training",
+    "symptom": "candidate validation improved but held-out test SR/SPL regressed (SR 0.32->0.26, SPL 0.3148->0.247)",
+    "root_cause_hypothesis": "candidate overfit train-side scenes; recovery is not safety",
+    "evidence": [
+      "run card mobilenet_baseline_scene_holdout_seed42",
+      "run card mobilenet_expanded_topdown_scene_holdout_seed42",
+      "assets/experiments/training_ablation/mnv2_ema_20260708/dataset_manifest_scene_holdout.json"
+    ],
+    "proposed_action": {
+      "type": "open_incident",
+      "params": {}
+    },
+    "confidence": 0.95,
+    "evidence_grounding": {
+      "ratio": 1.0
+    }
+  }
+]
