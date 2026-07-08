@@ -574,7 +574,9 @@ EPISODE_TOPICS = ["/camera/image_raw", "/camera/camera_info", "/odom",
                   "/tf", "/clock", "/cmd_vel"]
 from gnm_shadow import SHADOW_FIELDS as _SF
 CL_FIELDS = [
-    "goal_id", "distance_to_goal_m",
+    "experiment_id", "pair_id", "condition",
+    "stop_rule_name", "stop_rule_threshold", "stop_rule_k",
+    "stop_triggered", "goal_id", "distance_to_goal_m",
     "gnm_control_enabled", "gnm_action_raw_linear_velocity",
     "gnm_action_raw_angular_velocity", "gnm_action_clipped_linear_velocity",
     "gnm_action_clipped_angular_velocity", "action_clipped",
@@ -651,6 +653,24 @@ if CL_MODE:
     # watchdog-protected, explicit zeroing. Control-authority milestone
     # only — the fixed goal image is not scene-aligned, so no
     # navigation-quality claim.
+    AUTH = "--stop-authority" in sys.argv
+    PAIR_ID = _argval("--pair-id")
+    CONDITION = _argval(
+        "--condition",
+        "stop_authority_recalibrated" if AUTH else "baseline_no_stop")
+    EXPERIMENT_ID = _argval("--experiment-id", "stop_authority_ab_20260708")
+    GATE_THR, GATE_K = 4.5, 3
+    gate_consec = 0
+    goal_stopped = False
+    goal_stop_step = None
+    goal_stop_sim = None
+    goal_stop_true_d2g = None
+    goal_stop_pred = None
+    residual_after_stop = None
+    if AUTH:
+        print(f"[auth] STOP AUTHORITY ENABLED: recalibrated_dist_pred_gate "
+              f"(dist_pred<={GATE_THR}, k={GATE_K}); goal-stop is separate "
+              "from e-stop/watchdog/end-zeroing")
     CL_LIN_MAX, CL_ANG_MAX = 0.20, 0.40
     CL_BOUND_XY = 6.0
     CL_Z_DRIFT_MAX = 0.05
@@ -735,6 +755,14 @@ if CL_MODE:
         if stop_shadow is not None:
             extra.update(stop_shadow.latest)
         extra.update({
+            "experiment_id": EXPERIMENT_ID,
+            "pair_id": PAIR_ID,
+            "condition": CONDITION,
+            "stop_authority_enabled": AUTH,
+            "stop_rule_name": "recalibrated_dist_pred_gate" if AUTH else None,
+            "stop_rule_threshold": GATE_THR if AUTH else None,
+            "stop_rule_k": GATE_K if AUTH else None,
+            "stop_triggered": goal_stopped,
             "goal_id": GOAL_SEL,
             "distance_to_goal_m": d2g,
             "actual_controller": "gnm_closed_loop",
@@ -814,6 +842,43 @@ if CL_MODE:
             print(f"[cl] EMERGENCY STOP at step {i}: {stop_reason}")
             break
 
+        if AUTH and not goal_stopped and render:
+            _gd_a = shadow.latest.get("shadow_gnm_goal_distance")
+            if (shadow.latest["shadow_gnm_status"] == "ok"
+                    and _gd_a is not None and _gd_a <= GATE_THR):
+                gate_consec += 1
+            else:
+                gate_consec = 0
+            if gate_consec >= GATE_K:
+                goal_stopped = True
+                goal_stop_step = i
+                goal_stop_sim = round(float(sim.current_time), 3)
+                goal_stop_pred = _gd_a
+                _gx, _gy, _, _ = robot_pose_yaw()
+                if GOAL_POSE_SEL is not None:
+                    goal_stop_true_d2g = round(math.hypot(
+                        _gx - GOAL_POSE_SEL["x"],
+                        _gy - GOAL_POSE_SEL["y"]), 4)
+                publish_cmd(0.0, 0.0)
+                apply_cmd(0.0, 0.0)
+                print(f"[auth] GOAL-STOP fired at step {i} "
+                      f"(dist_pred={_gd_a:.2f}, true d2g="
+                      f"{goal_stop_true_d2g}); zero + residual hold")
+                _rx, _ry, _, _ = robot_pose_yaw()
+                for h in range(90):
+                    sim.step(render=(h % 3 == 0))
+                    publish_cmd(0.0, 0.0)
+                    cl_log(i + 1 + h, "goal_stop_zeroed", None, None,
+                           0.0, 0.0, False,
+                           note="goal-stop residual hold "
+                                "(recalibrated_dist_pred_gate)")
+                _rx2, _ry2, _, _ = robot_pose_yaw()
+                residual_after_stop = round(
+                    math.hypot(_rx2 - _rx, _ry2 - _ry), 5)
+                print(f"[auth] residual motion after goal-stop: "
+                      f"{residual_after_stop} m")
+                break
+
         wd_age = sim.current_time - last_ok_sim
         if raw is None:
             watchdog_state = "warmup_zero"
@@ -867,6 +932,19 @@ if CL_MODE:
                       if GOAL_POSE_SEL is not None else None)
         cl_meta.update(stop_shadow.summary(final_d2g=_final_d2g))
     cl_meta.update({
+        "experiment_id": EXPERIMENT_ID,
+        "pair_id": PAIR_ID,
+        "condition": CONDITION,
+        "stop_authority_enabled": AUTH,
+        "stop_rule_name": "recalibrated_dist_pred_gate" if AUTH else None,
+        "stop_rule_threshold": GATE_THR if AUTH else None,
+        "stop_rule_k": GATE_K if AUTH else None,
+        "stop_triggered": goal_stopped,
+        "stop_trigger_step": goal_stop_step,
+        "stop_trigger_sim_time": goal_stop_sim,
+        "true_distance_to_goal_at_stop": goal_stop_true_d2g,
+        "predicted_distance_at_stop": goal_stop_pred,
+        "residual_motion_after_stop_m": residual_after_stop,
         "closed_loop": True,
         "goal_id": GOAL_SEL,
         "goal_image": str(_goal_img.relative_to(REPO)),

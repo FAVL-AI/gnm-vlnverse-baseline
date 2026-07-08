@@ -1,0 +1,45 @@
+{
+  "experiment": "stop_authority_ab_heldout_smoke",
+  "label": "bounded held-out authority A/B smoke comparison; not campaign, not SR/SPL, not FleetSafe",
+  "rule": "recalibrated_dist_pred_gate dist_pred<=4.5 k=3",
+  "pairs": [
+    {
+      "pair_id": "D",
+      "goal_id": "hospital_holdout_short_D",
+      "baseline_min_d2g": 0.0028,
+      "baseline_final_d2g": 0.4852,
+      "baseline_overshoot_past_min": 0.4824,
+      "auth_stop_triggered": true,
+      "auth_true_d2g_at_stop": 1.4794,
+      "auth_final_d2g": 1.4768,
+      "auth_residual_after_stop_m": 0.00276,
+      "final_d2g_delta_auth_minus_baseline": 0.9916,
+      "early_stop_short_of_nearest_m": 1.4766,
+      "episodes": [
+        "authcmp_D_baseline_20260708_145214",
+        "authcmp_D_stopauth_20260708_145306"
+      ]
+    },
+    {
+      "pair_id": "E",
+      "goal_id": "hospital_holdout_medium_E",
+      "baseline_min_d2g": 0.0036,
+      "baseline_final_d2g": 0.4926,
+      "baseline_overshoot_past_min": 0.489,
+      "auth_stop_triggered": true,
+      "auth_true_d2g_at_stop": 1.1029,
+      "auth_final_d2g": 1.1001,
+      "auth_residual_after_stop_m": 0.00297,
+      "final_d2g_delta_auth_minus_baseline": 0.6075,
+      "early_stop_short_of_nearest_m": 1.0993,
+      "episodes": [
+        "authcmp_E_baseline_20260708_145441",
+        "authcmp_E_stopauth_20260708_145535"
+      ]
+    }
+  ],
+  "verdicts": [
+    "pair D: authority final d2g 1.4768 vs baseline 0.4852 (farther); stopped 1.4766 m short of the baseline's nearest point (early stop)",
+    "pair E: authority final d2g 1.1001 vs baseline 0.4926 (farther); stopped 1.0993 m short of the baseline's nearest point (early stop)"
+  ]
+}

@@ -212,14 +212,44 @@ pipeline described below.
   **Valid claim:** live hospital shadow data identifies a calibratable
   firing boundary for the stop head. **Authority not yet tested;
   improvement not yet valid.**
-- **Still not valid:** stop-head improvement of navigation or safety
-  (authority not yet tested), FleetSafe improvement, success rate,
+- **Held-out stop-authority A/B comparison: VALID (2026-07-08) — and
+  the candidate gate was REJECTED out-of-sample.** Two held-out
+  start/goal pairs on the reverse lobby route (goals
+  `hospital_holdout_short_D` 2.5 m, `hospital_holdout_medium_E`
+  3.5 m), paired baseline vs authority episodes under identical
+  envelopes (`make validate-stop-authority-comparison`, summary in
+  `assets/experiments/comparisons/stop_authority_ab_20260708/`).
+
+  | pair | baseline min→final d2g | authority stop@ (true) | authority final | Δ (auth − base) |
+  |---|---|---|---|---|
+  | D | 0.003→0.485 | 1.479 (early) | 1.477 | **+0.992 (worse)** |
+  | E | 0.004→0.493 | 1.103 (early) | 1.100 | **+0.608 (worse)** |
+
+  The authority *machinery* worked exactly as designed: both goal-stops
+  fired via the recalibrated gate (never watchdog/e-stop), commands
+  zeroed, residual motion 2.8/3.0 mm, stop types cleanly separated.
+  But the in-sample threshold (dist_pred ≤ 4.5, chosen against
+  calibration episode C's floor of 4.37) fired **early** on the
+  held-out route, where GNM's predicted-distance profile crosses 4.5
+  well before the goal — ending farther from the goal than the
+  no-stop baseline in both pairs. **Finding:** GNM dist_pred scale is
+  route/view-dependent; absolute-threshold gates do not transfer.
+  Next recalibration directions: signals relative to the episode's
+  running prediction minimum, normalized/trend-based triggers, or
+  live-domain retraining of the learned head. **Valid claim:** a
+  recalibrated stop gate can be given bounded authority in live Isaac
+  episodes and compared against a no-stop GNM baseline on held-out
+  start/goal pairs. **The improvement claim was NOT earned: on
+  held-out pairs this candidate increased final distance-to-goal.**
+- **Still not valid:** stop-head improvement (the tested candidate
+  made it worse out-of-sample), FleetSafe improvement, success rate,
   SPL, robust hospital navigation, goal reaching as an achievement,
   curved-path navigation claims, six-run campaign.
-- **Next required work, in order:** first bounded stop-head AUTHORITY
-  episodes — GNM baseline (authority disabled) vs GNM + recalibrated
-  stop candidate on held-out goals — → GNM + stop head comparison →
-  revalidate the campaign runs (`PHASE2_REQUIREMENTS.md`).
+- **Next required work, in order:** route-invariant stop-rule
+  recalibration (relative/trend signals, or live-domain stop-head
+  retraining) with held-out validation built in from the start → GNM
+  + stop head comparison rerun → revalidate the campaign runs
+  (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence
 

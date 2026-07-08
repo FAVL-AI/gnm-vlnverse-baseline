@@ -1141,3 +1141,6 @@ validate-hospital-shadow-episodes:
 
 validate-stop-boundary-study:
 	python3 scripts/gnm/validate_stop_boundary_study.py $(STUDY)
+
+validate-stop-authority-comparison:
+	python3 scripts/gnm/validate_stop_authority_comparison.py

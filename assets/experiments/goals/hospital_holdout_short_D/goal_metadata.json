@@ -1,0 +1,35 @@
+{
+  "goal_id": "hospital_holdout_short_D",
+  "goal_image": "assets/experiments/goals/hospital_holdout_short_D/goal_image.png",
+  "goal_image_sha256": "a7238e0348174bd2747a2c3d96f767d1495e0269a819107a2a8ca5e814a877ae",
+  "capture_source": "isaac_live_annotator",
+  "capture_command": "scripts/robots/m3pro_ros2_bringup.py --capture-goal --scene hospital --goal-id hospital_holdout_short_D --start-pose -1.5,1.5,-0.785 --goal-pose 0.27,-0.27,-0.785",
+  "captured_at": "2026-07-08T14:50:38.734391",
+  "sim_time": 4.033,
+  "scene_stage_path": "isaac hospital environment (standard scene, docs/ISAAC_HOSPITAL_ENVIRONMENT.md)",
+  "robot_asset_path": "assets/robots/yahboom_m3_pro/yahboom_m3pro.usd",
+  "camera_prim": "/World/M3Pro/camera_link/rgb_camera",
+  "camera_frame_id": "camera_link",
+  "image_resolution": [
+    640,
+    480
+  ],
+  "robot_pose_at_capture": {
+    "x": 0.2699,
+    "y": -0.2699,
+    "z": -0.0
+  },
+  "camera_pose_note": "camera rigidly mounted on camera_link of the robot posed at the goal",
+  "start_pose": {
+    "x": -1.5,
+    "y": 1.5,
+    "yaw_rad": -0.785
+  },
+  "goal_pose": {
+    "x": 0.27,
+    "y": -0.27,
+    "yaw_rad": -0.785
+  },
+  "git_commit": "b448a2d",
+  "git_branch": "isaac-hospital-demo"
+}
