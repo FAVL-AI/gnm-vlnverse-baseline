@@ -1112,3 +1112,6 @@ help:
 # --- Phase 2 live-episode evidence -----------------------------------------
 validate-trajectory-log:
 	python3 scripts/gnm/validate_trajectory_log.py $(EPISODE)
+
+validate-shadow-gnm:
+	python3 scripts/gnm/validate_shadow_gnm.py $(EPISODE)

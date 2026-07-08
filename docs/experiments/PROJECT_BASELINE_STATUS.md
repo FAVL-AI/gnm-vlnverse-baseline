@@ -52,14 +52,28 @@ pipeline described below.
   duration consistency, distance plausibility — **all PASS**. Note:
   headless sim runs ~4× realtime, so bag wall durations are shorter than
   sim durations; the validator compares wall-to-wall.
-- **Not yet valid:** live GNM inference from the simulated camera, any
-  policy-navigation claim, the six-run campaign.
-- **Next required work, in order:** GNM inference loop on the simulated
-  camera feed — **shadow mode first** (GNM reads `/camera/image_raw` and
-  logs candidate actions into the trajectory log while the scripted
-  controller keeps driving; GNM gets `/cmd_vel` control only after shadow
-  inference is validated) → GNM + stop head comparison → revalidate the
-  campaign runs (`PHASE2_REQUIREMENTS.md`).
+- **GNM shadow inference: PASS (2026-07-08).** The published Shah et al.
+  CoRL 2022 GNM checkpoint (`gnm.pth`, acquired from the upstream
+  release; weights gitignored) runs real forward passes on CUDA inside
+  the live episode loop, reading the same rendered frames that publish
+  `/camera/image_raw`. Smoke episode `manual_arc_20260708_030319`: 266
+  frames received, 261/261 successful inferences, 0 failures, mean
+  latency 13.1 ms (max 156.8 ms incl. first-call warmup), 782 rows with
+  non-null candidate actions in `trajectory.jsonl`. The scripted
+  controller retained exclusive `/cmd_vel` control on every row
+  (`actual_controller: scripted_cmd_vel`, validated per-row by
+  `make validate-shadow-gnm`); the shadow module has no ROS publisher by
+  construction. **Honest scope:** the smoke goal image is a fixed real
+  dataset frame from a kujiale interior that does not exist in the
+  bring-up scene — candidates validate the inference path, not
+  navigation quality.
+- **Not yet valid:** GNM *control* of `/cmd_vel`, any policy-navigation
+  claim, the six-run campaign.
+- **Next required work, in order:** GNM closed-loop control of
+  `/cmd_vel` for a short bounded smoke episode (only now that shadow
+  inference is validated) → stop-head shadow integration → GNM + stop
+  head comparison → revalidate the campaign runs
+  (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence
 

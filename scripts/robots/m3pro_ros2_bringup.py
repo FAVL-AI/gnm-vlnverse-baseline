@@ -19,6 +19,7 @@ from isaacsim import SimulationApp
 app = SimulationApp({"headless": True, "width": 1280, "height": 720})
 
 import math
+import numpy as np
 import subprocess
 import time
 from pathlib import Path
@@ -285,7 +286,9 @@ from trajectory_logger import TrajectoryLogger
 EPISODE_ID = f"manual_arc_{_dt.now():%Y%m%d_%H%M%S}"
 EPISODE_TOPICS = ["/camera/image_raw", "/camera/camera_info", "/odom",
                   "/tf", "/clock", "/cmd_vel"]
-traj_log = TrajectoryLogger(EPISODE_ID, REPO, policy_mode="manual_cmd_vel")
+from gnm_shadow import SHADOW_FIELDS as _SF
+traj_log = TrajectoryLogger(EPISODE_ID, REPO, policy_mode="manual_cmd_vel",
+                            extra_fields=_SF)
 
 bag_proc = None
 bag_path = None
@@ -301,6 +304,22 @@ if "--episode" in sys.argv:
     for _ in range(120):
         sim.step(render=(_ % 3 == 0))
     print(f"[episode] {EPISODE_ID}: rosbag recording to {bag_path}")
+
+
+shadow = None
+rgb_annot = None
+if "--episode" in sys.argv or "--shadow-gnm" in sys.argv:
+    import omni.replicator.core as _rep
+    from gnm_shadow import GNMShadow, SHADOW_FIELDS
+    rgb_annot = _rep.AnnotatorRegistry.get_annotator("rgb")
+    rgb_annot.attach(render_product)
+    shadow = GNMShadow(
+        REPO,
+        REPO / "assets/deck/tracka_goal_observation.jpg",
+        device="cuda")
+    print(f"[shadow] GNM shadow inference active (model="
+          f"{shadow.latest['shadow_gnm_model_path']}); "
+          "no /cmd_vel control — scripted controller drives")
 
 
 def robot_pose_yaw():
@@ -326,15 +345,31 @@ for i in range(800):
     tw_ang = og.Controller.get("/World/ROS2Graph/twistSub.outputs:angularVelocity")
     od_lin = og.Controller.get("/World/ROS2Graph/odom.outputs:linearVelocity")
     od_ang = og.Controller.get("/World/ROS2Graph/odom.outputs:angularVelocity")
+    if shadow is not None and i % 3 == 0:
+        frame = rgb_annot.get_data()
+        if frame is not None and getattr(frame, "size", 0) > 0:
+            shadow.add_frame(np.asarray(frame)[:, :, :3].copy())
+            shadow.infer()
+    actual_lin = float(tw_lin[0]) if tw_lin is not None else 0.0
+    actual_ang = float(tw_ang[2]) if tw_ang is not None else 0.0
+    extra = None
+    if shadow is not None:
+        extra = dict(shadow.latest)
+        extra.update({
+            "actual_controller": "scripted_cmd_vel",
+            "actual_linear_velocity_cmd": round(actual_lin, 6),
+            "actual_angular_velocity_cmd": round(actual_ang, 6),
+        })
     traj_log.log_step(
         step_idx=i, sim_time=sim.current_time,
         x=px, y=py, z=pz, yaw=pyaw,
-        linear_cmd=float(tw_lin[0]) if tw_lin is not None else 0.0,
-        angular_cmd=float(tw_ang[2]) if tw_ang is not None else 0.0,
+        linear_cmd=actual_lin,
+        angular_cmd=actual_ang,
         odom_lin=float(od_lin[0]) if od_lin is not None else 0.0,
         odom_ang=float(od_ang[2]) if od_ang is not None else 0.0,
         image_timestamp=sim.current_time,
-        stop_signal=None, safety_state="nominal")
+        stop_signal=None, safety_state="nominal",
+        extra=extra)
 print(f"[debug] sim time advanced {sim.current_time - t_before:.2f} s during ROS phase")
 
 odom_probe = og.Controller.get("/World/ROS2Graph/odom.outputs:position")
@@ -367,7 +402,13 @@ meta = traj_log.finalize(
     robot_asset=ROBOT_USD.relative_to(REPO),
     rosbag_path=bag_path.relative_to(REPO) if bag_path else None,
     command_profile="external ros2 CLI: 0.3 m/s forward twist at 20 Hz",
-    topics_recorded=EPISODE_TOPICS if bag_path else [])
+    topics_recorded=EPISODE_TOPICS if bag_path else [],
+    extra_meta=shadow.summary() if shadow is not None else None)
+if shadow is not None:
+    print(f"[shadow] frames={shadow.frames_received} attempts={shadow.attempts} "
+          f"ok={shadow.successes} fail={shadow.failures} "
+          f"mean_lat={sum(shadow.latencies_ms)/len(shadow.latencies_ms):.1f}ms"
+          if shadow.latencies_ms else "[shadow] no successful inferences")
 print(f"[episode] trajectory log finalised: {traj_log.dir}")
 print(f"[episode] steps={meta['steps_logged']} dist={meta['total_distance_m']}m "
       f"z_drift={meta['max_abs_z_drift_m']}m sim_dur={meta['sim_duration_s']}s")

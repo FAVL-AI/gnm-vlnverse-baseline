@@ -28,7 +28,8 @@ REQUIRED_FIELDS = [
 
 
 class TrajectoryLogger:
-    def __init__(self, episode_id, repo_root, policy_mode="manual_cmd_vel"):
+    def __init__(self, episode_id, repo_root, policy_mode="manual_cmd_vel",
+                 extra_fields=None):
         self.episode_id = episode_id
         self.repo = Path(repo_root)
         self.policy_mode = policy_mode
@@ -37,9 +38,10 @@ class TrajectoryLogger:
         self.jsonl_path = self.dir / "trajectory.jsonl"
         self.csv_path = self.dir / "trajectory.csv"
         self.meta_path = self.dir / "episode_metadata.json"
+        self.fieldnames = REQUIRED_FIELDS + list(extra_fields or [])
         self._jsonl = self.jsonl_path.open("w")
         self._csv_file = self.csv_path.open("w", newline="")
-        self._csv = csv.DictWriter(self._csv_file, fieldnames=REQUIRED_FIELDS)
+        self._csv = csv.DictWriter(self._csv_file, fieldnames=self.fieldnames)
         self._csv.writeheader()
         self.rows = 0
         self.start_wall = time.time()
@@ -53,7 +55,8 @@ class TrajectoryLogger:
     def log_step(self, step_idx, sim_time, x, y, z, yaw,
                  linear_cmd, angular_cmd, odom_lin, odom_ang,
                  image_timestamp, camera_frame_id="camera_link",
-                 stop_signal=None, safety_state="nominal", notes=""):
+                 stop_signal=None, safety_state="nominal", notes="",
+                 extra=None):
         row = {
             "episode_id": self.episode_id,
             "step_idx": step_idx,
@@ -74,6 +77,8 @@ class TrajectoryLogger:
             "safety_state": safety_state,
             "notes": notes,
         }
+        if extra:
+            row.update(extra)
         self._jsonl.write(json.dumps(row) + "\n")
         self._csv.writerow(row)
         self.rows += 1
@@ -96,7 +101,7 @@ class TrajectoryLogger:
         self._prev = row
 
     def finalize(self, scene_path, robot_asset, rosbag_path,
-                 command_profile, topics_recorded):
+                 command_profile, topics_recorded, extra_meta=None):
         self._jsonl.close()
         self._csv_file.close()
 
@@ -132,6 +137,8 @@ class TrajectoryLogger:
             "max_yaw_rate_rad_s": round(self.max_yaw_rate, 4),
             "topics_recorded": topics_recorded,
         }
+        if extra_meta:
+            meta.update(extra_meta)
         with open(self.meta_path, "w") as f:
             json.dump(meta, f, indent=2)
         return meta
