@@ -120,6 +120,14 @@ Outputs per episode: `assets/experiments/<episode_id>/`.
 | 11 | Imported M3Pro USD composed empty when referenced | Isaac 5.1 URDF importer leaves `defaultPrim` unset in the modular root layer | Import script sets `defaultPrim=/yahboom_m3pro` post-import |
 | 12 | Robot invisible in every close-range render (looked like a composition bug) | `UsdGeom.Camera` default near-clip is 1.0 stage units — a 0.3 m robot within 1 m of the camera is entirely clipped | All authored cameras now set `clippingRange (0.02, 10000)`; recorded as a standing Isaac gotcha |
 | 13 | Importer dropped all primitive URDF visuals (7 unresolved references) | Isaac 5.1 modular importer only materialises mesh visuals | Import script re-authors box/cylinder/sphere visuals from the URDF spec into the imported stage |
+| 14 | ROS 2 CLI subprocesses silently broken from inside Isaac | Isaac's PYTHONPATH/LD_LIBRARY_PATH (py3.11) poisons the Humble CLI (py3.10) | Run all CLI calls under `env -i` with a scrubbed environment |
+| 15 | Robot beached: sank to exact axle depth, wheels spinning in the floor | Importer also drops primitive URDF *collision* shapes — robot had zero colliders | Import script authors invisible collider prims from URDF `<collision>` elements |
+| 16 | Still beached with colliders present | Cylinder gprim colliders cook to degenerate convexes at 5 cm wheel size | Sphere colliders for wheels (native PhysX shape) + PhysX contact offsets (0.005/0) + solver iterations 32/4 → perfect rest at z=0, 1.19 m per 4 s tracking |
+| 17 | Graph-driven actuation dead although wheel commands were correct | og ArticulationController node no-ops silently; lazily-evaluated array nodes never compute without a consumer | Actuation moved to Python: read the diff-controller output each step, `apply_action` on the articulation (the Phase 2 pipeline needs programmatic control anyway) |
+
+**Open item:** sim→CLI DDS visibility is asymmetric — Isaac receives
+`/cmd_vel` from the CLI, but `ros2 topic list`/`echo` do not yet see Isaac's
+publishers. Must be resolved for rosbag recording (R2).
 
 ## 7. Insights
 
@@ -164,11 +172,21 @@ true 0.29 m footprint. No Yahboom-provided URDF/meshes exist anywhere
 (previously searched), so the spec-derived URDF with documented dimension
 provenance remains the source of truth. ROS 2 Humble confirmed installed.
 
+**Done — /cmd_vel drive loop verified end-to-end (2026-07-08).**
+`scripts/robots/m3pro_ros2_bringup.py` builds the ROS 2 OmniGraph (context,
+clock, twist subscription, differential controller, odometry + tf
+publishers) around the articulated robot on a physics ground plane and runs
+a self-contained acceptance test. Result: **PASS — 3.44 m in 13.3 s under an
+externally published 0.3 m/s `/cmd_vel`** (~86% velocity tracking, no
+sinking, straight line). Actuation pattern: graph handles ROS I/O; Python
+reads the differential controller output each step and applies wheel
+velocities via the articulation API — the same loop the Phase 2 pipeline
+needs for policy control and trajectory logging.
+
 **Remaining:**
 
-1. Wire ROS 2 publishers on the articulated robot in the hospital scene
-   (`/camera/image_raw`, `/odom`, `/tf`, `/cmd_vel`; OmniGraph stubs in the
-   visible-placeholder stage are the reference).
+1. Fix sim→CLI DDS visibility (open item above), then camera publisher
+   (`/camera/image_raw`) and rosbag recording.
 2. Run GNM inference on the simulated camera feed; record genuine rosbags
    per episode (the six-run campaign table becomes real), logging agent
    trajectories per `PHASE2_REQUIREMENTS.md`.

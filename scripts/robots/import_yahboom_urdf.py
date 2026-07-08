@@ -90,13 +90,18 @@ if not stage.GetDefaultPrim():
 robot_root = stage.GetDefaultPrim().GetPath() if stage.GetDefaultPrim() \
     else "/yahboom_m3pro"
 
+from pxr import UsdPhysics as _UsdPhysics
+
 authored = 0
+collisions = 0
 for link in root.findall("link"):
     lname = link.get("name")
     link_path = f"{robot_root}/{lname}"
     if not stage.GetPrimAtPath(link_path):
         continue
-    for vi, visual in enumerate(link.findall("visual")):
+    elements = ([("viz", v) for v in link.findall("visual")]
+                + [("col", c) for c in link.findall("collision")])
+    for vi, (kind, visual) in enumerate(elements):
         geo = visual.find("geometry")
         if geo is None:
             continue
@@ -112,11 +117,18 @@ for link in root.findall("link"):
             elif mat.get("name") in materials:
                 color = tuple(materials[mat.get("name")])
 
-        path = f"{link_path}/viz_{vi}"
+        path = f"{link_path}/{kind}_{vi}"
         box = geo.find("box")
         cyl = geo.find("cylinder")
         sph = geo.find("sphere")
-        if box is not None:
+        if kind == "col" and cyl is not None and lname.endswith("_wheel"):
+            # Sphere collider for wheels: native PhysX shape (cylinder
+            # gprims cook to degenerate convexes at this size and the
+            # robot sinks to axle depth and beaches).
+            prim = UsdGeom.Sphere.Define(stage, path)
+            prim.CreateRadiusAttr(float(cyl.get("radius")))
+            api = UsdGeom.XformCommonAPI(prim)
+        elif box is not None:
             size = [float(v) for v in box.get("size").split()]
             prim = UsdGeom.Cube.Define(stage, path)
             prim.CreateSizeAttr(1.0)
@@ -136,9 +148,46 @@ for link in root.findall("link"):
             continue
         api.SetTranslate(Gf.Vec3d(*xyz))
         api.SetRotate(Gf.Vec3f(*rpy))
-        prim.CreateDisplayColorAttr().Set([Gf.Vec3f(*color)])
-        authored += 1
+        if kind == "col":
+            # Invisible physics collider (importer drops primitive
+            # collisions the same way it drops primitive visuals).
+            _UsdPhysics.CollisionAPI.Apply(prim.GetPrim())
+            from pxr import PhysxSchema
+            pc = PhysxSchema.PhysxCollisionAPI.Apply(prim.GetPrim())
+            pc.CreateContactOffsetAttr(0.005)
+            pc.CreateRestOffsetAttr(0.0)
+            prim.CreateVisibilityAttr(UsdGeom.Tokens.invisible)
+            collisions += 1
+        else:
+            prim.CreateDisplayColorAttr().Set([Gf.Vec3f(*color)])
+            authored += 1
+
+# Wheel joints need an angular drive for velocity control (stiffness 0,
+# damping > 0); the importer leaves continuous joints passive, so
+# ArticulationController velocity commands would apply zero torque.
+from pxr import UsdPhysics
+
+drives = 0
+for prim in stage.Traverse():
+    if prim.GetTypeName() == "PhysicsRevoluteJoint" \
+            and "wheel_joint" in prim.GetName():
+        drive = UsdPhysics.DriveAPI.Apply(prim, "angular")
+        drive.CreateTypeAttr("force")
+        drive.CreateStiffnessAttr(0.0)
+        drive.CreateDampingAttr(15.0)
+        drive.CreateMaxForceAttr(20.0)
+        drives += 1
+
+from pxr import PhysxSchema
+root_link = stage.GetPrimAtPath(f"{robot_root}/base_footprint")
+if root_link:
+    pa = PhysxSchema.PhysxArticulationAPI.Apply(root_link)
+    pa.CreateSolverPositionIterationCountAttr(32)
+    pa.CreateSolverVelocityIterationCountAttr(4)
+    print("[physx] solver iterations raised on articulation root")
 
 stage.Save()
 print(f"[visuals] authored {authored} primitive visuals from URDF")
+print(f"[collisions] authored {collisions} primitive colliders from URDF")
+print(f"[drives] applied angular velocity drives to {drives} wheel joints")
 app.close()
