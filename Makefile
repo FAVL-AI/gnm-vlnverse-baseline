@@ -1118,3 +1118,11 @@ validate-shadow-gnm:
 
 validate-gnm-closed-loop:
 	python3 scripts/gnm/validate_gnm_closed_loop.py $(EPISODE)
+
+PYTHON_ISAAC ?= $(HOME)/miniforge3/envs/isaac/bin/python
+
+capture-scene-goal:
+	bash -c 'source /opt/ros/humble/setup.bash && PYTHONPATH=$(CURDIR) $(PYTHON_ISAAC) -u scripts/robots/m3pro_ros2_bringup.py --capture-goal'
+
+validate-scene-goal:
+	PYTHONPATH=$(CURDIR) $(PYTHON_ISAAC) scripts/gnm/validate_scene_goal.py $(GOAL)

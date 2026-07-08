@@ -1,0 +1,35 @@
+{
+  "goal_id": "bringup_stage_goal_A",
+  "goal_image": "assets/experiments/goals/bringup_stage_goal_A/goal_image.png",
+  "goal_image_sha256": "ed80b0bc29db43cdc1fc49cb55f83183564171bddfffd0e7f58c901f7d053780",
+  "capture_source": "isaac_live_annotator",
+  "capture_command": "scripts/robots/m3pro_ros2_bringup.py --capture-goal",
+  "captured_at": "2026-07-08T04:28:41.752438",
+  "sim_time": 8.033,
+  "scene_stage_path": "procedural bring-up stage (ground plane + fixed landmarks, same scene as closed-loop smoke episodes)",
+  "robot_asset_path": "assets/robots/yahboom_m3_pro/yahboom_m3pro.usd",
+  "camera_prim": "/World/M3Pro/camera_link/rgb_camera",
+  "camera_frame_id": "camera_link",
+  "image_resolution": [
+    640,
+    480
+  ],
+  "robot_pose_at_capture": {
+    "x": 2.499,
+    "y": 0.4999,
+    "z": -0.0
+  },
+  "camera_pose_note": "camera rigidly mounted on camera_link of the robot posed at the goal",
+  "start_pose": {
+    "x": 0.0,
+    "y": 0.0,
+    "yaw_rad": 0.0
+  },
+  "goal_pose": {
+    "x": 2.5,
+    "y": 0.5,
+    "yaw_rad": 0.1
+  },
+  "git_commit": "662ea1d",
+  "git_branch": "isaac-hospital-demo"
+}

@@ -61,6 +61,20 @@ UsdGeom.XformCommonAPI(ground).SetScale(Gf.Vec3f(40, 40, 0.1))
 UsdGeom.XformCommonAPI(ground).SetTranslate(Gf.Vec3d(0, 0, -0.05))
 UsdPhysics.CollisionAPI.Apply(ground.GetPrim())
 
+# Fixed landmarks so goal observations captured in this scene are
+# visually distinctive (bare ground gives GNM no signal).
+def _landmark(name, pos, scale, color):
+    lm = UsdGeom.Cube.Define(stage, f"/World/Landmarks/{name}")
+    lm.CreateSizeAttr(1.0)
+    UsdGeom.XformCommonAPI(lm).SetTranslate(Gf.Vec3d(*pos))
+    UsdGeom.XformCommonAPI(lm).SetScale(Gf.Vec3f(*scale))
+    lm.CreateDisplayColorAttr().Set([Gf.Vec3f(*color)])
+
+_landmark("Pillar_Red", (4.6, 0.4, 0.5), (0.3, 0.3, 1.0), (0.85, 0.15, 0.15))
+_landmark("Pillar_Blue", (5.2, 1.4, 0.4), (0.3, 0.3, 0.8), (0.15, 0.25, 0.85))
+_landmark("Pillar_Green", (5.0, -0.7, 0.3), (0.3, 0.3, 0.6), (0.15, 0.7, 0.2))
+_landmark("Wall_Yellow", (6.5, 0.5, 0.6), (0.15, 4.0, 1.2), (0.9, 0.75, 0.1))
+
 robot = stage.DefinePrim("/World/M3Pro")
 robot.GetReferences().AddReference(str(ROBOT_USD))
 UsdGeom.XformCommonAPI(UsdGeom.Xformable(robot)).SetTranslate(
@@ -244,6 +258,84 @@ arti.apply_action(ArticulationAction(
 for _ in range(60):
     sim.step(render=False)
 
+if "--capture-goal" in sys.argv:
+    # ── Scene-aligned goal capture ───────────────────────────────────────
+    import hashlib
+    import json as _json
+    from datetime import datetime as _dtc
+
+    GOAL_ID = "bringup_stage_goal_A"
+    START_POSE = {"x": 0.0, "y": 0.0, "yaw_rad": 0.0}
+    GOAL_POSE = {"x": 2.5, "y": 0.5, "yaw_rad": 0.10}
+
+    half_yaw = GOAL_POSE["yaw_rad"] / 2.0
+    arti.set_world_pose(
+        position=np.array([GOAL_POSE["x"], GOAL_POSE["y"], 0.0]),
+        orientation=np.array([math.cos(half_yaw), 0.0, 0.0,
+                              math.sin(half_yaw)]))
+    for _ in range(30):
+        sim.step(render=False)
+
+    import omni.replicator.core as _repc
+    goal_annot = _repc.AnnotatorRegistry.get_annotator("rgb")
+    goal_annot.attach(render_product)
+    frame = None
+    for _ in range(90):
+        sim.step(render=True)
+        f = goal_annot.get_data()
+        if f is not None and getattr(f, "size", 0) > 0:
+            frame = np.asarray(f)[:, :, :3].copy()
+    if frame is None:
+        print("[goal] FAIL: no frame captured")
+        raise SystemExit(1)
+
+    from PIL import Image as _Img
+    gdir = REPO / "assets/experiments/goals" / GOAL_ID
+    gdir.mkdir(parents=True, exist_ok=True)
+    img_path = gdir / "goal_image.png"
+    _Img.fromarray(frame).save(img_path)
+    sha = hashlib.sha256(img_path.read_bytes()).hexdigest()
+
+    gp, gq = arti.get_world_pose()
+
+    def _git(*a):
+        return subprocess.run(["git", "-C", str(REPO), *a],
+                              capture_output=True, text=True).stdout.strip()
+
+    meta = {
+        "goal_id": GOAL_ID,
+        "goal_image": str(img_path.relative_to(REPO)),
+        "goal_image_sha256": sha,
+        "capture_source": "isaac_live_annotator",
+        "capture_command": " ".join(sys.argv),
+        "captured_at": _dtc.now().isoformat(),
+        "sim_time": round(float(sim.current_time), 3),
+        "scene_stage_path": "procedural bring-up stage (ground plane + "
+                            "fixed landmarks, same scene as closed-loop "
+                            "smoke episodes)",
+        "robot_asset_path": str(ROBOT_USD.relative_to(REPO)),
+        "camera_prim": CAM_PRIM,
+        "camera_frame_id": "camera_link",
+        "image_resolution": [int(frame.shape[1]), int(frame.shape[0])],
+        "robot_pose_at_capture": {
+            "x": round(float(gp[0]), 4), "y": round(float(gp[1]), 4),
+            "z": round(float(gp[2]), 4)},
+        "camera_pose_note": "camera rigidly mounted on camera_link of the "
+                            "robot posed at the goal",
+        "start_pose": START_POSE,
+        "goal_pose": GOAL_POSE,
+        "git_commit": _git("rev-parse", "--short", "HEAD"),
+        "git_branch": _git("branch", "--show-current"),
+    }
+    with open(gdir / "goal_metadata.json", "w") as f:
+        _json.dump(meta, f, indent=2)
+    print(f"[goal] captured {GOAL_ID}: {img_path}")
+    print(f"[goal] sha256={sha}")
+    print(f"[goal] start={START_POSE} goal={GOAL_POSE}")
+    sim.stop()
+    app.close()
+    raise SystemExit(0)
+
 
 # The Isaac process env poisons the ROS 2 CLI (python 3.10) with the
 # conda env's PYTHONPATH / LD_LIBRARY_PATH, so run every CLI call in a
@@ -326,10 +418,12 @@ if "--episode" in sys.argv or "--shadow-gnm" in sys.argv or "--gnm-control" in s
     from gnm_shadow import GNMShadow, SHADOW_FIELDS
     rgb_annot = _rep.AnnotatorRegistry.get_annotator("rgb")
     rgb_annot.attach(render_product)
-    shadow = GNMShadow(
-        REPO,
-        REPO / "assets/deck/tracka_goal_observation.jpg",
-        device="cuda")
+    _goal_img = REPO / "assets/deck/tracka_goal_observation.jpg"
+    if "--goal-id" in sys.argv:
+        _gid = sys.argv[sys.argv.index("--goal-id") + 1]
+        _goal_img = (REPO / "assets/experiments/goals" / _gid
+                     / "goal_image.png")
+    shadow = GNMShadow(REPO, _goal_img, device="cuda")
     print(f"[shadow] GNM shadow inference active (model="
           f"{shadow.latest['shadow_gnm_model_path']}); "
           "no /cmd_vel control — scripted controller drives")

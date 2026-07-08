@@ -82,13 +82,25 @@ pipeline described below.
   **Valid claim (narrow):** GNM can consume the simulated camera stream
   and produce bounded closed-loop velocity commands in Isaac Sim while
   the M3Pro remains stable under logged safety constraints.
-- **Still not valid:** image-goal navigation in the hospital scene, goal
-  reaching, SPL/SR improvements, FleetSafe safety improvements, six-run
-  campaign results. (The fixed goal image is not scene-aligned.)
-- **Next required work, in order:** scene-aligned goal images (goal
-  capture in the live scene) → stop-head shadow integration → GNM + stop
-  head comparison in the hospital scene → revalidate the campaign runs
-  (`PHASE2_REQUIREMENTS.md`).
+- **Scene-aligned goal capture: PASS (2026-07-08).** Fixed colored
+  landmark pillars added to the procedural smoke stage (shared by
+  capture and episodes); `make capture-scene-goal` poses the robot at a
+  target pose and saves the live camera view as the goal.
+  Goal `bringup_stage_goal_A`: start (0,0,0°) → goal (2.5, 0.5, 5.7°),
+  2.55 m apart; `goal_image.png` + `goal_metadata.json` (poses, scene,
+  frame_id, sim time, git, capture command, SHA-256) committed under
+  `assets/experiments/goals/`. `make validate-scene-goal` verifies
+  checksum, live-annotator provenance at live-camera resolution, sane
+  start/goal pair, and that the GNM pipeline loads the image.
+  Closed-loop runs accept `--goal-id` to use scene-aligned goals.
+- **Still not valid:** navigation quality (pending one validated
+  goal-conditioned closed-loop run), hospital-scene navigation, goal
+  reaching, SPL/SR, FleetSafe improvements, six-run campaign.
+- **Next required work, in order:** one short bounded GNM closed-loop
+  episode using the scene-aligned goal (`--gnm-control --episode
+  --goal-id bringup_stage_goal_A`) → stop-head shadow integration → GNM
+  + stop head comparison in the hospital scene → revalidate the campaign
+  runs (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence
 
