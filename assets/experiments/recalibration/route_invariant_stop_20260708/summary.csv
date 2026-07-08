@@ -1,0 +1,8 @@
+family,label,tuned,params,tune_fired,heldout_fired,heldout_false_stops,transfer_ok
+rel_min_margin,recalibration_candidate,False,"""""",,,,
+trend_reversal_prog,recalibration_candidate,True,"{""rise_k"": 3, ""min_prog"": 1.0}",3/3,2/2,0,True
+normalized_pred,recalibration_candidate,True,"{""frac"": 0.5}",3/3,2/2,0,True
+hybrid_min_rise_motion,recalibration_candidate,False,"""""",,,,
+true_d2g_reversal,privileged_diagnostic,True,"{""margin"": 0.05}",3/3,2/2,0,True
+absolute_dist_pred_gate,REJECTED,,"""""",,,,
+live_domain_logistic_fit,exploratory,,"""""",,,,

@@ -1,0 +1,170 @@
+{
+  "study": "route_invariant_stop_recalibration",
+  "protocol": "tuned on A/B/C only; D/E baselines held out as validation; D/E authority logs excluded (truncated)",
+  "label": "no_authority_no_improvement_claim",
+  "sources_tune": [
+    "hospital_straight_short_A_20260708_142753",
+    "hospital_straight_medium_B_20260708_142905",
+    "hospital_low_curvature_C_20260708_143004"
+  ],
+  "sources_heldout_validation": [
+    "authcmp_D_baseline_20260708_145214",
+    "authcmp_E_baseline_20260708_145441"
+  ],
+  "sources_listed_truncated": [
+    "authcmp_D_stopauth_20260708_145306",
+    "authcmp_E_stopauth_20260708_145535"
+  ],
+  "heldout_baseline_finals": {
+    "authcmp_D_baseline": 0.4852,
+    "authcmp_E_baseline": 0.4926
+  },
+  "rules": [
+    {
+      "family": "rel_min_margin",
+      "kind": "relative-progress + local-min margin",
+      "label": "recalibration_candidate",
+      "tuned": false,
+      "note": "no parameterisation fired all tuning episodes without false stops"
+    },
+    {
+      "family": "trend_reversal_prog",
+      "kind": "trend reversal after minimum, progress-guarded",
+      "label": "recalibration_candidate",
+      "tuned": true,
+      "chosen_params": {
+        "rise_k": 3,
+        "min_prog": 1.0
+      },
+      "tune_mean_penalty_m": 1.041,
+      "tune_fired": "3/3",
+      "heldout": {
+        "authcmp_D_baseline": {
+          "fires": true,
+          "stop_step": 330,
+          "d2g_at_stop": 1.41,
+          "pred_at_stop": 4.7,
+          "timing": "early",
+          "penalty_vs_min_m": 1.405,
+          "false_stop": false
+        },
+        "authcmp_E_baseline": {
+          "fires": true,
+          "stop_step": 330,
+          "d2g_at_stop": 2.4,
+          "pred_at_stop": 6.15,
+          "timing": "early",
+          "penalty_vs_min_m": 2.394,
+          "false_stop": false
+        }
+      },
+      "heldout_fired": "2/2",
+      "heldout_false_stops": 0,
+      "would_improve_heldout_vs_baseline_final": {
+        "authcmp_D_baseline": false,
+        "authcmp_E_baseline": false
+      },
+      "transfer_ok": true
+    },
+    {
+      "family": "normalized_pred",
+      "kind": "normalized predicted distance",
+      "label": "recalibration_candidate",
+      "tuned": true,
+      "chosen_params": {
+        "frac": 0.5
+      },
+      "tune_mean_penalty_m": 1.097,
+      "tune_fired": "3/3",
+      "heldout": {
+        "authcmp_D_baseline": {
+          "fires": true,
+          "stop_step": 702,
+          "d2g_at_stop": 0.173,
+          "pred_at_stop": 2.53,
+          "timing": "early",
+          "penalty_vs_min_m": 0.169,
+          "false_stop": false
+        },
+        "authcmp_E_baseline": {
+          "fires": true,
+          "stop_step": 744,
+          "d2g_at_stop": 1.023,
+          "pred_at_stop": 3.64,
+          "timing": "early",
+          "penalty_vs_min_m": 1.018,
+          "false_stop": false
+        }
+      },
+      "heldout_fired": "2/2",
+      "heldout_false_stops": 0,
+      "would_improve_heldout_vs_baseline_final": {
+        "authcmp_D_baseline": true,
+        "authcmp_E_baseline": false
+      },
+      "transfer_ok": true
+    },
+    {
+      "family": "hybrid_min_rise_motion",
+      "kind": "hybrid: progress + past-minimum rise + moving",
+      "label": "recalibration_candidate",
+      "tuned": false,
+      "note": "no parameterisation fired all tuning episodes without false stops"
+    },
+    {
+      "family": "true_d2g_reversal",
+      "kind": "PRIVILEGED DIAGNOSTIC (uses ground-truth d2g; not deployable in ImageNav)",
+      "label": "privileged_diagnostic",
+      "tuned": true,
+      "chosen_params": {
+        "margin": 0.05
+      },
+      "tune_mean_penalty_m": 1.854,
+      "tune_fired": "3/3",
+      "heldout": {
+        "authcmp_D_baseline": {
+          "fires": true,
+          "stop_step": 309,
+          "d2g_at_stop": 1.479,
+          "pred_at_stop": 4.43,
+          "timing": "early",
+          "penalty_vs_min_m": 1.475,
+          "false_stop": false
+        },
+        "authcmp_E_baseline": {
+          "fires": true,
+          "stop_step": 309,
+          "d2g_at_stop": 2.469,
+          "pred_at_stop": 5.91,
+          "timing": "early",
+          "penalty_vs_min_m": 2.464,
+          "false_stop": false
+        }
+      },
+      "heldout_fired": "2/2",
+      "heldout_false_stops": 0,
+      "would_improve_heldout_vs_baseline_final": {
+        "authcmp_D_baseline": false,
+        "authcmp_E_baseline": false
+      },
+      "transfer_ok": true
+    },
+    {
+      "family": "absolute_dist_pred_gate",
+      "label": "REJECTED",
+      "kind": "absolute predicted-distance threshold (dist_pred<=4.5,k=3)",
+      "note": "rejected out-of-sample in commit 8b625eb: fired early on held-out reverse route (stop at true d2g 1.479/1.103 m), worse than no-stop baseline by +0.992/+0.608 m"
+    },
+    {
+      "family": "live_domain_logistic_fit",
+      "label": "exploratory",
+      "kind": "learned live-domain calibration model",
+      "note": "deferred: only 3 independent tuning episodes; fitting would be in-sample noise. Requires a larger live episode set before it is meaningful."
+    }
+  ],
+  "preferred_candidate": "normalized_pred",
+  "preferred_params": {
+    "frac": 0.5
+  },
+  "next_step": "held-out authority rerun with the preferred candidate on NEW goals before any improvement claim"
+}

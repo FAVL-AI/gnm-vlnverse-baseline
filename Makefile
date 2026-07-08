@@ -1144,3 +1144,6 @@ validate-stop-boundary-study:
 
 validate-stop-authority-comparison:
 	python3 scripts/gnm/validate_stop_authority_comparison.py
+
+validate-route-invariant-stop-study:
+	python3 scripts/gnm/validate_route_invariant_stop_study.py $(STUDY)

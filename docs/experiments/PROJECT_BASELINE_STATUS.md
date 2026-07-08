@@ -245,11 +245,33 @@ pipeline described below.
   made it worse out-of-sample), FleetSafe improvement, success rate,
   SPL, robust hospital navigation, goal reaching as an achievement,
   curved-path navigation claims, six-run campaign.
-- **Next required work, in order:** route-invariant stop-rule
-  recalibration (relative/trend signals, or live-domain stop-head
-  retraining) with held-out validation built in from the start → GNM
-  + stop head comparison rerun → revalidate the campaign runs
-  (`PHASE2_REQUIREMENTS.md`).
+- **Route-invariant stop recalibration study: VALID (2026-07-08).**
+  Offline, no authority; tuned on A/B/C only, validated untouched on
+  the held-out D/E baseline logs
+  (`assets/experiments/recalibration/route_invariant_stop_20260708/`,
+  `make validate-route-invariant-stop-study`). Absolute gate stays
+  REJECTED on record. Two families (rel-min margin, hybrid) died in
+  tuning and are recorded as such; the live-domain learned fit is
+  deferred as exploratory (3 independent tuning episodes is noise).
+  Three rules transfer to held-out routes (fire 2/2, zero false
+  stops): trend-reversal (early: 1.41/2.40 m), the privileged
+  ground-truth-d2g diagnostic (also early — true distance has local
+  reversals during heading corrections, so single-scalar
+  "passed-closest-approach" detection is intrinsically noisy), and
+  **normalized_pred (pred ≤ 0.5 × initial, k=3): held-out D stop at
+  0.173 m (retrospectively better than the 0.485 m no-stop final and
+  inside a success radius), held-out E early at 1.02 m.** Preferred
+  candidate for the authority rerun: `normalized_pred`, with the E
+  early-stop explicitly on record. Interpretation caveat recorded:
+  fixed-length baseline finals understate real overshoot, so these
+  counterfactuals are conservative toward stop rules. **Valid claim:**
+  existing live logs identify route-invariant stop candidates that
+  avoid the failure mode of absolute predicted-distance thresholding.
+  **The authority rerun is pending; improvement remains not valid.**
+- **Next required work, in order:** held-out authority rerun with
+  `normalized_pred` on NEW goals (fresh routes, never used for tuning
+  or prior validation) → GNM + stop head comparison → revalidate the
+  campaign runs (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence
 
