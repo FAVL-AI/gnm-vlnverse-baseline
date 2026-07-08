@@ -32,10 +32,20 @@ pipeline described below.
   3.4 MB) — 17.6 s, 9,906 messages while the robot drove a commanded arc:
   `/odom` 3,259, `/tf` 3,257, `/clock` 3,257, `/cmd_vel` 133. No camera
   topic yet.
-- **Next required work, in order:** `/camera/image_raw` publisher →
-  full-topic rosbag → mandatory per-step trajectory logging → GNM
-  inference loop on the simulated camera feed → revalidate the campaign
-  runs (`PHASE2_REQUIREMENTS.md`).
+- **Camera publisher: PASS (2026-07-08).** RGB camera authored on the
+  robot's `camera_link`; `/camera/image_raw` (640×480 `rgb8`) and
+  `/camera/camera_info` both visible and echoing from a clean external
+  shell. Full-topic rosbag recorded while driving a commanded arc:
+  `assets/experiments/rosbags/full_topics_20260708` (gitignored, 1.2 GB;
+  SHA-256 manifest in `assets/experiments/manifests/`) — 14.7 s, 6,975
+  messages: image 1,376, camera_info 1,374, odom/tf/clock 1,375 each,
+  cmd_vel 100; robot stable throughout (|z| < 2 µm).
+- **Not yet valid:** live GNM inference from the simulated camera, any
+  policy-navigation claim, the six-run campaign.
+- **Next required work, in order:** mandatory per-step trajectory
+  logging → GNM inference loop on the simulated camera feed → GNM + stop
+  head comparison → revalidate the campaign runs
+  (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence
 

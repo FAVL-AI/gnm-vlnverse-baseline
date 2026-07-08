@@ -151,6 +151,58 @@ stage.GetPrimAtPath("/World/ROS2Graph/odom").GetRelationship(
     "inputs:chassisPrim").SetTargets([ARTIC_ROOT])
 print("[graph] ROS2 graph built")
 
+# --- Camera publisher -----------------------------------------------------
+# The URDF import creates the camera_link frame but no Camera prim. Author
+# an RGB camera under it: rotateXYZ (90, 0, -90) points the USD camera's
+# forward (-Z) along the robot's +X with up = +Z.
+CAM_PRIM = f"{ROBOT_PATH}/camera_link/rgb_camera"
+cam = UsdGeom.Camera.Define(stage, CAM_PRIM)
+cam.CreateFocalLengthAttr(18.0)
+cam.CreateClippingRangeAttr(Gf.Vec2f(0.02, 10000.0))
+UsdGeom.XformCommonAPI(cam).SetRotate(Gf.Vec3f(90.0, 0.0, -90.0))
+
+import omni.replicator.core as rep
+
+render_product = rep.create.render_product(CAM_PRIM, (640, 480))
+rp_path = render_product.path if hasattr(render_product, "path") \
+    else str(render_product)
+
+og.Controller.edit("/World/ROS2Graph", {
+    keys.CREATE_NODES: [
+        ("camHelper", "isaacsim.ros2.bridge.ROS2CameraHelper"),
+    ],
+    keys.SET_VALUES: [
+        ("camHelper.inputs:renderProductPath", rp_path),
+        ("camHelper.inputs:type", "rgb"),
+        ("camHelper.inputs:topicName", "camera/image_raw"),
+        ("camHelper.inputs:frameId", "camera_link"),
+    ],
+    keys.CONNECT: [
+        ("/World/ROS2Graph/tick.outputs:tick", "camHelper.inputs:execIn"),
+        ("/World/ROS2Graph/rosCtx.outputs:context", "camHelper.inputs:context"),
+    ],
+})
+print(f"[camera] /camera/image_raw publisher configured (rp={rp_path})")
+
+try:
+    og.Controller.edit("/World/ROS2Graph", {
+        keys.CREATE_NODES: [
+            ("camInfo", "isaacsim.ros2.bridge.ROS2CameraInfoHelper"),
+        ],
+        keys.SET_VALUES: [
+            ("camInfo.inputs:renderProductPath", rp_path),
+            ("camInfo.inputs:topicName", "camera/camera_info"),
+            ("camInfo.inputs:frameId", "camera_link"),
+        ],
+        keys.CONNECT: [
+            ("/World/ROS2Graph/tick.outputs:tick", "camInfo.inputs:execIn"),
+            ("/World/ROS2Graph/rosCtx.outputs:context", "camInfo.inputs:context"),
+        ],
+    })
+    print("[camera] /camera/camera_info publisher configured")
+except Exception as e:
+    print(f"[camera] camera_info deferred (node wiring failed): {e}")
+
 from isaacsim.core.api import SimulationContext
 from isaacsim.core.prims import SingleArticulation
 from isaacsim.core.utils.types import ArticulationAction
