@@ -1135,3 +1135,6 @@ validate-stop-head-shadow:
 
 validate-yaw-authority:
 	python3 scripts/gnm/validate_yaw_authority.py $(EPISODE)
+
+validate-hospital-shadow-episodes:
+	python3 scripts/gnm/validate_hospital_shadow_episodes.py $(EPISODES)

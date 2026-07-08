@@ -37,6 +37,17 @@ import omni.timeline
 import omni.usd
 from pxr import Gf, Usd, UsdGeom, UsdLux, UsdPhysics
 
+def _argval(flag, default=None):
+    import sys as _s
+    if flag in _s.argv:
+        return _s.argv[_s.argv.index(flag) + 1]
+    return default
+
+
+SCENE = _argval("--scene", "stage")
+SCENE_HOSPITAL = SCENE == "hospital"
+SPAWN = [float(v) for v in _argval("--spawn-pose", "0,0,0").split(",")]
+
 REPO = Path(__file__).resolve().parents[2]
 ROBOT_USD = REPO / "assets/robots/yahboom_m3_pro/yahboom_m3pro.usd"
 WHEEL_JOINTS = ["fl_wheel_joint", "fr_wheel_joint",
@@ -59,8 +70,31 @@ UsdLux.DomeLight.Define(stage, "/World/Dome").CreateIntensityAttr(1000.0)
 ground = UsdGeom.Cube.Define(stage, "/World/Ground")
 ground.CreateSizeAttr(1.0)
 UsdGeom.XformCommonAPI(ground).SetScale(Gf.Vec3f(40, 40, 0.1))
-UsdGeom.XformCommonAPI(ground).SetTranslate(Gf.Vec3d(0, 0, -0.05))
+UsdGeom.XformCommonAPI(ground).SetTranslate(
+    Gf.Vec3d(0, 0, -0.06 if SCENE_HOSPITAL else -0.05))
 UsdPhysics.CollisionAPI.Apply(ground.GetPrim())
+if SCENE_HOSPITAL:
+    # Safety-net plane sits 1 cm below the hospital floor; the hospital
+    # provides its own collision floor. Layout constraints documented in
+    # docs/ISAAC_HOSPITAL_ENVIRONMENT.md.
+    ground.CreateVisibilityAttr(UsdGeom.Tokens.invisible)
+    HOSPITAL_USD = (
+        "https://omniverse-content-production.s3-us-west-2.amazonaws.com"
+        "/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd")
+    hosp = stage.DefinePrim("/World/Hospital")
+    hosp.GetReferences().AddReference(HOSPITAL_USD)
+    print("[scene] hospital environment loading (cached after first run)")
+    for _ in range(60):
+        app.update()
+    for _ in range(3000):
+        app.update()
+        try:
+            _, loading, total = ctx.get_stage_loading_status()
+        except Exception:
+            break
+        if loading == 0 and total == 0:
+            break
+    print("[scene] hospital environment loaded")
 
 # Fixed landmarks so goal observations captured in this scene are
 # visually distinctive (bare ground gives GNM no signal).
@@ -71,15 +105,18 @@ def _landmark(name, pos, scale, color):
     UsdGeom.XformCommonAPI(lm).SetScale(Gf.Vec3f(*scale))
     lm.CreateDisplayColorAttr().Set([Gf.Vec3f(*color)])
 
-_landmark("Pillar_Red", (4.6, 0.4, 0.5), (0.3, 0.3, 1.0), (0.85, 0.15, 0.15))
-_landmark("Pillar_Blue", (5.2, 1.4, 0.4), (0.3, 0.3, 0.8), (0.15, 0.25, 0.85))
-_landmark("Pillar_Green", (5.0, -0.7, 0.3), (0.3, 0.3, 0.6), (0.15, 0.7, 0.2))
-_landmark("Wall_Yellow", (6.5, 0.5, 0.6), (0.15, 4.0, 1.2), (0.9, 0.75, 0.1))
+if not SCENE_HOSPITAL:
+    _landmark("Pillar_Red", (4.6, 0.4, 0.5), (0.3, 0.3, 1.0), (0.85, 0.15, 0.15))
+    _landmark("Pillar_Blue", (5.2, 1.4, 0.4), (0.3, 0.3, 0.8), (0.15, 0.25, 0.85))
+    _landmark("Pillar_Green", (5.0, -0.7, 0.3), (0.3, 0.3, 0.6), (0.15, 0.7, 0.2))
+    _landmark("Wall_Yellow", (6.5, 0.5, 0.6), (0.15, 4.0, 1.2), (0.9, 0.75, 0.1))
 
 robot = stage.DefinePrim("/World/M3Pro")
 robot.GetReferences().AddReference(str(ROBOT_USD))
 UsdGeom.XformCommonAPI(UsdGeom.Xformable(robot)).SetTranslate(
-    Gf.Vec3d(0, 0, 0.005))
+    Gf.Vec3d(SPAWN[0], SPAWN[1], 0.005))
+UsdGeom.XformCommonAPI(UsdGeom.Xformable(robot)).SetRotate(
+    Gf.Vec3f(0.0, 0.0, math.degrees(SPAWN[2])))
 app.update()
 
 ROBOT_PATH = "/World/M3Pro"
@@ -232,6 +269,18 @@ arti.initialize()
 sim.play()
 for _ in range(60):
     sim.step(render=False)
+if SPAWN != [0.0, 0.0, 0.0]:
+    # USD parent-prim transforms do not survive articulation init;
+    # spawn pose must go through the articulation API.
+    _h = SPAWN[2] / 2.0
+    arti.set_world_pose(
+        position=np.array([SPAWN[0], SPAWN[1], 0.02]),
+        orientation=np.array([math.cos(_h), 0.0, 0.0, math.sin(_h)]))
+    for _ in range(30):
+        sim.step(render=False)
+    _sp_p, _ = arti.get_world_pose()
+    print(f"[spawn] robot placed at ({_sp_p[0]:.2f}, {_sp_p[1]:.2f}), "
+          f"yaw {SPAWN[2]:.2f} rad")
 print(f"[init] dof names: {list(arti.dof_names)}")
 
 
@@ -245,7 +294,7 @@ px0, py0, pz0 = robot_xyz()
 action = ArticulationAction(
     joint_velocities=[6.25, 6.25, 6.25, 6.25],
     joint_indices=[arti.get_dof_index(j) for j in WHEEL_JOINTS])
-for _ in range(240):
+for _ in range(0 if SCENE_HOSPITAL else 240):
     arti.apply_action(action)
     sim.step(render=False)
 px1, py1, pz1 = robot_xyz()
@@ -399,9 +448,11 @@ if "--capture-goal" in sys.argv:
     import json as _json
     from datetime import datetime as _dtc
 
-    GOAL_ID = "bringup_stage_goal_A"
-    START_POSE = {"x": 0.0, "y": 0.0, "yaw_rad": 0.0}
-    GOAL_POSE = {"x": 2.5, "y": 0.5, "yaw_rad": 0.10}
+    GOAL_ID = _argval("--goal-id", "bringup_stage_goal_A")
+    _sp = [float(v) for v in _argval("--start-pose", "0,0,0").split(",")]
+    _gp = [float(v) for v in _argval("--goal-pose", "2.5,0.5,0.10").split(",")]
+    START_POSE = {"x": _sp[0], "y": _sp[1], "yaw_rad": _sp[2]}
+    GOAL_POSE = {"x": _gp[0], "y": _gp[1], "yaw_rad": _gp[2]}
 
     half_yaw = GOAL_POSE["yaw_rad"] / 2.0
     arti.set_world_pose(
@@ -445,9 +496,11 @@ if "--capture-goal" in sys.argv:
         "capture_command": " ".join(sys.argv),
         "captured_at": _dtc.now().isoformat(),
         "sim_time": round(float(sim.current_time), 3),
-        "scene_stage_path": "procedural bring-up stage (ground plane + "
-                            "fixed landmarks, same scene as closed-loop "
-                            "smoke episodes)",
+        "scene_stage_path": ("isaac hospital environment (standard scene, "
+                             "docs/ISAAC_HOSPITAL_ENVIRONMENT.md)"
+                             if SCENE_HOSPITAL else
+                             "procedural bring-up stage (ground plane + "
+                             "fixed landmarks)"),
         "robot_asset_path": str(ROBOT_USD.relative_to(REPO)),
         "camera_prim": CAM_PRIM,
         "camera_frame_id": "camera_link",
@@ -514,7 +567,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from trajectory_logger import TrajectoryLogger
 
 CL_MODE = "--gnm-control" in sys.argv
-_prefix = "gnm_closed_loop" if CL_MODE else "manual_arc"
+_prefix = _argval("--episode-name",
+                  "gnm_closed_loop" if CL_MODE else "manual_arc")
 EPISODE_ID = f"{_prefix}_{_dt.now():%Y%m%d_%H%M%S}"
 EPISODE_TOPICS = ["/camera/image_raw", "/camera/camera_info", "/odom",
                   "/tf", "/clock", "/cmd_vel"]
@@ -601,7 +655,7 @@ if CL_MODE:
     CL_BOUND_XY = 6.0
     CL_Z_DRIFT_MAX = 0.05
     CL_FAIL_MAX = 10
-    CL_STEPS = 480          # 8 s of sim time at 60 Hz
+    CL_STEPS = int(_argval("--steps", "480"))   # sim steps at 60 Hz
     CL_WATCHDOG_S = 0.5     # sim seconds without fresh inference -> zero
 
     publish_ok = True
@@ -839,7 +893,8 @@ if CL_MODE:
             "claim"),
     })
     meta = traj_log.finalize(
-        scene_path="procedural bring-up stage (physics ground plane)",
+        scene_path=("isaac hospital environment" if SCENE_HOSPITAL
+                    else "procedural bring-up stage (physics ground plane)"),
         robot_asset=ROBOT_USD.relative_to(REPO),
         rosbag_path=bag_path.relative_to(REPO) if bag_path else None,
         command_profile=(f"GNM closed loop, clamped to {CL_LIN_MAX} m/s "

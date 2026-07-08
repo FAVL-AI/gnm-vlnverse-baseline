@@ -160,15 +160,42 @@ pipeline described below.
   failures on curved paths would be partly execution-layer control
   failures, not policy or stop-head failures — this characterization
   is the evidence that separates them.
-- **Still not valid:** stop-head improvement of navigation or safety,
-  FleetSafe improvement, success rate, SPL, robust hospital
-  navigation, goal reaching as an achievement, curved-path navigation
-  claims, six-run campaign.
-- **Next required work, in order:** hospital-scene straight/low-
-  curvature episodes (stop head still in shadow, closer to its
-  training distribution) → stop-head shadow recalibration study → GNM
-  + stop head comparison → revalidate the campaign runs
-  (`PHASE2_REQUIREMENTS.md`).
+- **Hospital-scene shadow episodes: PASS (2026-07-08).** Three
+  GNM-controlled straight/low-curvature episodes in the hospital lobby
+  (scene-aligned hospital goals A/B/C captured with full provenance;
+  spawn via the articulation API after discovering USD parent-prim
+  transforms do not survive articulation init). Stop head shadow-only
+  on every row; net yaw ≤ 0.002 rad (inside the weak-yaw guard);
+  clamps, stability, full-topic bags and manifests all verified by
+  `make validate-hospital-shadow-episodes`.
+
+  | episode | route | d2g start→min→final | stop head |
+  |---|---|---|---|
+  | `hospital_straight_short_A` | straight 2 m | 2.000→0.002→0.390 | **FIRED** @step 525, d2g 0.258 m, prob→1.000 |
+  | `hospital_straight_medium_B` | straight 4 m | 4.003→0.001→0.981 | did not fire (max prob 0.000) |
+  | `hospital_low_curvature_C` | low-curv 3 m | 3.025→0.394→0.708 | did not fire (max prob 0.000) |
+
+  **Key measurement (shadow, not improvement):** in episode A, GNM's
+  predicted goal distance entered its trained near-goal regime
+  (9.1→1.2) and the stop head signalled STOP at 0.258 m *while still
+  approaching*, before the 2 mm nearest pass; the no-authority robot
+  ended at 0.390 m — the would-have-stopped analysis shows stop-at-
+  signal ends 0.133 m closer than no-stop did. Episodes B/C expose a
+  sharp firing boundary (GNM dist_pred floors 2.2/4.4 → no fire): the
+  head fires only when GNM's own distance prediction bottoms out
+  near 1, a threshold-calibration observation for the recalibration
+  study, reported as recalibration, not deficiency or improvement.
+  **Valid claim:** the live pipeline can evaluate stop-head shadow
+  behaviour during GNM-controlled hospital-scene straight/low-
+  curvature episodes.
+- **Still not valid:** stop-head improvement of navigation or safety
+  (needs authority episodes), FleetSafe improvement, success rate,
+  SPL, robust hospital navigation, goal reaching as an achievement,
+  curved-path navigation claims, six-run campaign.
+- **Next required work, in order:** stop-head shadow recalibration
+  study (firing-boundary characterization across goals/routes) → GNM
+  + stop head comparison (first authority episodes, bounded) →
+  revalidate the campaign runs (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence
 
