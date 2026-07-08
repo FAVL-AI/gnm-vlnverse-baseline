@@ -1180,3 +1180,6 @@ validate-generated-episode-smoke:
 
 validate-generated-train-batch:
 	python3 scripts/gnm/validate_generated_train_batch.py
+
+validate-generated-train-expanded:
+	python3 scripts/gnm/validate_generated_train_expanded.py

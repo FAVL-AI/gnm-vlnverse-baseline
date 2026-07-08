@@ -77,15 +77,24 @@ free_px = np.argwhere(free)
 lo_px = POLICY["min_path_m"] / s
 hi_px = POLICY["max_path_m"] / s
 routes, used_cells = [], set()
+import pickle as _pk
+def _cell_of(pos_xy):
+    col = (hi[0]-pos_xy[0])/s; row = (pos_xy[1]-lo[1])/s
+    return (int(row)//POLICY["dedup_cell_px"], int(col)//POLICY["dedup_cell_px"])
+for _old in Path("datasets/vlntube_generated/train").glob("*/metadata.json"):
+    _m = json.loads(_old.read_text())
+    if _m.get("scene") != SCENE: continue
+    _t = _pk.loads((_old.parent/"traj_data.pkl").read_bytes())
+    used_cells.add((_cell_of(_t["position"][0]), _cell_of(_t["position"][-1])))
 tries = 0
-while len(routes) < N_EP and tries < 3000:
+while len(routes) < N_EP * 2 and tries < 6000:
     tries += 1
     a, b = free_px[rng.integers(len(free_px), size=2)]
     d = np.hypot(*(a - b))
     if not (lo_px <= d <= hi_px):
         continue
-    cell = (tuple(a // POLICY["dedup_cell_px"]),
-            tuple(b // POLICY["dedup_cell_px"]))
+    cell = (tuple(int(v) // POLICY["dedup_cell_px"] for v in a),
+            tuple(int(v) // POLICY["dedup_cell_px"] for v in b))
     if cell in used_cells:
         continue
     try:
@@ -100,7 +109,7 @@ while len(routes) < N_EP and tries < 3000:
     used_cells.add(cell)
     routes.append({"path": path, "clearance_min": float(clearances.min()),
                    "clearance_median": float(np.median(clearances))})
-assert len(routes) == N_EP, f"only {len(routes)} routes after {tries} tries"
+assert len(routes) >= N_EP, f"only {len(routes)} routes after {tries} tries"
 
 ctx = omni.usd.get_context()
 ctx.open_stage(str(env / "start_result_navigation.usd"))
@@ -112,6 +121,34 @@ cam.CreateClippingRangeAttr(Gf.Vec2f(0.05, 10000))
 cam.CreateFocalLengthAttr(POLICY["camera"]["focal_mm"])
 rp = rep.create.render_product("/World_extra/cam", tuple(POLICY["camera"]["image"]))
 annot = rep.AnnotatorRegistry.get_annotator("rgb"); annot.attach(rp)
+
+def render_at(x, y, th):
+    t_op.Set(Gf.Vec3d(float(x), float(y), POLICY["camera"]["z_m"]))
+    r_op.Set(Gf.Vec3f(0.0, 0.0, float(np.degrees(th))))
+    arr = np.zeros(())
+    for _ in range(12):
+        rep.orchestrator.step(rt_subframes=3)
+        arr = np.array(annot.get_data())
+        if arr.ndim == 3 and arr.size and float(arr[..., :3].mean()) > 1.0:
+            break
+    return arr[..., :3].astype("uint8")
+
+
+# goal-content precheck: reject routes whose goal frame is featureless
+strong_routes = []
+for route in routes:
+    gr, gc = route["path"][-1]
+    gx, gy = to_world(gr, gc)
+    prev = route["path"][-2] if len(route["path"]) > 1 else route["path"][-1]
+    px, py = to_world(*prev)
+    th = np.arctan2(gy - py, gx - px)
+    gframe = render_at(gx, gy, th)
+    route["goal_precheck_std"] = float(gframe.std())
+    if route["goal_precheck_std"] >= POLICY["min_goal_frame_std"]:
+        strong_routes.append(route)
+print(f"[batch] goal precheck: {len(strong_routes)}/{len(routes)} strong",
+      flush=True)
+routes = strong_routes[:N_EP]
 
 results = []
 for ep_i, route in enumerate(routes):

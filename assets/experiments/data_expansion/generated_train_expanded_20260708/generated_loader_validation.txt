@@ -1,0 +1,4 @@
+episodes on disk: 130 | dataset samples: 4272
+tensor shapes valid at 4 probe points
+scenes: ['kujiale_0092', 'kujiale_0118', 'kujiale_0203'] — kujiale_0271 absent
+LOADER CHECK: PASS — all 130 generated episodes consumed by the existing GNMDataset with no special-case code

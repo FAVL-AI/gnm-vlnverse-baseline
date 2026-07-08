@@ -441,3 +441,41 @@ frames, scale to +50–100 episodes, then Stage 4 retrain and the Stage 5
 one-time frozen-scene comparison. Evidence:
 `assets/experiments/data_expansion/generated_train_batch_20260708/`,
 `make validate-generated-train-batch`.
+
+## 23. Stage 3D: scaled top-down generated training data
+**Hypothesis:** with the goal-content precheck, generation can scale to
++100 episodes with zero weak goals, staying strictly inside the
+top-down VLNTube camera regime.
+**Setup:** weak-goal resampling (4 Stage-3C episodes, all kujiale_0118,
+deleted and regenerated under precheck), then 34/37/33 new episodes
+(seeds 11/12/13) with cross-batch dedup; camera locked to the verified
+nadir model on every episode and asserted by the validator.
+**Result — validator PASS:** 130 generated episodes (44/43/43 per train
+scene), 4,402 frames, 4,272 samples through the unmodified GNMDataset,
+**goal content 130/130** (pilot was 26/30).
+**The Good:** the precheck works as designed — render the goal frame
+first, reject weak routes before paying for episode rendering; the
+whole 100-episode expansion took minutes.
+**The Bad:** kujiale_0118 rejects ~50% of candidate routes at the
+goal-content gate (large featureless floor regions) — a scene-specific
+data-quality tax.
+**The Ugly:** the 0118 run produced exactly 37 strong candidates for a
+37-episode request — zero headroom; a one-route shortfall would have
+crashed the run. The oversampling factor is now the documented knob.
+**Root Cause:** goal-frame information content varies strongly by scene
+texture at the top-down camera scale.
+**Mitigation/Decision:** precheck retained; oversampling factor noted in
+blockers; two-camera-regime rule locked in camera_model_lock.md (Kujiale
+training = top-down only; hospital front-camera demo = separate, never
+mixed).
+**Insight:** data-quality gates belong BEFORE the expensive render, and
+per-scene pass rates are themselves a useful scene diagnostic.
+**Limitation (exact claim):** this stage expands train-side top-down
+VLNTube-style data generation. It does not claim improved model
+performance until the model is retrained and evaluated once on the
+frozen scene-held-out test scene kujiale_0271.
+**Next Evidence Gate:** Stage 4 retrain (191 original + 130 generated,
+val-only selection) → Stage 5 one-shot evaluation on kujiale_0271 vs
+SR 32.0 / OSR 56.0 / NE 5.58 / SPL 0.315.
+Evidence: `assets/experiments/data_expansion/generated_train_expanded_20260708/`,
+`make validate-generated-train-expanded`.

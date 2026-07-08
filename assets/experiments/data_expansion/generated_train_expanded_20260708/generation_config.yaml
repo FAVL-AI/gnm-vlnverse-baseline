@@ -1,0 +1,30 @@
+experiment: generated_train_batch_20260708
+generator: scripts/gnm/generate_vlntube_batch.py
+scenes: [kujiale_0092, kujiale_0118, kujiale_0203]
+episodes_per_scene: 10
+seed: 7
+step_m: 0.10
+policy:
+  min_path_m: 2.0
+  max_path_m: 6.0
+  max_curvature_ratio: 1.5
+  safety_erosion_px: 3
+  min_clearance_m: 0.25
+  min_goal_frame_std: 15.0
+camera:
+  model: top-down (verified against original frames)
+  z_m: 2.4
+  focal_mm: 16.0
+  rotation: rotateXYZ(0,0,deg(yaw))
+  image: [224, 224]
+calibration:
+  transform: "col=(x_max-x)/scale, row=(y-y_min)/scale"
+  proof: "existing-episode projection free-fraction = 1.000 on all three scenes"
+output: datasets/vlntube_generated/train (gitignored; checksums committed)
+test_scene_policy: kujiale_0271 frozen — never generated, calibrated or inspected
+# Stage 3D expansion overrides
+expanded_seeds: {kujiale_0092: 11, kujiale_0118: 12, kujiale_0203: 13}
+expanded_new_episodes: {kujiale_0092: 34, kujiale_0118: 37, kujiale_0203: 33}
+goal_precheck: render goal frame first; reject route if std < 15
+weak_pilot_episodes_replaced: 4 (all kujiale_0118)
+totals_after_stage3d: {episodes: 130, per_scene: {kujiale_0092: 44, kujiale_0118: 43, kujiale_0203: 43}}
