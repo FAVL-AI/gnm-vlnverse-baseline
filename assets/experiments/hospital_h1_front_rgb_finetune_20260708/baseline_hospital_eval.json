@@ -1,0 +1,18 @@
+{
+  "SR": 0.625,
+  "OSR": 1.0,
+  "SPL": 0.2855,
+  "NE": 3.1447,
+  "TL": 5.9459,
+  "nDTW": 0.7461,
+  "CLS": 0.4595,
+  "CR": 0.0,
+  "SRn": 0.0,
+  "n_episodes": 8,
+  "checkpoint": "/home/favl/robotics/gnm-vlnverse-baseline/checkpoints/scene_holdout_mnv2_baseline/best.pt",
+  "split": "test",
+  "track": "A",
+  "data_root": "/home/favl/robotics/gnm-vlnverse-baseline/datasets/isaac_hospital_split",
+  "stop_threshold": 0.15,
+  "success_threshold": 3.0
+}

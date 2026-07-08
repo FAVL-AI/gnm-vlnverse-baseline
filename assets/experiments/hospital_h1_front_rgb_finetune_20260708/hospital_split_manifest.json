@@ -1,0 +1,169 @@
+{
+  "split_by_goal": {
+    "train": [
+      "hospital_goal_A",
+      "hospital_fresh_short_F"
+    ],
+    "val": [
+      "hospital_goal_B",
+      "hospital_goal_C"
+    ],
+    "test": [
+      "hospital_holdout_short_D",
+      "hospital_holdout_medium_E",
+      "hospital_fresh_medium_G"
+    ]
+  },
+  "counts": {
+    "train": 12,
+    "val": 4,
+    "test": 8
+  },
+  "policy": "route/goal-level; frame-level splits banned",
+  "episodes": [
+    {
+      "episode": "authcmp_D_baseline_20260708_145214",
+      "goal_id": "hospital_holdout_short_D",
+      "split": "test",
+      "n_frames": 36
+    },
+    {
+      "episode": "authcmp_D_stopauth_20260708_145306",
+      "goal_id": "hospital_holdout_short_D",
+      "split": "test",
+      "n_frames": 22
+    },
+    {
+      "episode": "authcmp_E_baseline_20260708_145441",
+      "goal_id": "hospital_holdout_medium_E",
+      "split": "test",
+      "n_frames": 44
+    },
+    {
+      "episode": "authcmp_E_stopauth_20260708_145535",
+      "goal_id": "hospital_holdout_medium_E",
+      "split": "test",
+      "n_frames": 33
+    },
+    {
+      "episode": "dash_hospital_goal_A_214942_20260708_215025",
+      "goal_id": "hospital_goal_A",
+      "split": "train",
+      "n_frames": 26
+    },
+    {
+      "episode": "hospital_low_curvature_C_20260708_143004",
+      "goal_id": "hospital_goal_C",
+      "split": "val",
+      "n_frames": 40
+    },
+    {
+      "episode": "hospital_straight_medium_B_20260708_142905",
+      "goal_id": "hospital_goal_B",
+      "split": "val",
+      "n_frames": 52
+    },
+    {
+      "episode": "hospital_straight_short_A_20260708_142512",
+      "goal_id": "hospital_goal_A",
+      "split": "train",
+      "n_frames": 22
+    },
+    {
+      "episode": "hospital_straight_short_A_20260708_142753",
+      "goal_id": "hospital_goal_A",
+      "split": "train",
+      "n_frames": 31
+    },
+    {
+      "episode": "livefinal_low_curvature_20260708_180949",
+      "goal_id": "hospital_goal_C",
+      "split": "val",
+      "n_frames": 40
+    },
+    {
+      "episode": "livefinal_straight_medium_20260708_180855",
+      "goal_id": "hospital_goal_B",
+      "split": "val",
+      "n_frames": 52
+    },
+    {
+      "episode": "livefinal_straight_short_20260708_180802",
+      "goal_id": "hospital_goal_A",
+      "split": "train",
+      "n_frames": 36
+    },
+    {
+      "episode": "normcmp_F_baseline_20260708_153134",
+      "goal_id": "hospital_fresh_short_F",
+      "split": "train",
+      "n_frames": 35
+    },
+    {
+      "episode": "normcmp_F_stopauth_20260708_153225",
+      "goal_id": "hospital_fresh_short_F",
+      "split": "train",
+      "n_frames": 20
+    },
+    {
+      "episode": "normcmp_G_baseline_20260708_153849",
+      "goal_id": "hospital_fresh_medium_G",
+      "split": "test",
+      "n_frames": 43
+    },
+    {
+      "episode": "normcmp_G_stopauth_20260708_153944",
+      "goal_id": "hospital_fresh_medium_G",
+      "split": "test",
+      "n_frames": 29
+    },
+    {
+      "episode": "physeval_base_A_20260708_172420",
+      "goal_id": "hospital_goal_A",
+      "split": "train",
+      "n_frames": 36
+    },
+    {
+      "episode": "physeval_base_D_20260708_172509",
+      "goal_id": "hospital_holdout_short_D",
+      "split": "test",
+      "n_frames": 36
+    },
+    {
+      "episode": "physeval_base_F_20260708_172559",
+      "goal_id": "hospital_fresh_short_F",
+      "split": "train",
+      "n_frames": 36
+    },
+    {
+      "episode": "physeval_collision_control2_20260708_173407",
+      "goal_id": "hospital_fresh_short_F",
+      "split": "train",
+      "n_frames": 18
+    },
+    {
+      "episode": "physeval_collision_control_20260708_173041",
+      "goal_id": "hospital_fresh_short_F",
+      "split": "train",
+      "n_frames": 35
+    },
+    {
+      "episode": "physeval_ema_A_20260708_172649",
+      "goal_id": "hospital_goal_A",
+      "split": "train",
+      "n_frames": 36
+    },
+    {
+      "episode": "physeval_ema_D_20260708_172739",
+      "goal_id": "hospital_holdout_short_D",
+      "split": "test",
+      "n_frames": 36
+    },
+    {
+      "episode": "physeval_ema_F_20260708_172828",
+      "goal_id": "hospital_fresh_short_F",
+      "split": "train",
+      "n_frames": 36
+    }
+  ]
+}

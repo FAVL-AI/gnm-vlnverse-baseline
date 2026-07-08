@@ -1,0 +1,8 @@
+{
+  "incident_type": "camera_regime_domain_shift",
+  "severity": "expected/diagnostic",
+  "symptom": "top-down-trained incumbent evaluated on front-facing hospital imagery: SPL 0.285 / NE 3.14 m vs the front-camera fine-tune's SPL 0.935 / NE 0.32 m on identical held-out goals",
+  "root_cause": "camera-regime mismatch (top-down training vs front-facing deployment view) - the measured domain gap this experiment was designed to expose",
+  "recommendation": "use front-camera data for the hospital line; keep regimes separate per the conventions doc",
+  "note": "written directly from the two eval cards; the Sentinel regression adapter does not fire because the candidate IMPROVED over the diagnostic baseline"
+}

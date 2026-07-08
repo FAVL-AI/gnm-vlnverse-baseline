@@ -1,0 +1,8 @@
+{
+  "mode": "offline",
+  "runs": [
+    "wandb/offline-run-20260708_231658-1vo0pjk6"
+  ],
+  "run_name": "mobilenet_hospital_front_rgb_finetune_seed42",
+  "sync": "wandb sync wandb/offline-run-*"
+}

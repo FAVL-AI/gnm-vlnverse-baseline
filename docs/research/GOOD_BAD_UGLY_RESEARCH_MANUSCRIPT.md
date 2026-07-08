@@ -582,3 +582,37 @@ a top-down RGB camera convention; the hospital live dashboard and
 future Yahboom sim-to-real work use a front-facing robot RGB camera
 convention; regimes are kept separate unless a domain-adaptation
 experiment is explicitly declared.
+
+## 28. Hospital H1: front-camera adaptation on Isaac-Hospital-ImageNav-v0
+**Hypothesis (RQ-H):** internal front-facing Isaac hospital data can
+adapt the navigation model to the camera regime used by the live
+Yahboom-style dashboard.
+**Setup:** all 24 hospital episodes batch-converted from our own
+rosbags (frames from /camera/image_raw, poses + cmd_vel labels from the
+trajectory logs); route/goal split 12/4/8 (train A/F, val B/C for
+selection only, test D/E/G evaluated ONCE per model); fine-tune
+initialised from the top-down incumbent's weights with a fresh
+optimizer (new `training.init_ckpt` option); 355 training samples.
+**Result — hypothesis SUPPORTED (hospital simulation line):**
+top-down incumbent evaluated out-of-domain (by design, as the
+domain-gap diagnostic): NE 3.14 m / SPL 0.285 / nDTW 0.746. Twelve
+front-camera episodes of fine-tuning: **NE 0.32 m / SPL 0.935 /
+nDTW 0.961** on the identical held-out goals. DriftGuard promote,
+VerdictPlane allow — the project's first promotion, scoped to the
+hospital internal simulation line.
+**Failures/challenges:** SR/OSR partially saturated (short routes vs
+the 3 m radius — stated in the table; NE/SPL/nDTW carry the signal);
+`log` vs `logger` NameError in the new init path (fixed); fine-tune
+data are our own rollouts (imitation caution recorded).
+**Limitations:** n=8 held-out episodes; provisional 24-episode dataset;
+simulation only — not real-robot evidence; not a full benchmark; the
+incumbent is a diagnostic baseline, not a fair competitor.
+**Decision:** hospital front-RGB fine-tuned model becomes the hospital-
+line reference; regimes remain firewalled.
+**Insight:** the camera-regime firewall is now measured, not just
+declared — the same architecture moves SPL 0.285 → 0.935 when the
+training data matches the deployment camera.
+**Next Evidence Gate:** H2 more diverse hospital episodes → H3 harder
+held-out goals → Track B language. Evidence:
+`assets/experiments/hospital_h1_front_rgb_finetune_20260708/`,
+`make validate-hospital-h1`.

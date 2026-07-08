@@ -1,0 +1,51 @@
+{
+  "project": "gnm-vlnverse-baseline",
+  "case_study": "hospital_h1_front_rgb_finetune",
+  "run_name": "hospital_topdown_incumbent_diagnostic",
+  "branch": "data-expansion-scene-holdout",
+  "commit": "8b7fba3",
+  "seed": 42,
+  "model": {
+    "name": "MobileNetV2-GNM",
+    "condition": "topdown_trained_diagnostic_in_hospital",
+    "checkpoint_path": "checkpoints/scene_holdout_mnv2_baseline/best.pt",
+    "checkpoint_sha256": "bb2768cf753aa58d1c5c546ee0443d95d9e93375eeefc4f3658db13c8e50f13b",
+    "selected_by": "validation goals B/C only"
+  },
+  "dataset": {
+    "name": "Isaac-Hospital-ImageNav-v0",
+    "camera": "Yahboom front-facing RGB (Isaac Sim)",
+    "train_episodes": 12,
+    "val_episodes": 4,
+    "test_episodes": 8,
+    "heldout_scene": "hospital_goals_D_E_G",
+    "holdout_type": "route/goal-level",
+    "leakage_check": "PASS"
+  },
+  "metrics": {
+    "sr": 0.625,
+    "osr": 1.0,
+    "ne_m": 3.1447,
+    "spl": 0.2855,
+    "n_test_episodes": 8,
+    "collision_rate": "N/A offline"
+  },
+  "gates": {
+    "cuda_verified": true,
+    "wandb_logged": true,
+    "dataset_manifest_exists": true,
+    "scene_holdout_leakage_check": "PASS",
+    "checkpoint_hashed": true,
+    "offline_cr_not_reported_numeric": true,
+    "artifact_hygiene_clean": true,
+    "no_full_benchmark_claim": true,
+    "no_robust_navigation_claim": true,
+    "no_language_instruction_claim": true
+  },
+  "driftguard": {
+    "promotion_candidate": false,
+    "incumbent": null,
+    "decision": "diagnostic_baseline_only"
+  },
+  "claim_boundary": "Camera-domain adaptation / hospital internal simulation experiment on Isaac-Hospital-ImageNav-v0 (front-facing RGB). Not a full VLNVerse benchmark, not a real-robot result, not a global GNM comparison."
+}

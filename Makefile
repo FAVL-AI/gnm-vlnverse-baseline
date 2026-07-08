@@ -1192,3 +1192,6 @@ validate-expanded-data-training:
 
 validate-hospital-dataset:
 	python3 scripts/gnm/validate_hospital_dataset.py
+
+validate-hospital-h1:
+	python3 scripts/gnm/validate_hospital_h1.py

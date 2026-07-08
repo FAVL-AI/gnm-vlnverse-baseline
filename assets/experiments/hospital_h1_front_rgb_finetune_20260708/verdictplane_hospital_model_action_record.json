@@ -1,0 +1,13 @@
+{
+  "action": "promote_model",
+  "requested_candidate": "hospital front-RGB fine-tuned MobileNetV2-GNM",
+  "scope": "hospital internal simulation line ONLY (Track A front-camera); not the Kujiale top-down line",
+  "verdict": "allow",
+  "matched_rule": {
+    "match": {
+      "tool": "model.promote",
+      "args.driftguard_decision": "promote"
+    },
+    "decision": "allow"
+  }
+}

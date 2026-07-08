@@ -256,6 +256,14 @@ def main() -> None:
         trainer.load_checkpoint(latest_ckpt)
 
     logger.info("Starting training...")
+    init_ckpt = cfg["training"].get("init_ckpt")
+    if init_ckpt:
+        import torch as _torch
+        _ck = _torch.load(init_ckpt, map_location="cpu", weights_only=False)
+        trainer.model.load_state_dict(_ck["model_state"])
+        logger.info(f"Fine-tune init: model weights loaded from {init_ckpt} "
+                 "(optimizer/scheduler start fresh)")
+
     result = trainer.fit()
 
     if wandb_run:

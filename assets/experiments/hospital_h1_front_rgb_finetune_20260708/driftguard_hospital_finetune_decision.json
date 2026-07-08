@@ -1,0 +1,26 @@
+{
+  "decision": "promote",
+  "checks": {
+    "sr": {
+      "incumbent": 0.625,
+      "candidate": 1.0,
+      "pass": true
+    },
+    "spl": {
+      "incumbent": 0.2855,
+      "candidate": 0.9355,
+      "pass": true
+    },
+    "ne_m": {
+      "incumbent": 3.1447,
+      "candidate": 0.3223,
+      "pass": true,
+      "material_worsening_threshold_m": 0.1
+    }
+  },
+  "rule": "promote only if SR and SPL improve or match and NE does not materially worsen on the same scene-held-out test; recovery (val loss) is not safety",
+  "incumbent_run": "hospital_topdown_incumbent_diagnostic",
+  "candidate_run": "mobilenet_hospital_front_rgb_finetune_seed42",
+  "test_scene": "hospital_goals_D_E_G",
+  "n_test_episodes": 8
+}
