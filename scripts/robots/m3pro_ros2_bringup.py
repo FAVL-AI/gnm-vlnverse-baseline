@@ -276,6 +276,40 @@ for _ in range(240):
     sim.step(render=(_ % 3 == 0))
 x0, y0, z0 = robot_xyz()
 
+# --- Mandatory per-step trajectory logging (every live episode) ----------
+import sys
+from datetime import datetime as _dt
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from trajectory_logger import TrajectoryLogger
+
+EPISODE_ID = f"manual_arc_{_dt.now():%Y%m%d_%H%M%S}"
+EPISODE_TOPICS = ["/camera/image_raw", "/camera/camera_info", "/odom",
+                  "/tf", "/clock", "/cmd_vel"]
+traj_log = TrajectoryLogger(EPISODE_ID, REPO, policy_mode="manual_cmd_vel")
+
+bag_proc = None
+bag_path = None
+if "--episode" in sys.argv:
+    bag_path = REPO / "assets/experiments/rosbags" / EPISODE_ID
+    bag_proc = subprocess.Popen(
+        ["env", "-i", f"HOME={os.environ['HOME']}",
+         "PATH=/usr/bin:/bin:/usr/local/bin",
+         "bash", "-c",
+         "source /opt/ros/humble/setup.bash && "
+         f"ros2 bag record -o {bag_path} " + " ".join(EPISODE_TOPICS)],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    for _ in range(120):
+        sim.step(render=(_ % 3 == 0))
+    print(f"[episode] {EPISODE_ID}: rosbag recording to {bag_path}")
+
+
+def robot_pose_yaw():
+    pos, quat = arti.get_world_pose()
+    w, qx, qy, qz = (float(v) for v in quat)
+    yaw = math.atan2(2.0 * (w * qz + qx * qy),
+                     1.0 - 2.0 * (qy * qy + qz * qz))
+    return float(pos[0]), float(pos[1]), float(pos[2]), yaw
+
 wheel_idx = [arti.get_dof_index(j) for j in WHEEL_JOINTS]
 t_before = sim.current_time
 for i in range(800):
@@ -287,6 +321,20 @@ for i in range(800):
         l, r = float(cmd[0]), float(cmd[1])
         arti.apply_action(ArticulationAction(
             joint_velocities=[l, r, l, r], joint_indices=wheel_idx))
+    px, py, pz, pyaw = robot_pose_yaw()
+    tw_lin = og.Controller.get("/World/ROS2Graph/twistSub.outputs:linearVelocity")
+    tw_ang = og.Controller.get("/World/ROS2Graph/twistSub.outputs:angularVelocity")
+    od_lin = og.Controller.get("/World/ROS2Graph/odom.outputs:linearVelocity")
+    od_ang = og.Controller.get("/World/ROS2Graph/odom.outputs:angularVelocity")
+    traj_log.log_step(
+        step_idx=i, sim_time=sim.current_time,
+        x=px, y=py, z=pz, yaw=pyaw,
+        linear_cmd=float(tw_lin[0]) if tw_lin is not None else 0.0,
+        angular_cmd=float(tw_ang[2]) if tw_ang is not None else 0.0,
+        odom_lin=float(od_lin[0]) if od_lin is not None else 0.0,
+        odom_ang=float(od_ang[2]) if od_ang is not None else 0.0,
+        image_timestamp=sim.current_time,
+        stop_signal=None, safety_state="nominal")
 print(f"[debug] sim time advanced {sim.current_time - t_before:.2f} s during ROS phase")
 
 odom_probe = og.Controller.get("/World/ROS2Graph/odom.outputs:position")
@@ -307,6 +355,22 @@ print(f"[test] /odom sample:\n{odom_sample}")
 
 verdict = "PASS" if moved > 0.5 else "FAIL"
 print(f"[test] ACCEPTANCE {verdict}: robot {'moved' if moved > 0.5 else 'did not move enough'}")
+
+if bag_proc is not None:
+    bag_proc.terminate()
+    try:
+        bag_proc.wait(timeout=15)
+    except Exception:
+        bag_proc.kill()
+meta = traj_log.finalize(
+    scene_path="procedural bring-up stage (physics ground plane)",
+    robot_asset=ROBOT_USD.relative_to(REPO),
+    rosbag_path=bag_path.relative_to(REPO) if bag_path else None,
+    command_profile="external ros2 CLI: 0.3 m/s forward twist at 20 Hz",
+    topics_recorded=EPISODE_TOPICS if bag_path else [])
+print(f"[episode] trajectory log finalised: {traj_log.dir}")
+print(f"[episode] steps={meta['steps_logged']} dist={meta['total_distance_m']}m "
+      f"z_drift={meta['max_abs_z_drift_m']}m sim_dur={meta['sim_duration_s']}s")
 
 import sys
 if "--hold" in sys.argv:

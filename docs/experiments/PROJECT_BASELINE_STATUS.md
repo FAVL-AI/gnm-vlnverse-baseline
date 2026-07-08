@@ -40,12 +40,26 @@ pipeline described below.
   SHA-256 manifest in `assets/experiments/manifests/`) — 14.7 s, 6,975
   messages: image 1,376, camera_info 1,374, odom/tf/clock 1,375 each,
   cmd_vel 100; robot stable throughout (|z| < 2 µm).
+- **Per-step trajectory logging: PASS (2026-07-08).** Every live episode
+  now writes `assets/experiments/trajectories/<episode_id>/`
+  (`trajectory.jsonl` + `.csv` + `episode_metadata.json` with git
+  commit/branch, asset paths, rosbag path, command profile, aggregate
+  stats). Smoke episode `manual_arc_20260708_024944`: 800 steps, 3.98 m,
+  z-drift 2 µm, full-topic rosbag (all six topics non-zero, SHA-256
+  manifest committed). `scripts/gnm/validate_trajectory_log.py`
+  (`make validate-trajectory-log`) checks existence, required fields,
+  monotonic sim_time, motion-under-command, z stability, bag/trajectory
+  duration consistency, distance plausibility — **all PASS**. Note:
+  headless sim runs ~4× realtime, so bag wall durations are shorter than
+  sim durations; the validator compares wall-to-wall.
 - **Not yet valid:** live GNM inference from the simulated camera, any
   policy-navigation claim, the six-run campaign.
-- **Next required work, in order:** mandatory per-step trajectory
-  logging → GNM inference loop on the simulated camera feed → GNM + stop
-  head comparison → revalidate the campaign runs
-  (`PHASE2_REQUIREMENTS.md`).
+- **Next required work, in order:** GNM inference loop on the simulated
+  camera feed — **shadow mode first** (GNM reads `/camera/image_raw` and
+  logs candidate actions into the trajectory log while the scripted
+  controller keeps driving; GNM gets `/cmd_vel` control only after shadow
+  inference is validated) → GNM + stop head comparison → revalidate the
+  campaign runs (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence
 

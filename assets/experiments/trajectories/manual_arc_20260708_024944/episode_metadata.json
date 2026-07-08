@@ -1,0 +1,28 @@
+{
+  "episode_id": "manual_arc_20260708_024944",
+  "git_commit": "013e02c",
+  "git_branch": "isaac-hospital-demo",
+  "scene_stage_path": "procedural bring-up stage (physics ground plane)",
+  "robot_asset_path": "assets/robots/yahboom_m3_pro/yahboom_m3pro.usd",
+  "rosbag_path": "assets/experiments/rosbags/manual_arc_20260708_024944",
+  "trajectory_jsonl": "assets/experiments/trajectories/manual_arc_20260708_024944/trajectory.jsonl",
+  "trajectory_csv": "assets/experiments/trajectories/manual_arc_20260708_024944/trajectory.csv",
+  "command_profile": "external ros2 CLI: 0.3 m/s forward twist at 20 Hz",
+  "policy_mode": "manual_cmd_vel",
+  "start_wall_time": 1783475384.1555939,
+  "end_wall_time": 1783475396.4256608,
+  "wall_duration_s": 12.27,
+  "sim_duration_s": 13.317,
+  "steps_logged": 800,
+  "total_distance_m": 3.9808,
+  "max_abs_z_drift_m": 2e-06,
+  "max_yaw_rate_rad_s": 0.0099,
+  "topics_recorded": [
+    "/camera/image_raw",
+    "/camera/camera_info",
+    "/odom",
+    "/tf",
+    "/clock",
+    "/cmd_vel"
+  ]
+}

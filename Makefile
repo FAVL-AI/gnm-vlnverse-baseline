@@ -1108,3 +1108,7 @@ help:
 	@echo "    make clean-isaac       Clean IsaacLabAssets/ and isaac ViNT dataset"
 	@echo "    make help              This message"
 	@echo ""
+
+# --- Phase 2 live-episode evidence -----------------------------------------
+validate-trajectory-log:
+	python3 scripts/gnm/validate_trajectory_log.py $(EPISODE)
