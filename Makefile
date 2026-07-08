@@ -1129,3 +1129,6 @@ validate-scene-goal:
 
 validate-goal-conditioned-gnm:
 	PYTHONPATH=$(CURDIR) $(PYTHON_ISAAC) scripts/gnm/validate_goal_conditioned_gnm.py $(EPISODE)
+
+validate-stop-head-shadow:
+	PYTHONPATH=$(CURDIR) $(PYTHON_ISAAC) scripts/gnm/validate_stop_head_shadow.py $(EPISODE)

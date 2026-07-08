@@ -110,12 +110,35 @@ pipeline described below.
   angular velocity (up to 0.18 rad/s) produced almost no yaw — skid-
   steer turning authority with sphere wheel colliders needs
   investigation before any curved-path navigation claim.
-- **Still not valid:** success rate, SPL, robust hospital navigation,
-  goal *reaching* as an achievement, FleetSafe improvements, six-run
-  campaign.
-- **Next required work, in order:** stop-head shadow integration
-  (measure termination signals without authority) → yaw-authority
-  investigation → GNM + stop head comparison → hospital-scene episodes →
+- **Stop-head shadow integration: PASS (2026-07-08).** The REAL trained
+  temporal stop head (Track A checkpoint, SHA-256 `5339b755…`, loaded
+  with its saved normalisation/threshold/stable-k) ran online during
+  episode `gnm_closed_loop_20260708_044412`, fed by the live GNM
+  signals it was trained on (goal-distance and waypoint-norm
+  histories). 579 probability evaluations at 0.26 ms mean latency,
+  logged per row with shadow decisions, overshoot detection and
+  would-have-stopped bookkeeping. Shadow only: no authority, GNM kept
+  `/cmd_vel` on every row. **Valid claim:** a stop signal can be
+  computed online during live GNM closed-loop execution and logged
+  against the robot's actual distance-to-goal/overshoot trajectory.
+- **Honest finding (measurement, not failure of the milestone):** the
+  learned head never fired (probability ~0.000 throughout). Quantified
+  domain gap: GNM's predicted goal-distance tracks the approach
+  correctly (4.84 → minimum 3.32 exactly at the true nearest-goal
+  point → rising afterwards, i.e. the overshoot pattern IS present in
+  the raw signal) but stays in the 3.2–5.0 range in this synthetic
+  stage, whereas training episodes reach much lower near-goal values;
+  the live 20 Hz evaluation cadence also shrinks trend features
+  relative to training step cadence. Follow-ups: hospital-scene
+  episodes (closer to training distribution), cadence-matched
+  evaluation, and/or threshold recalibration — each must be reported
+  as recalibration, not improvement.
+- **Still not valid:** stop-head improvement of navigation or safety,
+  FleetSafe improvement, success rate, SPL, robust hospital
+  navigation, goal reaching as an achievement, six-run campaign.
+- **Next required work, in order:** yaw-authority investigation →
+  hospital-scene episodes (stop head still in shadow, expected closer
+  to its training distribution) → GNM + stop head comparison →
   revalidate the campaign runs (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence

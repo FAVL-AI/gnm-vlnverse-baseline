@@ -391,10 +391,14 @@ CL_FIELDS = [
     "gnm_action_clipped_angular_velocity", "action_clipped",
     "watchdog_state", "emergency_stop_triggered", "stop_reason",
 ]
+from stop_head_shadow import STOP_FIELDS as _STOPF
+_extra_cols = _SF + (CL_FIELDS if CL_MODE else [])
+if "--stop-head-shadow" in sys.argv:
+    _extra_cols = _extra_cols + _STOPF
 traj_log = TrajectoryLogger(
     EPISODE_ID, REPO,
     policy_mode="gnm_closed_loop" if CL_MODE else "manual_cmd_vel",
-    extra_fields=_SF + (CL_FIELDS if CL_MODE else []))
+    extra_fields=_extra_cols)
 
 bag_proc = None
 bag_path = None
@@ -413,6 +417,7 @@ if "--episode" in sys.argv:
 
 
 shadow = None
+stop_shadow = None
 rgb_annot = None
 if "--episode" in sys.argv or "--shadow-gnm" in sys.argv or "--gnm-control" in sys.argv:
     import omni.replicator.core as _rep
@@ -432,6 +437,13 @@ if "--episode" in sys.argv or "--shadow-gnm" in sys.argv or "--gnm-control" in s
         print(f"[goal] scene-aligned goal selected: {GOAL_SEL} "
               f"pose={GOAL_POSE_SEL}")
     shadow = GNMShadow(REPO, _goal_img, device="cuda")
+    stop_shadow = None
+    if "--stop-head-shadow" in sys.argv:
+        from stop_head_shadow import StopHeadShadow, STOP_FIELDS as _STF
+        stop_shadow = StopHeadShadow(REPO, device="cpu")
+        print(f"[stophead] shadow mode active: learned temporal stop head "
+              f"(thr={stop_shadow.threshold}, k={stop_shadow.stable_k}, "
+              f"seq={stop_shadow.seq_len}); NO authority")
     print(f"[shadow] GNM shadow inference active (model="
           f"{shadow.latest['shadow_gnm_model_path']}); "
           "no /cmd_vel control — scripted controller drives")
@@ -531,6 +543,8 @@ if CL_MODE:
         if GOAL_POSE_SEL is not None:
             d2g = round(math.hypot(px_ - GOAL_POSE_SEL["x"],
                                    py_ - GOAL_POSE_SEL["y"]), 4)
+        if stop_shadow is not None:
+            extra.update(stop_shadow.latest)
         extra.update({
             "goal_id": GOAL_SEL,
             "distance_to_goal_m": d2g,
@@ -575,6 +589,16 @@ if CL_MODE:
                 shadow.infer()
                 if shadow.latest["shadow_gnm_status"] == "ok":
                     last_ok_sim = sim.current_time
+                if stop_shadow is not None:
+                    _px2, _py2, _, _ = robot_pose_yaw()
+                    _d2g2 = None
+                    if GOAL_POSE_SEL is not None:
+                        _d2g2 = math.hypot(_px2 - GOAL_POSE_SEL["x"],
+                                           _py2 - GOAL_POSE_SEL["y"])
+                    _wp = (shadow.last_waypoints[0]
+                           if shadow.last_waypoints is not None else None)
+                    _gd = shadow.latest.get("shadow_gnm_goal_distance")
+                    stop_shadow.update(i, sim.current_time, _gd, _wp, _d2g2)
 
         raw = shadow.raw_cmd()
         px_, py_, pz_, _ = robot_pose_yaw()
@@ -648,6 +672,11 @@ if CL_MODE:
 
     cl_meta = shadow.summary()
     _fx, _fy, _, _ = robot_pose_yaw()
+    if stop_shadow is not None:
+        _final_d2g = (math.hypot(_fx - GOAL_POSE_SEL["x"],
+                                 _fy - GOAL_POSE_SEL["y"])
+                      if GOAL_POSE_SEL is not None else None)
+        cl_meta.update(stop_shadow.summary(final_d2g=_final_d2g))
     cl_meta.update({
         "closed_loop": True,
         "goal_id": GOAL_SEL,
