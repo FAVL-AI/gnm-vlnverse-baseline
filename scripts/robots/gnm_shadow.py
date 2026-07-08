@@ -57,6 +57,7 @@ class GNMShadow:
         self.goal = np.array(Image.open(self.goal_image_path).convert("RGB"))
         self.context = deque(maxlen=self.adapter.context_size + 1)
 
+        self.last_waypoints = None
         self.frames_received = 0
         self.attempts = 0
         self.successes = 0
@@ -97,6 +98,7 @@ class GNMShadow:
                 list(self.context), self.goal)
             out = self.adapter.predict_action(pre)
             latency = (time.perf_counter() - t0) * 1000.0
+            self.last_waypoints = out.waypoints
             cmd = self._waypoints_to_cmd_vel(
                 out.waypoints, v_max=0.3, vy_max=0.0, w_max=0.7,
                 control_hz=4.0)
@@ -113,6 +115,19 @@ class GNMShadow:
             self.failures += 1
             self.latest = self._row(status="error", error=str(e)[:200])
         return self.latest
+
+    def raw_cmd(self):
+        """Unclamped (vx, wz) derived from the latest waypoints, for the
+        closed-loop path which applies its own hard clamps."""
+        if self.last_waypoints is None:
+            return None
+        # Model-config limits (configs/visualnav/models.yaml): this is the
+        # policy's intended command; the closed-loop smoke clamp tightens it
+        # further and the gross-bounds e-stop guards true insanity.
+        cmd = self._waypoints_to_cmd_vel(
+            self.last_waypoints, v_max=0.3, vy_max=0.0, w_max=0.7,
+            control_hz=4.0)
+        return float(cmd.vx), float(cmd.wz)
 
     def summary(self):
         lats = self.latencies_ms

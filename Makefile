@@ -1115,3 +1115,6 @@ validate-trajectory-log:
 
 validate-shadow-gnm:
 	python3 scripts/gnm/validate_shadow_gnm.py $(EPISODE)
+
+validate-gnm-closed-loop:
+	python3 scripts/gnm/validate_gnm_closed_loop.py $(EPISODE)

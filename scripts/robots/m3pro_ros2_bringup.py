@@ -19,6 +19,7 @@ from isaacsim import SimulationApp
 app = SimulationApp({"headless": True, "width": 1280, "height": 720})
 
 import math
+import sys
 import numpy as np
 import subprocess
 import time
@@ -262,7 +263,9 @@ res = ros_cli("timeout 15 ros2 topic list --no-daemon --spin-time 5")
 print(f"[test] topics visible to system ROS 2:\n{res.stdout}"
       + (f"[test] CLI stderr: {res.stderr.strip()[:300]}" if res.returncode else ""))
 
-pub = subprocess.Popen(
+pub = None
+if "--gnm-control" not in sys.argv:
+    pub = subprocess.Popen(
     ["env", "-i", f"HOME={os.environ['HOME']}",
      "PATH=/usr/bin:/bin:/usr/local/bin",
      "bash", "-c",
@@ -283,12 +286,22 @@ from datetime import datetime as _dt
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from trajectory_logger import TrajectoryLogger
 
-EPISODE_ID = f"manual_arc_{_dt.now():%Y%m%d_%H%M%S}"
+CL_MODE = "--gnm-control" in sys.argv
+_prefix = "gnm_closed_loop" if CL_MODE else "manual_arc"
+EPISODE_ID = f"{_prefix}_{_dt.now():%Y%m%d_%H%M%S}"
 EPISODE_TOPICS = ["/camera/image_raw", "/camera/camera_info", "/odom",
                   "/tf", "/clock", "/cmd_vel"]
 from gnm_shadow import SHADOW_FIELDS as _SF
-traj_log = TrajectoryLogger(EPISODE_ID, REPO, policy_mode="manual_cmd_vel",
-                            extra_fields=_SF)
+CL_FIELDS = [
+    "gnm_control_enabled", "gnm_action_raw_linear_velocity",
+    "gnm_action_raw_angular_velocity", "gnm_action_clipped_linear_velocity",
+    "gnm_action_clipped_angular_velocity", "action_clipped",
+    "watchdog_state", "emergency_stop_triggered", "stop_reason",
+]
+traj_log = TrajectoryLogger(
+    EPISODE_ID, REPO,
+    policy_mode="gnm_closed_loop" if CL_MODE else "manual_cmd_vel",
+    extra_fields=_SF + (CL_FIELDS if CL_MODE else []))
 
 bag_proc = None
 bag_path = None
@@ -308,7 +321,7 @@ if "--episode" in sys.argv:
 
 shadow = None
 rgb_annot = None
-if "--episode" in sys.argv or "--shadow-gnm" in sys.argv:
+if "--episode" in sys.argv or "--shadow-gnm" in sys.argv or "--gnm-control" in sys.argv:
     import omni.replicator.core as _rep
     from gnm_shadow import GNMShadow, SHADOW_FIELDS
     rgb_annot = _rep.AnnotatorRegistry.get_annotator("rgb")
@@ -328,6 +341,238 @@ def robot_pose_yaw():
     yaw = math.atan2(2.0 * (w * qz + qx * qy),
                      1.0 - 2.0 * (qy * qy + qz * qz))
     return float(pos[0]), float(pos[1]), float(pos[2]), yaw
+
+if CL_MODE:
+    # ── GNM closed-loop bounded smoke episode ────────────────────────────
+    # First time GNM has control authority: short, bounded, clamped,
+    # watchdog-protected, explicit zeroing. Control-authority milestone
+    # only — the fixed goal image is not scene-aligned, so no
+    # navigation-quality claim.
+    CL_LIN_MAX, CL_ANG_MAX = 0.20, 0.40
+    CL_BOUND_XY = 6.0
+    CL_Z_DRIFT_MAX = 0.05
+    CL_FAIL_MAX = 10
+    CL_STEPS = 480          # 8 s of sim time at 60 Hz
+    CL_WATCHDOG_S = 0.5     # sim seconds without fresh inference -> zero
+
+    publish_ok = True
+    try:
+        og.Controller.edit("/World/ROS2Graph", {
+            keys.CREATE_NODES: [
+                ("cmdPub", "isaacsim.ros2.bridge.ROS2Publisher")],
+            keys.SET_VALUES: [
+                ("cmdPub.inputs:messagePackage", "geometry_msgs"),
+                ("cmdPub.inputs:messageSubfolder", "msg"),
+                ("cmdPub.inputs:messageName", "Twist"),
+                ("cmdPub.inputs:topicName", "cmd_vel"),
+            ],
+            keys.CONNECT: [
+                ("/World/ROS2Graph/tick.outputs:tick", "cmdPub.inputs:execIn"),
+                ("/World/ROS2Graph/rosCtx.outputs:context",
+                 "cmdPub.inputs:context"),
+            ]})
+        for _ in range(10):
+            app.update()
+        _node = og.get_node_by_path("/World/ROS2Graph/cmdPub")
+        _in = [a.get_name() for a in _node.get_attributes()
+               if a.get_name().startswith("inputs:")]
+        _lin = next(a for a in _in if a.lower().endswith("linear:x"))
+        _ang = next(a for a in _in if a.lower().endswith("angular:z"))
+        print(f"[cl] cmd publisher ready (fields {_lin}, {_ang})")
+
+        def publish_cmd(vx, wz):
+            og.Controller.set(
+                og.Controller.attribute(f"/World/ROS2Graph/cmdPub.{_lin}"),
+                float(vx))
+            og.Controller.set(
+                og.Controller.attribute(f"/World/ROS2Graph/cmdPub.{_ang}"),
+                float(wz))
+    except Exception as e:
+        publish_ok = False
+        print(f"[cl] cmd publisher unavailable ({e}); applying without "
+              "/cmd_vel mirror")
+
+        def publish_cmd(vx, wz):
+            pass
+
+    cl_wheels = [arti.get_dof_index(j) for j in WHEEL_JOINTS]
+
+    def apply_cmd(vx, wz):
+        wl = (vx - wz * TRACK_WIDTH / 2.0) / WHEEL_RADIUS
+        wr = (vx + wz * TRACK_WIDTH / 2.0) / WHEEL_RADIUS
+        arti.apply_action(ArticulationAction(
+            joint_velocities=[wl, wr, wl, wr], joint_indices=cl_wheels))
+
+    publish_cmd(0.0, 0.0)
+    # Warm the camera and fill the GNM context buffer before authority.
+    for _ in range(60):
+        sim.step(render=True)
+        _f = rgb_annot.get_data()
+        if _f is not None and getattr(_f, "size", 0) > 0:
+            shadow.add_frame(np.asarray(_f)[:, :, :3].copy())
+    shadow.infer()
+
+    _, _, z0_cl, _ = robot_pose_yaw()
+    estop = False
+    stop_reason = None
+    watchdog_state = "armed"
+    last_ok_sim = sim.current_time
+    clipped_count = 0
+    applied_nonzero = 0
+
+    def cl_log(i, wd, vraw, wraw, vappl, wappl, clipped, note=""):
+        px_, py_, pz_, pyaw_ = robot_pose_yaw()
+        od_l = og.Controller.get("/World/ROS2Graph/odom.outputs:linearVelocity")
+        od_a = og.Controller.get("/World/ROS2Graph/odom.outputs:angularVelocity")
+        extra = dict(shadow.latest)
+        extra.update({
+            "actual_controller": "gnm_closed_loop",
+            "actual_linear_velocity_cmd": round(vappl, 6),
+            "actual_angular_velocity_cmd": round(wappl, 6),
+            "gnm_control_enabled": True,
+            "gnm_action_raw_linear_velocity":
+                round(vraw, 6) if vraw is not None else None,
+            "gnm_action_raw_angular_velocity":
+                round(wraw, 6) if wraw is not None else None,
+            "gnm_action_clipped_linear_velocity": round(vappl, 6),
+            "gnm_action_clipped_angular_velocity": round(wappl, 6),
+            "action_clipped": clipped,
+            "watchdog_state": wd,
+            "emergency_stop_triggered": estop,
+            "stop_reason": stop_reason,
+        })
+        traj_log.log_step(
+            step_idx=i, sim_time=sim.current_time,
+            x=px_, y=py_, z=pz_, yaw=pyaw_,
+            linear_cmd=vappl, angular_cmd=wappl,
+            odom_lin=float(od_l[0]) if od_l is not None else 0.0,
+            odom_ang=float(od_a[2]) if od_a is not None else 0.0,
+            image_timestamp=sim.current_time,
+            stop_signal=None,
+            safety_state="emergency_stop" if estop else
+            ("hold" if wd.startswith("triggered") else "nominal"),
+            notes=note, extra=extra)
+        return px_, py_, pz_
+
+    print(f"[cl] GNM control authority granted: {CL_STEPS/60:.0f}s bounded "
+          f"episode, |v|<={CL_LIN_MAX}, |w|<={CL_ANG_MAX}, "
+          f"XY bounds +/-{CL_BOUND_XY}m")
+    for i in range(CL_STEPS):
+        render = (i % 3 == 0)
+        sim.step(render=render)
+        if render:
+            _f = rgb_annot.get_data()
+            if _f is not None and getattr(_f, "size", 0) > 0:
+                shadow.add_frame(np.asarray(_f)[:, :, :3].copy())
+                shadow.infer()
+                if shadow.latest["shadow_gnm_status"] == "ok":
+                    last_ok_sim = sim.current_time
+
+        raw = shadow.raw_cmd()
+        px_, py_, pz_, _ = robot_pose_yaw()
+        if abs(px_) > CL_BOUND_XY or abs(py_) > CL_BOUND_XY:
+            estop, stop_reason = True, "left_xy_bounds"
+        elif abs(pz_ - z0_cl) > CL_Z_DRIFT_MAX:
+            estop, stop_reason = True, "z_drift_exceeded"
+        elif shadow.failures > CL_FAIL_MAX:
+            estop, stop_reason = True, "inference_failure_count"
+        elif raw is not None and any(
+                math.isnan(v) or math.isinf(v) for v in raw):
+            estop, stop_reason = True, "nan_inf_action"
+        elif raw is not None and (abs(raw[0]) > CL_LIN_MAX * 5
+                                  or abs(raw[1]) > CL_ANG_MAX * 5):
+            estop, stop_reason = True, "action_gross_bounds"
+
+        if estop:
+            publish_cmd(0.0, 0.0)
+            apply_cmd(0.0, 0.0)
+            watchdog_state = "estop_zeroed"
+            cl_log(i, watchdog_state,
+                   raw[0] if raw else None, raw[1] if raw else None,
+                   0.0, 0.0, False, note=f"emergency stop: {stop_reason}")
+            print(f"[cl] EMERGENCY STOP at step {i}: {stop_reason}")
+            break
+
+        wd_age = sim.current_time - last_ok_sim
+        if raw is None:
+            watchdog_state = "warmup_zero"
+            vraw = wraw = None
+            vappl = wappl = 0.0
+            clipped = False
+        elif wd_age > CL_WATCHDOG_S:
+            watchdog_state = "triggered_stale_inference"
+            vraw, wraw = raw
+            vappl = wappl = 0.0
+            clipped = False
+        else:
+            watchdog_state = "armed"
+            vraw, wraw = raw
+            vappl = max(-CL_LIN_MAX, min(CL_LIN_MAX, vraw))
+            wappl = max(-CL_ANG_MAX, min(CL_ANG_MAX, wraw))
+            clipped = (vappl != vraw) or (wappl != wraw)
+            clipped_count += int(clipped)
+
+        publish_cmd(vappl, wappl)
+        apply_cmd(vappl, wappl)
+        if abs(vappl) > 1e-6 or abs(wappl) > 1e-6:
+            applied_nonzero += 1
+        cl_log(i, watchdog_state, vraw, wraw, vappl, wappl, clipped)
+
+    # ── Explicit zeroing + verification hold ────────────────────────────
+    publish_cmd(0.0, 0.0)
+    apply_cmd(0.0, 0.0)
+    hx, hy, _, _ = robot_pose_yaw()
+    for h in range(120):    # 2 s of sim time
+        sim.step(render=(h % 3 == 0))
+        publish_cmd(0.0, 0.0)
+        cl_log(CL_STEPS + h, "zeroed_hold", None, None, 0.0, 0.0, False,
+               note="post-episode zero hold")
+    hx2, hy2, _, _ = robot_pose_yaw()
+    hold_disp = math.hypot(hx2 - hx, hy2 - hy)
+    print(f"[cl] zero-hold displacement over 2 s: {hold_disp:.4f} m")
+
+    if bag_proc is not None:
+        bag_proc.terminate()
+        try:
+            bag_proc.wait(timeout=15)
+        except Exception:
+            bag_proc.kill()
+
+    cl_meta = shadow.summary()
+    cl_meta.update({
+        "closed_loop": True,
+        "cl_limits": {"lin_max_ms": CL_LIN_MAX, "ang_max_rads": CL_ANG_MAX,
+                      "xy_bound_m": CL_BOUND_XY,
+                      "z_drift_max_m": CL_Z_DRIFT_MAX,
+                      "watchdog_s": CL_WATCHDOG_S},
+        "cl_steps_commanded": CL_STEPS,
+        "cl_applied_nonzero_steps": applied_nonzero,
+        "cl_clipped_steps": clipped_count,
+        "cl_emergency_stop": estop,
+        "cl_stop_reason": stop_reason,
+        "cl_cmd_vel_mirror_published": publish_ok,
+        "cl_zero_hold_displacement_m": round(hold_disp, 5),
+        "cl_scope_note": (
+            "control-authority smoke only: bounded, clamped, watchdog-"
+            "protected; fixed non-scene goal image, no navigation-quality "
+            "claim"),
+    })
+    meta = traj_log.finalize(
+        scene_path="procedural bring-up stage (physics ground plane)",
+        robot_asset=ROBOT_USD.relative_to(REPO),
+        rosbag_path=bag_path.relative_to(REPO) if bag_path else None,
+        command_profile=(f"GNM closed loop, clamped to {CL_LIN_MAX} m/s "
+                         f"/ {CL_ANG_MAX} rad/s"),
+        topics_recorded=EPISODE_TOPICS if bag_path else [],
+        extra_meta=cl_meta)
+    print(f"[cl] episode finalised: {traj_log.dir}")
+    print(f"[cl] steps={meta['steps_logged']} dist={meta['total_distance_m']}m"
+          f" z_drift={meta['max_abs_z_drift_m']}m estop={estop} "
+          f"reason={stop_reason} clipped={clipped_count} "
+          f"nonzero={applied_nonzero}")
+    sim.stop()
+    app.close()
+    raise SystemExit(0)
 
 wheel_idx = [arti.get_dof_index(j) for j in WHEEL_JOINTS]
 t_before = sim.current_time
@@ -378,7 +623,8 @@ lin = og.Controller.get("/World/ROS2Graph/twistSub.outputs:linearVelocity")
 wheels = og.Controller.get("/World/ROS2Graph/diff.outputs:velocityCommand")
 print(f"[debug] twist received by graph: {lin}; wheel commands: {wheels}")
 
-pub.terminate()
+if pub is not None:
+    pub.terminate()
 x1, y1, z1 = robot_xyz()
 moved = math.hypot(x1 - x0, y1 - y0)
 print(f"[test] displacement after ~13 s of 0.3 m/s forward twist: "

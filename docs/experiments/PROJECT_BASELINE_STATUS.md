@@ -67,12 +67,27 @@ pipeline described below.
   dataset frame from a kujiale interior that does not exist in the
   bring-up scene — candidates validate the inference path, not
   navigation quality.
-- **Not yet valid:** GNM *control* of `/cmd_vel`, any policy-navigation
-  claim, the six-run campaign.
-- **Next required work, in order:** GNM closed-loop control of
-  `/cmd_vel` for a short bounded smoke episode (only now that shadow
-  inference is validated) → stop-head shadow integration → GNM + stop
-  head comparison → revalidate the campaign runs
+- **GNM closed-loop smoke control: PASS (2026-07-08).** GNM held bounded
+  control authority for one 8 s episode
+  (`gnm_closed_loop_20260708_031730`): 161/161 successful inferences
+  (14.7 ms mean), 480 applied commands all within the smoke clamps
+  (|v| ≤ 0.20 m/s, |w| ≤ 0.40 rad/s; policy-intent 0.3 m/s clipped and
+  logged per row), 1.593 m travelled, z-drift 2 µm, inside ±6 m bounds,
+  watchdog armed throughout, explicit zeroing verified (2 s hold,
+  2.6 mm residual). The applied command is mirrored to `/cmd_vel`; the
+  full-topic rosbag has all six topics non-zero (manifest committed).
+  `make validate-gnm-closed-loop` passes all checks. A prior run
+  additionally proved the emergency-stop path live (gross-bounds guard
+  fired at step 0 and froze the robot within 0.8 mm).
+  **Valid claim (narrow):** GNM can consume the simulated camera stream
+  and produce bounded closed-loop velocity commands in Isaac Sim while
+  the M3Pro remains stable under logged safety constraints.
+- **Still not valid:** image-goal navigation in the hospital scene, goal
+  reaching, SPL/SR improvements, FleetSafe safety improvements, six-run
+  campaign results. (The fixed goal image is not scene-aligned.)
+- **Next required work, in order:** scene-aligned goal images (goal
+  capture in the live scene) → stop-head shadow integration → GNM + stop
+  head comparison in the hospital scene → revalidate the campaign runs
   (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence

@@ -1,0 +1,5 @@
+# Model checkpoint provenance (weights gitignored; acquired from the
+# published visualnav-transformer release, Shah et al.)
+4b03e0255f8a547290d4079f4e7d610ff69987122f17e019bd36684c08b3ee95  third_party/visualnav-transformer/model_weights/gnm/gnm.pth
+155fd72de2e98ae0e2fef9404072e1aefa79dae5f7f2411d4bcf7e384b83aa1f  third_party/visualnav-transformer/model_weights/vint/vint.pth
+70f79b8262527e20e56ced64a3e3d7ef91855bc9e7c3fa348d78edcb83c6a333  third_party/visualnav-transformer/model_weights/nomad/nomad.pth
