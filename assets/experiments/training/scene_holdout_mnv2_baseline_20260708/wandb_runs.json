@@ -1,0 +1,12 @@
+{
+  "mode": "offline",
+  "runs": {
+    "baseline": "mobilenet_baseline_scene_holdout_seed42",
+    "ema_0.999": "mobilenet_ema0999_scene_holdout_seed42"
+  },
+  "latest_offline_dirs": [
+    "wandb/offline-run-20260708_193903-ci30dxur",
+    "wandb/offline-run-20260708_194441-23voxd8h"
+  ],
+  "sync": "wandb sync wandb/offline-run-*"
+}

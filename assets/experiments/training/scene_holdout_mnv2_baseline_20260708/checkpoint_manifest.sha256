@@ -1,0 +1,2 @@
+bb2768cf753aa58d1c5c546ee0443d95d9e93375eeefc4f3658db13c8e50f13b  checkpoints/scene_holdout_mnv2_baseline/best.pt
+7783a089c6a5d610d28d54e0761d5c71be1b35b953af75f12030a63c789dfd7a  checkpoints/scene_holdout_mnv2_ema0999/best.pt

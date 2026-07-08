@@ -324,3 +324,35 @@ land only in train scenes.
 Meshes/Materials, run vistube A* generation for TRAIN scenes only, then
 retrain MobileNetV2-GNM under the scene-holdout split and report
 SR/OSR/NE/SPL on kujiale_0271.
+
+## 20. First scene-level held-out baseline + EMA repeat (Stage 1–2 of the data-expansion ladder)
+**Hypothesis:** the scene-holdout split gives the first honest
+generalization estimate; EMA repeated under it isolates the EMA condition
+from split effects. **Setup:** MobileNetV2-GNM baseline and EMA 0.999
+trained on 191 episodes (3 scenes), checkpoint selection on the
+12-episode val split only, then exactly ONE evaluation per checkpoint on
+the 50 held-out kujiale_0271 episodes (`--split test`). Same seed 42,
+same config; EMA the only difference. **Result:** baseline SR 32.0 /
+OSR 56.0 / NE 5.58 / SPL 0.315 (live weights); EMA 0.999 SR 18.0 /
+OSR 50.0 / NE 5.91 / SPL 0.167 (EMA shadow) — worse on every metric.
+**Good:** a real scene-generalization number now exists with n=50 (each
+episode = 2 pp, vs 6.7 pp before); the one-shot test protocol held; the
+EMA verdict now rests on a scene-clean split. **Bad:** EMA 0.999 tracked
+validation loss well in the earlier ablation yet degrades held-out-scene
+navigation — the loss-vs-SR proxy gap reappears at scene level.
+**Ugly:** none new — the guardrails (single test evaluation, val-only
+selection) were followed by construction via the symlinked split tree.
+**Root Cause (EMA):** consistent with the ablation: at this data scale
+and horizon, weight averaging does not help this model class navigate
+unseen scenes. **Mitigation/Decision:** baseline retained as the Stage-1
+reference; EMA not promoted; EMA 0.9999 remains a documented sensitivity
+check only. Scene-holdout numbers are NOT comparable to the old
+trajectory-level table. **Insight:** split design changes the measured
+picture (SR 13.3→32.0 across splits is a protocol difference, not an
+improvement claim). **Limitation:** one held-out scene; offline metrics
+only; CR remains Isaac-only. **Next Evidence Gate (Stage 3):** scene-USD
+reconstruction → vistube generation for TRAIN scenes only → Stage 4
+retrain → Stage 5 comparison against this reference on untouched
+kujiale_0271. Evidence:
+`assets/experiments/training/scene_holdout_mnv2_baseline_20260708/`,
+`make validate-scene-holdout-training`.

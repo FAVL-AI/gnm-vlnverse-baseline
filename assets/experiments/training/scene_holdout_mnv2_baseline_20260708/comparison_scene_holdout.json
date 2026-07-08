@@ -1,0 +1,38 @@
+{
+  "experiment": "scene_holdout_mnv2_baseline_20260708",
+  "split": "dataset_manifest_scene_holdout.json \u2014 train 191 (kujiale_0092/0118/0203) / val 12 (selection only) / test 50 (kujiale_0271, scene-held-out)",
+  "test_protocol": "evaluated exactly once per checkpoint on --split test after training completed; checkpoint selection on validation loss only",
+  "rows": [
+    {
+      "model": "mnv2_baseline",
+      "ema_decay": null,
+      "SR": 0.32,
+      "OSR": 0.56,
+      "NE_m": 5.58,
+      "SPL": 0.315,
+      "nDTW": 0.514,
+      "CR": "N/A \u2014 offline evaluator; requires Isaac physics rollout",
+      "weights": "live model",
+      "n": 50
+    },
+    {
+      "model": "mnv2_ema",
+      "ema_decay": 0.999,
+      "SR": 0.18,
+      "OSR": 0.5,
+      "NE_m": 5.91,
+      "SPL": 0.167,
+      "nDTW": 0.491,
+      "CR": "N/A \u2014 offline evaluator; requires Isaac physics rollout",
+      "weights": "EMA shadow",
+      "n": 50
+    }
+  ],
+  "decision": "baseline retained; EMA 0.999 not promoted \u2014 worse SR/OSR/NE/SPL on the same held-out test scene",
+  "claim_guards": [
+    "first MobileNetV2-GNM baseline trained and evaluated under a scene-level held-out split",
+    "EMA repeated under the exact same scene-level held-out split \u2014 differences attributable to the EMA condition, not the split",
+    "not comparable to the previous 15-episode trajectory-level results (split changed)",
+    "not a full VLNVerse benchmark"
+  ]
+}

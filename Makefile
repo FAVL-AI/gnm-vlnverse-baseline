@@ -1168,3 +1168,6 @@ validate-final-isaac-live-evidence:
 
 validate-scene-holdout-split:
 	python3 scripts/gnm/validate_scene_holdout_split.py
+
+validate-scene-holdout-training:
+	python3 scripts/gnm/validate_scene_holdout_training.py
