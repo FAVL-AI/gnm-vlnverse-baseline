@@ -1,0 +1,14 @@
+{
+  "straight_short": {
+    "trajectory": "assets/experiments/trajectories/livefinal_straight_short_20260708_180802",
+    "rosbag": "assets/experiments/rosbags/livefinal_straight_short_20260708_180802"
+  },
+  "straight_medium": {
+    "trajectory": "assets/experiments/trajectories/livefinal_straight_medium_20260708_180855",
+    "rosbag": "assets/experiments/rosbags/livefinal_straight_medium_20260708_180855"
+  },
+  "low_curvature_safe": {
+    "trajectory": "assets/experiments/trajectories/livefinal_low_curvature_20260708_180949",
+    "rosbag": "assets/experiments/rosbags/livefinal_low_curvature_20260708_180949"
+  }
+}

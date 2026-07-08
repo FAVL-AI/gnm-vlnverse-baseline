@@ -1162,3 +1162,6 @@ validate-dataset-manifest:
 
 validate-protocol-alignment:
 	python3 scripts/gnm/validate_protocol_alignment.py
+
+validate-final-isaac-live-evidence:
+	python3 scripts/gnm/validate_final_isaac_live_evidence.py

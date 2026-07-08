@@ -1,0 +1,4 @@
+route,episode,goal_id,start_d2g_m,min_d2g_m,final_d2g_m,path_m,SR,OSR,NE_m,SPL,had_collision,chassis_contacts,estop,stop_reason,zero_hold_residual_m,checkpoint,checkpoint_sha256
+straight_short,livefinal_straight_short_20260708_180802,hospital_goal_A,2.0,0.002,0.988,2.988,1,1,0.988,0.669,False,0,False,,0.00249,checkpoints/ablation_mnv2_baseline/best.pt,b7bac92ef7a9960d97df6c8c6e92111f0bdb0d2786eb2e7e1887a86c1ba80a04
+straight_medium,livefinal_straight_medium_20260708_180855,hospital_goal_B,4.003,0.004,0.98,4.983,1,1,0.98,0.803,False,0,False,,0.00249,checkpoints/ablation_mnv2_baseline/best.pt,b7bac92ef7a9960d97df6c8c6e92111f0bdb0d2786eb2e7e1887a86c1ba80a04
+low_curvature_safe,livefinal_low_curvature_20260708_180949,hospital_goal_C,3.025,0.397,0.71,3.587,1,1,0.71,0.843,False,0,False,,0.00249,checkpoints/ablation_mnv2_baseline/best.pt,b7bac92ef7a9960d97df6c8c6e92111f0bdb0d2786eb2e7e1887a86c1ba80a04
