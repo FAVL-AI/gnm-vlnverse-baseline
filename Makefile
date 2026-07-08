@@ -1171,3 +1171,6 @@ validate-scene-holdout-split:
 
 validate-scene-holdout-training:
 	python3 scripts/gnm/validate_scene_holdout_training.py
+
+validate-mlops-governance-cards:
+	python3 scripts/gnm/validate_mlops_governance_cards.py

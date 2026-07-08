@@ -1,0 +1,33 @@
+{
+  "tool": "DriftGuardAI (examples/gnm_vlnverse_promotion_gate.py, commit 0014d5c)",
+  "incumbent": "mobilenet_baseline_scene_holdout_seed42",
+  "candidate": "mobilenet_ema0999_scene_holdout_seed42",
+  "decision": "reject_candidate",
+  "reason": "candidate worsens SR, OSR, NE, and SPL on the same scene-level held-out test.",
+  "raw_gate_output": {
+    "decision": "reject",
+    "checks": {
+      "sr": {
+        "incumbent": 0.32,
+        "candidate": 0.18,
+        "pass": false
+      },
+      "spl": {
+        "incumbent": 0.3148,
+        "candidate": 0.1665,
+        "pass": false
+      },
+      "ne_m": {
+        "incumbent": 5.5791,
+        "candidate": 5.9095,
+        "pass": false,
+        "material_worsening_threshold_m": 0.1
+      }
+    },
+    "rule": "promote only if SR and SPL improve or match and NE does not materially worsen on the same scene-held-out test; recovery (val loss) is not safety",
+    "incumbent_run": "mobilenet_baseline_scene_holdout_seed42",
+    "candidate_run": "mobilenet_ema0999_scene_holdout_seed42",
+    "test_scene": "kujiale_0271",
+    "n_test_episodes": 50
+  }
+}

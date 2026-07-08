@@ -1,0 +1,27 @@
+{
+  "tool": "VerdictPlane (policies/gnm_vlnverse_model_promotion.yaml, commit 14a3f50)",
+  "action": "promote_model",
+  "requested_candidate": "EMA 0.999",
+  "verdict": "deny",
+  "reason": "no held-out-scene improvement; baseline remains accepted reference.",
+  "evaluated_action": {
+    "tool": "model.promote",
+    "agent": "driftguard",
+    "effect": "execute",
+    "args": {
+      "leakage_check": "PASS",
+      "checkpoint_hashed": true,
+      "wandb_logged": true,
+      "offline_cr_is_numeric": false,
+      "full_benchmark_claim": false,
+      "driftguard_decision": "reject"
+    }
+  },
+  "matched_rule": {
+    "match": {
+      "tool": "model.promote",
+      "args.driftguard_decision": "reject"
+    },
+    "decision": "deny"
+  }
+}
