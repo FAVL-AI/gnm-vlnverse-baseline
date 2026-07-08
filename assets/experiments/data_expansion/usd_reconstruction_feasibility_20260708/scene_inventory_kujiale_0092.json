@@ -1,0 +1,60 @@
+{
+  "scene": "kujiale_0092",
+  "env_dir": "datasets/vlntube/envs/kujiale_0092",
+  "composed_stage": {
+    "file": "start_result_navigation.usd",
+    "size_bytes": 11182944,
+    "format": "usdc (crate)",
+    "mesh_references": 654,
+    "present_in_all_four_scenes": true
+  },
+  "meshes": {
+    "count": 661,
+    "format": "per-object USD (crate)",
+    "categories_sample": [
+      "basin",
+      "bathroom_product",
+      "wall",
+      "floor",
+      "window",
+      "cabinet",
+      "chandelier"
+    ]
+  },
+  "materials": {
+    "format": "MDL",
+    "sample": [
+      "BasicShapeMaterial.mdl",
+      "M_BaseMaterial.mdl",
+      "M_BaseMaterial_twosided.mdl"
+    ]
+  },
+  "metadata": {
+    "occupancy.json": [
+      "scale",
+      "center",
+      "upper",
+      "lower",
+      "min",
+      "max"
+    ],
+    "occupancy.png": "navigable map raster",
+    "rooms.json": "12 rooms, {room_type, polygon}",
+    "room_in_images.json": "present"
+  },
+  "isaac_load_smoke": {
+    "broken_references_before_fix": 654,
+    "broken_references_after_fix": 0,
+    "fix": "one relative symlink per scene dir: ln -s ../../.. datasets (inside the env dir) \u2014 resolves the authors' CWD-relative asset paths; zero file modification",
+    "render": {
+      "resolution": [
+        640,
+        480
+      ],
+      "nonblack_fraction": 0.929,
+      "mean_intensity": 141.1,
+      "evidence": "kujiale_0092_render_smoke.ppm"
+    },
+    "cosmetic_warnings": "displayColor primvar size mismatches on some floor/window meshes (Hydra renders regardless)"
+  }
+}
