@@ -1,0 +1,13 @@
+{
+  "torch": "2.11.0+cu128",
+  "cuda_available": true,
+  "device_count": 1,
+  "gpu": "NVIDIA GeForce RTX 4080 SUPER",
+  "total_vram_gb": 15.55,
+  "cuda_matmul_ok": [
+    2048,
+    2048
+  ],
+  "allocated_mb": 40.12,
+  "reserved_mb": 52.0
+}

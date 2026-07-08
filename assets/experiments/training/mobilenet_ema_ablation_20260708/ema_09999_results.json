@@ -1,0 +1,18 @@
+{
+  "SR": 0.2,
+  "OSR": 0.2,
+  "SPL": 0.2,
+  "NE": 6.0522,
+  "TL": 0.1256,
+  "nDTW": 0.3511,
+  "CLS": 0.0069,
+  "CR": 0.0,
+  "SRn": 0.0,
+  "n_episodes": 15,
+  "checkpoint": "/home/favl/robotics/gnm-vlnverse-baseline/checkpoints/ablation_mnv2_ema/best.pt",
+  "split": "val",
+  "track": "A",
+  "data_root": "/home/favl/robotics/gnm-vlnverse-baseline/datasets/vlntube",
+  "stop_threshold": 0.15,
+  "success_threshold": 3.0
+}

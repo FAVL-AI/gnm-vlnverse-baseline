@@ -1150,3 +1150,9 @@ validate-route-invariant-stop-study:
 
 validate-normalized-stop-authority-comparison:
 	python3 scripts/gnm/validate_normalized_stop_authority_comparison.py
+
+validate-isaac-physics-eval:
+	python3 scripts/gnm/validate_isaac_physics_eval.py
+
+validate-training-mlops:
+	python3 scripts/gnm/validate_training_mlops.py

@@ -299,6 +299,29 @@ pipeline described below.
   candidates rejected), FleetSafe improvement, SR/SPL, robust hospital
   navigation, goal reaching as an achievement, curved-path claims,
   six-run campaign.
+- **MobileNetV2 + EMA training ablation: COMPLETE (2026-07-08), two
+  stages, baseline KEPT.** Stage 1 (offline VLN evaluation, held-out
+  15-episode split): baseline SR 13.3/OSR 46.7/NE 6.14/SPL 0.133 (live
+  weights); EMA 0.9999 degenerate (undertrained shadow, TL 0.13 m — its
+  nominal SR 20.0 is a start-inside-radius artifact); EMA 0.999 (decay-
+  horizon sanity ablation) SR 6.7/NE 6.93 despite best val loss.
+  Offline Collision Rate: N/A — the offline evaluator has no physics
+  contact signal. Decision per pre-registered rule: keep the original
+  MobileNetV2 baseline; EMA reported as completed ablation; decay must
+  match training horizon. Stage 2 (Isaac physics smoke evaluation,
+  `make validate-isaac-physics-eval`): 3 straight-route episodes per
+  checkpoint under the full safety envelope; **Collision Rate measured
+  from PhysX chassis-contact events = 0.00 for both checkpoints (0
+  contacts over 17.9 m), verified by a positive-control episode that
+  logged 27 contacts against the reception desk**; SR/OSR trivially
+  saturated (routes shorter than the 3 m radius — NE 0.82 m and CR are
+  the informative metrics); both checkpoints saturate the safety clamp
+  so executed trajectories converge. Full package:
+  `assets/experiments/training_ablation/mnv2_ema_20260708/` (professor
+  summary, reviewer notes C1–C5, EfficientNet appendix) and
+  `assets/experiments/isaac_physics_eval/isaac_physics_smoke_20260708/`.
+  Offline metrics and Isaac physics metrics are reported in separate
+  tables and never mixed.
 - **Next required work, in order:** grow the live episode corpus
   (more routes/goals) to enable in-domain retraining of the temporal
   stop head with scene-level holdout → held-out authority test of the

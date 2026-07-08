@@ -1,0 +1,146 @@
+{
+  "experiment": "isaac_physics_smoke_20260708",
+  "label": "preliminary Isaac physics smoke test for Collision Rate and trajectory consistency \u2014 NOT a campaign-level benchmark",
+  "collision_rate_source": "physx_contact_report_base_link (chassis contacts; wheel-floor excluded by construction)",
+  "success_radius_m": 3.0,
+  "conditions": [
+    {
+      "condition": "mnv2_baseline",
+      "checkpoint": "checkpoints/ablation_mnv2_baseline/best.pt",
+      "weight_source": "live model",
+      "episodes": 3,
+      "SR": 1.0,
+      "OSR": 1.0,
+      "NE_m": 0.82,
+      "SPL": 0.725,
+      "collision_rate_episode": 0.0,
+      "total_collisions": 0,
+      "collisions_per_meter": 0.0,
+      "total_path_m": 8.97,
+      "per_episode": [
+        {
+          "episode": "physeval_base_A_20260708_172420",
+          "goal_id": "hospital_goal_A",
+          "checkpoint": "checkpoints/ablation_mnv2_baseline/best.pt",
+          "weight_source": "live model",
+          "success": true,
+          "oracle": true,
+          "ne": 0.988,
+          "min_d2g": 0.002,
+          "path_m": 2.988,
+          "spl": 0.6693,
+          "had_collision": false,
+          "collisions": 0,
+          "first_collision_step": null,
+          "estop": false
+        },
+        {
+          "episode": "physeval_base_D_20260708_172509",
+          "goal_id": "hospital_holdout_short_D",
+          "checkpoint": "checkpoints/ablation_mnv2_baseline/best.pt",
+          "weight_source": "live model",
+          "success": true,
+          "oracle": true,
+          "ne": 0.485,
+          "min_d2g": 0.002,
+          "path_m": 2.989,
+          "spl": 0.8375,
+          "had_collision": false,
+          "collisions": 0,
+          "first_collision_step": null,
+          "estop": false
+        },
+        {
+          "episode": "physeval_base_F_20260708_172559",
+          "goal_id": "hospital_fresh_short_F",
+          "checkpoint": "checkpoints/ablation_mnv2_baseline/best.pt",
+          "weight_source": "live model",
+          "success": true,
+          "oracle": true,
+          "ne": 0.988,
+          "min_d2g": 0.002,
+          "path_m": 2.989,
+          "spl": 0.6693,
+          "had_collision": false,
+          "collisions": 0,
+          "first_collision_step": null,
+          "estop": false
+        }
+      ]
+    },
+    {
+      "condition": "mnv2_ema0999",
+      "checkpoint": "checkpoints/ablation_mnv2_ema0999/best.pt",
+      "weight_source": "EMA shadow",
+      "episodes": 3,
+      "SR": 1.0,
+      "OSR": 1.0,
+      "NE_m": 0.821,
+      "SPL": 0.725,
+      "collision_rate_episode": 0.0,
+      "total_collisions": 0,
+      "collisions_per_meter": 0.0,
+      "total_path_m": 8.97,
+      "per_episode": [
+        {
+          "episode": "physeval_ema_A_20260708_172649",
+          "goal_id": "hospital_goal_A",
+          "checkpoint": "checkpoints/ablation_mnv2_ema0999/best.pt",
+          "weight_source": "EMA shadow",
+          "success": true,
+          "oracle": true,
+          "ne": 0.989,
+          "min_d2g": 0.003,
+          "path_m": 2.99,
+          "spl": 0.669,
+          "had_collision": false,
+          "collisions": 0,
+          "first_collision_step": null,
+          "estop": false
+        },
+        {
+          "episode": "physeval_ema_D_20260708_172739",
+          "goal_id": "hospital_holdout_short_D",
+          "checkpoint": "checkpoints/ablation_mnv2_ema0999/best.pt",
+          "weight_source": "EMA shadow",
+          "success": true,
+          "oracle": true,
+          "ne": 0.485,
+          "min_d2g": 0.004,
+          "path_m": 2.989,
+          "spl": 0.8375,
+          "had_collision": false,
+          "collisions": 0,
+          "first_collision_step": null,
+          "estop": false
+        },
+        {
+          "episode": "physeval_ema_F_20260708_172828",
+          "goal_id": "hospital_fresh_short_F",
+          "checkpoint": "checkpoints/ablation_mnv2_ema0999/best.pt",
+          "weight_source": "EMA shadow",
+          "success": true,
+          "oracle": true,
+          "ne": 0.988,
+          "min_d2g": 0.002,
+          "path_m": 2.989,
+          "spl": 0.6692,
+          "had_collision": false,
+          "collisions": 0,
+          "first_collision_step": null,
+          "estop": false
+        }
+      ]
+    }
+  ],
+  "sensor_positive_control": {
+    "episode": "physeval_collision_control2_20260708",
+    "result": "PASS \u2014 27 chassis-contact events logged against SM_ReceptionDesk_01a from step 593; e-stop fired on post-collision command anomaly",
+    "meaning": "CR=0.0 in the evaluation episodes is a verified zero: the contact sensor demonstrably fires on real collisions"
+  },
+  "honest_notes": [
+    "SR/OSR are degenerate in this smoke: all three routes are shorter than the 3 m success radius, so SR=OSR=1.0 is trivial; NE and Collision Rate are the informative metrics here",
+    "the two checkpoints produce identical aggregates because both saturate the 0.2 m/s safety clamp on straight routes (raw intents differ: ~0.47-0.54 vs ~0.67-0.72 m/s) and yaw authority is weak; per-row raw commands distinguish the policies",
+    "preliminary physics smoke test, not a campaign-level benchmark"
+  ]
+}

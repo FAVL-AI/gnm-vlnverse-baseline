@@ -122,6 +122,42 @@ app.update()
 ROBOT_PATH = "/World/M3Pro"
 ARTIC_ROOT = "/World/M3Pro/base_footprint"
 
+COLLISION_REPORT = "--collision-report" in sys.argv
+coll = {"count": 0, "step_hit": False, "last_body": None,
+        "first_step": None, "first_sim_time": None, "events": []}
+if COLLISION_REPORT:
+    from pxr import PhysxSchema
+    _cr = PhysxSchema.PhysxContactReportAPI.Apply(
+        stage.GetPrimAtPath(f"{ROBOT_PATH}/base_link"))
+    _cr.CreateThresholdAttr(0.0)
+    print("[collision] PhysX contact reporting enabled on base_link "
+          "(chassis contacts = collisions; wheel-floor contact excluded "
+          "by construction)")
+
+
+def poll_collisions(step_idx, sim_time):
+    """Drain PhysX contact headers; count chassis-involved contacts."""
+    if not COLLISION_REPORT:
+        return
+    from omni.physx import get_physx_simulation_interface
+    from pxr import PhysicsSchemaTools
+    coll["step_hit"] = False
+    headers, _ = get_physx_simulation_interface().get_contact_report()
+    for h in headers:
+        a0 = str(PhysicsSchemaTools.intToSdfPath(h.actor0))
+        a1 = str(PhysicsSchemaTools.intToSdfPath(h.actor1))
+        if "base_link" not in a0 and "base_link" not in a1:
+            continue
+        other = a1 if "base_link" in a0 else a0
+        coll["count"] += 1
+        coll["step_hit"] = True
+        coll["last_body"] = other
+        if coll["first_step"] is None:
+            coll["first_step"] = step_idx
+            coll["first_sim_time"] = round(float(sim_time), 3)
+        if len(coll["events"]) < 50:
+            coll["events"].append({"step": step_idx, "other_body": other})
+
 keys = og.Controller.Keys
 og.Controller.edit(
     {"graph_path": "/World/ROS2Graph", "evaluator_name": "execution"},
@@ -574,6 +610,7 @@ EPISODE_TOPICS = ["/camera/image_raw", "/camera/camera_info", "/odom",
                   "/tf", "/clock", "/cmd_vel"]
 from gnm_shadow import SHADOW_FIELDS as _SF
 CL_FIELDS = [
+    "collision_detected", "collision_count_so_far", "collision_body",
     "experiment_id", "pair_id", "condition",
     "stop_rule_name", "stop_rule_threshold", "stop_rule_k",
     "stop_rule_ratio", "initial_predicted_distance",
@@ -629,7 +666,12 @@ if "--episode" in sys.argv or "--shadow-gnm" in sys.argv or "--gnm-control" in s
             (_gdir / "goal_metadata.json").read_text())["goal_pose"]
         print(f"[goal] scene-aligned goal selected: {GOAL_SEL} "
               f"pose={GOAL_POSE_SEL}")
-    shadow = GNMShadow(REPO, _goal_img, device="cuda")
+    _pck = _argval("--policy-ckpt")
+    if _pck:
+        from ablation_policy import AblationPolicyShadow
+        shadow = AblationPolicyShadow(_pck, _goal_img, device="cuda")
+    else:
+        shadow = GNMShadow(REPO, _goal_img, device="cuda")
     stop_shadow = None
     if "--stop-head-shadow" in sys.argv:
         from stop_head_shadow import StopHeadShadow, STOP_FIELDS as _STF
@@ -765,6 +807,9 @@ if CL_MODE:
         if stop_shadow is not None:
             extra.update(stop_shadow.latest)
         extra.update({
+            "collision_detected": coll["step_hit"] if COLLISION_REPORT else None,
+            "collision_count_so_far": coll["count"] if COLLISION_REPORT else None,
+            "collision_body": coll["last_body"] if COLLISION_REPORT else None,
             "experiment_id": EXPERIMENT_ID,
             "pair_id": PAIR_ID,
             "condition": CONDITION,
@@ -820,6 +865,7 @@ if CL_MODE:
     for i in range(CL_STEPS):
         render = (i % 3 == 0)
         sim.step(render=render)
+        poll_collisions(i, sim.current_time)
         if render:
             _f = rgb_annot.get_data()
             if _f is not None and getattr(_f, "size", 0) > 0:
@@ -959,6 +1005,15 @@ if CL_MODE:
                                  _fy - GOAL_POSE_SEL["y"])
                       if GOAL_POSE_SEL is not None else None)
         cl_meta.update(stop_shadow.summary(final_d2g=_final_d2g))
+    if COLLISION_REPORT:
+        cl_meta.update({
+            "collision_reporting": "physx_contact_report_base_link",
+            "episode_had_collision": coll["count"] > 0,
+            "total_collision_count": coll["count"],
+            "first_collision_step": coll["first_step"],
+            "first_collision_sim_time": coll["first_sim_time"],
+            "collision_events_sample": coll["events"][:10],
+        })
     cl_meta.update({
         "experiment_id": EXPERIMENT_ID,
         "pair_id": PAIR_ID,

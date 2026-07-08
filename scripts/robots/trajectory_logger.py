@@ -41,7 +41,8 @@ class TrajectoryLogger:
         self.fieldnames = REQUIRED_FIELDS + list(extra_fields or [])
         self._jsonl = self.jsonl_path.open("w")
         self._csv_file = self.csv_path.open("w", newline="")
-        self._csv = csv.DictWriter(self._csv_file, fieldnames=self.fieldnames)
+        self._csv = csv.DictWriter(self._csv_file, fieldnames=self.fieldnames,
+                                   extrasaction="ignore", restval="")
         self._csv.writeheader()
         self.rows = 0
         self.start_wall = time.time()

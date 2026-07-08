@@ -1,0 +1,4 @@
+model,ema_decay,SR,OSR,NE_m,SPL,CR,weights,decision
+mnv2_baseline,none,13.3,46.7,6.14,0.133,N/A offline,live model,KEPT (current baseline)
+mnv2_ema,0.9999,20.0,20.0,6.05,0.2,N/A offline,EMA shadow,ablation only (degenerate: TL 0.13m)
+mnv2_ema,0.999,6.7,33.3,6.93,0.067,N/A offline,EMA shadow,ablation only

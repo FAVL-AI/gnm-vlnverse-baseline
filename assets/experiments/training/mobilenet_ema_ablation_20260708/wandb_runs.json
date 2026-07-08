@@ -1,0 +1,9 @@
+{
+  "mode": "offline",
+  "runs": [
+    "wandb/offline-run-20260708_161753-ik1f269e",
+    "wandb/offline-run-20260708_162601-wj9vvlwk",
+    "wandb/offline-run-20260708_164349-nbzvmz2h"
+  ],
+  "sync_instructions": "wandb sync wandb/offline-run-*  (project fleetsafe-gnm-vlnverse; names mnv2_baseline_for_ema_ablation / mnv2_ema_ablation / mnv2_ema0999_sanity_ablation)"
+}

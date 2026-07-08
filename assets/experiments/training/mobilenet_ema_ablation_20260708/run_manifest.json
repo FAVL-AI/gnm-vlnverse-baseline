@@ -1,0 +1,38 @@
+{
+  "experiment": "mobilenet_ema_ablation_20260708",
+  "git_commit": "91c9716",
+  "git_branch": "isaac-hospital-demo",
+  "seed": 42,
+  "backbone": "mobilenet",
+  "image_size": [
+    96,
+    96
+  ],
+  "optimizer": "adamw lr=1e-4 wd=1e-4 warmup 5%",
+  "batch_size": 128,
+  "epochs_config": 50,
+  "early_stopping_patience": 10,
+  "dataset_split": "vlntube 4-scene kujiale: 12421 train / 817 val samples (238/15 episodes)",
+  "training_device_evidence": "trainer log: 'Training on cuda'; nvidia-smi 48% util / 5.9 GB during run",
+  "amp": "torch.amp autocast per trainer",
+  "conditions": {
+    "baseline": {
+      "ema_decay": 0.0,
+      "eval_weights": "live model",
+      "ckpt": "checkpoints/ablation_mnv2_baseline/best.pt"
+    },
+    "ema_0.9999": {
+      "ema_decay": 0.9999,
+      "eval_weights": "EMA shadow",
+      "ckpt": "checkpoints/ablation_mnv2_ema/best.pt",
+      "label": "originally requested EMA ablation"
+    },
+    "ema_0.999": {
+      "ema_decay": 0.999,
+      "eval_weights": "EMA shadow",
+      "ckpt": "checkpoints/ablation_mnv2_ema0999/best.pt",
+      "label": "decay-horizon sanity ablation"
+    }
+  },
+  "collision_rate_policy": "N/A offline (no physics contact signal); measured in Isaac physics smoke from PhysX chassis-contact events only"
+}

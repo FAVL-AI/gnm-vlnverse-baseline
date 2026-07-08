@@ -1,0 +1,3 @@
+condition,checkpoint,weight_source,episodes,SR,OSR,NE_m,SPL,collision_rate_episode,total_collisions,collisions_per_meter,total_path_m
+mnv2_baseline,checkpoints/ablation_mnv2_baseline/best.pt,live model,3,1.0,1.0,0.82,0.725,0.0,0,0.0,8.97
+mnv2_ema0999,checkpoints/ablation_mnv2_ema0999/best.pt,EMA shadow,3,1.0,1.0,0.821,0.725,0.0,0,0.0,8.97
