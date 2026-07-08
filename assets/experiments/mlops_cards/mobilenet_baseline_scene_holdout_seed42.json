@@ -1,0 +1,83 @@
+{
+  "project": "gnm-vlnverse-baseline",
+  "case_study": "scene_holdout_mobile_gnm",
+  "run_name": "mobilenet_baseline_scene_holdout_seed42",
+  "branch": "data-expansion-scene-holdout",
+  "commit": "b6ee929",
+  "seed": 42,
+  "config_path": "configs/gnm/gnm_base.yaml",
+  "model": {
+    "name": "MobileNetV2-GNM",
+    "condition": "baseline",
+    "ema_decay": null,
+    "weights_evaluated": "live model",
+    "checkpoint_path": "checkpoints/scene_holdout_mnv2_baseline/best.pt",
+    "checkpoint_sha256": "bb2768cf753aa58d1c5c546ee0443d95d9e93375eeefc4f3658db13c8e50f13b",
+    "checkpoint_committed": false,
+    "selected_by": "validation loss only"
+  },
+  "dataset": {
+    "name": "VLNVerse/VLNTube controlled local subset",
+    "manifest": "assets/experiments/training_ablation/mnv2_ema_20260708/dataset_manifest_scene_holdout.json",
+    "train_episodes": 191,
+    "val_episodes": 12,
+    "test_episodes": 50,
+    "train_scenes": [
+      "kujiale_0092",
+      "kujiale_0118",
+      "kujiale_0203"
+    ],
+    "heldout_scene": "kujiale_0271",
+    "holdout_type": "scene-level",
+    "leakage_check": "PASS"
+  },
+  "metrics": {
+    "sr": 0.32,
+    "osr": 0.56,
+    "ne_m": 5.5791,
+    "spl": 0.3148,
+    "n_test_episodes": 50,
+    "collision_rate": "N/A offline"
+  },
+  "observability": {
+    "wandb_project": "offline",
+    "wandb_run": "mobilenet_baseline_scene_holdout_seed42",
+    "wandb_offline_dirs": [
+      "wandb/offline-run-20260708_193903-ci30dxur",
+      "wandb/offline-run-20260708_194441-23voxd8h"
+    ],
+    "cuda_verified": true,
+    "gpu": "NVIDIA GeForce RTX 4080 SUPER"
+  },
+  "gates": {
+    "cuda_verified": true,
+    "wandb_logged": true,
+    "dataset_manifest_exists": true,
+    "scene_holdout_leakage_check": "PASS",
+    "checkpoint_hashed": true,
+    "offline_cr_not_reported_numeric": true,
+    "artifact_hygiene_clean": true,
+    "no_full_benchmark_claim": true,
+    "no_robust_navigation_claim": true,
+    "no_language_instruction_claim": true
+  },
+  "driftguard": {
+    "promotion_candidate": false,
+    "incumbent": null,
+    "decision": "baseline_reference"
+  },
+  "sentinel": {
+    "incidents": []
+  },
+  "verdictplane": {
+    "governed_actions": [
+      "promote_model",
+      "deploy_to_isaac",
+      "deploy_to_robot",
+      "publish_result",
+      "rollback_model"
+    ],
+    "policy_state": "pending"
+  },
+  "claim_boundary": "Scene-level held-out MobileNetV2-GNM study on a controlled local VLNVerse/VLNTube subset; not a full VLNVerse benchmark."
+}
