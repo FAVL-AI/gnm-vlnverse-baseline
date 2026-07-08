@@ -1165,3 +1165,6 @@ validate-protocol-alignment:
 
 validate-final-isaac-live-evidence:
 	python3 scripts/gnm/validate_final_isaac_live_evidence.py
+
+validate-scene-holdout-split:
+	python3 scripts/gnm/validate_scene_holdout_split.py

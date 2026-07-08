@@ -1,0 +1,5113 @@
+{
+  "dataset_name": "VLNVerse/VLNTube (local four-scene corpus)",
+  "purpose": "scene-level held-out split for final reporting; supersedes the trajectory-level split of dataset_manifest.json for future FINAL testing only",
+  "hypothesis": "Increasing VLNVerse/VLNTube training and validation coverage while preserving scene-level held-out testing will produce a more reliable estimate of MobileNetV2-GNM generalization than the current four-scene, trajectory-level split.",
+  "git_commit": "ac3030b",
+  "git_branch": "data-expansion-scene-holdout",
+  "scenes": {
+    "available": [
+      "kujiale_0092",
+      "kujiale_0118",
+      "kujiale_0203",
+      "kujiale_0271"
+    ],
+    "train": [
+      "kujiale_0092",
+      "kujiale_0118",
+      "kujiale_0203"
+    ],
+    "val": [
+      "kujiale_0092",
+      "kujiale_0118",
+      "kujiale_0203"
+    ],
+    "test_scene_holdout": [
+      "kujiale_0271"
+    ],
+    "upstream_alignment": "all four local scenes are upstream VLNTube trainval scenes (external/VLNTube/splits/scene_splits.json); no upstream test scene exists locally, so the local scene holdout is drawn from our own four scenes"
+  },
+  "split_summary": {
+    "train": 191,
+    "val": 12,
+    "test_scene_holdout": 50,
+    "total": 253
+  },
+  "usage_rules": [
+    "test_scene_holdout episodes must not be used for training, hyperparameter tuning, or model selection",
+    "val episodes are trajectory-level within train scenes and are for model selection only",
+    "no performance claims from this split until models are retrained under it"
+  ],
+  "expansion_status": {
+    "hf_download": "unavailable \u2014 dataset repo frankleroyvan/fleetsafe-gnm-vlnverse not published",
+    "live_vistube_generation": "blocked \u2014 upstream pipeline is hardwired to the original authors' infrastructure and requires scene USDs; local envs have meshes/occupancy but zero composed scene USDs (vlntube_index.json)",
+    "next_step": "rebuild scene USDs from local Meshes/Materials, then run vistube A* trajectory generation for TRAIN scenes only, keeping kujiale_0271 untouched"
+  },
+  "episodes": [
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_0_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_0_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_0_3",
+      "start_pose": [
+        2.8444111347198486,
+        -1.3460103273391724,
+        -2.653182029724121
+      ],
+      "goal_pose": [
+        -2.884977340698242,
+        2.2986385822296143,
+        -2.653182029724121
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_0_3/9.jpg",
+      "num_frames": 48,
+      "path_length_m": 8.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_100_4",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_100_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_100_4",
+      "start_pose": [
+        -0.17158937454223633,
+        4.527430057525635,
+        0.23986639082431793
+      ],
+      "goal_pose": [
+        -2.564300298690796,
+        2.249232292175293,
+        -2.3781275749206543
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_100_4/9.jpg",
+      "num_frames": 40,
+      "path_length_m": 5.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_102_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_102_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_102_1",
+      "start_pose": [
+        -4.846390247344971,
+        0.5616027116775513,
+        1.0069947242736816
+      ],
+      "goal_pose": [
+        2.1248538494110107,
+        -3.895188331604004,
+        -0.04020283371210098
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_102_1/9.jpg",
+      "num_frames": 86,
+      "path_length_m": 12.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_102_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_102_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_102_2",
+      "start_pose": [
+        0.9845441579818726,
+        0.8126044273376465,
+        -1.328041434288025
+      ],
+      "goal_pose": [
+        2.0560622215270996,
+        -3.892332077026367,
+        0.2427549511194229
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_102_2/9.jpg",
+      "num_frames": 30,
+      "path_length_m": 5.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_103_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_103_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_103_1",
+      "start_pose": [
+        -1.5287896394729614,
+        -1.3460103273391724,
+        -0.2910624146461487
+      ],
+      "goal_pose": [
+        -4.705102443695068,
+        -2.9939827919006348,
+        -0.8146612048149109
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_103_1/94.jpg",
+      "num_frames": 95,
+      "path_length_m": 16.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_105_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_105_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_105_0",
+      "start_pose": [
+        -0.2218560427427292,
+        5.280435085296631,
+        -1.5564926862716675
+      ],
+      "goal_pose": [
+        -0.10424500703811646,
+        1.8377418518066406,
+        -2.341890811920166
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_105_0/9.jpg",
+      "num_frames": 29,
+      "path_length_m": 4.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_106_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_106_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_106_1",
+      "start_pose": [
+        0.682944118976593,
+        2.519416093826294,
+        -1.47781240940094
+      ],
+      "goal_pose": [
+        -0.13687898218631744,
+        -2.1570308208465576,
+        -2.001411199569702
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_106_1/9.jpg",
+      "num_frames": 33,
+      "path_length_m": 5.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_107_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_107_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_107_2",
+      "start_pose": [
+        2.442277669906616,
+        -1.2958099842071533,
+        -2.5142223834991455
+      ],
+      "goal_pose": [
+        0.30790212750434875,
+        1.5305455923080444,
+        1.4127684831619263
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_107_2/9.jpg",
+      "num_frames": 31,
+      "path_length_m": 4.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_108_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_108_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_108_2",
+      "start_pose": [
+        2.743877649307251,
+        -6.566845893859863,
+        2.5933761596679688
+      ],
+      "goal_pose": [
+        3.0070366859436035,
+        5.699061393737793,
+        -0.02461768127977848
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_108_2/9.jpg",
+      "num_frames": 73,
+      "path_length_m": 14.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_10_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_10_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_10_3",
+      "start_pose": [
+        2.743877649307251,
+        -6.566845893859863,
+        2.9335315227508545
+      ],
+      "goal_pose": [
+        1.9966449737548828,
+        5.57749080657959,
+        0.5773369669914246
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_10_3/9.jpg",
+      "num_frames": 63,
+      "path_length_m": 13.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_110_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_110_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_110_0",
+      "start_pose": [
+        -1.5287896394729614,
+        -1.3460103273391724,
+        -0.13575120270252228
+      ],
+      "goal_pose": [
+        -0.14374954998493195,
+        1.7852929830551147,
+        -3.0155444145202637
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_110_0/9.jpg",
+      "num_frames": 42,
+      "path_length_m": 6.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_11_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_11_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_11_0",
+      "start_pose": [
+        -4.846390247344971,
+        0.5616027116775513,
+        0.7222890257835388
+      ],
+      "goal_pose": [
+        1.39656662940979,
+        1.9113529920578003,
+        -0.3249084949493408
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_11_0/9.jpg",
+      "num_frames": 36,
+      "path_length_m": 7.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_11_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_11_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_11_3",
+      "start_pose": [
+        2.743877649307251,
+        -6.566845893859863,
+        3.0402910709381104
+      ],
+      "goal_pose": [
+        1.4067953824996948,
+        1.737575888633728,
+        1.7312941551208496
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_11_3/9.jpg",
+      "num_frames": 49,
+      "path_length_m": 9.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_14_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_14_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_14_0",
+      "start_pose": [
+        2.442277669906616,
+        -1.2958099842071533,
+        -2.489272356033325
+      ],
+      "goal_pose": [
+        -4.9660115242004395,
+        4.413909912109375,
+        2.4849159717559814
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_14_0/9.jpg",
+      "num_frames": 69,
+      "path_length_m": 11.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_14_4",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_14_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_14_4",
+      "start_pose": [
+        1.4872108697891235,
+        -1.99861478805542,
+        1.5753175020217896
+      ],
+      "goal_pose": [
+        -5.029040336608887,
+        4.428694248199463,
+        1.5753175020217896
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_14_4/9.jpg",
+      "num_frames": 61,
+      "path_length_m": 11.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_15_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_15_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_15_3",
+      "start_pose": [
+        0.18027734756469727,
+        -1.9484144449234009,
+        0.7833988070487976
+      ],
+      "goal_pose": [
+        2.189526081085205,
+        5.571606636047363,
+        0.7833988070487976
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_15_3/9.jpg",
+      "num_frames": 46,
+      "path_length_m": 8.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_16_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_16_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_16_2",
+      "start_pose": [
+        1.4872108697891235,
+        -1.99861478805542,
+        1.4164236783981323
+      ],
+      "goal_pose": [
+        2.618572235107422,
+        5.4973578453063965,
+        -0.416172057390213
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_16_2/9.jpg",
+      "num_frames": 45,
+      "path_length_m": 8.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_16_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_16_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_16_3",
+      "start_pose": [
+        1.235877513885498,
+        -1.4464110136032104,
+        1.3689340353012085
+      ],
+      "goal_pose": [
+        2.6050357818603516,
+        5.503267288208008,
+        -0.46366170048713684
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_16_3/9.jpg",
+      "num_frames": 43,
+      "path_length_m": 7.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_18_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_18_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_18_1",
+      "start_pose": [
+        2.8444111347198486,
+        -3.956428289413452,
+        3.077958583831787
+      ],
+      "goal_pose": [
+        -2.6192684173583984,
+        2.3229804039001465,
+        -2.4198286533355713
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_18_1/9.jpg",
+      "num_frames": 62,
+      "path_length_m": 10.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_22_4",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_22_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_22_4",
+      "start_pose": [
+        -1.6795896291732788,
+        -3.4544248580932617,
+        0.05716365948319435
+      ],
+      "goal_pose": [
+        2.9053149223327637,
+        5.4695048332214355,
+        -0.46643510460853577
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_22_4/9.jpg",
+      "num_frames": 70,
+      "path_length_m": 11.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_23_4",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_23_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_23_4",
+      "start_pose": [
+        2.2412109375,
+        -7.570852756500244,
+        1.6205722093582153
+      ],
+      "goal_pose": [
+        1.7047812938690186,
+        2.422400951385498,
+        1.3587727546691895
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_23_4/9.jpg",
+      "num_frames": 51,
+      "path_length_m": 10.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_27_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_27_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_27_2",
+      "start_pose": [
+        0.9845441579818726,
+        0.8126044273376465,
+        1.235649585723877
+      ],
+      "goal_pose": [
+        2.5920417308807373,
+        5.507587432861328,
+        -0.3351467549800873
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_27_2/9.jpg",
+      "num_frames": 31,
+      "path_length_m": 5.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_27_4",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_27_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_27_4",
+      "start_pose": [
+        -4.846390247344971,
+        0.5616027116775513,
+        1.1031593084335327
+      ],
+      "goal_pose": [
+        2.485703706741333,
+        5.478118896484375,
+        -0.46763700246810913
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_27_4/9.jpg",
+      "num_frames": 54,
+      "path_length_m": 9.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_31_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_31_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_31_0",
+      "start_pose": [
+        3.246544599533081,
+        -1.6472123861312866,
+        2.9090161323547363
+      ],
+      "goal_pose": [
+        -1.1659729480743408,
+        2.651188611984253,
+        -3.1123697757720947
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_31_0/9.jpg",
+      "num_frames": 42,
+      "path_length_m": 7.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_32_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_32_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_32_0",
+      "start_pose": [
+        -0.3223893940448761,
+        6.0836405754089355,
+        -1.3000200986862183
+      ],
+      "goal_pose": [
+        1.0662270784378052,
+        1.1122771501541138,
+        -1.3000200986862183
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_32_0/9.jpg",
+      "num_frames": 33,
+      "path_length_m": 5.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_34_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_34_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_34_0",
+      "start_pose": [
+        1.4369442462921143,
+        6.284441947937012,
+        -1.4819021224975586
+      ],
+      "goal_pose": [
+        -0.04133953899145126,
+        -2.2837600708007812,
+        -2.2673001289367676
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_34_0/9.jpg",
+      "num_frames": 45,
+      "path_length_m": 9.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_34_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_34_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_34_1",
+      "start_pose": [
+        -0.3223893940448761,
+        6.0836405754089355,
+        -1.2792044878005981
+      ],
+      "goal_pose": [
+        -0.020577365532517433,
+        -2.297764301300049,
+        -2.0646026134490967
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_34_1/9.jpg",
+      "num_frames": 54,
+      "path_length_m": 9.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_35_4",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_35_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_35_4",
+      "start_pose": [
+        -4.444256782531738,
+        1.6660102605819702,
+        0.578746497631073
+      ],
+      "goal_pose": [
+        -0.07189629971981049,
+        -2.2359073162078857,
+        -2.301046848297119
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_35_4/9.jpg",
+      "num_frames": 57,
+      "path_length_m": 10.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_36_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_36_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_36_2",
+      "start_pose": [
+        1.4872108697891235,
+        -0.7938066124916077,
+        1.5036444664001465
+      ],
+      "goal_pose": [
+        1.9378585815429688,
+        5.906982421875,
+        1.2418451309204102
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_36_2/9.jpg",
+      "num_frames": 31,
+      "path_length_m": 6.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_37_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_37_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_37_3",
+      "start_pose": [
+        1.235877513885498,
+        -1.4464110136032104,
+        1.433188557624817
+      ],
+      "goal_pose": [
+        -4.013259410858154,
+        4.49664306640625,
+        1.1713892221450806
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_37_3/9.jpg",
+      "num_frames": 62,
+      "path_length_m": 10.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_3_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_3_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_3_1",
+      "start_pose": [
+        -2.031456232070923,
+        -1.5468116998672485,
+        -0.04108171537518501
+      ],
+      "goal_pose": [
+        2.5421998500823975,
+        5.7784295082092285,
+        0.4825170636177063
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_3_1/9.jpg",
+      "num_frames": 56,
+      "path_length_m": 10.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_3_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_3_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_3_2",
+      "start_pose": [
+        -1.5790562629699707,
+        -1.7476130723953247,
+        0.015376999974250793
+      ],
+      "goal_pose": [
+        2.5710537433624268,
+        5.765241622924805,
+        0.5389757752418518
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_3_2/9.jpg",
+      "num_frames": 58,
+      "path_length_m": 10.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_3_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_3_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_3_3",
+      "start_pose": [
+        1.4369442462921143,
+        -5.562839031219482,
+        1.4653226137161255
+      ],
+      "goal_pose": [
+        2.5856611728668213,
+        5.781822204589844,
+        0.679924488067627
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_3_3/9.jpg",
+      "num_frames": 55,
+      "path_length_m": 11.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_40_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_40_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_40_1",
+      "start_pose": [
+        -0.3223893940448761,
+        -5.462438583374023,
+        1.355360507965088
+      ],
+      "goal_pose": [
+        1.3265262842178345,
+        2.081709861755371,
+        0.8317617774009705
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_40_1/9.jpg",
+      "num_frames": 48,
+      "path_length_m": 8.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_41_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_41_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_41_1",
+      "start_pose": [
+        2.743877649307251,
+        -6.566845893859863,
+        3.04197096824646
+      ],
+      "goal_pose": [
+        1.4520070552825928,
+        1.111687183380127,
+        0.68577641248703
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_41_1/9.jpg",
+      "num_frames": 51,
+      "path_length_m": 8.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_43_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_43_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_43_1",
+      "start_pose": [
+        2.1909444332122803,
+        6.284441947937012,
+        -1.7754801511764526
+      ],
+      "goal_pose": [
+        1.3330527544021606,
+        2.1735315322875977,
+        -1.2518813610076904
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_43_1/9.jpg",
+      "num_frames": 22,
+      "path_length_m": 4.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_44_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_44_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_44_3",
+      "start_pose": [
+        1.4369442462921143,
+        -3.956428289413452,
+        1.4535342454910278
+      ],
+      "goal_pose": [
+        2.4567458629608154,
+        5.477082252502441,
+        -0.11726207286119461
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_44_3/9.jpg",
+      "num_frames": 49,
+      "path_length_m": 10.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_46_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_46_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_46_0",
+      "start_pose": [
+        -1.5790562629699707,
+        -1.7476130723953247,
+        -0.002872397657483816
+      ],
+      "goal_pose": [
+        2.5297186374664307,
+        5.457265853881836,
+        -0.002872397657483816
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_46_0/9.jpg",
+      "num_frames": 56,
+      "path_length_m": 10.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_51_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_51_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_51_1",
+      "start_pose": [
+        1.4369442462921143,
+        6.284441947937012,
+        -1.5211848020553589
+      ],
+      "goal_pose": [
+        1.6913326978683472,
+        0.30086731910705566,
+        -1.259385347366333
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_51_1/9.jpg",
+      "num_frames": 33,
+      "path_length_m": 6.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_52_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_52_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_52_2",
+      "start_pose": [
+        1.738544225692749,
+        5.531436920166016,
+        -1.4800173044204712
+      ],
+      "goal_pose": [
+        2.1344590187072754,
+        0.47548410296440125,
+        -0.17102035880088806
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_52_2/9.jpg",
+      "num_frames": 30,
+      "path_length_m": 5.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_55_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_55_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_55_1",
+      "start_pose": [
+        -1.5790562629699707,
+        -1.7476130723953247,
+        -0.0025582858361303806
+      ],
+      "goal_pose": [
+        2.791827917098999,
+        5.787881374359131,
+        -0.0025582858361303806
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_55_1/9.jpg",
+      "num_frames": 57,
+      "path_length_m": 10.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_59_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_59_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_59_0",
+      "start_pose": [
+        -0.3223893940448761,
+        6.0836405754089355,
+        -1.1898343563079834
+      ],
+      "goal_pose": [
+        1.9303230047225952,
+        0.34231245517730713,
+        -0.666235625743866
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_59_0/9.jpg",
+      "num_frames": 39,
+      "path_length_m": 6.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_60_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_60_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_60_1",
+      "start_pose": [
+        -1.4785228967666626,
+        -6.817847728729248,
+        0.6927022933959961
+      ],
+      "goal_pose": [
+        2.156731605529785,
+        -3.8838040828704834,
+        0.16910354793071747
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_60_1/9.jpg",
+      "num_frames": 77,
+      "path_length_m": 9.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_61_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_61_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_61_0",
+      "start_pose": [
+        -1.5287896394729614,
+        -1.3460103273391724,
+        -0.3318019211292267
+      ],
+      "goal_pose": [
+        2.1590981483459473,
+        -3.9109833240509033,
+        -0.07000253349542618
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_61_0/9.jpg",
+      "num_frames": 41,
+      "path_length_m": 5.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_62_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_62_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_62_0",
+      "start_pose": [
+        2.442277669906616,
+        -1.2958099842071533,
+        -2.4302308559417725
+      ],
+      "goal_pose": [
+        2.9487392902374268,
+        5.579229831695557,
+        -0.0740363821387291
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_62_0/9.jpg",
+      "num_frames": 51,
+      "path_length_m": 8.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_62_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_62_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_62_2",
+      "start_pose": [
+        2.8444111347198486,
+        -1.6974127292633057,
+        3.127588987350464
+      ],
+      "goal_pose": [
+        2.8878750801086426,
+        5.486081123352051,
+        -0.014003578573465347
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_62_2/9.jpg",
+      "num_frames": 49,
+      "path_length_m": 9.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_64_4",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_64_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_64_4",
+      "start_pose": [
+        -1.5287896394729614,
+        -1.3460103273391724,
+        -0.3356897234916687
+      ],
+      "goal_pose": [
+        -4.5624260902404785,
+        -2.773280143737793,
+        -1.121087908744812
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_64_4/94.jpg",
+      "num_frames": 95,
+      "path_length_m": 16.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_69_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_69_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_69_1",
+      "start_pose": [
+        -1.4785228967666626,
+        -6.817847728729248,
+        0.6758117079734802
+      ],
+      "goal_pose": [
+        1.899479866027832,
+        -3.9189560413360596,
+        -0.6331852674484253
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_69_1/9.jpg",
+      "num_frames": 71,
+      "path_length_m": 9.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_71_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_71_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_71_2",
+      "start_pose": [
+        -0.2218560427427292,
+        5.280435085296631,
+        -1.3190809488296509
+      ],
+      "goal_pose": [
+        2.1548469066619873,
+        -3.907776355743408,
+        -0.010083995759487152
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_71_2/9.jpg",
+      "num_frames": 55,
+      "path_length_m": 10.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_72_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_72_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_72_3",
+      "start_pose": [
+        -0.17158937454223633,
+        4.527430057525635,
+        -0.0012368097668513656
+      ],
+      "goal_pose": [
+        2.0527567863464355,
+        -3.9176487922668457,
+        -0.0012368097668513656
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_72_3/9.jpg",
+      "num_frames": 52,
+      "path_length_m": 9.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_74_4",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_74_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_74_4",
+      "start_pose": [
+        -2.031456232070923,
+        -1.5468116998672485,
+        0.03743140399456024
+      ],
+      "goal_pose": [
+        1.807340383529663,
+        5.639411926269531,
+        1.346428394317627
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_74_4/9.jpg",
+      "num_frames": 49,
+      "path_length_m": 10.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_75_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_75_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_75_0",
+      "start_pose": [
+        1.4872108697891235,
+        -2.6010189056396484,
+        1.538917899131775
+      ],
+      "goal_pose": [
+        1.6652158498764038,
+        5.287735462188721,
+        1.0153191089630127
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_75_0/9.jpg",
+      "num_frames": 37,
+      "path_length_m": 8.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_82_4",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_82_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_82_4",
+      "start_pose": [
+        -0.17158937454223633,
+        4.527430057525635,
+        -0.11682488024234772
+      ],
+      "goal_pose": [
+        1.6800205707550049,
+        0.2922092378139496,
+        -1.164022445678711
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_82_4/9.jpg",
+      "num_frames": 28,
+      "path_length_m": 5.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_83_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_83_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_83_2",
+      "start_pose": [
+        -2.232522964477539,
+        2.3186147212982178,
+        1.3469361066818237
+      ],
+      "goal_pose": [
+        -0.8834753632545471,
+        -1.692350149154663,
+        -3.1036534309387207
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_83_2/9.jpg",
+      "num_frames": 52,
+      "path_length_m": 8.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_83_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_83_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_83_3",
+      "start_pose": [
+        0.9845441579818726,
+        0.8126044273376465,
+        -1.1770826578140259
+      ],
+      "goal_pose": [
+        -0.8912973403930664,
+        -1.7069851160049438,
+        -3.009678363800049
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_83_3/9.jpg",
+      "num_frames": 25,
+      "path_length_m": 4.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_84_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_84_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_84_1",
+      "start_pose": [
+        -0.2218560427427292,
+        -3.5548255443573,
+        1.2899080514907837
+      ],
+      "goal_pose": [
+        1.4982441663742065,
+        2.361271619796753,
+        1.55170738697052
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_84_1/9.jpg",
+      "num_frames": 34,
+      "path_length_m": 6.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_87_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_87_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_87_2",
+      "start_pose": [
+        2.3920109272003174,
+        -1.6974127292633057,
+        -3.0948359966278076
+      ],
+      "goal_pose": [
+        2.6287028789520264,
+        -7.012303352355957,
+        -0.47684216499328613
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_87_2/9.jpg",
+      "num_frames": 39,
+      "path_length_m": 6.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_88_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_88_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_88_0",
+      "start_pose": [
+        2.8444111347198486,
+        -1.6974127292633057,
+        3.1186344623565674
+      ],
+      "goal_pose": [
+        -0.2132020741701126,
+        1.5354056358337402,
+        2.3332364559173584
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_88_0/9.jpg",
+      "num_frames": 29,
+      "path_length_m": 4.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_89_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_89_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_89_3",
+      "start_pose": [
+        2.2412109375,
+        -7.570852756500244,
+        1.809709072113037
+      ],
+      "goal_pose": [
+        -0.02266344241797924,
+        1.7211796045303345,
+        2.8569066524505615
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_89_3/9.jpg",
+      "num_frames": 53,
+      "path_length_m": 10.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_8_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_8_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_8_3",
+      "start_pose": [
+        1.235877513885498,
+        -1.4464110136032104,
+        1.3848034143447876
+      ],
+      "goal_pose": [
+        2.5412020683288574,
+        5.98196268081665,
+        0.5994052290916443
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_8_3/9.jpg",
+      "num_frames": 37,
+      "path_length_m": 7.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_91_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_91_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_91_0",
+      "start_pose": [
+        2.442277669906616,
+        5.581636905670166,
+        -2.803067207336426
+      ],
+      "goal_pose": [
+        -0.8985868692398071,
+        -1.4557219743728638,
+        2.6947200298309326
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_91_0/9.jpg",
+      "num_frames": 52,
+      "path_length_m": 9.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_95_4",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_95_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_95_4",
+      "start_pose": [
+        -2.232522964477539,
+        2.3186147212982178,
+        1.51124107837677
+      ],
+      "goal_pose": [
+        1.3122450113296509,
+        1.1702343225479126,
+        -0.8449534177780151
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_95_4/9.jpg",
+      "num_frames": 46,
+      "path_length_m": 4.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_97_0",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_97_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_97_0",
+      "start_pose": [
+        -2.232522964477539,
+        2.3186147212982178,
+        1.3068780899047852
+      ],
+      "goal_pose": [
+        2.9731080532073975,
+        -6.80668830871582,
+        -0.5257176160812378
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_97_0/9.jpg",
+      "num_frames": 70,
+      "path_length_m": 13.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_97_3",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_97_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_97_3",
+      "start_pose": [
+        -0.17158937454223633,
+        4.527430057525635,
+        -0.24844850599765778
+      ],
+      "goal_pose": [
+        3.030294895172119,
+        -6.864236831665039,
+        0.013350886292755604
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_97_3/9.jpg",
+      "num_frames": 69,
+      "path_length_m": 13.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_98_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_98_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_98_1",
+      "start_pose": [
+        2.8444111347198486,
+        -1.6974127292633057,
+        3.1254942417144775
+      ],
+      "goal_pose": [
+        -1.5905585289001465,
+        2.938883066177368,
+        2.601895570755005
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_98_1/9.jpg",
+      "num_frames": 41,
+      "path_length_m": 7.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_99_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_99_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_99_2",
+      "start_pose": [
+        -0.3223893940448761,
+        6.0836405754089355,
+        -1.3245974779129028
+      ],
+      "goal_pose": [
+        2.855142593383789,
+        -6.900691032409668,
+        -0.5391992926597595
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0092_kujiale_0092_99_2/9.jpg",
+      "num_frames": 69,
+      "path_length_m": 14.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_11_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_11_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_11_1",
+      "start_pose": [
+        4.300431728363037,
+        1.6121729612350464,
+        -0.13071055710315704
+      ],
+      "goal_pose": [
+        8.502643585205078,
+        1.1136236190795898,
+        -1.1779080629348755
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_11_1/9.jpg",
+      "num_frames": 28,
+      "path_length_m": 4.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_11_2",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_11_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_11_2",
+      "start_pose": [
+        2.4941561222076416,
+        2.266968011856079,
+        -1.2453385591506958
+      ],
+      "goal_pose": [
+        8.518922805786133,
+        1.0962432622909546,
+        -0.9835392236709595
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_11_2/9.jpg",
+      "num_frames": 45,
+      "path_length_m": 7.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_12_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_12_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_12_1",
+      "start_pose": [
+        4.300431728363037,
+        -3.525449514389038,
+        3.0541248321533203
+      ],
+      "goal_pose": [
+        -4.753199100494385,
+        2.8408408164978027,
+        2.792325496673584
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_12_1/9.jpg",
+      "num_frames": 80,
+      "path_length_m": 13.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_13_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_13_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_13_1",
+      "start_pose": [
+        -3.6772851943969727,
+        -2.9713921546936035,
+        1.803617238998413
+      ],
+      "goal_pose": [
+        -0.3914034366607666,
+        2.2523558139801025,
+        2.0654165744781494
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_13_1/9.jpg",
+      "num_frames": 44,
+      "path_length_m": 7.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_14_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_14_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_14_1",
+      "start_pose": [
+        2.4941561222076416,
+        2.8210253715515137,
+        -1.412933349609375
+      ],
+      "goal_pose": [
+        -7.873208999633789,
+        -1.768228530883789,
+        -1.9365321397781372
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_14_1/9.jpg",
+      "num_frames": 73,
+      "path_length_m": 14.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_15_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_15_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_15_1",
+      "start_pose": [
+        4.200082778930664,
+        -5.489834308624268,
+        1.8968024253845215
+      ],
+      "goal_pose": [
+        -0.6120719909667969,
+        1.8019639253616333,
+        1.8968024253845215
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_15_1/9.jpg",
+      "num_frames": 59,
+      "path_length_m": 9.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_15_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_15_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_15_4",
+      "start_pose": [
+        7.812633991241455,
+        2.720287561416626,
+        -2.7732760906219482
+      ],
+      "goal_pose": [
+        -0.5792354941368103,
+        1.7435288429260254,
+        1.939112901687622
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_15_4/9.jpg",
+      "num_frames": 71,
+      "path_length_m": 12.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_16_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_16_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_16_1",
+      "start_pose": [
+        -6.035478115081787,
+        0.1514764130115509,
+        0.07172795385122299
+      ],
+      "goal_pose": [
+        -0.3487709164619446,
+        2.029778242111206,
+        1.3807249069213867
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_16_1/9.jpg",
+      "num_frames": 52,
+      "path_length_m": 9.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_16_2",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_16_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_16_2",
+      "start_pose": [
+        1.9422385692596436,
+        3.778033494949341,
+        -0.1612614095211029
+      ],
+      "goal_pose": [
+        -0.3800736665725708,
+        2.080336332321167,
+        1.1477354764938354
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_16_2/9.jpg",
+      "num_frames": 65,
+      "path_length_m": 9.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_16_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_16_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_16_4",
+      "start_pose": [
+        6.457927227020264,
+        1.6121729612350464,
+        3.0679118633270264
+      ],
+      "goal_pose": [
+        -0.32073846459388733,
+        2.0464401245117188,
+        1.758914828300476
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_16_4/9.jpg",
+      "num_frames": 62,
+      "path_length_m": 10.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_17_2",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_17_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_17_2",
+      "start_pose": [
+        6.457927227020264,
+        1.6121729612350464,
+        3.120445966720581
+      ],
+      "goal_pose": [
+        1.7059327363967896,
+        -0.984467625617981,
+        3.120445966720581
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_17_2/9.jpg",
+      "num_frames": 39,
+      "path_length_m": 6.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_17_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_17_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_17_3",
+      "start_pose": [
+        2.5945045948028564,
+        -4.8350396156311035,
+        1.5406875610351562
+      ],
+      "goal_pose": [
+        1.7368189096450806,
+        -1.0294471979141235,
+        2.3260858058929443
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_17_3/9.jpg",
+      "num_frames": 25,
+      "path_length_m": 4.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_18_2",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_18_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_18_2",
+      "start_pose": [
+        4.300431728363037,
+        1.6121729612350464,
+        -2.6326348781585693
+      ],
+      "goal_pose": [
+        -0.3205792307853699,
+        2.877389907836914,
+        1.817954659461975
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_18_2/9.jpg",
+      "num_frames": 55,
+      "path_length_m": 9.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_19_0",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_19_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_19_0",
+      "start_pose": [
+        6.859321594238281,
+        3.02250075340271,
+        -1.5773308277130127
+      ],
+      "goal_pose": [
+        -1.73735773563385,
+        -1.8833472728729248,
+        3.1350581645965576
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_19_0/9.jpg",
+      "num_frames": 64,
+      "path_length_m": 11.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_19_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_19_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_19_1",
+      "start_pose": [
+        7.8628082275390625,
+        1.9143860340118408,
+        2.9944498538970947
+      ],
+      "goal_pose": [
+        -1.7570340633392334,
+        -1.860502004623413,
+        -3.0269360542297363
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_19_1/9.jpg",
+      "num_frames": 64,
+      "path_length_m": 11.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_19_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_19_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_19_3",
+      "start_pose": [
+        2.7952020168304443,
+        -3.323974132537842,
+        1.5360753536224365
+      ],
+      "goal_pose": [
+        -1.802943468093872,
+        -1.8993210792541504,
+        -2.652714967727661
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_19_3/9.jpg",
+      "num_frames": 32,
+      "path_length_m": 5.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_20_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_20_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_20_4",
+      "start_pose": [
+        -7.089138984680176,
+        -1.5106955766677856,
+        0.2758861184120178
+      ],
+      "goal_pose": [
+        -0.43538060784339905,
+        2.407308578491211,
+        1.3230836391448975
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_20_4/9.jpg",
+      "num_frames": 49,
+      "path_length_m": 10.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_21_0",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_21_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_21_0",
+      "start_pose": [
+        4.200082778930664,
+        -4.381720066070557,
+        2.2572574615478516
+      ],
+      "goal_pose": [
+        1.6481482982635498,
+        -1.2538996934890747,
+        2.2572574615478516
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_21_0/9.jpg",
+      "num_frames": 37,
+      "path_length_m": 4.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_21_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_21_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_21_1",
+      "start_pose": [
+        2.4941561222076416,
+        3.9291398525238037,
+        -1.7337496280670166
+      ],
+      "goal_pose": [
+        1.7236472368240356,
+        -1.2358628511428833,
+        -3.0427465438842773
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_21_1/9.jpg",
+      "num_frames": 34,
+      "path_length_m": 5.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_22_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_22_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_22_3",
+      "start_pose": [
+        8.264203071594238,
+        3.5765581130981445,
+        -2.2795777320861816
+      ],
+      "goal_pose": [
+        -0.2807100713253021,
+        2.885226249694824,
+        1.3856136798858643
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_22_3/9.jpg",
+      "num_frames": 77,
+      "path_length_m": 14.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_22_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_22_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_22_4",
+      "start_pose": [
+        6.859321594238281,
+        3.02250075340271,
+        -1.556658148765564
+      ],
+      "goal_pose": [
+        -0.2392587959766388,
+        2.8995232582092285,
+        1.8467339277267456
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_22_4/9.jpg",
+      "num_frames": 75,
+      "path_length_m": 12.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_23_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_23_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_23_1",
+      "start_pose": [
+        4.300431728363037,
+        1.6121729612350464,
+        -2.652714967727661
+      ],
+      "goal_pose": [
+        -0.3494020700454712,
+        2.964596748352051,
+        1.5360753536224365
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_23_1/9.jpg",
+      "num_frames": 56,
+      "path_length_m": 9.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_23_2",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_23_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_23_2",
+      "start_pose": [
+        6.859321594238281,
+        3.02250075340271,
+        -1.5707963705062866
+      ],
+      "goal_pose": [
+        -0.299337238073349,
+        3.0014190673828125,
+        1.5707963705062866
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_23_2/9.jpg",
+      "num_frames": 77,
+      "path_length_m": 13.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_24_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_24_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_24_3",
+      "start_pose": [
+        -6.637569904327393,
+        -1.007007122039795,
+        -0.29893186688423157
+      ],
+      "goal_pose": [
+        5.703897476196289,
+        1.7812608480453491,
+        0.48646628856658936
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_24_3/9.jpg",
+      "num_frames": 70,
+      "path_length_m": 14.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_24_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_24_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_24_4",
+      "start_pose": [
+        6.708798885345459,
+        -0.3522120714187622,
+        2.2664711475372314
+      ],
+      "goal_pose": [
+        5.61169958114624,
+        1.753524899482727,
+        0.4338754415512085
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_24_4/9.jpg",
+      "num_frames": 52,
+      "path_length_m": 8.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_25_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_25_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_25_4",
+      "start_pose": [
+        -6.236175537109375,
+        -1.6114332675933838,
+        0.042446210980415344
+      ],
+      "goal_pose": [
+        6.777956008911133,
+        -0.95218825340271,
+        -1.2665507793426514
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_25_4/9.jpg",
+      "num_frames": 70,
+      "path_length_m": 14.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_26_2",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_26_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_26_2",
+      "start_pose": [
+        2.3436331748962402,
+        -5.792047500610352,
+        1.1678584814071655
+      ],
+      "goal_pose": [
+        -4.588089466094971,
+        3.4090092182159424,
+        1.4296578168869019
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_26_2/9.jpg",
+      "num_frames": 78,
+      "path_length_m": 15.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_27_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_27_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_27_3",
+      "start_pose": [
+        2.544330358505249,
+        3.3750827312469482,
+        -1.2950152158737183
+      ],
+      "goal_pose": [
+        -3.6736068725585938,
+        -2.866131067276001,
+        -1.5568145513534546
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_27_3/9.jpg",
+      "num_frames": 62,
+      "path_length_m": 11.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_28_0",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_28_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_28_0",
+      "start_pose": [
+        8.464900016784668,
+        1.41069757938385,
+        2.7125654220581055
+      ],
+      "goal_pose": [
+        2.393049716949463,
+        -5.88624906539917,
+        -1.738024115562439
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_28_0/9.jpg",
+      "num_frames": 71,
+      "path_length_m": 13.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_28_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_28_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_28_1",
+      "start_pose": [
+        -7.089138984680176,
+        -1.5106955766677856,
+        -0.18184447288513184
+      ],
+      "goal_pose": [
+        2.349342107772827,
+        -5.942592144012451,
+        -2.0144402980804443
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_28_1/9.jpg",
+      "num_frames": 69,
+      "path_length_m": 13.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_29_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_29_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_29_4",
+      "start_pose": [
+        2.544330358505249,
+        3.3750827312469482,
+        -2.2396066188812256
+      ],
+      "goal_pose": [
+        -0.394294410943985,
+        3.013674736022949,
+        2.734581708908081
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_29_4/9.jpg",
+      "num_frames": 64,
+      "path_length_m": 10.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_2_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_2_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_2_3",
+      "start_pose": [
+        1.9422385692596436,
+        3.778033494949341,
+        -0.12563644349575043
+      ],
+      "goal_pose": [
+        -0.21041390299797058,
+        2.04286527633667,
+        1.7069592475891113
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_2_3/9.jpg",
+      "num_frames": 60,
+      "path_length_m": 9.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_30_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_30_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_30_1",
+      "start_pose": [
+        4.200082778930664,
+        -4.381720066070557,
+        1.7685911655426025
+      ],
+      "goal_pose": [
+        -6.182386875152588,
+        -0.8945363759994507,
+        2.292189836502075
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_30_1/9.jpg",
+      "num_frames": 66,
+      "path_length_m": 12.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_30_2",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_30_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_30_2",
+      "start_pose": [
+        6.859321594238281,
+        3.02250075340271,
+        -1.5446628332138062
+      ],
+      "goal_pose": [
+        -6.180881500244141,
+        -0.9327592849731445,
+        2.9059267044067383
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_30_2/9.jpg",
+      "num_frames": 83,
+      "path_length_m": 15.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_30_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_30_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_30_3",
+      "start_pose": [
+        -4.429900169372559,
+        2.0151238441467285,
+        -1.8705675601959229
+      ],
+      "goal_pose": [
+        -6.162777423858643,
+        -0.9018744826316833,
+        3.103620767593384
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_30_3/9.jpg",
+      "num_frames": 25,
+      "path_length_m": 4.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_31_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_31_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_31_4",
+      "start_pose": [
+        2.6948533058166504,
+        -5.28835916519165,
+        1.560370683670044
+      ],
+      "goal_pose": [
+        6.13458251953125,
+        -3.6697471141815186,
+        -0.010425637476146221
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_31_4/9.jpg",
+      "num_frames": 36,
+      "path_length_m": 5.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_32_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_32_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_32_1",
+      "start_pose": [
+        6.758973121643066,
+        -1.81290864944458,
+        1.5123947858810425
+      ],
+      "goal_pose": [
+        3.5523860454559326,
+        -3.430279493331909,
+        -0.05840155482292175
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_32_1/9.jpg",
+      "num_frames": 56,
+      "path_length_m": 9.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_33_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_33_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_33_4",
+      "start_pose": [
+        8.264203071594238,
+        3.5765581130981445,
+        -2.3007161617279053
+      ],
+      "goal_pose": [
+        -7.7642693519592285,
+        -1.728224515914917,
+        -3.0861141681671143
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_33_4/9.jpg",
+      "num_frames": 90,
+      "path_length_m": 18.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_35_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_35_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_35_1",
+      "start_pose": [
+        8.414725303649902,
+        2.115861415863037,
+        -2.9080893993377686
+      ],
+      "goal_pose": [
+        -7.780680179595947,
+        -1.7701510190963745,
+        -2.9080893993377686
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_35_1/90.jpg",
+      "num_frames": 91,
+      "path_length_m": 18.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_35_2",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_35_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_35_2",
+      "start_pose": [
+        6.708798885345459,
+        -0.3522120714187622,
+        2.7142882347106934
+      ],
+      "goal_pose": [
+        -7.878115177154541,
+        -1.7222408056259155,
+        -2.783499002456665
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_35_2/9.jpg",
+      "num_frames": 75,
+      "path_length_m": 15.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_36_0",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_36_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_36_0",
+      "start_pose": [
+        7.8628082275390625,
+        1.9143860340118408,
+        3.018486738204956
+      ],
+      "goal_pose": [
+        -3.706639051437378,
+        -2.9327051639556885,
+        -1.432102918624878
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_36_0/9.jpg",
+      "num_frames": 83,
+      "path_length_m": 14.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_37_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_37_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_37_4",
+      "start_pose": [
+        5.65513801574707,
+        -0.049998972564935684,
+        -2.6310677528381348
+      ],
+      "goal_pose": [
+        3.4742348194122314,
+        -3.6372382640838623,
+        -1.0602713823318481
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_37_4/9.jpg",
+      "num_frames": 46,
+      "path_length_m": 6.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_38_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_38_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_38_1",
+      "start_pose": [
+        -6.236175537109375,
+        -1.6114332675933838,
+        0.18083925545215607
+      ],
+      "goal_pose": [
+        8.360085487365723,
+        1.1197471618652344,
+        -1.389957070350647
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_38_1/99.jpg",
+      "num_frames": 107,
+      "path_length_m": 17.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_38_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_38_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_38_4",
+      "start_pose": [
+        4.200082778930664,
+        -5.489834308624268,
+        1.266128420829773
+      ],
+      "goal_pose": [
+        8.386321067810059,
+        1.1790170669555664,
+        -1.0900660753250122
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_38_4/99.jpg",
+      "num_frames": 101,
+      "path_length_m": 13.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_39_0",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_39_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_39_0",
+      "start_pose": [
+        4.200082778930664,
+        -0.15073667466640472,
+        -3.082075595855713
+      ],
+      "goal_pose": [
+        3.4120752811431885,
+        -3.4951717853546143,
+        -0.46408167481422424
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_39_0/9.jpg",
+      "num_frames": 33,
+      "path_length_m": 5.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_39_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_39_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_39_3",
+      "start_pose": [
+        8.414725303649902,
+        2.115861415863037,
+        -2.806907892227173
+      ],
+      "goal_pose": [
+        3.5009260177612305,
+        -3.552701473236084,
+        -0.4507133364677429
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_39_3/9.jpg",
+      "num_frames": 58,
+      "path_length_m": 11.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_3_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_3_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_3_3",
+      "start_pose": [
+        2.644679069519043,
+        -4.381720066070557,
+        1.2782783508300781
+      ],
+      "goal_pose": [
+        5.8918304443359375,
+        -3.6922781467437744,
+        -0.0307186096906662
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_3_3/9.jpg",
+      "num_frames": 26,
+      "path_length_m": 4.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_3_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_3_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_3_4",
+      "start_pose": [
+        2.092761516571045,
+        -1.107744812965393,
+        -1.3751879930496216
+      ],
+      "goal_pose": [
+        5.269781589508057,
+        -3.6955299377441406,
+        -0.06619109958410263
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_3_4/9.jpg",
+      "num_frames": 27,
+      "path_length_m": 4.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_40_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_40_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_40_1",
+      "start_pose": [
+        8.414725303649902,
+        2.115861415863037,
+        -2.9366891384124756
+      ],
+      "goal_pose": [
+        -5.801071643829346,
+        -0.9410475492477417,
+        2.561098098754883
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_40_1/9.jpg",
+      "num_frames": 84,
+      "path_length_m": 16.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_41_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_41_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_41_3",
+      "start_pose": [
+        8.264203071594238,
+        3.5765581130981445,
+        -2.303541660308838
+      ],
+      "goal_pose": [
+        -7.810233116149902,
+        -1.6465939283370972,
+        -2.8271403312683105
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_41_3/92.jpg",
+      "num_frames": 93,
+      "path_length_m": 18.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_42_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_42_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_42_4",
+      "start_pose": [
+        2.3436331748962402,
+        -5.792047500610352,
+        1.0550743341445923
+      ],
+      "goal_pose": [
+        -6.1328277587890625,
+        -0.9420867562294006,
+        2.8876700401306152
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_42_4/9.jpg",
+      "num_frames": 63,
+      "path_length_m": 12.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_43_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_43_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_43_1",
+      "start_pose": [
+        -5.533735275268555,
+        0.10110756754875183,
+        -0.06377454102039337
+      ],
+      "goal_pose": [
+        5.582465648651123,
+        -3.7002055644989014,
+        -0.06377454102039337
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_43_1/9.jpg",
+      "num_frames": 76,
+      "path_length_m": 12.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_44_0",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_44_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_44_0",
+      "start_pose": [
+        2.6948533058166504,
+        -5.28835916519165,
+        1.580268383026123
+      ],
+      "goal_pose": [
+        -4.0436906814575195,
+        1.1787350177764893,
+        1.580268383026123
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_44_0/9.jpg",
+      "num_frames": 62,
+      "path_length_m": 12.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_6_0",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_6_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_6_0",
+      "start_pose": [
+        2.644679069519043,
+        -4.381720066070557,
+        1.276273488998413
+      ],
+      "goal_pose": [
+        -0.6330992579460144,
+        1.7499127388000488,
+        2.061671733856201
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_6_0/9.jpg",
+      "num_frames": 42,
+      "path_length_m": 7.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_6_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_6_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_6_1",
+      "start_pose": [
+        4.200082778930664,
+        -0.15073667466640472,
+        3.019768238067627
+      ],
+      "goal_pose": [
+        -0.6357879638671875,
+        1.7576287984848022,
+        1.7107713222503662
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_6_1/9.jpg",
+      "num_frames": 42,
+      "path_length_m": 7.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_6_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_6_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_6_3",
+      "start_pose": [
+        7.812633991241455,
+        2.720287561416626,
+        -2.7732760906219482
+      ],
+      "goal_pose": [
+        -0.5792354941368103,
+        1.7435288429260254,
+        1.939112901687622
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_6_3/9.jpg",
+      "num_frames": 71,
+      "path_length_m": 12.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_7_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_7_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_7_3",
+      "start_pose": [
+        6.859321594238281,
+        3.02250075340271,
+        -1.5848499536514282
+      ],
+      "goal_pose": [
+        -3.7390661239624023,
+        -2.8930881023406982,
+        -1.8466492891311646
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_7_3/9.jpg",
+      "num_frames": 80,
+      "path_length_m": 14.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_8_1",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_8_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_8_1",
+      "start_pose": [
+        4.049560070037842,
+        3.324713706970215,
+        -1.7250683307647705
+      ],
+      "goal_pose": [
+        -0.5499561429023743,
+        2.8321805000305176,
+        2.2019224166870117
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_8_1/9.jpg",
+      "num_frames": 67,
+      "path_length_m": 10.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_8_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_8_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_8_4",
+      "start_pose": [
+        2.544330358505249,
+        3.3750827312469482,
+        -1.6590782403945923
+      ],
+      "goal_pose": [
+        -0.638617992401123,
+        2.7761640548706055,
+        1.7443137168884277
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_8_4/9.jpg",
+      "num_frames": 57,
+      "path_length_m": 9.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_9_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_9_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_9_4",
+      "start_pose": [
+        4.300431728363037,
+        1.6121729612350464,
+        -2.642179012298584
+      ],
+      "goal_pose": [
+        -4.011192321777344,
+        1.703688144683838,
+        1.5466111898422241
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0118_kujiale_0118_9_4/9.jpg",
+      "num_frames": 70,
+      "path_length_m": 12.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_0_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_0_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_0_0",
+      "start_pose": [
+        -7.36926794052124,
+        -0.36415496468544006,
+        -0.7002336382865906
+      ],
+      "goal_pose": [
+        -5.652609825134277,
+        -5.284298419952393,
+        -1.7474311590194702
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_0_0/9.jpg",
+      "num_frames": 33,
+      "path_length_m": 6.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_0_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_0_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_0_1",
+      "start_pose": [
+        -6.4617228507995605,
+        -0.8672772645950317,
+        -0.06842856854200363
+      ],
+      "goal_pose": [
+        -5.615880012512207,
+        -5.250741004943848,
+        -0.5920273661613464
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_0_1/9.jpg",
+      "num_frames": 33,
+      "path_length_m": 5.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_0_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_0_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_0_2",
+      "start_pose": [
+        -0.512261688709259,
+        -2.779141902923584,
+        3.068856716156006
+      ],
+      "goal_pose": [
+        -5.575137615203857,
+        -5.221730709075928,
+        -0.8581342101097107
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_0_2/9.jpg",
+      "num_frames": 72,
+      "path_length_m": 13.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_0_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_0_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_0_3",
+      "start_pose": [
+        -6.965914726257324,
+        5.572688102722168,
+        -0.13660922646522522
+      ],
+      "goal_pose": [
+        -5.58378791809082,
+        -5.239924907684326,
+        -2.231004238128662
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_0_3/9.jpg",
+      "num_frames": 64,
+      "path_length_m": 11.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_10_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_10_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_10_0",
+      "start_pose": [
+        -5.6550164222717285,
+        1.497397541999817,
+        -1.0881316661834717
+      ],
+      "goal_pose": [
+        -2.709033966064453,
+        -1.5249309539794922,
+        -1.8735299110412598
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_10_0/9.jpg",
+      "num_frames": 33,
+      "path_length_m": 5.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_10_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_10_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_10_3",
+      "start_pose": [
+        -7.570944786071777,
+        -2.829454183578491,
+        -1.062046766281128
+      ],
+      "goal_pose": [
+        -2.7389657497406006,
+        -1.5742213726043701,
+        -2.3710436820983887
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_10_3/9.jpg",
+      "num_frames": 70,
+      "path_length_m": 11.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_10_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_10_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_10_4",
+      "start_pose": [
+        -5.6550164222717285,
+        0.2395917773246765,
+        0.2106090635061264
+      ],
+      "goal_pose": [
+        -2.7462642192840576,
+        -1.5062644481658936,
+        -1.6219866275787354
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_10_4/9.jpg",
+      "num_frames": 27,
+      "path_length_m": 4.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_12_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_12_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_12_1",
+      "start_pose": [
+        -7.9238786697387695,
+        -2.577893018722534,
+        -0.41579586267471313
+      ],
+      "goal_pose": [
+        -2.223581552505493,
+        -5.092247486114502,
+        -2.248391628265381
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_12_1/91.jpg",
+      "num_frames": 92,
+      "path_length_m": 15.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_12_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_12_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_12_3",
+      "start_pose": [
+        -5.604597091674805,
+        2.0508320331573486,
+        -1.3909162282943726
+      ],
+      "goal_pose": [
+        -2.207923412322998,
+        -5.020864009857178,
+        -1.9145150184631348
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_12_3/9.jpg",
+      "num_frames": 50,
+      "path_length_m": 9.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_13_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_13_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_13_4",
+      "start_pose": [
+        -7.1171722412109375,
+        -3.1816396713256836,
+        -1.0198172330856323
+      ],
+      "goal_pose": [
+        -2.3336033821105957,
+        -5.71273946762085,
+        -2.3288142681121826
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_13_4/9.jpg",
+      "num_frames": 86,
+      "path_length_m": 14.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_16_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_16_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_16_0",
+      "start_pose": [
+        -0.512261688709259,
+        -2.779141902923584,
+        -3.0435256958007812
+      ],
+      "goal_pose": [
+        -7.648482799530029,
+        -3.4619641304016113,
+        -3.0435256958007812
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_16_0/9.jpg",
+      "num_frames": 88,
+      "path_length_m": 13.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_16_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_16_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_16_1",
+      "start_pose": [
+        -2.7307050228118896,
+        -2.779141902923584,
+        1.9741958379745483
+      ],
+      "goal_pose": [
+        -7.587610244750977,
+        -3.5187735557556152,
+        3.021393299102783
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_16_1/9.jpg",
+      "num_frames": 71,
+      "path_length_m": 11.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_17_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_17_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_17_0",
+      "start_pose": [
+        -5.907112121582031,
+        4.616755485534668,
+        -1.2417452335357666
+      ],
+      "goal_pose": [
+        -3.550912857055664,
+        -2.222011089324951,
+        -3.074341058731079
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_17_0/9.jpg",
+      "num_frames": 62,
+      "path_length_m": 9.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_17_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_17_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_17_2",
+      "start_pose": [
+        -5.604597091674805,
+        2.0508320331573486,
+        -1.3873517513275146
+      ],
+      "goal_pose": [
+        -3.6021535396575928,
+        -2.201874017715454,
+        2.5396389961242676
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_17_2/9.jpg",
+      "num_frames": 48,
+      "path_length_m": 7.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_17_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_17_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_17_3",
+      "start_pose": [
+        -6.965914726257324,
+        5.572688102722168,
+        -0.11245674639940262
+      ],
+      "goal_pose": [
+        -3.6729073524475098,
+        -2.2650580406188965,
+        -2.9922499656677246
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_17_3/9.jpg",
+      "num_frames": 74,
+      "path_length_m": 11.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_18_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_18_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_18_0",
+      "start_pose": [
+        -5.6550164222717285,
+        0.9439629912376404,
+        -1.7171145677566528
+      ],
+      "goal_pose": [
+        -6.392021656036377,
+        -4.117532730102539,
+        -2.240713357925415
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_18_0/9.jpg",
+      "num_frames": 26,
+      "path_length_m": 5.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_18_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_18_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_18_2",
+      "start_pose": [
+        -0.512261688709259,
+        -2.779141902923584,
+        3.1142115592956543
+      ],
+      "goal_pose": [
+        -6.322561740875244,
+        -4.142542839050293,
+        -2.6453750133514404
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_18_2/9.jpg",
+      "num_frames": 75,
+      "path_length_m": 12.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_18_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_18_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_18_4",
+      "start_pose": [
+        -5.6550164222717285,
+        0.2395917773246765,
+        -1.7399802207946777
+      ],
+      "goal_pose": [
+        -6.397916316986084,
+        -4.212478160858154,
+        -3.0489771366119385
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_18_4/9.jpg",
+      "num_frames": 27,
+      "path_length_m": 4.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_19_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_19_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_19_2",
+      "start_pose": [
+        0.8490557074546814,
+        -2.7288296222686768,
+        3.098789930343628
+      ],
+      "goal_pose": [
+        -4.260434627532959,
+        0.5510298013687134,
+        -2.3989973068237305
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_19_2/9.jpg",
+      "num_frames": 46,
+      "path_length_m": 7.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_1_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_1_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_1_0",
+      "start_pose": [
+        -5.907112121582031,
+        4.616755485534668,
+        -1.3863153457641602
+      ],
+      "goal_pose": [
+        -4.507993698120117,
+        -2.6359941959381104,
+        -2.4335129261016846
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_1_0/9.jpg",
+      "num_frames": 68,
+      "path_length_m": 10.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_1_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_1_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_1_1",
+      "start_pose": [
+        -5.6550164222717285,
+        0.2395917773246765,
+        0.10144945979118347
+      ],
+      "goal_pose": [
+        -4.422582626342773,
+        -2.6789467334747314,
+        -2.778343915939331
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_1_1/9.jpg",
+      "num_frames": 42,
+      "path_length_m": 7.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_1_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_1_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_1_4",
+      "start_pose": [
+        -5.6550164222717285,
+        -2.7288296222686768,
+        1.0925246477127075
+      ],
+      "goal_pose": [
+        -4.451999664306641,
+        -2.646852731704712,
+        -2.572666883468628
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_1_4/9.jpg",
+      "num_frames": 61,
+      "path_length_m": 10.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_20_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_20_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_20_3",
+      "start_pose": [
+        -6.007950782775879,
+        5.371438980102539,
+        -1.140229344367981
+      ],
+      "goal_pose": [
+        -3.8298099040985107,
+        0.5450417995452881,
+        0.16876763105392456
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_20_3/9.jpg",
+      "num_frames": 37,
+      "path_length_m": 6.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_21_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_21_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_21_2",
+      "start_pose": [
+        -3.1340582370758057,
+        4.063321113586426,
+        -2.127241849899292
+      ],
+      "goal_pose": [
+        -7.646997928619385,
+        -3.2876546382904053,
+        2.323347806930542
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_21_2/9.jpg",
+      "num_frames": 63,
+      "path_length_m": 10.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_21_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_21_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_21_3",
+      "start_pose": [
+        -5.856693267822266,
+        3.7614476680755615,
+        -1.3011378049850464
+      ],
+      "goal_pose": [
+        -7.668566703796387,
+        -3.240445137023926,
+        1.8404549360275269
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_21_3/9.jpg",
+      "num_frames": 51,
+      "path_length_m": 9.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_23_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_23_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_23_0",
+      "start_pose": [
+        -2.7307050228118896,
+        -2.779141902923584,
+        1.832595705986023
+      ],
+      "goal_pose": [
+        -7.7611799240112305,
+        -2.8211541175842285,
+        1.832595705986023
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_23_0/9.jpg",
+      "num_frames": 75,
+      "path_length_m": 12.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_23_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_23_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_23_1",
+      "start_pose": [
+        -5.907112121582031,
+        4.616755485534668,
+        -1.5560786724090576
+      ],
+      "goal_pose": [
+        -7.7656097412109375,
+        -2.8205606937408447,
+        1.847313404083252
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_23_1/9.jpg",
+      "num_frames": 57,
+      "path_length_m": 10.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_24_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_24_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_24_1",
+      "start_pose": [
+        -6.562561511993408,
+        -0.36415496468544006,
+        -1.491123080253601
+      ],
+      "goal_pose": [
+        -7.970278739929199,
+        -3.33219051361084,
+        2.4358677864074707
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_24_1/9.jpg",
+      "num_frames": 52,
+      "path_length_m": 6.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_24_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_24_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_24_2",
+      "start_pose": [
+        -5.604597091674805,
+        3.0067644119262695,
+        -1.6667227745056152
+      ],
+      "goal_pose": [
+        -7.871945381164551,
+        -3.3533430099487305,
+        2.7838668823242188
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_24_2/9.jpg",
+      "num_frames": 47,
+      "path_length_m": 8.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_24_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_24_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_24_4",
+      "start_pose": [
+        -6.007950782775879,
+        5.371438980102539,
+        -1.5311799049377441
+      ],
+      "goal_pose": [
+        -7.905033588409424,
+        -3.2894561290740967,
+        -3.101976156234741
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_24_4/9.jpg",
+      "num_frames": 65,
+      "path_length_m": 11.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_25_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_25_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_25_4",
+      "start_pose": [
+        -2.7307050228118896,
+        -2.779141902923584,
+        1.842674970626831
+      ],
+      "goal_pose": [
+        -7.649106979370117,
+        -2.8978352546691895,
+        2.628073215484619
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_25_4/9.jpg",
+      "num_frames": 74,
+      "path_length_m": 12.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_27_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_27_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_27_3",
+      "start_pose": [
+        -6.562561511993408,
+        -0.36415496468544006,
+        -1.4506399631500244
+      ],
+      "goal_pose": [
+        -6.054434776306152,
+        -4.503562927246094,
+        -1.7124392986297607
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_27_3/9.jpg",
+      "num_frames": 31,
+      "path_length_m": 4.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_27_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_27_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_27_4",
+      "start_pose": [
+        -5.6550164222717285,
+        0.9439629912376404,
+        -1.6442146301269531
+      ],
+      "goal_pose": [
+        -6.057204723358154,
+        -4.524229526519775,
+        -1.9060139656066895
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_27_4/9.jpg",
+      "num_frames": 26,
+      "path_length_m": 5.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_28_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_28_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_28_4",
+      "start_pose": [
+        -2.27693247795105,
+        -5.345065593719482,
+        1.5414553880691528
+      ],
+      "goal_pose": [
+        -5.655590534210205,
+        -5.242954730987549,
+        -2.1237361431121826
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_28_4/9.jpg",
+      "num_frames": 78,
+      "path_length_m": 14.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_29_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_29_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_29_1",
+      "start_pose": [
+        -6.965914726257324,
+        -0.8672772645950317,
+        -0.20099948346614838
+      ],
+      "goal_pose": [
+        -3.326207399368286,
+        -2.6494126319885254,
+        -2.033595085144043
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_29_1/9.jpg",
+      "num_frames": 59,
+      "path_length_m": 8.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_29_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_29_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_29_2",
+      "start_pose": [
+        -7.1171722412109375,
+        -3.1816396713256836,
+        -0.914923906326294
+      ],
+      "goal_pose": [
+        -3.2872653007507324,
+        -2.70841121673584,
+        -2.7475194931030273
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_29_2/91.jpg",
+      "num_frames": 92,
+      "path_length_m": 11.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_2_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_2_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_2_1",
+      "start_pose": [
+        -3.1340582370758057,
+        4.063321113586426,
+        -1.9938417673110962
+      ],
+      "goal_pose": [
+        -4.609828948974609,
+        0.5248328447341919,
+        -3.041039228439331
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_2_1/9.jpg",
+      "num_frames": 25,
+      "path_length_m": 4.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_2_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_2_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_2_2",
+      "start_pose": [
+        -0.512261688709259,
+        -2.779141902923584,
+        2.987095594406128
+      ],
+      "goal_pose": [
+        -4.667056560516357,
+        0.5894922614097595,
+        -3.034290313720703
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_2_2/9.jpg",
+      "num_frames": 40,
+      "path_length_m": 6.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_31_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_31_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_31_0",
+      "start_pose": [
+        -6.965914726257324,
+        -0.8672772645950317,
+        -0.048704907298088074
+      ],
+      "goal_pose": [
+        -7.880683898925781,
+        -2.353006601333618,
+        2.0456902980804443
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_31_0/9.jpg",
+      "num_frames": 47,
+      "path_length_m": 6.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_34_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_34_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_34_2",
+      "start_pose": [
+        -5.907112121582031,
+        -4.389133453369141,
+        1.2505342960357666
+      ],
+      "goal_pose": [
+        -3.560742139816284,
+        -2.331953525543213,
+        3.083130121231079
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_34_2/9.jpg",
+      "num_frames": 81,
+      "path_length_m": 10.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_35_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_35_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_35_0",
+      "start_pose": [
+        -5.6550164222717285,
+        1.497397541999817,
+        -1.2011829614639282
+      ],
+      "goal_pose": [
+        -2.887272357940674,
+        -2.179269313812256,
+        -1.9865810871124268
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_35_0/9.jpg",
+      "num_frames": 35,
+      "path_length_m": 5.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_35_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_35_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_35_1",
+      "start_pose": [
+        -5.6550164222717285,
+        0.2395917773246765,
+        0.31136149168014526
+      ],
+      "goal_pose": [
+        -2.9088947772979736,
+        -2.169820547103882,
+        -2.044832944869995
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_35_1/9.jpg",
+      "num_frames": 32,
+      "path_length_m": 5.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_35_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_35_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_35_2",
+      "start_pose": [
+        -5.6550164222717285,
+        0.9439629912376404,
+        -0.3375220000743866
+      ],
+      "goal_pose": [
+        -2.919193983078003,
+        -2.171168565750122,
+        -1.908318281173706
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_35_2/9.jpg",
+      "num_frames": 35,
+      "path_length_m": 5.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_36_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_36_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_36_3",
+      "start_pose": [
+        -5.6550164222717285,
+        0.9439629912376404,
+        -1.554503083229065
+      ],
+      "goal_pose": [
+        -5.572132587432861,
+        -5.206724166870117,
+        -0.7691048979759216
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_36_3/9.jpg",
+      "num_frames": 33,
+      "path_length_m": 6.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_38_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_38_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_38_2",
+      "start_pose": [
+        -6.562561511993408,
+        -0.36415496468544006,
+        -1.5409194231033325
+      ],
+      "goal_pose": [
+        -7.973860263824463,
+        -3.1111180782318115,
+        2.124271869659424
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_38_2/9.jpg",
+      "num_frames": 47,
+      "path_length_m": 6.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_38_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_38_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_38_4",
+      "start_pose": [
+        -6.7138190269470215,
+        1.5980219841003418,
+        0.774036705493927
+      ],
+      "goal_pose": [
+        -7.955835342407227,
+        -3.117025375366211,
+        2.868431806564331
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_38_4/9.jpg",
+      "num_frames": 57,
+      "path_length_m": 9.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_39_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_39_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_39_3",
+      "start_pose": [
+        -5.6550164222717285,
+        0.2395917773246765,
+        0.2668355703353882
+      ],
+      "goal_pose": [
+        -3.5608627796173096,
+        3.831554651260376,
+        1.575832486152649
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_39_3/9.jpg",
+      "num_frames": 24,
+      "path_length_m": 4.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_39_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_39_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_39_4",
+      "start_pose": [
+        -6.965914726257324,
+        5.572688102722168,
+        0.054855115711688995
+      ],
+      "goal_pose": [
+        -3.5769121646881104,
+        3.8082871437072754,
+        1.625651478767395
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_39_4/9.jpg",
+      "num_frames": 61,
+      "path_length_m": 9.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_3_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_3_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_3_3",
+      "start_pose": [
+        -6.4617228507995605,
+        2.0508320331573486,
+        -0.21452073752880096
+      ],
+      "goal_pose": [
+        -1.9106577634811401,
+        -5.067614555358887,
+        -1.2617182731628418
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_3_3/9.jpg",
+      "num_frames": 52,
+      "path_length_m": 9.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_3_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_3_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_3_4",
+      "start_pose": [
+        -5.6550164222717285,
+        1.497397541999817,
+        -1.0499125719070435
+      ],
+      "goal_pose": [
+        -1.9017562866210938,
+        -5.045783519744873,
+        -1.3117119073867798
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_3_4/9.jpg",
+      "num_frames": 47,
+      "path_length_m": 8.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_40_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_40_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_40_1",
+      "start_pose": [
+        -7.570944786071777,
+        -2.829454183578491,
+        -0.8697143793106079
+      ],
+      "goal_pose": [
+        -6.895443916320801,
+        5.563579082489014,
+        3.057276487350464
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_40_1/9.jpg",
+      "num_frames": 68,
+      "path_length_m": 12.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_40_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_40_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_40_2",
+      "start_pose": [
+        -3.1340582370758057,
+        4.063321113586426,
+        -2.4671714305877686
+      ],
+      "goal_pose": [
+        -6.6832146644592285,
+        5.514529228210449,
+        -2.9907703399658203
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_40_2/9.jpg",
+      "num_frames": 62,
+      "path_length_m": 9.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_42_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_42_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_42_1",
+      "start_pose": [
+        -6.4617228507995605,
+        2.0508320331573486,
+        -0.38704851269721985
+      ],
+      "goal_pose": [
+        -0.23503686487674713,
+        -2.7257039546966553,
+        0.13655024766921997
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_42_1/9.jpg",
+      "num_frames": 57,
+      "path_length_m": 9.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_45_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_45_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_45_0",
+      "start_pose": [
+        -5.907112121582031,
+        4.616755485534668,
+        -1.5440605878829956
+      ],
+      "goal_pose": [
+        -2.2242865562438965,
+        3.654111862182617,
+        0.28853514790534973
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_45_0/9.jpg",
+      "num_frames": 52,
+      "path_length_m": 8.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_47_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_47_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_47_0",
+      "start_pose": [
+        -6.965914726257324,
+        -0.8672772645950317,
+        0.16026055812835693
+      ],
+      "goal_pose": [
+        -3.952747106552124,
+        0.49847835302352905,
+        -0.10153882950544357
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_47_0/9.jpg",
+      "num_frames": 30,
+      "path_length_m": 4.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_47_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_47_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_47_3",
+      "start_pose": [
+        -5.907112121582031,
+        -4.389133453369141,
+        1.187778353691101
+      ],
+      "goal_pose": [
+        -3.982171058654785,
+        0.5011008381843567,
+        0.14058077335357666
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_47_3/9.jpg",
+      "num_frames": 34,
+      "path_length_m": 6.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_48_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_48_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_48_1",
+      "start_pose": [
+        -7.82304048538208,
+        -3.1816396713256836,
+        -0.49869081377983093
+      ],
+      "goal_pose": [
+        -4.140165328979492,
+        0.7414253354072571,
+        0.2867073714733124
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_48_1/9.jpg",
+      "num_frames": 44,
+      "path_length_m": 7.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_48_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_48_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_48_3",
+      "start_pose": [
+        -7.1171722412109375,
+        -3.1816396713256836,
+        -0.920354962348938
+      ],
+      "goal_pose": [
+        -4.093833923339844,
+        0.8061659932136536,
+        -0.13495680689811707
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_48_3/9.jpg",
+      "num_frames": 46,
+      "path_length_m": 7.0,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_4_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_4_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_4_3",
+      "start_pose": [
+        -3.1340582370758057,
+        4.063321113586426,
+        -1.80815851688385
+      ],
+      "goal_pose": [
+        -2.9784910678863525,
+        -2.1332452297210693,
+        -2.3317573070526123
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_4_3/9.jpg",
+      "num_frames": 35,
+      "path_length_m": 6.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_4_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_4_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_4_4",
+      "start_pose": [
+        -6.965914726257324,
+        5.572688102722168,
+        -0.046098824590444565
+      ],
+      "goal_pose": [
+        -2.9029006958007812,
+        -2.123316526412964,
+        -2.9258921146392822
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_4_4/9.jpg",
+      "num_frames": 69,
+      "path_length_m": 10.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_6_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_6_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_6_3",
+      "start_pose": [
+        -2.3273515701293945,
+        -0.5654038786888123,
+        2.3268418312072754
+      ],
+      "goal_pose": [
+        -7.2956156730651855,
+        -3.3304593563079834,
+        2.5886411666870117
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_6_3/9.jpg",
+      "num_frames": 57,
+      "path_length_m": 9.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_7_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_7_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_7_4",
+      "start_pose": [
+        -3.1340582370758057,
+        4.063321113586426,
+        -2.1222431659698486
+      ],
+      "goal_pose": [
+        -7.637494087219238,
+        -3.245577096939087,
+        1.8047477006912231
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_7_4/9.jpg",
+      "num_frames": 65,
+      "path_length_m": 10.75,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_8_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_8_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_8_3",
+      "start_pose": [
+        -3.1340582370758057,
+        4.063321113586426,
+        -1.9669880867004395
+      ],
+      "goal_pose": [
+        -3.9489495754241943,
+        -2.2723889350891113,
+        3.007200241088867
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_8_3/9.jpg",
+      "num_frames": 42,
+      "path_length_m": 7.5,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_9_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_9_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_9_2",
+      "start_pose": [
+        -7.82304048538208,
+        -3.1816396713256836,
+        -0.8252555727958679
+      ],
+      "goal_pose": [
+        -6.297711372375488,
+        -0.8952682018280029,
+        2.839935779571533
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_9_2/9.jpg",
+      "num_frames": 38,
+      "path_length_m": 5.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_9_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_9_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_9_3",
+      "start_pose": [
+        -5.604597091674805,
+        3.0067644119262695,
+        -1.5017913579940796
+      ],
+      "goal_pose": [
+        -6.2587785720825195,
+        -0.8629211783409119,
+        -3.072587728500366
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0203_kujiale_0203_9_3/9.jpg",
+      "num_frames": 24,
+      "path_length_m": 4.25,
+      "split": "train"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_0_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_0_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_0_4",
+      "start_pose": [
+        -2.910975933074951,
+        -1.915174126625061,
+        -0.14946234226226807
+      ],
+      "goal_pose": [
+        2.4238481521606445,
+        1.9965790510177612,
+        1.4213340282440186
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_0_4/9.jpg",
+      "num_frames": 50,
+      "path_length_m": 7.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_10_2",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_10_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_10_2",
+      "start_pose": [
+        -3.8065855503082275,
+        -0.4723880887031555,
+        -0.05031230300664902
+      ],
+      "goal_pose": [
+        3.0994789600372314,
+        -0.820141613483429,
+        -0.31211167573928833
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_10_2/9.jpg",
+      "num_frames": 32,
+      "path_length_m": 7.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_13_0",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_13_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_13_0",
+      "start_pose": [
+        -3.8065855503082275,
+        -0.4723880887031555,
+        0.18688581883907318
+      ],
+      "goal_pose": [
+        2.8820438385009766,
+        2.722533702850342,
+        0.4486851990222931
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_13_0/9.jpg",
+      "num_frames": 50,
+      "path_length_m": 9.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_14_3",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_14_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_14_3",
+      "start_pose": [
+        -3.707073450088501,
+        1.5176615715026855,
+        -0.1147351786494255
+      ],
+      "goal_pose": [
+        2.930096387863159,
+        2.451375722885132,
+        0.6706629991531372
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_14_3/9.jpg",
+      "num_frames": 76,
+      "path_length_m": 10.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_16_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_16_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_16_1",
+      "start_pose": [
+        -2.910975933074951,
+        -1.915174126625061,
+        0.10152239352464676
+      ],
+      "goal_pose": [
+        2.7360899448394775,
+        2.2613914012908936,
+        1.1487199068069458
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_16_1/9.jpg",
+      "num_frames": 62,
+      "path_length_m": 8.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_19_0",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_19_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_19_0",
+      "start_pose": [
+        -0.0251221414655447,
+        -2.014676570892334,
+        1.5864185094833374
+      ],
+      "goal_pose": [
+        -3.1559934616088867,
+        -2.048679828643799,
+        -2.864171028137207
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_19_0/9.jpg",
+      "num_frames": 45,
+      "path_length_m": 5.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_19_2",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_19_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_19_2",
+      "start_pose": [
+        -3.8065855503082275,
+        -0.4723880887031555,
+        -0.42659541964530945
+      ],
+      "goal_pose": [
+        -3.164515495300293,
+        -2.068929433822632,
+        -2.782789945602417
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_19_2/9.jpg",
+      "num_frames": 47,
+      "path_length_m": 5.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_22_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_22_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_22_4",
+      "start_pose": [
+        -1.070000171661377,
+        -1.566915512084961,
+        1.3840047121047974
+      ],
+      "goal_pose": [
+        0.09285223484039307,
+        4.702669143676758,
+        1.9076035022735596
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_22_4/9.jpg",
+      "num_frames": 46,
+      "path_length_m": 7.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_23_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_23_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_23_4",
+      "start_pose": [
+        -0.0251221414655447,
+        -2.014676570892334,
+        1.1071877479553223
+      ],
+      "goal_pose": [
+        3.1702847480773926,
+        -2.8714263439178467,
+        -2.2962043285369873
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_23_4/9.jpg",
+      "num_frames": 46,
+      "path_length_m": 6.5,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_24_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_24_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_24_1",
+      "start_pose": [
+        -2.5129270553588867,
+        1.4181591272354126,
+        -1.6096514463424683
+      ],
+      "goal_pose": [
+        4.310004711151123,
+        -2.8395018577575684,
+        -1.086052656173706
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_24_1/9.jpg",
+      "num_frames": 48,
+      "path_length_m": 9.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_25_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_25_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_25_4",
+      "start_pose": [
+        -2.5129270553588867,
+        1.4181591272354126,
+        -1.4533917903900146
+      ],
+      "goal_pose": [
+        -0.17682121694087982,
+        -1.6292747259140015,
+        -1.9769905805587769
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_25_4/9.jpg",
+      "num_frames": 33,
+      "path_length_m": 5.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_29_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_29_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_29_4",
+      "start_pose": [
+        -2.264146566390991,
+        -1.815671682357788,
+        0.6611987948417664
+      ],
+      "goal_pose": [
+        -2.6535704135894775,
+        3.5672214031219482,
+        1.4465969800949097
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_29_4/9.jpg",
+      "num_frames": 57,
+      "path_length_m": 6.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_30_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_30_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_30_1",
+      "start_pose": [
+        -2.910975933074951,
+        -1.915174126625061,
+        -0.2376081943511963
+      ],
+      "goal_pose": [
+        -2.682032346725464,
+        3.630399465560913,
+        1.5949875116348267
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_30_1/9.jpg",
+      "num_frames": 56,
+      "path_length_m": 7.5,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_30_2",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_30_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_30_2",
+      "start_pose": [
+        -0.4729270339012146,
+        3.507711410522461,
+        -0.5426111221313477
+      ],
+      "goal_pose": [
+        -2.6445038318634033,
+        3.6478848457336426,
+        1.5517839193344116
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_30_2/9.jpg",
+      "num_frames": 64,
+      "path_length_m": 11.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_33_2",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_33_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_33_2",
+      "start_pose": [
+        0.5221949219703674,
+        3.358457565307617,
+        -0.6873050332069397
+      ],
+      "goal_pose": [
+        3.2497012615203857,
+        -0.016310466453433037,
+        0.35989251732826233
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_33_2/9.jpg",
+      "num_frames": 42,
+      "path_length_m": 6.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_34_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_34_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_34_1",
+      "start_pose": [
+        -2.264146566390991,
+        -1.815671682357788,
+        0.5602759718894958
+      ],
+      "goal_pose": [
+        3.216475009918213,
+        -1.6215648651123047,
+        -1.2723196744918823
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_34_1/9.jpg",
+      "num_frames": 47,
+      "path_length_m": 6.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_38_3",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_38_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_38_3",
+      "start_pose": [
+        -3.8065855503082275,
+        -0.4723880887031555,
+        0.21301256120204926
+      ],
+      "goal_pose": [
+        3.1960020065307617,
+        3.1895787715911865,
+        0.998410701751709
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_38_3/9.jpg",
+      "num_frames": 50,
+      "path_length_m": 9.5,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_39_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_39_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_39_1",
+      "start_pose": [
+        2.1143901348114014,
+        4.403233528137207,
+        -1.2348017692565918
+      ],
+      "goal_pose": [
+        -3.4120473861694336,
+        -2.0449609756469727,
+        -2.805598020553589
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_39_1/9.jpg",
+      "num_frames": 70,
+      "path_length_m": 10.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_39_2",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_39_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_39_2",
+      "start_pose": [
+        2.8109755516052246,
+        3.6569650173187256,
+        -1.878255844116211
+      ],
+      "goal_pose": [
+        -3.4252476692199707,
+        -2.045396327972412,
+        -2.66365385055542
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_39_2/9.jpg",
+      "num_frames": 60,
+      "path_length_m": 10.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_41_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_41_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_41_4",
+      "start_pose": [
+        -2.3139026165008545,
+        -0.12412939965724945,
+        -0.6324192881584167
+      ],
+      "goal_pose": [
+        3.0578627586364746,
+        2.303683280944824,
+        0.15297889709472656
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_41_4/9.jpg",
+      "num_frames": 43,
+      "path_length_m": 7.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_43_0",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_43_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_43_0",
+      "start_pose": [
+        -2.5129270553588867,
+        1.4181591272354126,
+        -1.4537349939346313
+      ],
+      "goal_pose": [
+        -0.22749803960323334,
+        4.216188907623291,
+        2.211456298828125
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_43_0/9.jpg",
+      "num_frames": 54,
+      "path_length_m": 9.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_44_0",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_44_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_44_0",
+      "start_pose": [
+        1.6168291568756104,
+        4.0549750328063965,
+        -0.6786728501319885
+      ],
+      "goal_pose": [
+        0.21938396990299225,
+        3.898040771484375,
+        2.201120376586914
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_44_0/9.jpg",
+      "num_frames": 62,
+      "path_length_m": 10.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_45_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_45_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_45_4",
+      "start_pose": [
+        2.1143901348114014,
+        4.403233528137207,
+        -1.5711590051651
+      ],
+      "goal_pose": [
+        -3.021761894226074,
+        1.4069228172302246,
+        3.1412298679351807
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_45_4/9.jpg",
+      "num_frames": 65,
+      "path_length_m": 11.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_46_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_46_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_46_4",
+      "start_pose": [
+        -3.8065855503082275,
+        -0.4723880887031555,
+        0.15506255626678467
+      ],
+      "goal_pose": [
+        -0.040425293147563934,
+        0.9767410159111023,
+        3.034855842590332
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_46_4/9.jpg",
+      "num_frames": 40,
+      "path_length_m": 6.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_47_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_47_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_47_1",
+      "start_pose": [
+        -2.5129270553588867,
+        1.4181591272354126,
+        -1.3854660987854004
+      ],
+      "goal_pose": [
+        3.0101184844970703,
+        2.4265527725219727,
+        0.44712966680526733
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_47_1/9.jpg",
+      "num_frames": 56,
+      "path_length_m": 9.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_50_0",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_50_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_50_0",
+      "start_pose": [
+        0.5719510316848755,
+        2.1644277572631836,
+        -1.5150023698806763
+      ],
+      "goal_pose": [
+        -3.166600465774536,
+        -2.0619404315948486,
+        -2.8239991664886475
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_50_0/9.jpg",
+      "num_frames": 49,
+      "path_length_m": 6.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_53_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_53_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_53_4",
+      "start_pose": [
+        2.8109755516052246,
+        3.6569650173187256,
+        -1.8491218090057373
+      ],
+      "goal_pose": [
+        1.519974946975708,
+        -0.861095666885376,
+        -2.1109211444854736
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_53_4/9.jpg",
+      "num_frames": 23,
+      "path_length_m": 4.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_54_3",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_54_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_54_3",
+      "start_pose": [
+        -1.070000171661377,
+        -1.566915512084961,
+        1.3937891721725464
+      ],
+      "goal_pose": [
+        0.02362566813826561,
+        4.556150913238525,
+        1.3937891721725464
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_54_3/9.jpg",
+      "num_frames": 49,
+      "path_length_m": 7.5,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_55_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_55_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_55_1",
+      "start_pose": [
+        2.562195062637329,
+        -0.3728856146335602,
+        3.073483467102051
+      ],
+      "goal_pose": [
+        0.1657828986644745,
+        4.407053470611572,
+        1.76448655128479
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_55_1/9.jpg",
+      "num_frames": 34,
+      "path_length_m": 6.5,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_55_2",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_55_2",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_55_2",
+      "start_pose": [
+        2.3134145736694336,
+        1.0201492309570312,
+        -1.8052934408187866
+      ],
+      "goal_pose": [
+        0.16360585391521454,
+        4.398316383361816,
+        1.8598979711532593
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_55_2/9.jpg",
+      "num_frames": 42,
+      "path_length_m": 7.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_56_3",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_56_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_56_3",
+      "start_pose": [
+        -0.0251221414655447,
+        4.353482723236084,
+        -1.066589117050171
+      ],
+      "goal_pose": [
+        3.1660091876983643,
+        -1.3767139911651611,
+        -1.3283884525299072
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_56_3/9.jpg",
+      "num_frames": 42,
+      "path_length_m": 7.5,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_57_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_57_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_57_4",
+      "start_pose": [
+        -3.8065855503082275,
+        -0.4723880887031555,
+        0.13501961529254913
+      ],
+      "goal_pose": [
+        -2.6517937183380127,
+        3.5839595794677734,
+        1.4440165758132935
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_57_4/9.jpg",
+      "num_frames": 46,
+      "path_length_m": 5.5,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_58_3",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_58_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_58_3",
+      "start_pose": [
+        -2.264146566390991,
+        -1.815671682357788,
+        0.6577224731445312
+      ],
+      "goal_pose": [
+        -2.6433398723602295,
+        3.488107442855835,
+        1.4431205987930298
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_58_3/9.jpg",
+      "num_frames": 49,
+      "path_length_m": 6.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_5_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_5_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_5_1",
+      "start_pose": [
+        -0.0251221414655447,
+        4.353482723236084,
+        -1.0204156637191772
+      ],
+      "goal_pose": [
+        0.05486708879470825,
+        -1.2375156879425049,
+        -1.0204156637191772
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_5_1/9.jpg",
+      "num_frames": 37,
+      "path_length_m": 6.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_5_3",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_5_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_5_3",
+      "start_pose": [
+        -3.8065855503082275,
+        -0.4723880887031555,
+        -0.18762189149856567
+      ],
+      "goal_pose": [
+        0.040769755840301514,
+        -1.1806917190551758,
+        -1.4966188669204712
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_5_3/9.jpg",
+      "num_frames": 30,
+      "path_length_m": 4.5,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_60_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_60_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_60_1",
+      "start_pose": [
+        -3.8065855503082275,
+        -0.4723880887031555,
+        -0.1460876613855362
+      ],
+      "goal_pose": [
+        0.06482584774494171,
+        4.249831676483154,
+        2.21010684967041
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_60_1/9.jpg",
+      "num_frames": 48,
+      "path_length_m": 9.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_61_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_61_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_61_1",
+      "start_pose": [
+        1.6168291568756104,
+        4.0549750328063965,
+        -0.7326019406318665
+      ],
+      "goal_pose": [
+        -0.06360767781734467,
+        4.369416236877441,
+        1.3617931604385376
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_61_1/9.jpg",
+      "num_frames": 67,
+      "path_length_m": 10.5,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_62_3",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_62_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_62_3",
+      "start_pose": [
+        -2.3139026165008545,
+        -0.12412939965724945,
+        -0.6269922256469727
+      ],
+      "goal_pose": [
+        2.8582546710968018,
+        -0.6563771367073059,
+        0.15840594470500946
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_62_3/9.jpg",
+      "num_frames": 27,
+      "path_length_m": 5.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_63_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_63_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_63_4",
+      "start_pose": [
+        -0.0251221414655447,
+        4.353482723236084,
+        -0.956980288028717
+      ],
+      "goal_pose": [
+        3.0893890857696533,
+        -0.06298987567424774,
+        0.6138160228729248
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_63_4/9.jpg",
+      "num_frames": 42,
+      "path_length_m": 7.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_64_0",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_64_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_64_0",
+      "start_pose": [
+        1.6168291568756104,
+        4.0549750328063965,
+        -1.0697429180145264
+      ],
+      "goal_pose": [
+        3.168968439102173,
+        -2.0187904834747314,
+        -1.855141043663025
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_64_0/9.jpg",
+      "num_frames": 41,
+      "path_length_m": 6.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_66_0",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_66_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_66_0",
+      "start_pose": [
+        0.5221949219703674,
+        3.358457565307617,
+        -0.8801869750022888
+      ],
+      "goal_pose": [
+        2.960958480834961,
+        2.3496789932250977,
+        0.4288099408149719
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_66_0/9.jpg",
+      "num_frames": 55,
+      "path_length_m": 7.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_66_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_66_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_66_4",
+      "start_pose": [
+        -0.4729270339012146,
+        3.507711410522461,
+        -0.30044957995414734
+      ],
+      "goal_pose": [
+        2.974400281906128,
+        2.366379737854004,
+        0.4849485754966736
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_66_4/9.jpg",
+      "num_frames": 71,
+      "path_length_m": 8.75,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_67_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_67_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_67_1",
+      "start_pose": [
+        0.5221949219703674,
+        3.358457565307617,
+        -1.4636000394821167
+      ],
+      "goal_pose": [
+        3.0905964374542236,
+        2.296788215637207,
+        -0.6782019138336182
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_67_1/9.jpg",
+      "num_frames": 54,
+      "path_length_m": 8.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_69_0",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_69_0",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_69_0",
+      "start_pose": [
+        2.7612192630767822,
+        4.452984809875488,
+        -2.102797508239746
+      ],
+      "goal_pose": [
+        -2.6689629554748535,
+        3.6529669761657715,
+        1.5623940229415894
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_69_0/9.jpg",
+      "num_frames": 67,
+      "path_length_m": 13.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_7_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_7_1",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_7_1",
+      "start_pose": [
+        3.6568291187286377,
+        -2.1639304161071777,
+        1.8363075256347656
+      ],
+      "goal_pose": [
+        -2.660019636154175,
+        3.584038496017456,
+        1.5745080709457397
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_7_1/9.jpg",
+      "num_frames": 60,
+      "path_length_m": 10.5,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_8_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_8_4",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_8_4",
+      "start_pose": [
+        0.5221949219703674,
+        3.358457565307617,
+        -1.4654484987258911
+      ],
+      "goal_pose": [
+        3.276083469390869,
+        0.03870713710784912,
+        0.3671472370624542
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_8_4/9.jpg",
+      "num_frames": 39,
+      "path_length_m": 6.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_9_3",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_9_3",
+      "trajectory_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_9_3",
+      "start_pose": [
+        -2.3139026165008545,
+        -0.12412939965724945,
+        -0.6129883527755737
+      ],
+      "goal_pose": [
+        4.123117923736572,
+        -2.4543254375457764,
+        -0.8747877478599548
+      ],
+      "goal_image_path": "datasets/vlntube/train/kujiale_0271_kujiale_0271_9_3/9.jpg",
+      "num_frames": 37,
+      "path_length_m": 7.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_91_1",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_91_1",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0092_kujiale_0092_91_1",
+      "start_pose": [
+        1.4369442462921143,
+        6.284441947937012,
+        -1.3437821865081787
+      ],
+      "goal_pose": [
+        -0.925315260887146,
+        -1.4404536485671997,
+        2.5832085609436035
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0092_kujiale_0092_91_1/9.jpg",
+      "num_frames": 51,
+      "path_length_m": 9.75,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0092_kujiale_0092_9_2",
+      "scene_id": "kujiale_0092",
+      "trajectory_id": "kujiale_0092_kujiale_0092_9_2",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0092_kujiale_0092_9_2",
+      "start_pose": [
+        1.4872108697891235,
+        -2.6010189056396484,
+        1.7825714349746704
+      ],
+      "goal_pose": [
+        1.933834195137024,
+        6.319659233093262,
+        1.2589726448059082
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0092_kujiale_0092_9_2/9.jpg",
+      "num_frames": 39,
+      "path_length_m": 9.0,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_25_3",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_25_3",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_25_3",
+      "start_pose": [
+        4.300431728363037,
+        1.6121729612350464,
+        -2.1254444122314453
+      ],
+      "goal_pose": [
+        6.8018999099731445,
+        -1.0124338865280151,
+        -1.3400461673736572
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_25_3/9.jpg",
+      "num_frames": 50,
+      "path_length_m": 7.5,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_31_0",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_31_0",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_31_0",
+      "start_pose": [
+        2.544330358505249,
+        3.3750827312469482,
+        -1.5605884790420532
+      ],
+      "goal_pose": [
+        6.130435943603516,
+        -3.6808717250823975,
+        0.010207803919911385
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_31_0/9.jpg",
+      "num_frames": 51,
+      "path_length_m": 10.0,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0118_kujiale_0118_40_4",
+      "scene_id": "kujiale_0118",
+      "trajectory_id": "kujiale_0118_kujiale_0118_40_4",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_40_4",
+      "start_pose": [
+        4.400780200958252,
+        -1.7625397443771362,
+        1.7446776628494263
+      ],
+      "goal_pose": [
+        -5.870582580566406,
+        -0.8913942575454712,
+        2.006477117538452
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0118_kujiale_0118_40_4/9.jpg",
+      "num_frames": 69,
+      "path_length_m": 12.25,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_15_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_15_3",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_15_3",
+      "start_pose": [
+        -6.965914726257324,
+        5.572688102722168,
+        -0.08724351227283478
+      ],
+      "goal_pose": [
+        -4.657999038696289,
+        0.5153318047523499,
+        -0.3490428924560547
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_15_3/9.jpg",
+      "num_frames": 41,
+      "path_length_m": 6.25,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_16_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_16_3",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_16_3",
+      "start_pose": [
+        -6.7138190269470215,
+        1.5980219841003418,
+        0.8608657121658325
+      ],
+      "goal_pose": [
+        -7.638136863708496,
+        -3.487107753753662,
+        -3.0661251544952393
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_16_3/9.jpg",
+      "num_frames": 54,
+      "path_length_m": 8.5,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_22_4",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_22_4",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_22_4",
+      "start_pose": [
+        -2.3273515701293945,
+        -0.5654038786888123,
+        2.2356231212615967
+      ],
+      "goal_pose": [
+        -7.775854110717773,
+        -2.9147908687591553,
+        2.497422695159912
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_22_4/9.jpg",
+      "num_frames": 62,
+      "path_length_m": 10.0,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_25_0",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_25_0",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_25_0",
+      "start_pose": [
+        -6.562561511993408,
+        -0.36415496468544006,
+        -1.4868741035461426
+      ],
+      "goal_pose": [
+        -7.71915340423584,
+        -2.8727009296417236,
+        1.6547186374664307
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_25_0/9.jpg",
+      "num_frames": 47,
+      "path_length_m": 6.0,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_32_2",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_32_2",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_32_2",
+      "start_pose": [
+        -7.36926794052124,
+        -0.36415496468544006,
+        0.39633482694625854
+      ],
+      "goal_pose": [
+        -6.489482402801514,
+        1.9251781702041626,
+        -2.4834585189819336
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_32_2/9.jpg",
+      "num_frames": 59,
+      "path_length_m": 5.25,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_43_1",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_43_1",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_43_1",
+      "start_pose": [
+        -3.1340582370758057,
+        4.063321113586426,
+        -1.9513351917266846
+      ],
+      "goal_pose": [
+        -3.8361215591430664,
+        -2.287824869155884,
+        2.4992544651031494
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_43_1/9.jpg",
+      "num_frames": 44,
+      "path_length_m": 7.5,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0203_kujiale_0203_49_3",
+      "scene_id": "kujiale_0203",
+      "trajectory_id": "kujiale_0203_kujiale_0203_49_3",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_49_3",
+      "start_pose": [
+        -6.965914726257324,
+        -0.8672772645950317,
+        -0.4358149766921997
+      ],
+      "goal_pose": [
+        -1.935520887374878,
+        -5.044191837310791,
+        -1.4830125570297241
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0203_kujiale_0203_49_3/9.jpg",
+      "num_frames": 63,
+      "path_length_m": 10.5,
+      "split": "val"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_15_1",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_15_1",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_15_1",
+      "start_pose": [
+        -3.707073450088501,
+        1.5176615715026855,
+        -0.15115287899971008
+      ],
+      "goal_pose": [
+        2.9601283073425293,
+        2.299682140350342,
+        0.11064650863409042
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_15_1/9.jpg",
+      "num_frames": 67,
+      "path_length_m": 10.25,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_24_4",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_24_4",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_24_4",
+      "start_pose": [
+        -2.6621954441070557,
+        3.0101988315582275,
+        -1.486333966255188
+      ],
+      "goal_pose": [
+        4.273130893707275,
+        -2.9060583114624023,
+        -0.4391363859176636
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_24_4/9.jpg",
+      "num_frames": 61,
+      "path_length_m": 11.0,
+      "split": "test_scene_holdout"
+    },
+    {
+      "episode_id": "kujiale_0271_kujiale_0271_7_3",
+      "scene_id": "kujiale_0271",
+      "trajectory_id": "kujiale_0271_kujiale_0271_7_3",
+      "trajectory_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_7_3",
+      "start_pose": [
+        -0.4729270339012146,
+        3.507711410522461,
+        -0.9104403853416443
+      ],
+      "goal_pose": [
+        -2.653899669647217,
+        3.3981125354766846,
+        1.445754051208496
+      ],
+      "goal_image_path": "datasets/vlntube/val/kujiale_0271_kujiale_0271_7_3/9.jpg",
+      "num_frames": 74,
+      "path_length_m": 11.0,
+      "split": "test_scene_holdout"
+    }
+  ],
+  "leakage_check": {
+    "train_test_scene_overlap": 0,
+    "train_test_trajectory_overlap": 0,
+    "train_test_episode_overlap": 0,
+    "scene_level_holdout": true
+  }
+}

@@ -278,3 +278,49 @@ method choice must answer why this protocol, what we gain/lose, what
 failed, and what claim is now valid. **Next gate:** data expansion with
 scene-level holdout. Evidence:
 `assets/experiments/training_ablation/mnv2_ema_20260708/{dataset_manifest.json,protocol_alignment_vlnverse_vlntube.md,method_choice_justification.md}`.
+
+## 19. Data expansion and scene-level held-out split (data-expansion-scene-holdout branch)
+**Hypothesis:** increasing VLNVerse/VLNTube training and validation
+coverage while preserving scene-level held-out testing will produce a
+more reliable estimate of MobileNetV2-GNM generalization than the current
+four-scene, trajectory-level split.
+**Setup:** inventory of every local VLNTube data source (train/val
+episode dirs, scene envs, prebuilt_data, upstream external/VLNTube,
+HF download path), then a scene-level re-partition of the existing 253
+episodes recorded in `dataset_manifest_scene_holdout.json`.
+**Result:** train 191 (kujiale_0092/0118/0203) / val 12 (trajectory-level
+within train scenes) / **test 50 = ALL episodes of kujiale_0271, fully
+held out by scene** — 3.3× the previous 15-episode evaluation split.
+`make validate-scene-holdout-split` asserts zero scene/trajectory/episode
+overlap and that every path and goal image exists.
+**The Good:** a true scene-level holdout now exists locally; the test
+scene has never been seen by any retrained model; the upstream
+`scene_splits.json` (176 trainval / 33 val_unseen / 53 test scenes)
+gives the scaling target for full-protocol alignment later.
+**The Bad:** all four local scenes are upstream *trainval* scenes, so the
+local holdout cannot align with the upstream test list yet; holding out
+0271 costs 47 training episodes (191 vs 238).
+**The Ugly:** both expansion routes are currently blocked and were
+verified honestly: the HF dataset repo
+(frankleroyvan/fleetsafe-gnm-vlnverse) was never published (Repository
+Not Found), and the upstream vistube generation pipeline is hardwired to
+the original authors' server paths and needs composed scene USDs —
+`vlntube_index.json` records `usd_scene_count: 0` locally (envs contain
+Meshes/Materials/occupancy but no scene USDs).
+**Root Cause:** the local corpus was delivered as pre-generated episode
+folders; the generation stack behind it was never localized.
+**Mitigation:** manifest-based split (no files moved, evaluator layout
+untouched); expansion blockers and the concrete unblock path recorded in
+the manifest's `expansion_status`.
+**Decision:** kujiale_0271 is the frozen local test scene; no model may
+be selected or tuned on it; no performance claims from this split until
+models are retrained under it.
+**Scientific Insight:** a smaller but scene-clean test set beats a larger
+leaky one; split design must precede data generation so new trajectories
+land only in train scenes.
+**Limitation:** one held-out scene; upstream-scale scene diversity
+(262 scenes) remains future work.
+**Next Evidence Gate:** rebuild scene USDs from the local
+Meshes/Materials, run vistube A* generation for TRAIN scenes only, then
+retrain MobileNetV2-GNM under the scene-holdout split and report
+SR/OSR/NE/SPL on kujiale_0271.
