@@ -356,3 +356,45 @@ retrain → Stage 5 comparison against this reference on untouched
 kujiale_0271. Evidence:
 `assets/experiments/training/scene_holdout_mnv2_baseline_20260708/`,
 `make validate-scene-holdout-training`.
+
+## 21. Stage 3B: First generated train-scene episode from composed Isaac USD
+**Hypothesis:** with the composed stages usable (Stage 3A), a locally
+generated episode can match the existing dataset format exactly and pass
+through the unmodified loader. **Setup:** coordinate calibration on
+kujiale_0092, A* route on the eroded occupancy map, headless-Isaac
+rendering at 224×224 along the route, packaging as frames +
+traj_data.pkl + metadata under `datasets/vlntube_generated/` (never
+mixed into original data).
+**Result — gate PASSED:** `gen_kujiale_0092_0000` (19 frames, 1.91 m
+route) yields 18 valid samples through the unmodified `GNMDataset`
+(obs (15,96,96) context stack, goal, action, dist all correct).
+**The Good:** the calibration is closed-form and *proven*: the world→
+pixel transform projects every trajectory point of all 66 existing
+kujiale_0092 episodes onto free space at exactly 1.000. The stage's
+world bounds match occupancy.json to 12 decimals.
+**The Bad:** the first auto-selected route renders wall-heavy views;
+forward-clearance route scoring is required before mass generation.
+Camera height (1.2 m) is assumed, not recovered from the original
+generator.
+**The Ugly:** the coordinate x-axis is MIRRORED between world and pixel
+space — every unmirrored convention failed (0.30–0.59 free-fraction),
+offset searches "improved" toward overfit corners, and rooms.json
+polygons turned out to be offset from the wall raster (a trap for any
+polygon-based calibration). Two evidence-based hypotheses (bounds match,
+top-down footprint) pointed to the mirror before the decisive
+trajectory-projection test confirmed it.
+**Root Cause:** the original exporter mirrored x when rasterising the
+occupancy map; nothing documents this.
+**Mitigation/Decision:** calibration recorded with its full evidence
+chain and rejected hypotheses; automatic seeded route selection replaces
+hardcoded points; kujiale_0271 untouched (validator-enforced).
+**Insight:** calibrate against ground-truth trajectories, not metadata
+artifacts — the 1.000 test is reusable for the other two train scenes.
+**Limitation:** this stage validates ONE generated train-scene episode
+through the existing loader. It does not yet claim improved model
+performance or full data expansion.
+**Next Evidence Gate (Stage 3C):** route-quality scoring, per-scene
+calibration for kujiale_0118/0203, then +50–100 seeded episodes —
+followed by Stage 4 retraining and the Stage 5 frozen-scene comparison.
+Evidence: `assets/experiments/data_expansion/generated_episode_smoke_20260708/`,
+`make validate-generated-episode-smoke`.

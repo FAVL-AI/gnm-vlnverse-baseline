@@ -1,0 +1,31 @@
+{
+  "scene": "kujiale_0092",
+  "transform_world_to_pixel": {
+    "col": "(x_max - x) / scale",
+    "row": "(y - y_min) / scale",
+    "scale_m_per_px": 0.05,
+    "x_max": 4.201611332969742,
+    "y_min": -8.625060198339636,
+    "free_space": "occupancy.png pixel > 128",
+    "note": "x-axis is MIRRORED between world and pixel space \u2014 every unmirrored convention fails"
+  },
+  "verification": {
+    "method_1": "stage world bounds from Isaac BBoxCache match occupancy.json lower/upper (y_min identical to 12 decimals; x within 0.11 m)",
+    "method_2": "top-down Isaac render: L-shaped footprint notch at world southwest vs map exterior block top-right -> implies x mirror",
+    "method_3": "DECISIVE: projecting all 66 existing kujiale_0092 episode trajectories (traj_data.pkl) onto free space under the mirrored convention: free-fraction = 1.000 (unmirrored conventions: 0.30-0.59)"
+  },
+  "rejected_hypotheses": [
+    "row flip (hi_y - y)/scale: 0.867 on trajectories",
+    "rooms.json polygon-edge fits: inconclusive (0.39-0.74 even with offset search) \u2014 polygons appear offset from the wall raster and were NOT used for the final calibration",
+    "offset search on unmirrored conventions: plateaued at 0.59"
+  ],
+  "camera": {
+    "height_m": 1.2,
+    "orientation": "rotateXYZ(90, 0, deg(yaw)-90) faces the camera along the travel direction",
+    "image_size": [
+      224,
+      224
+    ],
+    "matches_original_frames": "224x224 as existing episodes"
+  }
+}

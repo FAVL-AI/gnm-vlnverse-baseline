@@ -1,0 +1,11 @@
+episodes discovered: n/a
+samples: 18
+  obs: (15, 96, 96)
+  goal: (3, 96, 96)
+  action: (2,)
+  dist: (1,)
+  traj_id: gen_kujiale_0092_0000
+  t_obs: 0
+  t_goal: 5
+mid-sample loads OK
+LOADER CHECK: PASS — generated episode consumed by the existing GNMDataset with no special-case code

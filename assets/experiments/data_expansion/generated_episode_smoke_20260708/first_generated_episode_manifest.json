@@ -1,0 +1,23 @@
+{
+  "generator": "scripts/gnm/generate_vlntube_episode.py",
+  "scene": "kujiale_0092",
+  "episode": "gen_kujiale_0092_0000",
+  "start_world": [
+    1.151611332969742,
+    -0.8250601983396351
+  ],
+  "goal_world": [
+    2.6516113329697424,
+    -1.825060198339635
+  ],
+  "n_frames": 19,
+  "path_length_m": 1.9142135623730958,
+  "camera_height_m": 1.2,
+  "image_size": [
+    224,
+    224
+  ],
+  "calibration": "col=(x_max-x)/scale, row=(y-y_min)/scale; verified 1.000 free-fraction on all 66 existing kujiale_0092 episodes",
+  "safety_margin": "occupancy eroded 3 px (~0.15 m)",
+  "mean_frame_intensity": 147.8734905763292
+}

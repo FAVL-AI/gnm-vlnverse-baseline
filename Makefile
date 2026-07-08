@@ -1174,3 +1174,6 @@ validate-scene-holdout-training:
 
 validate-mlops-governance-cards:
 	python3 scripts/gnm/validate_mlops_governance_cards.py
+
+validate-generated-episode-smoke:
+	python3 scripts/gnm/validate_generated_episode_smoke.py
