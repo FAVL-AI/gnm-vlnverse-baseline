@@ -47,3 +47,10 @@ evaluation:
   stop_threshold: 0.15
   max_steps: 500
   track: A
+
+# Standard fine-tune mechanism (project convention, locked 2026-07-08):
+# set training.init_ckpt to a checkpoint path to initialise MODEL WEIGHTS
+# ONLY (optimizer/scheduler start fresh). Used by Hospital H1 and all
+# future H-track / Track B fine-tunes.
+# training:
+#   init_ckpt: checkpoints/<incumbent>/best.pt

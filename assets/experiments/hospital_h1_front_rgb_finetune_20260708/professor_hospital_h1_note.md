@@ -12,16 +12,26 @@ D/E/G (8, fully held out, evaluated once per model). Fine-tune
 initialised from the top-down incumbent's weights with a fresh
 optimizer.
 
-Result: the top-down-trained incumbent — expected to be out-of-domain
-because it was trained on top-down Kujiale/VLNTube imagery and is being
-evaluated on front-facing hospital camera imagery — reaches NE 3.14 m /
-SPL 0.285 on the held-out goals. Twelve front-camera episodes of
-fine-tuning bring the same architecture to NE 0.32 m / SPL 0.935
-(SR/OSR are partially saturated by short routes and are caveated).
-The measured domain gap and its closure are exactly what this
-experiment was designed to expose. DriftGuard promoted the candidate
-and VerdictPlane allowed the promotion — scoped to the hospital
-internal simulation line only.
+Hospital H1 shows that matching the training camera regime to the
+deployment camera regime matters. A model trained on top-down
+Kujiale/VLNTube imagery can run as a diagnostic baseline in the
+hospital scene, but fine-tuning on internal front-facing Isaac hospital
+episodes substantially improves held-out hospital route quality.
+Because the test set is small (n=8) and the routes are short relative
+to the 3 m success radius, SR/OSR are partially saturated and treated
+cautiously; **NE, SPL and nDTW provide the main evidence**:
+NE 3.14 m → 0.32 m; SPL 0.285 → 0.935; nDTW 0.746 → 0.961.
+
+Scope of the promotion (DriftGuard promote, VerdictPlane allow):
+- Promoted: the front-RGB fine-tuned model for
+  Isaac-Hospital-ImageNav-v0 simulation experiments only.
+- Not promoted: a real-robot model, a full VLNVerse benchmark model,
+  or a general navigation model.
+This is an internal Isaac Sim hospital front-camera experiment; it is
+not real-robot evidence and not a full VLNVerse benchmark. The
+top-down incumbent is a camera-domain diagnostic baseline, not a fair
+final competitor. No claim is made about real Yahboom sim-to-real
+performance yet.
 
 This aligns the model line with the live dashboard and the future
 Yahboom sim-to-real path (Track E). Next: more diverse hospital

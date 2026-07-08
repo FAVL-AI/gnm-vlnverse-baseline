@@ -13,6 +13,7 @@
 | 7 | Reference dataset audit | GNM/ViNT/NoMaD data mapped; all external sets require adapters | no superiority claims |
 | 8 | Isaac-Hospital-ImageNav-v0 | 24 episodes, route-level split 12/4/8, converter proven | provisional, sim-only |
 | 9 | Camera-state dashboard | live front-RGB demo; recorded episode final d2g 9.1 mm | acceptance-smoked |
+| 10 | Hospital H1 (front-camera adaptation) | main evidence NE 3.14→0.32 m, SPL 0.285→0.935, nDTW 0.746→0.961 (n=8; SR/OSR saturated on short routes, treated cautiously); DriftGuard promote + VerdictPlane allow, scoped to the Isaac-Hospital-ImageNav-v0 simulation line; incumbent = camera-domain diagnostic only | **first promotion — internal sim, not real-robot, not full benchmark** |
 
 ## Claim-boundary table
 | Claim | Status |
@@ -23,6 +24,7 @@
 | We beat GNM/ViNT/NoMaD | NEVER CLAIMED — banned |
 | Full VLNVerse benchmark | NOT claimed |
 | Real Yahboom sim-to-real | NOT claimed (Track E future) |
+| Hospital promotion scope | Isaac-Hospital-ImageNav-v0 simulation line ONLY |
 | CR from offline evaluator | FORBIDDEN — Isaac PhysX only |
 
 ## Key scientific findings
