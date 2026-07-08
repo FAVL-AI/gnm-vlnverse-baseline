@@ -17,6 +17,19 @@ def main():
               "blockers.md", "recommended_next_steps.md",
               "generated_batch_checksums.sha256"):
         if not (E / f).exists(): return fail(f"missing {f}")
+    expanded = (E.parent / "generated_train_expanded_20260708"
+                / "generated_expanded_manifest.json")
+    if expanded.exists():
+        print("pilot batch superseded by Stage 3D expanded set - disk-state "
+              "checks delegated to validate-generated-train-expanded; "
+              "verifying frozen pilot evidence only")
+        man = json.loads((E / "generated_batch_manifest.json").read_text())
+        if man["episodes"] != 30: return fail("pilot manifest episode count")
+        check = (E / "generated_batch_loader_check.txt").read_text()
+        if "LOADER CHECK: PASS" not in check:
+            return fail("pilot loader evidence missing")
+        print("PASS: generated train batch (frozen pilot evidence) validated")
+        return True
     eps = sorted(d for d in GEN.iterdir() if d.is_dir())
     if len(eps) != 30: return fail(f"expected 30 episodes, found {len(eps)}")
     pairs = set()
