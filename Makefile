@@ -1126,3 +1126,6 @@ capture-scene-goal:
 
 validate-scene-goal:
 	PYTHONPATH=$(CURDIR) $(PYTHON_ISAAC) scripts/gnm/validate_scene_goal.py $(GOAL)
+
+validate-goal-conditioned-gnm:
+	PYTHONPATH=$(CURDIR) $(PYTHON_ISAAC) scripts/gnm/validate_goal_conditioned_gnm.py $(EPISODE)

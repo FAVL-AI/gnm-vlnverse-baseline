@@ -385,6 +385,7 @@ EPISODE_TOPICS = ["/camera/image_raw", "/camera/camera_info", "/odom",
                   "/tf", "/clock", "/cmd_vel"]
 from gnm_shadow import SHADOW_FIELDS as _SF
 CL_FIELDS = [
+    "goal_id", "distance_to_goal_m",
     "gnm_control_enabled", "gnm_action_raw_linear_velocity",
     "gnm_action_raw_angular_velocity", "gnm_action_clipped_linear_velocity",
     "gnm_action_clipped_angular_velocity", "action_clipped",
@@ -419,10 +420,17 @@ if "--episode" in sys.argv or "--shadow-gnm" in sys.argv or "--gnm-control" in s
     rgb_annot = _rep.AnnotatorRegistry.get_annotator("rgb")
     rgb_annot.attach(render_product)
     _goal_img = REPO / "assets/deck/tracka_goal_observation.jpg"
+    GOAL_SEL = None
+    GOAL_POSE_SEL = None
     if "--goal-id" in sys.argv:
-        _gid = sys.argv[sys.argv.index("--goal-id") + 1]
-        _goal_img = (REPO / "assets/experiments/goals" / _gid
-                     / "goal_image.png")
+        GOAL_SEL = sys.argv[sys.argv.index("--goal-id") + 1]
+        _gdir = REPO / "assets/experiments/goals" / GOAL_SEL
+        _goal_img = _gdir / "goal_image.png"
+        import json as _gjson
+        GOAL_POSE_SEL = _gjson.loads(
+            (_gdir / "goal_metadata.json").read_text())["goal_pose"]
+        print(f"[goal] scene-aligned goal selected: {GOAL_SEL} "
+              f"pose={GOAL_POSE_SEL}")
     shadow = GNMShadow(REPO, _goal_img, device="cuda")
     print(f"[shadow] GNM shadow inference active (model="
           f"{shadow.latest['shadow_gnm_model_path']}); "
@@ -519,7 +527,13 @@ if CL_MODE:
         od_l = og.Controller.get("/World/ROS2Graph/odom.outputs:linearVelocity")
         od_a = og.Controller.get("/World/ROS2Graph/odom.outputs:angularVelocity")
         extra = dict(shadow.latest)
+        d2g = None
+        if GOAL_POSE_SEL is not None:
+            d2g = round(math.hypot(px_ - GOAL_POSE_SEL["x"],
+                                   py_ - GOAL_POSE_SEL["y"]), 4)
         extra.update({
+            "goal_id": GOAL_SEL,
+            "distance_to_goal_m": d2g,
             "actual_controller": "gnm_closed_loop",
             "actual_linear_velocity_cmd": round(vappl, 6),
             "actual_angular_velocity_cmd": round(wappl, 6),
@@ -633,8 +647,17 @@ if CL_MODE:
             bag_proc.kill()
 
     cl_meta = shadow.summary()
+    _fx, _fy, _, _ = robot_pose_yaw()
     cl_meta.update({
         "closed_loop": True,
+        "goal_id": GOAL_SEL,
+        "goal_image": str(_goal_img.relative_to(REPO)),
+        "goal_scene_aligned": GOAL_SEL is not None,
+        "goal_pose": GOAL_POSE_SEL,
+        "start_pose_episode": {"x": 0.0, "y": 0.0, "yaw_rad": 0.0},
+        "final_distance_to_goal_m": round(
+            math.hypot(_fx - GOAL_POSE_SEL["x"], _fy - GOAL_POSE_SEL["y"]), 4)
+        if GOAL_POSE_SEL is not None else None,
         "cl_limits": {"lin_max_ms": CL_LIN_MAX, "ang_max_rads": CL_ANG_MAX,
                       "xy_bound_m": CL_BOUND_XY,
                       "z_drift_max_m": CL_Z_DRIFT_MAX,

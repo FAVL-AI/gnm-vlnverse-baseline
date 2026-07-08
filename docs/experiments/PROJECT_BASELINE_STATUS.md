@@ -93,14 +93,30 @@ pipeline described below.
   checksum, live-annotator provenance at live-camera resolution, sane
   start/goal pair, and that the GNM pipeline loads the image.
   Closed-loop runs accept `--goal-id` to use scene-aligned goals.
-- **Still not valid:** navigation quality (pending one validated
-  goal-conditioned closed-loop run), hospital-scene navigation, goal
-  reaching, SPL/SR, FleetSafe improvements, six-run campaign.
-- **Next required work, in order:** one short bounded GNM closed-loop
-  episode using the scene-aligned goal (`--gnm-control --episode
-  --goal-id bringup_stage_goal_A`) → stop-head shadow integration → GNM
-  + stop head comparison in the hospital scene → revalidate the campaign
-  runs (`PHASE2_REQUIREMENTS.md`).
+- **Goal-conditioned closed-loop smoke: PASS (2026-07-08).** Episode
+  `gnm_closed_loop_20260708_043548` ran the full safety envelope with
+  the scene-aligned goal `bringup_stage_goal_A`. Distance-to-goal
+  telemetry (logged per row): **1.399 m → minimum 0.498 m → final
+  0.573 m** — the robot drove toward the scene-aligned goal, passed its
+  nearest point, and kept going because no termination mechanism exists
+  yet. `make validate-goal-conditioned-gnm` passes (base closed-loop
+  checks + goal identity/provenance/loadability + telemetry + status-doc
+  claim guard). **Valid claim (narrow):** GNM can run a bounded
+  closed-loop smoke episode in Isaac using a goal image captured from
+  the same live scene.
+- **Two recorded observations (evidence, not claims):** (1) the robot
+  overshot its nearest-goal point — live motivation for the stop-head
+  work, which is this project's core research question; (2) commanded
+  angular velocity (up to 0.18 rad/s) produced almost no yaw — skid-
+  steer turning authority with sphere wheel colliders needs
+  investigation before any curved-path navigation claim.
+- **Still not valid:** success rate, SPL, robust hospital navigation,
+  goal *reaching* as an achievement, FleetSafe improvements, six-run
+  campaign.
+- **Next required work, in order:** stop-head shadow integration
+  (measure termination signals without authority) → yaw-authority
+  investigation → GNM + stop head comparison → hospital-scene episodes →
+  revalidate the campaign runs (`PHASE2_REQUIREMENTS.md`).
 
 ## Deprecated / Superseded Evidence
 
