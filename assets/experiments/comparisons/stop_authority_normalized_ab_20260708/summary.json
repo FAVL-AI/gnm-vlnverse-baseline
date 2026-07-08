@@ -1,0 +1,48 @@
+{
+  "experiment": "stop_authority_normalized_ab_heldout_smoke",
+  "label": "bounded held-out authority A/B smoke comparison; not campaign, not SR/SPL, not FleetSafe",
+  "rule": "normalized_pred_gate pred<=0.5*initial_pred k=3",
+  "pairs": [
+    {
+      "pair_id": "F",
+      "goal_id": "hospital_fresh_short_F",
+      "baseline_min_d2g": 0.0013,
+      "baseline_final_d2g": 0.9884,
+      "baseline_overshoot_past_min": 0.9871,
+      "auth_stop_triggered": true,
+      "auth_true_d2g_at_stop": 1.0559,
+      "auth_final_d2g": 1.0532,
+      "auth_residual_after_stop_m": 0.00297,
+      "final_d2g_delta_auth_minus_baseline": 0.0648,
+      "early_stop_short_of_nearest_m": 1.0546,
+      "episodes": [
+        "normcmp_F_baseline_20260708_153134",
+        "normcmp_F_stopauth_20260708_153225"
+      ]
+    },
+    {
+      "pair_id": "G",
+      "goal_id": "hospital_fresh_medium_G",
+      "baseline_min_d2g": 0.0007,
+      "baseline_final_d2g": 0.4857,
+      "baseline_overshoot_past_min": 0.485,
+      "auth_stop_triggered": true,
+      "auth_true_d2g_at_stop": 1.4488,
+      "auth_final_d2g": 1.4466,
+      "auth_residual_after_stop_m": 0.00274,
+      "final_d2g_delta_auth_minus_baseline": 0.9609,
+      "early_stop_short_of_nearest_m": 1.4481,
+      "episodes": [
+        "normcmp_G_baseline_20260708_153849",
+        "normcmp_G_stopauth_20260708_153944"
+      ]
+    }
+  ],
+  "verdicts": [
+    "pair F: authority final d2g 1.0532 vs baseline 0.9884 (farther); stopped 1.0546 m short of the baseline's nearest point (early stop)",
+    "pair G: authority final d2g 1.4466 vs baseline 0.4857 (farther); stopped 1.4481 m short of the baseline's nearest point (early stop)"
+  ],
+  "decision": "REJECTED",
+  "decision_basis": "stopped too early on both fresh held-out pairs and worsened final distance-to-goal (F +0.065 m, G +0.961 m); per the pre-registered rule this is a rejection, not inconclusive",
+  "finding": "second threshold-family candidate falsified out-of-sample: GNM's predicted goal-distance profile (initial 6.22/10.09 for 2.0/3.5 m routes) maps to true progress differently per route, so neither absolute nor initial-normalized thresholds transfer; termination on this signal family appears to require in-domain learned temporal heads or richer signals"
+}

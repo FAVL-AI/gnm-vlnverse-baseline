@@ -268,10 +268,44 @@ pipeline described below.
   existing live logs identify route-invariant stop candidates that
   avoid the failure mode of absolute predicted-distance thresholding.
   **The authority rerun is pending; improvement remains not valid.**
-- **Next required work, in order:** held-out authority rerun with
-  `normalized_pred` on NEW goals (fresh routes, never used for tuning
-  or prior validation) → GNM + stop head comparison → revalidate the
-  campaign runs (`PHASE2_REQUIREMENTS.md`).
+- **Fresh held-out normalized_pred authority rerun: VALID — candidate
+  REJECTED (2026-07-08).** Two fresh pairs on a never-used westward
+  route (goals `hospital_fresh_short_F` 2.0 m,
+  `hospital_fresh_medium_G` 3.5 m), identical envelopes, per-episode
+  self-scaling threshold verified (initial predictions 6.22/10.09
+  captured live; both stops fired at normalized ratios 0.46/0.48).
+  `make validate-normalized-stop-authority-comparison`; summary with
+  pre-registered classification in
+  `assets/experiments/comparisons/stop_authority_normalized_ab_20260708/`.
+
+  | pair | baseline final d2g | authority stop @ (true) | authority final | Δ |
+  |---|---|---|---|---|
+  | F | 0.988 | 1.056 (early) | 1.053 | +0.065 (worse) |
+  | G | 0.486 | 1.449 (early) | 1.447 | +0.961 (worse) |
+
+  **Classification: REJECTED** per the pre-registered rule (early stops
+  on both pairs; final distance worsened). Zeroing clean (2.7/3.0 mm
+  residuals); no watchdog/e-stop contamination.
+- **Cumulative finding (two falsifications):** neither absolute nor
+  initial-normalized predicted-distance thresholds transfer across
+  routes — GNM's predicted goal-distance maps to true progress
+  differently per route/view, so the whole simple-threshold family on
+  this signal appears unsuitable for termination authority. This
+  directly supports the thesis position that reliable termination
+  requires in-domain learned temporal stop heads (retrained on live
+  episodes) or richer multi-signal rules — with held-out validation
+  gating any authority, as these two rejections demonstrate.
+- **Still not valid:** any stop-rule improvement (both tested
+  candidates rejected), FleetSafe improvement, SR/SPL, robust hospital
+  navigation, goal reaching as an achievement, curved-path claims,
+  six-run campaign.
+- **Next required work, in order:** grow the live episode corpus
+  (more routes/goals) to enable in-domain retraining of the temporal
+  stop head with scene-level holdout → held-out authority test of the
+  retrained head → revalidate the campaign runs
+  (`PHASE2_REQUIREMENTS.md`). Separate queued workstream: the
+  MobileNetV2 + EMA training ablation (offline GNM training), to be
+  run as its own controlled session.
 
 ## Deprecated / Superseded Evidence
 

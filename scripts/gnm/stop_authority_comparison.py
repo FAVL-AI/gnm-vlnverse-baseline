@@ -14,10 +14,17 @@ from datetime import date
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-PAIRS = {
-    "D": ("authcmp_D_baseline", "authcmp_D_stopauth"),
-    "E": ("authcmp_E_baseline", "authcmp_E_stopauth"),
-}
+import sys as _sys
+if "--experiment" in _sys.argv and         _sys.argv[_sys.argv.index("--experiment") + 1] == "normalized":
+    PAIRS = {"F": ("normcmp_F_baseline", "normcmp_F_stopauth"),
+             "G": ("normcmp_G_baseline", "normcmp_G_stopauth")}
+    EXPERIMENT = "stop_authority_normalized_ab"
+    RULE_DESC = "normalized_pred_gate pred<=0.5*initial_pred k=3"
+else:
+    PAIRS = {"D": ("authcmp_D_baseline", "authcmp_D_stopauth"),
+             "E": ("authcmp_E_baseline", "authcmp_E_stopauth")}
+    EXPERIMENT = "stop_authority_ab"
+    RULE_DESC = "recalibrated_dist_pred_gate dist_pred<=4.5 k=3"
 
 
 def newest(prefix):
@@ -85,15 +92,15 @@ def main():
             if r["auth_stop_triggered"] else
             f"pair {r['pair_id']}: authority did not fire")
     summary = {
-        "experiment": "stop_authority_ab_heldout_smoke",
+        "experiment": EXPERIMENT + "_heldout_smoke",
         "label": ("bounded held-out authority A/B smoke comparison; "
                   "not campaign, not SR/SPL, not FleetSafe"),
-        "rule": "recalibrated_dist_pred_gate dist_pred<=4.5 k=3",
+        "rule": RULE_DESC,
         "pairs": out_rows,
         "verdicts": verdicts,
     }
     out = (REPO / "assets/experiments/comparisons"
-           / f"stop_authority_ab_{date.today():%Y%m%d}")
+           / f"{EXPERIMENT}_{date.today():%Y%m%d}")
     out.mkdir(parents=True, exist_ok=True)
     (out / "summary.json").write_text(json.dumps(summary, indent=2))
     with open(out / "summary.csv", "w", newline="") as f:

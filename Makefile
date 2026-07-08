@@ -1147,3 +1147,6 @@ validate-stop-authority-comparison:
 
 validate-route-invariant-stop-study:
 	python3 scripts/gnm/validate_route_invariant_stop_study.py $(STUDY)
+
+validate-normalized-stop-authority-comparison:
+	python3 scripts/gnm/validate_normalized_stop_authority_comparison.py
