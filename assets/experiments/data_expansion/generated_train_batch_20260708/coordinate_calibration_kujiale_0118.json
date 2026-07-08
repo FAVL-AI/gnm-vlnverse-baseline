@@ -1,0 +1,11 @@
+{
+  "scene": "kujiale_0118",
+  "transform": "col=(x_max-x)/scale, row=(y-y_min)/scale",
+  "scale": 0.05,
+  "x_max": 9.167340524007475,
+  "y_min": -6.547580267065616,
+  "n_episodes_projected": 63,
+  "n_points": 3839,
+  "free_fraction": 1.0,
+  "verdict": "PASS"
+}

@@ -1,0 +1,332 @@
+[
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_0700",
+    "seed": 7,
+    "n_frames": 26,
+    "path_length_m": 2.629898987322332,
+    "route_quality": {
+      "clearance_min_m": 0.4949747468305833,
+      "clearance_median_m": 0.662365262552306,
+      "goal_frame_std": 37.78168002461659,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_0701",
+    "seed": 7,
+    "n_frames": 61,
+    "path_length_m": 6.162741699796953,
+    "route_quality": {
+      "clearance_min_m": 0.5,
+      "clearance_median_m": 0.5830951894845301,
+      "goal_frame_std": 43.77927165910517,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_0702",
+    "seed": 7,
+    "n_frames": 28,
+    "path_length_m": 2.8349242404917483,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.4301162633521314,
+      "goal_frame_std": 43.733889304370756,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_0703",
+    "seed": 7,
+    "n_frames": 38,
+    "path_length_m": 3.8742640687119296,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.3856505695442641,
+      "goal_frame_std": 37.07081374450273,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_0704",
+    "seed": 7,
+    "n_frames": 49,
+    "path_length_m": 4.988477631085023,
+    "route_quality": {
+      "clearance_min_m": 0.4,
+      "clearance_median_m": 0.735555127546399,
+      "goal_frame_std": 37.050633893722626,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_0705",
+    "seed": 7,
+    "n_frames": 27,
+    "path_length_m": 2.753553390593274,
+    "route_quality": {
+      "clearance_min_m": 0.55,
+      "clearance_median_m": 0.55,
+      "goal_frame_std": 44.3539961831807,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_0706",
+    "seed": 7,
+    "n_frames": 35,
+    "path_length_m": 3.5727922061357864,
+    "route_quality": {
+      "clearance_min_m": 0.28284271247461906,
+      "clearance_median_m": 0.3535533905932738,
+      "goal_frame_std": 46.45208134025828,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_0707",
+    "seed": 7,
+    "n_frames": 25,
+    "path_length_m": 2.5535533905932732,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.55,
+      "goal_frame_std": 41.297281719923035,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_0708",
+    "seed": 7,
+    "n_frames": 59,
+    "path_length_m": 5.965685424949237,
+    "route_quality": {
+      "clearance_min_m": 0.25495097567963926,
+      "clearance_median_m": 0.45,
+      "goal_frame_std": 40.50663957627237,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_0709",
+    "seed": 7,
+    "n_frames": 32,
+    "path_length_m": 3.269238815542512,
+    "route_quality": {
+      "clearance_min_m": 0.30000000000000004,
+      "clearance_median_m": 0.5147815070493501,
+      "goal_frame_std": 37.15968325586899,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  }
+]

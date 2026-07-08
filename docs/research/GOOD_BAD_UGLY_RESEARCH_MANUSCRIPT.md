@@ -398,3 +398,46 @@ calibration for kujiale_0118/0203, then +50–100 seeded episodes —
 followed by Stage 4 retraining and the Stage 5 frozen-scene comparison.
 Evidence: `assets/experiments/data_expansion/generated_episode_smoke_20260708/`,
 `make validate-generated-episode-smoke`.
+
+## 22. Stage 3C: route-quality-controlled generated train batch
+**Hypothesis:** with per-scene calibration proofs and a verified camera
+model, a quality-scored pilot batch (10 episodes × 3 train scenes) can
+pass the unmodified loader and be fit for retraining.
+**Setup:** route policy (A* on 3-px-eroded free space, clearance ≥ 0.25 m
+at every point, 2–6 m length, ≤1.5× curvature, dedup, goal-frame content
+check), seeded generation, batch loader validation.
+**Result — validator PASS:** 30 episodes, 1,098 frames, 1,068 samples
+through the unmodified GNMDataset; calibration free-fraction 1.000 on
+all three train scenes; goal-content 26/30.
+**The Good:** the calibration proof transferred perfectly to
+kujiale_0118/0203 (1.000 each); generation is fast (~50 s/scene for 10
+episodes) so Stage 3D scaling is cheap.
+**The Bad:** 4/30 goal frames are featureless floor patches (recorded,
+flagged); small renderer/lighting differences vs originals remain.
+**The Ugly — the finding that changed everything:** rendering at the
+exact recorded poses of an original episode exposed that the ORIGINAL
+VLNTube frames are TOP-DOWN (bird's-eye), not first-person. The Stage 3B
+smoke episode used a first-person camera and was therefore
+out-of-distribution; it was superseded and regenerated. Grid tests
+pinned the original model: nadir, z = 2.4 m, focal 16 mm, image rotation
+rotateXYZ(0,0,deg(yaw)). This also reframes what the trained GNM
+actually does: it navigates from overhead floor appearance, not
+first-person views — a fact worth its own discussion in the paper.
+**Root Cause:** nothing in the dataset documents the camera model;
+only pose-exact re-rendering could reveal it.
+**Mitigation/Decision:** camera model locked and documented with
+comparison sheets; route policy adjusted honestly (first-person
+wall-facing checks are N/A for a top-down camera); pilot accepted.
+**Insight:** verify the camera model against the data before generating
+a single training frame — a plausible-looking generator can be silently
+out-of-distribution.
+**Limitation:** exact claim wording — this stage validates
+route-quality-controlled generation for train-side scenes. It does not
+yet claim improved model performance. The frozen scene-held-out baseline
+remains SR 32.0 / OSR 56.0 / NE 5.58 / SPL 0.315 until retraining and
+one-time evaluation are completed.
+**Next Evidence Gate (Stage 3D):** goal-pose resampling for weak goal
+frames, scale to +50–100 episodes, then Stage 4 retrain and the Stage 5
+one-time frozen-scene comparison. Evidence:
+`assets/experiments/data_expansion/generated_train_batch_20260708/`,
+`make validate-generated-train-batch`.

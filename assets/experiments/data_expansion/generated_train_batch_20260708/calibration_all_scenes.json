@@ -1,0 +1,35 @@
+{
+  "kujiale_0092": {
+    "scene": "kujiale_0092",
+    "transform": "col=(x_max-x)/scale, row=(y-y_min)/scale",
+    "scale": 0.05,
+    "x_max": 4.201611332969742,
+    "y_min": -8.625060198339636,
+    "n_episodes_projected": 68,
+    "n_points": 3376,
+    "free_fraction": 1.0,
+    "verdict": "PASS"
+  },
+  "kujiale_0118": {
+    "scene": "kujiale_0118",
+    "transform": "col=(x_max-x)/scale, row=(y-y_min)/scale",
+    "scale": 0.05,
+    "x_max": 9.167340524007475,
+    "y_min": -6.547580267065616,
+    "n_episodes_projected": 63,
+    "n_points": 3839,
+    "free_fraction": 1.0,
+    "verdict": "PASS"
+  },
+  "kujiale_0203": {
+    "scene": "kujiale_0203",
+    "transform": "col=(x_max-x)/scale, row=(y-y_min)/scale",
+    "scale": 0.05,
+    "x_max": 8.411930331569165,
+    "y_min": -8.615360456318442,
+    "n_episodes_projected": 72,
+    "n_points": 3764,
+    "free_fraction": 1.0,
+    "verdict": "PASS"
+  }
+}

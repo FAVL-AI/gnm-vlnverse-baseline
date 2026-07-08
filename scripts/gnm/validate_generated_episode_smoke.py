@@ -2,7 +2,7 @@
 import json, pickle, sys
 from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
-EP = REPO / "datasets/vlntube_generated/train/gen_kujiale_0092_0000"
+EP = sorted((REPO / "datasets/vlntube_generated/train").glob("gen_kujiale_0092_*"))[0]
 E = REPO / "assets/experiments/data_expansion/generated_episode_smoke_20260708"
 
 def fail(m): print(f"FAIL: {m}"); return False

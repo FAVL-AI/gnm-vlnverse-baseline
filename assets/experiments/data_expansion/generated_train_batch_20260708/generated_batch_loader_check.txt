@@ -1,0 +1,6 @@
+episodes on disk: 30 | dataset samples: 1068
+  first: obs (15, 96, 96) goal (3, 96, 96) action (2,) traj gen_kujiale_0092_0700
+  mid: obs (15, 96, 96) goal (3, 96, 96) action (2,) traj gen_kujiale_0118_0704
+  last: obs (15, 96, 96) goal (3, 96, 96) action (2,) traj gen_kujiale_0203_0709
+scenes: ['kujiale_0092', 'kujiale_0118', 'kujiale_0203']
+LOADER CHECK: PASS — all 30 generated episodes consumed by the existing GNMDataset with no special-case code

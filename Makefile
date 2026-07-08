@@ -1177,3 +1177,6 @@ validate-mlops-governance-cards:
 
 validate-generated-episode-smoke:
 	python3 scripts/gnm/validate_generated_episode_smoke.py
+
+validate-generated-train-batch:
+	python3 scripts/gnm/validate_generated_train_batch.py
