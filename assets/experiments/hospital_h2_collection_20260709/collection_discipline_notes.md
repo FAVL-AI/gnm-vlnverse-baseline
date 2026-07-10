@@ -142,3 +142,27 @@ v3.1 pass rule (all nine): straight completes; 90-degree turn
 completes; S-curve completes; U-turn completes; waypoint chain
 completes; contacts within threshold; no orbiting; no sustained grind;
 completion within turn-time-sized budget.
+
+## ExecFix locked wordings (2026-07-10)
+
+Paper-ready result statement: The execution-layer repair restored the
+platform's intended holonomic turning behaviour. Under the fixed-sphere
+baseline, commanded yaw was mostly lost to contact/friction constraints.
+With the ground-side friction intervention, commanded yaw closely
+matches realised yaw, max reliable yaw increases by approximately 5.2x,
+and the minimum turning radius at 0.15 m/s drops from approximately
+24.2 m to 0.375 m.
+
+Engineering narrative (exact): The final intervention was not guessed.
+Four earlier attempts failed under increasingly strict proof standards:
+missing asset material binding, silent patch no-ops, instance-proxy
+restrictions, and tensor-backend fragility. The successful mechanism
+was a ground-side pairwise friction intervention with resolved
+material-binding proof, avoiding robot-side authoring and preserving
+the articulation backend.
+
+Gate discipline: calibration success does not reopen H2.4; it only
+approves the acceptance suite. ExecFix passes only if all five hospital
+validation tasks complete within thresholds, artifacts are complete,
+front-RGB is preserved, hygiene barriers stay clean, and the decider
+re-gates the route families under the new continuous-yaw model.

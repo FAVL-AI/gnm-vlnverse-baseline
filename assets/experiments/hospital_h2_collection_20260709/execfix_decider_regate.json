@@ -1,0 +1,10 @@
+{
+  "val_straight": "PASS_DEMONSTRATION",
+  "val_90turn": "PASS_DEMONSTRATION",
+  "val_scurve": "PASS_DEMONSTRATION",
+  "val_uturn": "PASS_DEMONSTRATION",
+  "val_chain": "PASS_DEMONSTRATION",
+  "route_J_v2": "PASS_DEMONSTRATION",
+  "route_H_v3": "REJECT_MAP_DEFECT",
+  "route_I_v3": "PASS_DEMONSTRATION"
+}

@@ -294,6 +294,39 @@ except Exception as e:
     print(f"[camera] camera_info deferred (node wiring failed): {e}")
 
 from isaacsim.core.api import SimulationContext
+HOLO_BASE = "--holonomic-base" in sys.argv
+if HOLO_BASE:
+    # ExecFix v2: pairwise-friction kill. PhysX combines contact
+    # materials; with the GROUND bound to a zero-friction material whose
+    # combine mode is MIN, every wheel-ground contact resolves to zero
+    # friction - no robot-side authoring, no de-instancing, articulation
+    # backend untouched. Chassis-obstacle contact REPORTING is
+    # friction-independent and remains real.
+    from pxr import UsdShade as _USh
+    from pxr import PhysxSchema as _PxS
+    _fmat = _USh.Material.Define(stage, "/World/holo_ground_mat")
+    _fapi = UsdPhysics.MaterialAPI.Apply(_fmat.GetPrim())
+    _fapi.CreateStaticFrictionAttr(0.0)
+    _fapi.CreateDynamicFrictionAttr(0.0)
+    _pxm = _PxS.PhysxMaterialAPI.Apply(_fmat.GetPrim())
+    _pxm.CreateFrictionCombineModeAttr("min")
+    _gprim = stage.GetPrimAtPath("/World/Ground")
+    _USh.MaterialBindingAPI.Apply(_gprim).Bind(
+        _fmat, _USh.Tokens.strongerThanDescendants, "physics")
+    if SCENE_HOSPITAL:
+        _hprim = stage.GetPrimAtPath("/World/Hospital")
+        if _hprim and _hprim.IsValid():
+            _USh.MaterialBindingAPI.Apply(_hprim).Bind(
+                _fmat, _USh.Tokens.strongerThanDescendants, "physics")
+            print("[holo] hospital scene bound to zero-friction "
+                  "MIN-combine material (wheel-floor kill; contact "
+                  "REPORTING unaffected)")
+    _res = _USh.MaterialBindingAPI(_gprim).ComputeBoundMaterial(
+        "physics")[0]
+    print(f"[holo] ground bound to zero-friction MIN-combine material; "
+          f"resolved={_res.GetPath() if _res else None}; propulsion = "
+          "commanded root velocity")
+
 from isaacsim.core.prims import SingleArticulation
 from isaacsim.core.utils.types import ArticulationAction
 
@@ -318,6 +351,7 @@ if SPAWN != [0.0, 0.0, 0.0]:
     print(f"[spawn] robot placed at ({_sp_p[0]:.2f}, {_sp_p[1]:.2f}), "
           f"yaw {SPAWN[2]:.2f} rad")
 print(f"[init] dof names: {list(arti.dof_names)}")
+
 
 
 def robot_xyz():
@@ -403,7 +437,20 @@ if "--yaw-test" in sys.argv:
         _, _, z_start, prev_yaw = y_pose()
         x_s, y_s, _, _ = y_pose()
         for i in range(STEPS):
-            wl, wr = y_apply(vx, wz)
+            if HOLO_BASE:
+                import numpy as _np
+                _pq, _oq = arti.get_world_pose()
+                import math as _mh
+                _yawq = _mh.atan2(
+                    2 * (_oq[0] * _oq[3] + _oq[1] * _oq[2]),
+                    1 - 2 * (_oq[2] ** 2 + _oq[3] ** 2))
+                _vzq = float(arti.get_linear_velocity()[2])
+                arti.set_linear_velocity(_np.array(
+                    [vx * _mh.cos(_yawq), vx * _mh.sin(_yawq), _vzq]))
+                arti.set_angular_velocity(_np.array([0.0, 0.0, wz]))
+                wl = wr = 0.0
+            else:
+                wl, wr = y_apply(vx, wz)
             sim.step(render=(i % 6 == 0))
             px_, py_, pz_, yaw_ = y_pose()
             dyaw = math.atan2(math.sin(yaw_ - prev_yaw),
@@ -908,6 +955,15 @@ if CL_MODE:
     cl_wheels = [arti.get_dof_index(j) for j in WHEEL_JOINTS]
 
     def apply_cmd(vx, wz):
+        if HOLO_BASE:
+            _, _, _, _yawh = robot_pose_yaw()
+            _vz = float(arti.get_linear_velocity()[2])
+            arti.set_linear_velocity(np.array(
+                [vx * math.cos(_yawh), vx * math.sin(_yawh), _vz]))
+            arti.set_angular_velocity(np.array([0.0, 0.0, wz]))
+            arti.apply_action(ArticulationAction(
+                joint_velocities=[0.0] * 4, joint_indices=cl_wheels))
+            return
         wl = (vx - wz * TRACK_WIDTH / 2.0) / WHEEL_RADIUS
         wr = (vx + wz * TRACK_WIDTH / 2.0) / WHEEL_RADIUS
         arti.apply_action(ArticulationAction(

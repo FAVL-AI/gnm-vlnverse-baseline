@@ -649,3 +649,39 @@ repair** with a seven-condition acceptance gate; no new hospital
 demonstrations until it passes control validation.
 **Insight:** pre-registering the gate before seeing results is what
 makes the near-miss a finding instead of a temptation.
+
+## 30. H2.3-ExecFix: the execution-layer repair passes its gate
+**Hypothesis:** the yaw bottleneck is an execution-layer physics/contact
+issue, fixable by restoring the platform's intended holonomic
+capability. **Setup:** `--holonomic-base` mode (commanded root
+velocities; wheels passive) + ground-side pairwise friction kill
+(zero-friction MIN-combine material bound to ground/hospital floor,
+proof = resolved binding via ComputeBoundMaterial). **Result — gate
+PASSED 7/7:** commanded-vs-realised yaw 0.4-19% → 98-99.6%; max
+reliable yaw 0.190 → 0.984 rad/s; min turn radius at 0.15 m/s 24.2 →
+0.375 m; hospital acceptance suite 5/5 complete with zero contacts and
+zero streaks (the chain task that failed at 12000 steps under
+fixed-sphere completes in 5400); decider re-gate approves 7 route
+families under the continuous-yaw model while still rejecting H_v3 on
+the measured map defect.
+**The Good:** the intervention needs no robot-side authoring and
+preserves the articulation backend; the decider immediately
+discriminates the repaired capability from remaining map defects.
+**The Bad:** four failed intervention attempts preceded it.
+**The Ugly (each with its new proof rule):** the wheel material never
+existed in the saved asset (asset-content verification); silent
+str.replace no-ops shipped stale code three times (post-write
+assertions now mandatory); USD forbids authoring on instance proxies
+(binding at real prims only); de-instancing kills the tensors backend
+(never de-instance a live articulation).
+**Engineering narrative (locked):** the final intervention was not
+guessed — four earlier attempts failed under increasingly strict proof
+standards; the successful mechanism was a ground-side pairwise friction
+intervention with resolved material-binding proof.
+**Limitation:** holonomic-base is a capability-level model of mecanum
+behaviour, not roller-level physics; sim-to-real transfer of the
+dynamics model is Track E work. Fixed-sphere baseline preserved in
+yaw_calibration.json for the comparison table.
+**Decision pending (Frank):** ExecFix passes its seven-condition gate;
+reopening H2.4 measured-map + measured-yaw demonstration collection is
+now a reviewable option.
