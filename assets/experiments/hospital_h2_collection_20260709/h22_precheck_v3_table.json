@@ -1,0 +1,50 @@
+[
+  {
+    "route_id": "route_H_v3",
+    "path_length_m": 9.76,
+    "final_d2g_m": 6.539,
+    "total_contacts": 0,
+    "max_contact_streak": 0,
+    "first_contact_step": null,
+    "completion_status": "incomplete",
+    "failure_stage": "route_incomplete",
+    "precheck_verdict": "REJECT",
+    "redesign_required": true
+  },
+  {
+    "route_id": "route_I_v3",
+    "path_length_m": 6.5,
+    "final_d2g_m": 4.141,
+    "total_contacts": 0,
+    "max_contact_streak": 0,
+    "first_contact_step": null,
+    "completion_status": "incomplete",
+    "failure_stage": "route_incomplete",
+    "precheck_verdict": "REJECT",
+    "redesign_required": true
+  },
+  {
+    "route_id": "route_K_v3",
+    "path_length_m": 2.18,
+    "final_d2g_m": 4.134,
+    "total_contacts": 5335,
+    "max_contact_streak": 2788,
+    "first_contact_step": 932,
+    "completion_status": "incomplete",
+    "failure_stage": "sustained_contact",
+    "precheck_verdict": "REJECT",
+    "redesign_required": true
+  },
+  {
+    "route_id": "route_M_v3",
+    "path_length_m": 3.24,
+    "final_d2g_m": 3.504,
+    "total_contacts": 5662,
+    "max_contact_streak": 2951,
+    "first_contact_step": 1869,
+    "completion_status": "incomplete",
+    "failure_stage": "sustained_contact",
+    "precheck_verdict": "REJECT",
+    "redesign_required": true
+  }
+]

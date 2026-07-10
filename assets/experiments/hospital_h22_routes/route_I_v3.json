@@ -1,0 +1,28 @@
+{
+  "goal_id": "h2_corridor_I",
+  "spawn": [
+    3.0,
+    0.0,
+    3.1416
+  ],
+  "waypoints": [
+    [
+      1.8,
+      -0.5
+    ],
+    [
+      0.0,
+      -0.8
+    ],
+    [
+      -2.0,
+      -0.8
+    ],
+    [
+      -4.0,
+      -0.5
+    ]
+  ],
+  "design_note": "flattened bow; heading changes <=10 deg",
+  "route_id": "route_I_v3"
+}

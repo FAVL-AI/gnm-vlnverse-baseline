@@ -281,6 +281,29 @@ class Handler(BaseHTTPRequestHandler):
                     time.sleep(0.15)
             except (BrokenPipeError, ConnectionResetError):
                 return
+        elif path == "/api/reviews":
+            out = []
+            for d in sorted(REPO.glob(
+                    "assets/experiments/hospital_episode_review_*/*")):
+                mf = d / "review_manifest.json"
+                tf = d / "telemetry_summary.json"
+                cf = d / "contact_summary.json"
+                if not mf.exists():
+                    continue
+                man = json.loads(mf.read_text())
+                tel = json.loads(tf.read_text()) if tf.exists() else {}
+                con = json.loads(cf.read_text()) if cf.exists() else {}
+                out.append({"episode_id": man["episode_id"],
+                            "goal_id": man.get("goal_id"),
+                            "strip": str((d / "start_current_goal_strip.png")
+                                         .relative_to(REPO)),
+                            "final_d2g_m": tel.get(
+                                "final_distance_to_goal_m"),
+                            "path_length_m": tel.get("path_length_m"),
+                            "contacts": con.get("total_collision_count"),
+                            "stop_reason": tel.get("stop_reason"),
+                            "claim": man["claim_boundary"]})
+            self._send(200, "application/json", json.dumps(out).encode())
         elif path == "/api/goals":
             self._send(200, "application/json",
                        json.dumps(list_goals()).encode())

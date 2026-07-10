@@ -1195,3 +1195,18 @@ validate-hospital-dataset:
 
 validate-hospital-h1:
 	python3 scripts/gnm/validate_hospital_h1.py
+
+validate-hospital-navgen:
+	python3 scripts/gnm/validate_hospital_navgen.py
+
+validate-hospital-zone-map:
+	python3 scripts/gnm/validate_hospital_zone_map.py
+
+validate-hospital-language-instructions:
+	python3 scripts/gnm/validate_hospital_language_instructions.py
+
+validate-hospital-episode-review:
+	python3 scripts/gnm/validate_hospital_episode_review.py
+
+validate-hospital-h2-dataset:
+	python3 scripts/gnm/validate_hospital_h2_dataset.py

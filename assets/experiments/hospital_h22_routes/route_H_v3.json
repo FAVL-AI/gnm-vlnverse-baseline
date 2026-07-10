@@ -1,0 +1,32 @@
+{
+  "goal_id": "h2_long_turn_H",
+  "spawn": [
+    4.5,
+    -4.5,
+    3.1416
+  ],
+  "waypoints": [
+    [
+      3.0,
+      -4.7
+    ],
+    [
+      0.8,
+      -4.6
+    ],
+    [
+      -1.5,
+      -4.2
+    ],
+    [
+      -3.0,
+      -3.6
+    ],
+    [
+      -4.0,
+      -3.0
+    ]
+  ],
+  "design_note": "turn-radius-aware: heading changes <=12 deg per ~1.4 m segment (radius ~6 m) after v2 orbiting; failure label fixed: follower_turn_radius_exceeds_waypoint_curvature",
+  "route_id": "route_H_v3"
+}

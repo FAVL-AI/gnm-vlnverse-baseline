@@ -1,0 +1,28 @@
+{
+  "goal_id": "h2_near_desk_K",
+  "spawn": [
+    0.0,
+    -5.0,
+    1.5708
+  ],
+  "waypoints": [
+    [
+      0.2,
+      -3.8
+    ],
+    [
+      0.6,
+      -2.8
+    ],
+    [
+      1.1,
+      -2.0
+    ],
+    [
+      1.5,
+      -1.5
+    ]
+  ],
+  "design_note": "geometry re-placement: stays >=1.5 m south of the desk-front strip; gentle 15-20 deg segments",
+  "route_id": "route_K_v3"
+}

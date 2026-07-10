@@ -382,14 +382,18 @@ if "--yaw-test" in sys.argv:
         return float(pos[0]), float(pos[1]), float(pos[2]), yaw
 
     PHASES = [
-        ("pure_rot_left", 0.0, 0.4),
-        ("pure_rot_right", 0.0, -0.4),
-        ("arc_left", 0.15, 0.3),
-        ("arc_right", 0.15, -0.3),
-        ("pure_rot_left_fast", 0.0, 1.0),
+        ("cal_w_0.2", 0.0, 0.2),
+        ("cal_w_0.4", 0.0, 0.4),
+        ("cal_w_0.6", 0.0, 0.6),
+        ("cal_w_0.8", 0.0, 0.8),
+        ("cal_w_1.0", 0.0, 1.0),
+        ("cal_r_v0.05", 0.05, 0.4),
+        ("cal_r_v0.08", 0.08, 0.4),
+        ("cal_r_v0.10", 0.10, 0.4),
+        ("cal_r_v0.15", 0.15, 0.4),
         ("zero_hold", 0.0, 0.0),
     ]
-    STEPS = 240          # 4 s per phase
+    STEPS = 360          # 6 s per phase (steady-state calibration)
     SETTLE = 60          # steady-state window skips the first second
     DT = 1.0 / 60.0
     summary = []
@@ -666,8 +670,139 @@ if "--episode" in sys.argv or "--shadow-gnm" in sys.argv or "--gnm-control" in s
             (_gdir / "goal_metadata.json").read_text())["goal_pose"]
         print(f"[goal] scene-aligned goal selected: {GOAL_SEL} "
               f"pose={GOAL_POSE_SEL}")
+    class RouteFollower:
+        """Scripted reference-path executor (H2.2 demonstration collector).
+
+        Same interface as the GNM shadows; commands come from a
+        P-controller on pose-to-waypoint, NOT from a learned policy.
+        Policy rollouts are evaluation evidence, not expert
+        demonstration data.
+        """
+
+        def __init__(self, route_file):
+            import json as _j
+            cfg = _j.loads(Path(route_file).read_text())
+            self.waypoints = cfg["waypoints"]
+            self.route_id = cfg.get("route_id", Path(route_file).stem)
+            self.idx = 0
+            self.pose_fn = None
+            self.done = False
+            self.frames_received = 0
+            self.attempts = self.successes = 0
+            self.failures = 0
+            self.last_waypoints = None
+            self.model_path = Path(route_file)
+            self.latest = {"shadow_gnm_enabled": True,
+                           "shadow_gnm_status": "warmup",
+                           "shadow_gnm_model_path": f"route:{self.route_id}",
+                           "shadow_gnm_latency_ms": 0.0,
+                           "shadow_gnm_candidate_linear_velocity": 0.0,
+                           "shadow_gnm_candidate_angular_velocity": 0.0,
+                           "shadow_gnm_candidate_waypoint_x": None,
+                           "shadow_gnm_candidate_waypoint_y": None,
+                           "shadow_gnm_goal_distance": None,
+                           "shadow_gnm_confidence": None,
+                           "shadow_gnm_error": None}
+
+        def set_pose_fn(self, fn):
+            self.pose_fn = fn
+
+        def add_frame(self, rgb):
+            self.frames_received += 1
+
+        def infer(self):
+            if self.pose_fn is None:
+                return self.latest
+            self.attempts += 1
+            x, y, _, yaw = self.pose_fn()
+            wx, wy = self.waypoints[self.idx]
+            dist = math.hypot(wx - x, wy - y)
+            # v3: MEASURED-model executor (yaw_calibration.json).
+            # Turning while moving is infeasible (<=0.006 rad/s actual);
+            # commands <0.6 do not break static friction. Therefore:
+            # stop-and-point-turn at command 1.0 (~0.19 rad/s actual),
+            # drive straight at 0.15 only when aligned. Orbit/stuck
+            # detection aborts with an explicit infeasibility reason.
+            if dist < 0.30 and self.idx < len(self.waypoints) - 1:
+                self.idx += 1
+                self._progress_ref = None
+                wx, wy = self.waypoints[self.idx]
+                dist = math.hypot(wx - x, wy - y)
+            gx, gy = self.waypoints[-1]
+            gdist = math.hypot(gx - x, gy - y)
+            if self.idx == len(self.waypoints) - 1 and dist < 0.30:
+                self.done = True
+            if not hasattr(self, "_progress_ref"):
+                self._progress_ref = None
+            if not hasattr(self, "_stuck_count"):
+                self._stuck_count = 0
+                self.infeasible_reason = None
+            if self.done or self.infeasible_reason:
+                v = w = 0.0
+            else:
+                err = math.atan2(wy - y, wx - x) - yaw
+                err = math.atan2(math.sin(err), math.cos(err))
+                # v3.1: deadband-aware bang-bang steering. Measured:
+                # commands <0.6 do not break friction, so NEVER dribble.
+                if not hasattr(self, "_turning"):
+                    self._turning = False
+                if self._turning:
+                    if abs(err) < 0.06:
+                        self._turning = False
+                elif abs(err) > 0.12:
+                    self._turning = True
+                if self._turning:
+                    v = 0.0
+                    w = 1.0 if err > 0 else -1.0
+                else:
+                    v = 0.15
+                    w = 0.0
+                # stuck/orbit detection: waypoint distance must improve
+                if self._progress_ref is None or                         dist < self._progress_ref - 0.10:
+                    self._progress_ref = dist
+                    self._stuck_count = 0
+                else:
+                    self._stuck_count += 1
+                if self._stuck_count > 1500:      # 25 s without progress
+                    self.infeasible_reason = (
+                        "route_infeasible_no_waypoint_progress")
+                    v = w = 0.0
+            self.successes += 1
+            self.latest.update(shadow_gnm_status="ok",
+                               shadow_gnm_candidate_linear_velocity=round(v, 4),
+                               shadow_gnm_candidate_angular_velocity=round(w, 4),
+                               shadow_gnm_candidate_waypoint_x=round(wx, 3),
+                               shadow_gnm_candidate_waypoint_y=round(wy, 3),
+                               shadow_gnm_goal_distance=round(gdist, 4))
+            return self.latest
+
+        def raw_cmd(self):
+            if self.latest["shadow_gnm_status"] != "ok":
+                return None
+            return (self.latest["shadow_gnm_candidate_linear_velocity"],
+                    self.latest["shadow_gnm_candidate_angular_velocity"])
+
+        def summary(self):
+            return {"collector": "scripted_reference_path",
+                    "route_id": self.route_id,
+                    "waypoints": self.waypoints,
+                    "route_completed": self.done,
+                    "route_infeasible_reason": getattr(
+                        self, "infeasible_reason", None),
+                    "final_waypoint_index": self.idx,
+                    "shadow_gnm_frames_received": self.frames_received,
+                    "shadow_gnm_inference_attempts": self.attempts,
+                    "shadow_gnm_inference_successes": self.successes,
+                    "shadow_gnm_inference_failures": 0,
+                    "shadow_gnm_scope_note":
+                        "scripted waypoint executor v2 (arc-following) - expert reference "
+                        "demonstration, no learned policy in the loop"}
+
+    _route = _argval("--route-follow")
     _pck = _argval("--policy-ckpt")
-    if _pck:
+    if _route:
+        shadow = RouteFollower(_route)
+    elif _pck:
         from ablation_policy import AblationPolicyShadow
         shadow = AblationPolicyShadow(_pck, _goal_img, device="cuda")
     else:
@@ -884,6 +1019,8 @@ if CL_MODE:
                     _gd = shadow.latest.get("shadow_gnm_goal_distance")
                     stop_shadow.update(i, sim.current_time, _gd, _wp, _d2g2)
 
+        if hasattr(shadow, "set_pose_fn") and shadow.pose_fn is None:
+            shadow.set_pose_fn(robot_pose_yaw)
         raw = shadow.raw_cmd()
         px_, py_, pz_, _ = robot_pose_yaw()
         if abs(px_) > CL_BOUND_XY or abs(py_) > CL_BOUND_XY:

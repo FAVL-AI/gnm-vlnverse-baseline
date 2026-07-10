@@ -1,0 +1,72 @@
+[
+  {
+    "route_id": "route_H_v2",
+    "path_length_m": 6.34,
+    "completion_status": "incomplete",
+    "total_contacts": 0,
+    "max_contact_streak": 0,
+    "contact_density_per_m": 0.0,
+    "first_contact_step": null,
+    "failure_stage": "follower_yaw_limited_budget_insufficient",
+    "route_design_integrity": "not_approved_yet",
+    "precheck_verdict": "REJECT",
+    "redesign_required": true,
+    "redesign_target": "follower_controller_not_route_geometry"
+  },
+  {
+    "route_id": "route_I_v2",
+    "path_length_m": 1.24,
+    "completion_status": "incomplete",
+    "total_contacts": 0,
+    "max_contact_streak": 0,
+    "contact_density_per_m": 0.0,
+    "first_contact_step": null,
+    "failure_stage": "follower_yaw_limited_budget_insufficient",
+    "route_design_integrity": "not_approved_yet",
+    "precheck_verdict": "REJECT",
+    "redesign_required": true,
+    "redesign_target": "follower_controller_not_route_geometry"
+  },
+  {
+    "route_id": "route_J_v2",
+    "path_length_m": 3.19,
+    "completion_status": "incomplete",
+    "total_contacts": 0,
+    "max_contact_streak": 0,
+    "contact_density_per_m": 0.0,
+    "first_contact_step": null,
+    "failure_stage": "follower_yaw_limited_budget_insufficient",
+    "route_design_integrity": "not_approved_yet",
+    "precheck_verdict": "REJECT",
+    "redesign_required": true,
+    "redesign_target": "follower_controller_not_route_geometry"
+  },
+  {
+    "route_id": "route_K_v2",
+    "path_length_m": 2.09,
+    "completion_status": "incomplete",
+    "total_contacts": 0,
+    "max_contact_streak": 0,
+    "contact_density_per_m": 0.0,
+    "first_contact_step": null,
+    "failure_stage": "follower_yaw_limited_budget_insufficient",
+    "route_design_integrity": "not_approved_yet",
+    "precheck_verdict": "REJECT",
+    "redesign_required": true,
+    "redesign_target": "follower_controller_not_route_geometry"
+  },
+  {
+    "route_id": "route_M_v2",
+    "path_length_m": 2.36,
+    "completion_status": "incomplete",
+    "total_contacts": 0,
+    "max_contact_streak": 0,
+    "contact_density_per_m": 0.0,
+    "first_contact_step": null,
+    "failure_stage": "follower_yaw_limited_budget_insufficient",
+    "route_design_integrity": "not_approved_yet",
+    "precheck_verdict": "REJECT",
+    "redesign_required": true,
+    "redesign_target": "follower_controller_not_route_geometry"
+  }
+]

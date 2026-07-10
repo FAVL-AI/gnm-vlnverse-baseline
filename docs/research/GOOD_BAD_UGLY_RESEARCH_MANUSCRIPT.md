@@ -616,3 +616,36 @@ training data matches the deployment camera.
 held-out goals → Track B language. Evidence:
 `assets/experiments/hospital_h1_front_rgb_finetune_20260708/`,
 `make validate-hospital-h1`.
+
+## 29. H2 collection arc and the H2.3 execution-feasibility campaign
+**Hypothesis chain:** H2 (harder front-camera corpus) → H2.1
+(spawn-repair) → H2.2 (scripted demonstrations) → H2.3 (measured
+execution repair). **Result:** each stage's failure was diagnosed,
+measured, and converted into method: telemetry-derived quality labels
+and the two-condition cleanliness rule (rc0 is not usable-ness); the
+hygiene-barrier rule after orphaned bag recorders wedged all
+post-suspend episodes; full-route prechecks after endpoint probes
+missed mid-route geometry; the collector-validity rule (policy rollouts
+are evaluation evidence, not demonstrations); the yaw calibration curve
+(max reliable 0.190 rad/s at command 1.0; ~1% realised yaw while
+moving; commands <0.6 never break static friction → stop-and-turn-only
+platform); the measured occupancy map (7.1% workspace occupancy; the
+K/M grind zone at 15%; two further unmapped obstacles found during task
+design); and the Execution Feasibility Decider (five checks, seven
+verdicts, replay-tested at 10/13 with every gate individually verified
+— validation still withheld per the six-requirement rule).
+**The Good:** controller validation rose 1/5 → 2/5 → 4/5 across
+measured repairs; the decider blocked two bad executions at design
+time; J-route scripted demonstrations recorded cleanly.
+**The Bad:** the pre-registered H2.3 gate required 5/5; the chain task
+stopped one waypoint short (0 contacts).
+**The Ugly:** a stall-guard self-match killed the recording chain; the
+platform cannot turn while moving at all (8-24 m radii); the
+hand-authored map was wrong in at least three regions.
+**Decision (strict, pre-registration honored):** Outcome B accepted
+without reviewer discretion — H2.3 not passed, H2.4 closed, H3-clean
+denied, iterations stopped. **Next: H2.3-ExecFix — measured mecanum/yaw
+repair** with a seven-condition acceptance gate; no new hospital
+demonstrations until it passes control validation.
+**Insight:** pre-registering the gate before seeing results is what
+makes the near-miss a finding instead of a temptation.

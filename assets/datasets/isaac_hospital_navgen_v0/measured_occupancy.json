@@ -1,0 +1,18 @@
+{
+  "resolution_m": 0.05,
+  "origin_xy": [
+    -5.5,
+    -5.5
+  ],
+  "size": [
+    220,
+    220
+  ],
+  "z_band_m": [
+    0.06,
+    0.4
+  ],
+  "method": "PhysX overlap_box per cell on the composed hospital stage (measured collision geometry)",
+  "occupied_fraction": 0.0711,
+  "convention": "row = (y - YMIN)/RES, col = (x - XMIN)/RES; white=free in PNG"
+}

@@ -1,0 +1,29 @@
+{
+  "source": "assets/experiments/trajectories/yaw_test_20260710_063415",
+  "mode": "stop_and_turn_only",
+  "pure_rotation_cmd_vs_actual": {
+    "0.2": 0.0008,
+    "0.4": 0.0144,
+    "0.6": 0.0937,
+    "0.8": 0.1413,
+    "1.0": 0.1902
+  },
+  "while_moving_cmd0.4": {
+    "v0.05": 0.0062,
+    "v0.08": 0.0036,
+    "v0.10": 0.0033,
+    "v0.15": 0.0035
+  },
+  "max_reliable_yaw_rate_rad_s": 0.19,
+  "max_reliable_yaw_command": 1.0,
+  "min_command_for_any_rotation": 0.6,
+  "yaw_rate_while_moving_rad_s": 0.0062,
+  "turn_radius_while_moving_m": {
+    "v0.05": 8.1,
+    "v0.08": 12.9,
+    "v0.10": 16.1,
+    "v0.15": 24.2
+  },
+  "ninety_deg_turn_s": 8.3,
+  "conclusion": "turning while moving is infeasible (actual <=0.006 rad/s at any forward speed; radii 8-50 m); commands below 0.6 do not break static friction at all; all turns must be stop-and-point-turns at command 1.0 (~0.19 rad/s actual, ~8.3 s per 90 deg); route feasibility = drive time (length/0.15) + turn time (total heading change/0.19) within budget"
+}

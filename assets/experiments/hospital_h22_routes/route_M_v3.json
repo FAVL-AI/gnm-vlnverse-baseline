@@ -1,0 +1,28 @@
+{
+  "goal_id": "h2_test_occluded_M",
+  "spawn": [
+    4.5,
+    -1.5,
+    3.4
+  ],
+  "waypoints": [
+    [
+      3.2,
+      -2.2
+    ],
+    [
+      1.5,
+      -2.9
+    ],
+    [
+      -0.3,
+      -3.4
+    ],
+    [
+      -2.0,
+      -3.8
+    ]
+  ],
+  "design_note": "southern sweep shifted 0.3-0.5 m further south of the v2 grind zone",
+  "route_id": "route_M_v3"
+}

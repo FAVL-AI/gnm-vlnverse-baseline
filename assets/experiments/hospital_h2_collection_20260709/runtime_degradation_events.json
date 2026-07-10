@@ -1,0 +1,64 @@
+[
+  {
+    "runtime_degradation_event": {
+      "type": "recording_stall_after_suspend_resume",
+      "affected_episode": "h2_td_H",
+      "detected": "log silent 65 min at control-authority grant, GPU 1%",
+      "action_taken": "process_killed_and_chain_resumed",
+      "guard_added": "stall-guard kills any episode with log silence > 10 min (logs/h2_stallguard.log)",
+      "dataset_policy": "excluded_or_rerecorded_before_use",
+      "training_eligibility": false,
+      "note": "will be re-recorded after the chain completes; if the re-record is clean it enters the table as rerecorded_clean, otherwise excluded_partial_recording stands"
+    }
+  },
+  {
+    "runtime_degradation_event": {
+      "type": "stall_guard_self_match_defect",
+      "detected": "guard log glob h2_*.log matched its own logfile and pgrep|head -1 matched the chain wrapper; after one legitimate kill (h2_td_I, log silent 809 s) the guard killed the recording chain itself at 17:09/17:24/17:39",
+      "affected_episodes": [
+        "h2_td_I (partial, excluded)",
+        "chain halt after 9/16 entries"
+      ],
+      "action_taken": "guard killed; chain relaunched for the remaining 8 episodes (td_H and td_I as clean re-records) with per-episode `timeout -k 30 1500` instead of any process matching",
+      "dataset_policy": "h2_td_H and h2_td_I enter the table as excluded_partial_recording unless their re-records (h2_td_H_r / h2_td_I_r) verify clean",
+      "training_eligibility": false,
+      "lesson": "process-pattern kills are banned in this project's automation; bounded `timeout` wrappers only"
+    }
+  },
+  {
+    "runtime_degradation_event": {
+      "type": "stale_ros2_daemon_after_suspend_resume",
+      "detected": "every post-resume episode wedged at control-loop start (main thread futex_wait, GPU 0%); minimal render smoke PASSED, isolating the fault to the ROS2/DDS layer",
+      "affected_episodes": [
+        "h2_td_H_r_rc124",
+        "h2_td_I_r_rc124",
+        "h2_td_J_rc124",
+        "h2_td_K_rc124",
+        "h2_ft_L_rc124",
+        "h2_ft_M partial"
+      ],
+      "action_taken": "ros2 daemon stop/start; verification episode h2_td_J_r2 completed cleanly (rc0, 2100 steps, 6.98 m); remaining 7 episodes relaunched",
+      "dataset_policy": "all rc124 episodes excluded_partial_recording; clean *_r2 re-records supersede them",
+      "training_eligibility": false,
+      "lesson": "after any suspend/resume, restart the ros2 daemon BEFORE recording; the stale daemon can wedge the control loop, not just hide topics"
+    }
+  },
+  {
+    "runtime_degradation_event": {
+      "type": "orphaned_bag_recorder_dds_pollution",
+      "detected": "6+ orphaned `ros2 bag record` processes (children of killed/timed-out episodes, reparented to init) plus 52 stale FastDDS /dev/shm segments; every episode started after ~21:36 wedged at control-loop start (rc124)",
+      "root_cause_chain": "timeout/kill of a bringup episode leaves its bag-recorder child alive -> each orphan is a live DDS participant holding shared memory -> accumulation wedges every new participant; the earlier daemon restart treated a symptom",
+      "affected_episodes": [
+        "h2_td_I_r2",
+        "h2_td_K_r2",
+        "h2_ft_L_r2",
+        "h2_ft_M_r2",
+        "duplicate td_L/td_M attempts"
+      ],
+      "action_taken": "all orphan recorders killed (SIGTERM then SIGKILL by exact pid), /dev/shm fastrtps segments purged to zero, daemon stopped; solo re-records launched with clean_dds() orphan+segment hygiene BETWEEN every episode and per-episode timeout wrappers",
+      "dataset_policy": "all rc124 attempts retained in ledger as excluded_partial_recording",
+      "training_eligibility": false,
+      "lesson": "bounded timeouts must clean up CHILD processes too; episode hygiene = kill orphan recorders + purge DDS shm between every automated recording run"
+    }
+  }
+]

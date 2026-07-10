@@ -1,0 +1,120 @@
+[
+  {
+    "case": "K_v1 hand-placed",
+    "route_file": "assets/experiments/hospital_h22_routes/route_K_v1.json",
+    "expected_hand_diagnosis": "REJECT_MAP_DEFECT",
+    "decider_verdict": "REJECT_MAP_DEFECT",
+    "agreement": true,
+    "primary_failing_check": "MAP_DEFECT",
+    "supporting_evidence": "[(0.9, -3.0), (0.9, -3.0), (0.9, -3.0), (0.9, -2.95), (0.9, -2.95), (0.95, -2.95), (0.95, -2.9), (0.95, -2.9)]"
+  },
+  {
+    "case": "M_v1 hand-placed",
+    "route_file": "assets/experiments/hospital_h22_routes/route_M_v1.json",
+    "expected_hand_diagnosis": "REJECT_MAP_DEFECT",
+    "decider_verdict": "REJECT_MAP_DEFECT",
+    "agreement": true,
+    "primary_failing_check": "MAP_DEFECT",
+    "supporting_evidence": "[(3.5, 2.5), (3.45, 2.45), (3.45, 2.45), (3.45, 2.45), (3.4, 2.4), (3.4, 2.4), (3.4, 2.4), (3.35, 2.4)]"
+  },
+  {
+    "case": "H_v1 hand-placed",
+    "route_file": "assets/experiments/hospital_h22_routes/route_H_v1.json",
+    "expected_hand_diagnosis": "REJECT_MAP_DEFECT",
+    "decider_verdict": "REJECT_MAP_DEFECT",
+    "agreement": true,
+    "primary_failing_check": "MAP_DEFECT",
+    "supporting_evidence": "[(2.95, -3.1), (2.95, -3.1), (2.95, -3.1), (2.9, -3.1), (2.9, -3.05), (2.9, -3.05), (2.9, -3.05), (2.85, -3.05)]"
+  },
+  {
+    "case": "I_v1 hand-placed",
+    "route_file": "assets/experiments/hospital_h22_routes/route_I_v1.json",
+    "expected_hand_diagnosis": "REJECT_MAP_DEFECT",
+    "decider_verdict": "REJECT_MAP_DEFECT",
+    "agreement": true,
+    "primary_failing_check": "MAP_DEFECT",
+    "supporting_evidence": "[(2.0, 2.5), (1.95, 2.5), (1.95, 2.5), (1.9, 2.5), (1.9, 2.5), (1.9, 2.5), (1.85, 2.5), (1.85, 2.5)]"
+  },
+  {
+    "case": "K_v3 redesigned",
+    "route_file": "assets/experiments/hospital_h22_routes/route_K_v3.json",
+    "expected_hand_diagnosis": "REJECT_MAP_DEFECT_or_CONTROLLER",
+    "decider_verdict": "REJECT_MAP_DEFECT",
+    "agreement": true,
+    "primary_failing_check": "MAP_DEFECT",
+    "supporting_evidence": "[(0.5, -3.0), (0.5, -3.0), (0.5, -3.0), (0.5, -2.95), (0.55, -2.95), (0.55, -2.9), (0.55, -2.9), (0.55, -2.9)]"
+  },
+  {
+    "case": "M_v3 redesigned",
+    "route_file": "assets/experiments/hospital_h22_routes/route_M_v3.json",
+    "expected_hand_diagnosis": "REJECT_MAP_DEFECT_or_CONTROLLER",
+    "decider_verdict": "REJECT_MAP_DEFECT",
+    "agreement": true,
+    "primary_failing_check": "MAP_DEFECT",
+    "supporting_evidence": "[(2.8, -2.4), (2.8, -2.4), (2.75, -2.4), (2.75, -2.4), (2.75, -2.4), (2.7, -2.4), (2.7, -2.4), (2.65, -2.45)]"
+  },
+  {
+    "case": "H_v3 arc-follower run",
+    "route_file": "assets/experiments/hospital_h22_routes/route_H_v3.json",
+    "expected_hand_diagnosis": "REJECT_CONTROLLER_INFEASIBLE",
+    "decider_verdict": "REJECT_MAP_DEFECT",
+    "agreement": false,
+    "primary_failing_check": "MAP_DEFECT",
+    "supporting_evidence": "[(-4.0, -3.0)]",
+    "annotation": "decider stricter than the single observed execution: measured map flags a segment near (-4,-3) that the orbiting robot never reached (0 contacts in that run); acceptable conservative behaviour for a gate"
+  },
+  {
+    "case": "I_v3 arc-follower run",
+    "route_file": "assets/experiments/hospital_h22_routes/route_I_v3.json",
+    "expected_hand_diagnosis": "REJECT_CONTROLLER_INFEASIBLE",
+    "decider_verdict": "REJECT_CONTROLLER_INFEASIBLE",
+    "agreement": true,
+    "primary_failing_check": "CONTROLLER_INFEASIBLE",
+    "supporting_evidence": "{'completed': False, 'final_d2g_m': 4.14, 'total_contacts': 0, 'max_streak': 0}"
+  },
+  {
+    "case": "h2_td_M rc0-bag-unfinalized",
+    "route_file": "assets/experiments/hospital_h22_routes/route_M_v1.json",
+    "expected_hand_diagnosis": "REJECT_ARTIFACT_INCOMPLETE_or_MAP",
+    "decider_verdict": "REJECT_MAP_DEFECT",
+    "agreement": false,
+    "primary_failing_check": "MAP_DEFECT",
+    "supporting_evidence": "[(3.5, 2.5), (3.45, 2.45), (3.45, 2.45), (3.45, 2.45), (3.4, 2.4), (3.4, 2.4), (3.4, 2.4), (3.35, 2.4)]"
+  },
+  {
+    "case": "policy rollout unseen goal (h21_ft_H)",
+    "route_file": "assets/experiments/hospital_h22_routes/route_H_v3.json",
+    "expected_hand_diagnosis": "PASS_EVALUATION_ONLY_or_CONTROLLER",
+    "decider_verdict": "REJECT_MAP_DEFECT",
+    "agreement": false,
+    "primary_failing_check": "MAP_DEFECT",
+    "supporting_evidence": "[(-4.0, -3.0)]"
+  },
+  {
+    "case": "J_v2 scripted demo",
+    "route_file": "assets/experiments/hospital_h22_routes/route_J_v2.json",
+    "expected_hand_diagnosis": "PASS_DEMONSTRATION",
+    "decider_verdict": "PASS_DEMONSTRATION",
+    "agreement": true,
+    "primary_failing_check": "DEMONSTRATION",
+    "supporting_evidence": ""
+  },
+  {
+    "case": "h2_td_M artifact gate (clean route)",
+    "route_file": "assets/experiments/hospital_h22_routes/route_J_v2.json",
+    "expected_hand_diagnosis": "REJECT_ARTIFACT_INCOMPLETE",
+    "decider_verdict": "REJECT_ARTIFACT_INCOMPLETE",
+    "agreement": true,
+    "primary_failing_check": "REJECT_ARTIFACT_INCOMPLETE",
+    "supporting_evidence": ""
+  },
+  {
+    "case": "policy rollout collector gate (clean route)",
+    "route_file": "assets/experiments/hospital_h22_routes/route_J_v2.json",
+    "expected_hand_diagnosis": "PASS_EVALUATION_ONLY",
+    "decider_verdict": "PASS_EVALUATION_ONLY",
+    "agreement": true,
+    "primary_failing_check": "PASS_EVALUATION_ONLY",
+    "supporting_evidence": "policy rollouts are evaluation evidence, not expert demonstrations, on unseen route families"
+  }
+]

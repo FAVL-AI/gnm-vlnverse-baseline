@@ -1,0 +1,42 @@
+{
+  "val_straight": {
+    "path": 6.7178,
+    "completed": true,
+    "final_wp_idx": 2,
+    "contacts": 0,
+    "streak": 0,
+    "infeasible": null
+  },
+  "val_90turn": {
+    "path": 4.6121,
+    "completed": false,
+    "final_wp_idx": 2,
+    "contacts": 0,
+    "streak": 0,
+    "infeasible": null
+  },
+  "val_scurve": {
+    "path": 4.239,
+    "completed": false,
+    "final_wp_idx": 2,
+    "contacts": 0,
+    "streak": 0,
+    "infeasible": null
+  },
+  "val_uturn": {
+    "path": 5.4681,
+    "completed": false,
+    "final_wp_idx": 3,
+    "contacts": 0,
+    "streak": 0,
+    "infeasible": null
+  },
+  "val_chain": {
+    "path": 4.7273,
+    "completed": false,
+    "final_wp_idx": 3,
+    "contacts": 0,
+    "streak": 0,
+    "infeasible": null
+  }
+}
