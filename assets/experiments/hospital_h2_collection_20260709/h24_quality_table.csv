@@ -1,0 +1,15 @@
+episode_id,route_family,split,collector_type,demonstration_source,base_mode,return_code,route_completed,path_length_m,final_wp_index,total_contacts,max_contact_streak,artifact_integrity,front_rgb_verified,trajectory_quality,imitation_eligible,evaluation_eligible,decider_verdict
+h24_straight_a,straight,train,scripted_reference_path,expert_scripted_executor,holonomic,0,True,6.71,2,0,0,complete,True,expert_demo_clean,True,False,PASS_DEMONSTRATION
+h24_straight_b,straight,train,scripted_reference_path,expert_scripted_executor,holonomic,0,True,6.73,2,0,0,complete,True,expert_demo_clean,True,False,PASS_DEMONSTRATION
+h24_90turn_a,90turn,train,scripted_reference_path,expert_scripted_executor,holonomic,0,True,5.15,2,0,0,complete,True,expert_demo_clean,True,False,PASS_DEMONSTRATION
+h24_90turn_b,90turn,train,scripted_reference_path,expert_scripted_executor,holonomic,0,True,5.21,2,0,0,complete,True,expert_demo_clean,True,False,PASS_DEMONSTRATION
+h24_scurve_a,scurve,train,scripted_reference_path,expert_scripted_executor,holonomic,0,True,7.21,4,0,0,complete,True,expert_demo_clean,True,False,PASS_DEMONSTRATION
+h24_scurve_b,scurve,train,scripted_reference_path,expert_scripted_executor,holonomic,0,True,7.38,4,0,0,complete,True,expert_demo_clean,True,False,PASS_DEMONSTRATION
+h24_J_a,weave_J,train,scripted_reference_path,expert_scripted_executor,holonomic,0,True,6.8,4,0,0,complete,True,expert_demo_clean,True,False,PASS_DEMONSTRATION
+h24_J_b,weave_J,train,scripted_reference_path,expert_scripted_executor,holonomic,0,True,6.98,4,0,0,complete,True,expert_demo_clean,True,False,PASS_DEMONSTRATION
+h24_I_a,corridor_I,train,scripted_reference_path,expert_scripted_executor,holonomic,0,True,6.86,3,0,0,complete,True,expert_demo_clean,True,False,PASS_DEMONSTRATION
+h24_I_b,corridor_I,train,scripted_reference_path,expert_scripted_executor,holonomic,0,True,6.98,3,0,0,complete,True,expert_demo_clean,True,False,PASS_DEMONSTRATION
+h24_test_uturn_a,uturn,test,scripted_reference_path,expert_scripted_executor,holonomic,0,True,8.84,4,0,0,complete,True,expert_demo_clean,False,True,PASS_DEMONSTRATION
+h24_test_uturn_b,uturn,test,scripted_reference_path,expert_scripted_executor,holonomic,0,True,8.9,4,0,0,complete,True,expert_demo_clean,False,True,PASS_DEMONSTRATION
+h24_test_chain_a,chain,test,scripted_reference_path,expert_scripted_executor,holonomic,0,True,8.08,5,0,0,complete,True,expert_demo_clean,False,True,PASS_DEMONSTRATION
+h24_test_chain_b,chain,test,scripted_reference_path,expert_scripted_executor,holonomic,0,True,7.89,5,0,0,complete,True,expert_demo_clean,False,True,PASS_DEMONSTRATION
