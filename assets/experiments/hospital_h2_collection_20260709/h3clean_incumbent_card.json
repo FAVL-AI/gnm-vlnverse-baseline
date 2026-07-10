@@ -1,0 +1,52 @@
+{
+  "project": "gnm-vlnverse-baseline",
+  "case_study": "h3clean_scripted_expert",
+  "run_name": "h1_hospital_front_rgb_finetune_on_h24_test",
+  "commit": "3621989",
+  "seed": 42,
+  "model": {
+    "name": "MobileNetV2-GNM",
+    "condition": "incumbent",
+    "checkpoint_path": "checkpoints/hospital_front_rgb_finetune/best.pt",
+    "checkpoint_sha256": "d269a0fb0c6d8bd74c31f764574def223984f21f17b5ad275707139fcdc35c23",
+    "selected_by": "validation goals only"
+  },
+  "dataset": {
+    "name": "Isaac-Hospital-ImageNav-v0 / H2.4 corpus",
+    "camera": "Yahboom front-facing RGB (Isaac Sim)",
+    "train_episodes": 10,
+    "val_episodes": 4,
+    "test_episodes": 6,
+    "heldout_scene": "families_uturn_chain_L",
+    "holdout_type": "route-family-level",
+    "leakage_check": "PASS"
+  },
+  "metrics": {
+    "sr": 0.167,
+    "osr": 0.667,
+    "ne_m": 12.76,
+    "spl": 0.167,
+    "ndtw": 0.276,
+    "tl_m": 13.45,
+    "n_test_episodes": 6,
+    "collision_rate": "N/A offline"
+  },
+  "gates": {
+    "cuda_verified": true,
+    "wandb_logged": true,
+    "dataset_manifest_exists": true,
+    "scene_holdout_leakage_check": "PASS",
+    "checkpoint_hashed": true,
+    "offline_cr_not_reported_numeric": true,
+    "artifact_hygiene_clean": true,
+    "no_full_benchmark_claim": true,
+    "no_robust_navigation_claim": true,
+    "no_language_instruction_claim": true
+  },
+  "driftguard": {
+    "promotion_candidate": false,
+    "incumbent": null,
+    "decision": "incumbent_reference"
+  },
+  "claim_boundary": "Internal Isaac-Hospital-ImageNav-v0 simulation evidence; not real-robot evidence; not a public benchmark claim; not a general hospital-navigation solution."
+}

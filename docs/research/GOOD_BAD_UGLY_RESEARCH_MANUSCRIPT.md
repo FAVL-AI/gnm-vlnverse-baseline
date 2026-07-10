@@ -685,3 +685,30 @@ yaw_calibration.json for the comparison table.
 **Decision pending (Frank):** ExecFix passes its seven-condition gate;
 reopening H2.4 measured-map + measured-yaw demonstration collection is
 now a reviewable option.
+
+## 31. H3-clean: scripted expert fine-tune after execution-layer repair — HOLD_AS_TIE
+**Hypothesis:** decider-gated scripted expert demonstrations (H2.4)
+justify one H3-clean fine-tune. **Setup:** training.init_ckpt from the
+H1 incumbent; train ONLY the 10 imitation-eligible H2.4 demos (5
+families); selection on val goals; ONE evaluation on held-out families
+(uturn/chain/L, n=6); leakage-asserted split.
+**Result:** candidate ties the incumbent — SR/OSR/SPL identical
+(16.7/66.7/0.167), NE 12.45 vs 12.76, nDTW 0.287 vs 0.276. DriftGuard
+mechanically passed (non-regression); VerdictPlane allowed;
+**scientific adjudication: HOLD_AS_TIE — not promoted, incumbent
+retained, candidate kept as non-promoted evidence.**
+**Paper conclusion (locked):** After execution-layer repair and
+decider-gated collection, H3-clean fine-tuning was scientifically
+justified and run once. The candidate matched the incumbent on held-out
+success metrics but did not meaningfully improve generalisation to
+unseen hard route families. Therefore, the model is not promoted. The
+main contribution remains the measured execution-feasibility decider
+and the clean H2.4 data-generation pipeline; the H3 result shows that
+route-family diversity, not simply cleaner per-family demonstrations,
+is the next bottleneck.
+**Governance refinement (implemented in DriftGuard, commit c4bc116):**
+a mechanical non-regression pass is insufficient at small n; ties route
+to human review with the incumbent retained by default.
+**Next Evidence Gate — H4:** route-family diversity via NavGen-style
+generation under the measured map, ExecFix holonomic execution, decider
+gating, scripted experts only, held-out families preserved.

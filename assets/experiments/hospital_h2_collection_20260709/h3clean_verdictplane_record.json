@@ -1,0 +1,13 @@
+{
+  "action": "promote_model",
+  "candidate": "h3clean_scripted_expert",
+  "scope": "internal Isaac-Hospital-ImageNav-v0 line only",
+  "verdict": "allow",
+  "matched_rule": {
+    "match": {
+      "tool": "model.promote",
+      "args.driftguard_decision": "promote"
+    },
+    "decision": "allow"
+  }
+}

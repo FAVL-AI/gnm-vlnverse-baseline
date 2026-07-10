@@ -1,0 +1,12 @@
+{
+  "h3clean_final_adjudication": "HOLD_AS_TIE",
+  "driftguard_mechanical_result": "promote (non-regression pass)",
+  "scientific_adjudication": "hold as tie",
+  "final_promotion_decision": "not promoted",
+  "incumbent": "h1_hospital_front_rgb_finetune RETAINED",
+  "candidate": "h3clean_scripted_expert retained as non-promoted evidence",
+  "reason": "The candidate matched SR/OSR/SPL and produced only tiny NE/nDTW changes on n=6 held-out episodes. This is insufficient evidence for promotion.",
+  "claim": "H3-clean shows that decider-gated scripted expert demonstrations produce a clean training corpus, but 10 demonstrations across the current route families do not yield measurable held-out transfer to harder unseen families.",
+  "policy_refinement": "A mechanical non-regression pass is not enough for promotion when n is small. Promotion requires either meaningful metric improvement on held-out routes, or statistically/operationally justified non-inferiority with a stated reason to replace the incumbent. H3-clean provides neither.",
+  "next_direction": "H4: route-family diversity via NavGen-style generation under measured map + ExecFix + decider + scripted experts, held-out families preserved"
+}

@@ -1,0 +1,26 @@
+{
+  "decision": "promote",
+  "checks": {
+    "sr": {
+      "incumbent": 0.167,
+      "candidate": 0.167,
+      "pass": true
+    },
+    "spl": {
+      "incumbent": 0.167,
+      "candidate": 0.167,
+      "pass": true
+    },
+    "ne_m": {
+      "incumbent": 12.76,
+      "candidate": 12.45,
+      "pass": true,
+      "material_worsening_threshold_m": 0.1
+    }
+  },
+  "rule": "promote only if SR and SPL improve or match and NE does not materially worsen on the same scene-held-out test; recovery (val loss) is not safety",
+  "incumbent_run": "h1_hospital_front_rgb_finetune_on_h24_test",
+  "candidate_run": "h3clean_scripted_expert_seed42",
+  "test_scene": "families_uturn_chain_L",
+  "n_test_episodes": 6
+}
