@@ -1,0 +1,12 @@
+route_type,train_count,val_count,heldout_count,status
+straight,2,0,0,covered
+single_90turn,2,0,0,covered
+scurve,1,1,0,covered
+corridor,1,1,0,covered
+multi_turn_weave,2,0,0,covered
+navgen_single_turn,8,1,4,covered
+navgen_multi_turn,4,1,0,covered
+navgen_amber_zone,4,0,2,covered
+uturn_HARD,0,0,2,UNCOVERED_in_train
+chain_HARD,0,0,2,UNCOVERED_in_train
+ftL_sharp_HARD,0,0,2,UNCOVERED_in_train

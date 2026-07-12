@@ -1,0 +1,33 @@
+{
+  "route_id": "h6_uturn_02",
+  "route_type": "uturn",
+  "waypoints": [
+    [
+      -4.0,
+      3.0
+    ],
+    [
+      -4.0,
+      4.4
+    ],
+    [
+      -4.85,
+      4.4
+    ],
+    [
+      -4.85,
+      3.0
+    ]
+  ],
+  "start_pose": {
+    "x": -4.0,
+    "y": 3.0,
+    "yaw_rad": 0.0
+  },
+  "goal_pose": {
+    "x": -4.85,
+    "y": 3.0,
+    "yaw_rad": 0.0
+  },
+  "provenance": "H6 authored hard-route template, decider-gated (check_map + check_curvature); measured occupancy + continuous yaw model"
+}

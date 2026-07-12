@@ -1,0 +1,33 @@
+{
+  "route_id": "h6_tightcorr_01",
+  "route_type": "tight_corridor_turn",
+  "waypoints": [
+    [
+      -4.0,
+      2.0
+    ],
+    [
+      -2.75,
+      2.0
+    ],
+    [
+      -2.75,
+      2.65
+    ],
+    [
+      -3.75,
+      2.65
+    ]
+  ],
+  "start_pose": {
+    "x": -4.0,
+    "y": 2.0,
+    "yaw_rad": 0.0
+  },
+  "goal_pose": {
+    "x": -3.75,
+    "y": 2.65,
+    "yaw_rad": 0.0
+  },
+  "provenance": "H6 authored hard-route template, decider-gated (check_map + check_curvature); measured occupancy + continuous yaw model"
+}

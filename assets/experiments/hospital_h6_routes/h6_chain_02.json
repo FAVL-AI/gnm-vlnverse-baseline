@@ -1,0 +1,41 @@
+{
+  "route_id": "h6_chain_02",
+  "route_type": "chain",
+  "waypoints": [
+    [
+      -3.5,
+      -4.0
+    ],
+    [
+      -2.7,
+      -3.45
+    ],
+    [
+      -1.9,
+      -4.0
+    ],
+    [
+      -1.1,
+      -3.45
+    ],
+    [
+      -0.3,
+      -4.0
+    ],
+    [
+      0.5,
+      -3.45
+    ]
+  ],
+  "start_pose": {
+    "x": -3.5,
+    "y": -4.0,
+    "yaw_rad": 0.0
+  },
+  "goal_pose": {
+    "x": 0.5,
+    "y": -3.45,
+    "yaw_rad": 0.0
+  },
+  "provenance": "H6 authored hard-route template, decider-gated (check_map + check_curvature); measured occupancy + continuous yaw model"
+}
