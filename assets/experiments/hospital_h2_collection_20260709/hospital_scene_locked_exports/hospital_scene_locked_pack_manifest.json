@@ -1,0 +1,322 @@
+{
+  "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+  "asset_is_hospital_usd": true,
+  "isaac_sim_version": "5.1.0.0",
+  "resolution": [
+    1280,
+    720
+  ],
+  "robot_camera_height_m": 0.35,
+  "synthetic": false,
+  "placeholder": false,
+  "scene_identity_pass": true,
+  "scene_identity_checks": {
+    "hospital_reference_authored": true,
+    "prim_count_ok": true,
+    "scene_mode_hospital": true,
+    "no_procedural_landmarks": true,
+    "front_camera_exists": true,
+    "resolution_declared": true,
+    "image_hospital_like": true
+  },
+  "warning_on_every_visual": "Target hospital-scene render \u2014 not original H6 training/evaluation data.",
+  "timestamp": "2026-07-13T04:50:27",
+  "routes": [
+    {
+      "route": "reception_to_corridor",
+      "label": "reception \u2192 corridor",
+      "use": "pilot sample \u2014 proposed: train",
+      "frames": {
+        "start": {
+          "file": "reception_to_corridor_start.png",
+          "camera_pose": {
+            "x": -2.6,
+            "y": -0.8,
+            "z": 0.35,
+            "target": [
+              2.2,
+              0.4,
+              0.6
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -76.0
+          },
+          "robot_pose": {
+            "x": -2.6,
+            "y": -0.8,
+            "z": 0.0,
+            "yaw_deg": -76.0
+          },
+          "mean_luma": 52.4
+        },
+        "mid": {
+          "file": "reception_to_corridor_mid.png",
+          "camera_pose": {
+            "x": -0.8,
+            "y": -0.2,
+            "z": 0.35,
+            "target": [
+              3.4,
+              0.2,
+              0.6
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -84.6
+          },
+          "robot_pose": {
+            "x": -0.8,
+            "y": -0.2,
+            "z": 0.0,
+            "yaw_deg": -84.6
+          },
+          "mean_luma": 44.7
+        },
+        "goal": {
+          "file": "reception_to_corridor_goal.png",
+          "camera_pose": {
+            "x": 1.2,
+            "y": 0.0,
+            "z": 0.35,
+            "target": [
+              4.2,
+              0.4,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -82.4
+          },
+          "robot_pose": {
+            "x": 1.2,
+            "y": 0.0,
+            "z": 0.0,
+            "yaw_deg": -82.4
+          },
+          "mean_luma": 34.7
+        }
+      },
+      "contact_sheet": "reception_to_corridor_contact_sheet.png"
+    },
+    {
+      "route": "corridor_straight",
+      "label": "corridor straight",
+      "use": "pilot sample \u2014 proposed: train",
+      "frames": {
+        "start": {
+          "file": "corridor_straight_start.png",
+          "camera_pose": {
+            "x": -1.5,
+            "y": 0.0,
+            "z": 0.35,
+            "target": [
+              3.5,
+              0.0,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -90.0
+          },
+          "robot_pose": {
+            "x": -1.5,
+            "y": 0.0,
+            "z": 0.0,
+            "yaw_deg": -90.0
+          },
+          "mean_luma": 50.6
+        },
+        "mid": {
+          "file": "corridor_straight_mid.png",
+          "camera_pose": {
+            "x": 0.2,
+            "y": 0.0,
+            "z": 0.35,
+            "target": [
+              4.2,
+              0.0,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -90.0
+          },
+          "robot_pose": {
+            "x": 0.2,
+            "y": 0.0,
+            "z": 0.0,
+            "yaw_deg": -90.0
+          },
+          "mean_luma": 43.8
+        },
+        "goal": {
+          "file": "corridor_straight_goal.png",
+          "camera_pose": {
+            "x": 2.0,
+            "y": 0.0,
+            "z": 0.35,
+            "target": [
+              5.5,
+              0.0,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -90.0
+          },
+          "robot_pose": {
+            "x": 2.0,
+            "y": 0.0,
+            "z": 0.0,
+            "yaw_deg": -90.0
+          },
+          "mean_luma": 40.1
+        }
+      },
+      "contact_sheet": "corridor_straight_contact_sheet.png"
+    },
+    {
+      "route": "turn_t_junction",
+      "label": "left/right turn or T-junction",
+      "use": "pilot sample \u2014 proposed: val",
+      "frames": {
+        "start": {
+          "file": "turn_t_junction_start.png",
+          "camera_pose": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.35,
+            "target": [
+              3.0,
+              0.5,
+              0.6
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -99.5
+          },
+          "robot_pose": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.0,
+            "yaw_deg": -99.5
+          },
+          "mean_luma": 48.0
+        },
+        "mid": {
+          "file": "turn_t_junction_mid.png",
+          "camera_pose": {
+            "x": 1.2,
+            "y": 0.4,
+            "z": 0.35,
+            "target": [
+              2.0,
+              -1.6,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -158.2
+          },
+          "robot_pose": {
+            "x": 1.2,
+            "y": 0.4,
+            "z": 0.0,
+            "yaw_deg": -158.2
+          },
+          "mean_luma": 87.3
+        },
+        "goal": {
+          "file": "turn_t_junction_goal.png",
+          "camera_pose": {
+            "x": 1.4,
+            "y": -0.6,
+            "z": 0.35,
+            "target": [
+              3.6,
+              -2.6,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -132.3
+          },
+          "robot_pose": {
+            "x": 1.4,
+            "y": -0.6,
+            "z": 0.0,
+            "yaw_deg": -132.3
+          },
+          "mean_luma": 57.2
+        }
+      },
+      "contact_sheet": "turn_t_junction_contact_sheet.png"
+    },
+    {
+      "route": "waiting_to_doorway",
+      "label": "waiting area \u2192 doorway / goal",
+      "use": "pilot sample \u2014 proposed: test/goal-approach",
+      "frames": {
+        "start": {
+          "file": "waiting_to_doorway_start.png",
+          "camera_pose": {
+            "x": -2.2,
+            "y": 1.4,
+            "z": 0.35,
+            "target": [
+              1.8,
+              -0.8,
+              0.6
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -118.8
+          },
+          "robot_pose": {
+            "x": -2.2,
+            "y": 1.4,
+            "z": 0.0,
+            "yaw_deg": -118.8
+          },
+          "mean_luma": 74.3
+        },
+        "mid": {
+          "file": "waiting_to_doorway_mid.png",
+          "camera_pose": {
+            "x": 0.0,
+            "y": 0.6,
+            "z": 0.35,
+            "target": [
+              2.8,
+              -1.6,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -128.2
+          },
+          "robot_pose": {
+            "x": 0.0,
+            "y": 0.6,
+            "z": 0.0,
+            "yaw_deg": -128.2
+          },
+          "mean_luma": 67.0
+        },
+        "goal": {
+          "file": "waiting_to_doorway_goal.png",
+          "camera_pose": {
+            "x": 1.6,
+            "y": -0.2,
+            "z": 0.35,
+            "target": [
+              3.8,
+              -2.4,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -135.0
+          },
+          "robot_pose": {
+            "x": 1.6,
+            "y": -0.2,
+            "z": 0.0,
+            "yaw_deg": -135.0
+          },
+          "mean_luma": 52.9
+        }
+      },
+      "contact_sheet": "waiting_to_doorway_contact_sheet.png"
+    }
+  ]
+}

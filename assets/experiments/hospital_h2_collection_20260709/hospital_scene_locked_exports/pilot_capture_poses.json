@@ -1,0 +1,300 @@
+{
+  "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+  "scene_identity_pass": true,
+  "resolution": [
+    1280,
+    720
+  ],
+  "robot_camera_height_m": 0.35,
+  "focal_length_mm": 18.0,
+  "routes": {
+    "reception_to_corridor": {
+      "label": "reception \u2192 corridor",
+      "use": "pilot sample \u2014 proposed: train",
+      "frames": {
+        "start": {
+          "array_file": "npy/reception_to_corridor_start.npy",
+          "camera_pose": {
+            "x": -2.6,
+            "y": -0.8,
+            "z": 0.35,
+            "target": [
+              2.2,
+              0.4,
+              0.6
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -76.0
+          },
+          "robot_pose": {
+            "x": -2.6,
+            "y": -0.8,
+            "z": 0.0,
+            "yaw_deg": -76.0
+          },
+          "mean_luma": 52.4
+        },
+        "mid": {
+          "array_file": "npy/reception_to_corridor_mid.npy",
+          "camera_pose": {
+            "x": -0.8,
+            "y": -0.2,
+            "z": 0.35,
+            "target": [
+              3.4,
+              0.2,
+              0.6
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -84.6
+          },
+          "robot_pose": {
+            "x": -0.8,
+            "y": -0.2,
+            "z": 0.0,
+            "yaw_deg": -84.6
+          },
+          "mean_luma": 44.7
+        },
+        "goal": {
+          "array_file": "npy/reception_to_corridor_goal.npy",
+          "camera_pose": {
+            "x": 1.2,
+            "y": 0.0,
+            "z": 0.35,
+            "target": [
+              4.2,
+              0.4,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -82.4
+          },
+          "robot_pose": {
+            "x": 1.2,
+            "y": 0.0,
+            "z": 0.0,
+            "yaw_deg": -82.4
+          },
+          "mean_luma": 34.7
+        }
+      }
+    },
+    "corridor_straight": {
+      "label": "corridor straight",
+      "use": "pilot sample \u2014 proposed: train",
+      "frames": {
+        "start": {
+          "array_file": "npy/corridor_straight_start.npy",
+          "camera_pose": {
+            "x": -1.5,
+            "y": 0.0,
+            "z": 0.35,
+            "target": [
+              3.5,
+              0.0,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -90.0
+          },
+          "robot_pose": {
+            "x": -1.5,
+            "y": 0.0,
+            "z": 0.0,
+            "yaw_deg": -90.0
+          },
+          "mean_luma": 50.6
+        },
+        "mid": {
+          "array_file": "npy/corridor_straight_mid.npy",
+          "camera_pose": {
+            "x": 0.2,
+            "y": 0.0,
+            "z": 0.35,
+            "target": [
+              4.2,
+              0.0,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -90.0
+          },
+          "robot_pose": {
+            "x": 0.2,
+            "y": 0.0,
+            "z": 0.0,
+            "yaw_deg": -90.0
+          },
+          "mean_luma": 43.8
+        },
+        "goal": {
+          "array_file": "npy/corridor_straight_goal.npy",
+          "camera_pose": {
+            "x": 2.0,
+            "y": 0.0,
+            "z": 0.35,
+            "target": [
+              5.5,
+              0.0,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -90.0
+          },
+          "robot_pose": {
+            "x": 2.0,
+            "y": 0.0,
+            "z": 0.0,
+            "yaw_deg": -90.0
+          },
+          "mean_luma": 40.1
+        }
+      }
+    },
+    "turn_t_junction": {
+      "label": "left/right turn or T-junction",
+      "use": "pilot sample \u2014 proposed: val",
+      "frames": {
+        "start": {
+          "array_file": "npy/turn_t_junction_start.npy",
+          "camera_pose": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.35,
+            "target": [
+              3.0,
+              0.5,
+              0.6
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -99.5
+          },
+          "robot_pose": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.0,
+            "yaw_deg": -99.5
+          },
+          "mean_luma": 48.0
+        },
+        "mid": {
+          "array_file": "npy/turn_t_junction_mid.npy",
+          "camera_pose": {
+            "x": 1.2,
+            "y": 0.4,
+            "z": 0.35,
+            "target": [
+              2.0,
+              -1.6,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -158.2
+          },
+          "robot_pose": {
+            "x": 1.2,
+            "y": 0.4,
+            "z": 0.0,
+            "yaw_deg": -158.2
+          },
+          "mean_luma": 87.3
+        },
+        "goal": {
+          "array_file": "npy/turn_t_junction_goal.npy",
+          "camera_pose": {
+            "x": 1.4,
+            "y": -0.6,
+            "z": 0.35,
+            "target": [
+              3.6,
+              -2.6,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -132.3
+          },
+          "robot_pose": {
+            "x": 1.4,
+            "y": -0.6,
+            "z": 0.0,
+            "yaw_deg": -132.3
+          },
+          "mean_luma": 57.2
+        }
+      }
+    },
+    "waiting_to_doorway": {
+      "label": "waiting area \u2192 doorway / goal",
+      "use": "pilot sample \u2014 proposed: test/goal-approach",
+      "frames": {
+        "start": {
+          "array_file": "npy/waiting_to_doorway_start.npy",
+          "camera_pose": {
+            "x": -2.2,
+            "y": 1.4,
+            "z": 0.35,
+            "target": [
+              1.8,
+              -0.8,
+              0.6
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -118.8
+          },
+          "robot_pose": {
+            "x": -2.2,
+            "y": 1.4,
+            "z": 0.0,
+            "yaw_deg": -118.8
+          },
+          "mean_luma": 74.3
+        },
+        "mid": {
+          "array_file": "npy/waiting_to_doorway_mid.npy",
+          "camera_pose": {
+            "x": 0.0,
+            "y": 0.6,
+            "z": 0.35,
+            "target": [
+              2.8,
+              -1.6,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -128.2
+          },
+          "robot_pose": {
+            "x": 0.0,
+            "y": 0.6,
+            "z": 0.0,
+            "yaw_deg": -128.2
+          },
+          "mean_luma": 67.0
+        },
+        "goal": {
+          "array_file": "npy/waiting_to_doorway_goal.npy",
+          "camera_pose": {
+            "x": 1.6,
+            "y": -0.2,
+            "z": 0.35,
+            "target": [
+              3.8,
+              -2.4,
+              0.5
+            ],
+            "focal_length_mm": 18.0,
+            "yaw_deg": -135.0
+          },
+          "robot_pose": {
+            "x": 1.6,
+            "y": -0.2,
+            "z": 0.0,
+            "yaw_deg": -135.0
+          },
+          "mean_luma": 52.9
+        }
+      }
+    }
+  }
+}
