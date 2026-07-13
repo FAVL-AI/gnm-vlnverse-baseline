@@ -1,0 +1,27 @@
+{
+  "excluded_episodes": [],
+  "n_excluded_episodes": 0,
+  "excluded_routes": [
+    {
+      "route_family_id": "h6_chain_01",
+      "route_type": "chain",
+      "reason": "exceeds +/-6.0m runtime XY control-authority bound; out-of-bounds waypoints: [[-6.4, -4.55], [-7.2, -4.0], [-8.0, -4.55]]",
+      "out_of_bounds_waypoints": [
+        [
+          -6.4,
+          -4.55
+        ],
+        [
+          -7.2,
+          -4.0
+        ],
+        [
+          -8.0,
+          -4.55
+        ]
+      ],
+      "preserved_as": "assets/experiments/hospital_h6_routes/rejected/h6_chain_01__rejected.json"
+    }
+  ],
+  "exclusion_policy": "rc!=0 / partial / timed-out / incomplete-artifact / non-RECORDED_OK; scripted-expert only; h6_plan sec 7"
+}

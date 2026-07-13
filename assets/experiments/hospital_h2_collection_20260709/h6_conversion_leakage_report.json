@@ -1,0 +1,22 @@
+{
+  "episode_level_overlaps": {
+    "train__test_h6hard": [],
+    "train__val": [],
+    "val__test_h6hard": []
+  },
+  "episode_level_disjoint": true,
+  "train_families": [
+    "h6_chain_01",
+    "h6_ftL_01",
+    "h6_sharpmulti_01",
+    "h6_tightcorr_01",
+    "h6_uturn_01"
+  ],
+  "test_h6hard_families": [
+    "h6_chain_02",
+    "h6_uturn_02"
+  ],
+  "family_overlap_train_vs_heldout": [],
+  "family_level_disjoint": true,
+  "leakage_clean": true
+}

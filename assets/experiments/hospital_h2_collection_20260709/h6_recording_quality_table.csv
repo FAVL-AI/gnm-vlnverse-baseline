@@ -1,0 +1,17 @@
+episode_label,route_id,route_type,split_target,variant,route_completed,total_collision_count,max_contact_streak,first_collision_step,steps,distance_m,rosbag_db3_bytes,artifact_complete,status
+h6rec_h6_uturn_01_a,h6_uturn_01,uturn,train,a,True,0,0,,6120,8.252,1964363776,True,RECORDED_OK
+h6rec_h6_uturn_01_b,h6_uturn_01,uturn,train,b,True,0,0,,6120,8.252,1964339200,True,RECORDED_OK
+h6rec_h6_chain_01_a,h6_chain_01,chain,train,a,True,0,0,,6120,7.7401,1964318720,True,RECORDED_OK
+h6rec_h6_chain_01_b,h6_chain_01,chain,train,b,True,0,0,,6120,7.7401,1966211072,True,RECORDED_OK
+h6rec_h6_ftL_01_a,h6_ftL_01,ftL_sharp,train,a,True,0,0,,6120,6.6071,1965260800,True,RECORDED_OK
+h6rec_h6_ftL_01_b,h6_ftL_01,ftL_sharp,train,b,True,0,0,,6120,6.6071,1966157824,True,RECORDED_OK
+h6rec_h6_sharpmulti_01_a,h6_sharpmulti_01,sharp_multi_turn,train,a,True,0,0,,6120,7.3895,1921835008,True,RECORDED_OK
+h6rec_h6_sharpmulti_01_b,h6_sharpmulti_01,sharp_multi_turn,train,b,True,0,0,,6120,7.3895,1958785024,True,RECORDED_OK
+h6rec_h6_tightcorr_01_a,h6_tightcorr_01,tight_corridor_turn,train,a,True,0,0,,6120,6.7485,1965289472,True,RECORDED_OK
+h6rec_h6_tightcorr_01_b,h6_tightcorr_01,tight_corridor_turn,train,b,True,0,0,,6120,6.7485,1956032512,True,RECORDED_OK
+h6rec_h6_compound_01_a,h6_compound_01,compound_turn,validation,a,True,0,0,,6120,7.1144,1953243136,True,RECORDED_OK
+h6rec_h6_compound_01_b,h6_compound_01,compound_turn,validation,b,True,0,0,,6120,7.1144,1966161920,True,RECORDED_OK
+h6rec_h6_uturn_02_a,h6_uturn_02,uturn,fresh_heldout,a,True,0,0,,6120,8.4585,1968984064,True,RECORDED_OK
+h6rec_h6_uturn_02_b,h6_uturn_02,uturn,fresh_heldout,b,True,0,0,,6120,8.4585,1965305856,True,RECORDED_OK
+h6rec_h6_chain_02_a,h6_chain_02,chain,fresh_heldout,a,True,0,0,,6120,9.0593,1964384256,True,RECORDED_OK
+h6rec_h6_chain_02_b,h6_chain_02,chain,fresh_heldout,b,True,0,0,,6120,9.0593,1964322816,True,RECORDED_OK

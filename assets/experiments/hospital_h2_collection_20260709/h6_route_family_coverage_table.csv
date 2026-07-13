@@ -1,0 +1,7 @@
+route_type,train,val,fresh_heldout,total
+chain,2,0,2,4
+compound_turn,0,2,0,2
+ftL_sharp,2,0,0,2
+sharp_multi_turn,2,0,0,2
+tight_corridor_turn,2,0,0,2
+uturn,2,0,2,4

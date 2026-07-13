@@ -1,0 +1,88 @@
+{
+  "per_episode": [
+    {
+      "episode_label": "h6rec_h6_uturn_01_a",
+      "disk_before_gb": 385.6,
+      "disk_after_gb": 383.7
+    },
+    {
+      "episode_label": "h6rec_h6_uturn_01_b",
+      "disk_before_gb": 383.7,
+      "disk_after_gb": 381.7
+    },
+    {
+      "episode_label": "h6rec_h6_chain_01_a",
+      "disk_before_gb": 381.7,
+      "disk_after_gb": 379.7
+    },
+    {
+      "episode_label": "h6rec_h6_chain_01_b",
+      "disk_before_gb": 379.7,
+      "disk_after_gb": 377.7
+    },
+    {
+      "episode_label": "h6rec_h6_ftL_01_a",
+      "disk_before_gb": 377.7,
+      "disk_after_gb": 375.8
+    },
+    {
+      "episode_label": "h6rec_h6_ftL_01_b",
+      "disk_before_gb": 375.8,
+      "disk_after_gb": 373.8
+    },
+    {
+      "episode_label": "h6rec_h6_sharpmulti_01_a",
+      "disk_before_gb": 373.8,
+      "disk_after_gb": 371.8
+    },
+    {
+      "episode_label": "h6rec_h6_sharpmulti_01_b",
+      "disk_before_gb": 371.8,
+      "disk_after_gb": 369.9
+    },
+    {
+      "episode_label": "h6rec_h6_tightcorr_01_a",
+      "disk_before_gb": 369.9,
+      "disk_after_gb": 367.9
+    },
+    {
+      "episode_label": "h6rec_h6_tightcorr_01_b",
+      "disk_before_gb": 367.9,
+      "disk_after_gb": 365.9
+    },
+    {
+      "episode_label": "h6rec_h6_compound_01_a",
+      "disk_before_gb": 365.9,
+      "disk_after_gb": 363.9
+    },
+    {
+      "episode_label": "h6rec_h6_compound_01_b",
+      "disk_before_gb": 363.9,
+      "disk_after_gb": 362.0
+    },
+    {
+      "episode_label": "h6rec_h6_uturn_02_a",
+      "disk_before_gb": 362.0,
+      "disk_after_gb": 360.0
+    },
+    {
+      "episode_label": "h6rec_h6_uturn_02_b",
+      "disk_before_gb": 360.0,
+      "disk_after_gb": 358.0
+    },
+    {
+      "episode_label": "h6rec_h6_chain_02_a",
+      "disk_before_gb": 358.0,
+      "disk_after_gb": 356.0
+    },
+    {
+      "episode_label": "h6rec_h6_chain_02_b",
+      "disk_before_gb": 356.0,
+      "disk_after_gb": 354.0
+    }
+  ],
+  "disk_before_first_gb": 385.6,
+  "disk_after_last_gb": 354.0,
+  "min_free_gb": 354.0,
+  "guard_gb": 150
+}

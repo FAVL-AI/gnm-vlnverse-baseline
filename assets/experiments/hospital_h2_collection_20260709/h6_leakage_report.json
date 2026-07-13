@@ -1,0 +1,18 @@
+{
+  "episode_level_train_heldout_disjoint": true,
+  "episode_level_duplicates": [],
+  "family_level_fresh_heldout_distinct_from_train": true,
+  "family_overlap": [],
+  "train_families": [
+    "h6_chain_01",
+    "h6_ftL_01",
+    "h6_sharpmulti_01",
+    "h6_tightcorr_01",
+    "h6_uturn_01"
+  ],
+  "fresh_heldout_families": [
+    "h6_chain_02",
+    "h6_uturn_02"
+  ],
+  "leakage_clean": true
+}

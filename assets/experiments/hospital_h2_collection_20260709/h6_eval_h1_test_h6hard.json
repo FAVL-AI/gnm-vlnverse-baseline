@@ -1,0 +1,18 @@
+{
+  "SR": 0.0,
+  "OSR": 0.0,
+  "SPL": 0.0,
+  "NE": 21.3614,
+  "TL": 18.2769,
+  "nDTW": 0.0207,
+  "CLS": 0.1159,
+  "CR": 0.0,
+  "SRn": 0.0,
+  "n_episodes": 4,
+  "checkpoint": "/home/favl/robotics/gnm-vlnverse-baseline/checkpoints/hospital_front_rgb_finetune/best.pt",
+  "split": "test_h6hard",
+  "track": "A",
+  "data_root": "/home/favl/robotics/gnm-vlnverse-baseline/datasets/isaac_hospital_h6",
+  "stop_threshold": 0.15,
+  "success_threshold": 3.0
+}

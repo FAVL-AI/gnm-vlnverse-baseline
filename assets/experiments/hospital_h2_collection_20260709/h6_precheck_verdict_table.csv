@@ -1,0 +1,9 @@
+route_id,route_type,split_target,return_code,timeout,route_completed,route_infeasible_reason,total_collision_count,max_contact_streak,first_collision_step,steps,distance_m,episode_dir,log_path,disk_before_gb,disk_after_gb,cleanup_status,failure_stage,precheck_verdict
+h6_uturn_01,uturn,train,0,False,True,,0,0,,6120,8.2422,assets/experiments/trajectories/h6pre_h6_uturn_01_20260712_174342,logs/h6pre_h6_uturn_01_20260712_174000.log,385.8,385.8,clean,,PASS
+h6_chain_01,chain,train,0,False,True,,0,0,,6120,7.7191,assets/experiments/trajectories/h6pre_h6_chain_01_20260712_183924,logs/h6pre_h6_chain_01_20260712_183542.log,385.7,385.6,clean,,PASS
+h6_ftL_01,ftL_sharp,train,0,False,True,,0,0,,6120,6.582,assets/experiments/trajectories/h6pre_h6_ftL_01_20260712_175218,logs/h6pre_h6_ftL_01_20260712_174835.log,385.7,385.7,clean,,PASS
+h6_sharpmulti_01,sharp_multi_turn,train,0,False,True,,0,0,,6120,7.3537,assets/experiments/trajectories/h6pre_h6_sharpmulti_01_20260712_175643,logs/h6pre_h6_sharpmulti_01_20260712_175301.log,385.7,385.7,clean,,PASS
+h6_tightcorr_01,tight_corridor_turn,train,0,False,True,,0,0,,6120,6.7235,assets/experiments/trajectories/h6pre_h6_tightcorr_01_20260712_180106,logs/h6pre_h6_tightcorr_01_20260712_175724.log,385.7,385.7,clean,,PASS
+h6_compound_01,compound_turn,validation,0,False,True,,0,0,,6120,7.0883,assets/experiments/trajectories/h6pre_h6_compound_01_20260712_180527,logs/h6pre_h6_compound_01_20260712_180144.log,385.7,385.7,clean,,PASS
+h6_uturn_02,uturn,fresh_heldout,0,False,True,,0,0,,6120,8.3835,assets/experiments/trajectories/h6pre_h6_uturn_02_20260712_180949,logs/h6pre_h6_uturn_02_20260712_180607.log,385.7,385.7,clean,,PASS
+h6_chain_02,chain,fresh_heldout,0,False,True,,0,0,,6120,9.036,assets/experiments/trajectories/h6pre_h6_chain_02_20260712_181415,logs/h6pre_h6_chain_02_20260712_181033.log,385.7,385.7,clean,,PASS

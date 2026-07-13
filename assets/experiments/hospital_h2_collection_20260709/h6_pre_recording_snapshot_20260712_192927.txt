@@ -1,0 +1,298 @@
+===== H6 PRE-RECORDING SNAPSHOT  (Sun 12 Jul 19:29:27 BST 2026) =====
+
+--- [1] git status --short ---
+ M assets/experiments/hospital_h2_collection_20260709/collection_discipline_notes.md
+ M assets/experiments/hospital_h2_collection_20260709/h6_route_family_approval_table.csv
+ M assets/experiments/hospital_h2_collection_20260709/runtime_degradation_events.json
+ M assets/experiments/hospital_h6_routes/h6_chain_01.json
+ M scripts/datasets/convert_hospital_rosbags_to_gnm.py
+ M scripts/datasets/hospital_h6_generate_hard_routes.py
+ M scripts/datasets/hospital_navgen_sample_routes.py
+ M scripts/gnm/06_evaluate.py
+ M scripts/gnm/execution_feasibility_decider.py
+?? assets/datasets/isaac_hospital_navgen_v0/h4_candidate_families.json
+?? assets/experiments/data_expansion/generated_train_batch_20260708/batch_kujiale_0092_seed11.json
+?? assets/experiments/data_expansion/generated_train_batch_20260708/batch_kujiale_0118_seed12.json
+?? assets/experiments/data_expansion/generated_train_batch_20260708/batch_kujiale_0203_seed13.json
+?? assets/experiments/goals/h2_corridor_I/
+?? assets/experiments/goals/h2_long_turn_H/
+?? assets/experiments/goals/h2_near_desk_K/
+?? assets/experiments/goals/h2_test_long_L/
+?? assets/experiments/goals/h2_test_occluded_M/
+?? assets/experiments/goals/h2_weave_J/
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_000.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_001.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_002.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_003.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_004.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_005.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_006.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_007.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_008.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_009.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_010.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_011.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_012.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_013.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_014.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_015.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_016.json
+?? assets/experiments/hospital_h22_routes/h4_navgen_31_017.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_adjudication.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_candidate_card.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_counts.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_driftguard_decision.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_eval_candidate_on_h4heldout.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_eval_candidate_on_priorheldout.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_eval_incumbent_on_h4heldout.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_eval_incumbent_on_priorheldout.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_incumbent_card.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_precheck_verdict_table.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_prestart_checks.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_quality_table.csv
+?? assets/experiments/hospital_h2_collection_20260709/h4_report.md
+?? assets/experiments/hospital_h2_collection_20260709/h4_route_family_approval_table.csv
+?? assets/experiments/hospital_h2_collection_20260709/h4_training_report.md
+?? assets/experiments/hospital_h2_collection_20260709/h4_validator_report.json
+?? assets/experiments/hospital_h2_collection_20260709/h4_verdictplane_record.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_adjudication.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_candidate_card.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_driftguard_decision.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_eval_cand_test_combined.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_eval_cand_test_h4.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_eval_cand_test_prior.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_eval_inc_test_combined.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_eval_inc_test_h4.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_eval_inc_test_prior.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_incumbent_card.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_plan.md
+?? assets/experiments/hospital_h2_collection_20260709/h5_split_manifest.json
+?? assets/experiments/hospital_h2_collection_20260709/h5_split_table.csv
+?? assets/experiments/hospital_h2_collection_20260709/h5_training_report.md
+?? assets/experiments/hospital_h2_collection_20260709/h5_verdictplane_record.json
+?? assets/experiments/hospital_h2_collection_20260709/h6_excluded_routes.json
+?? assets/experiments/hospital_h2_collection_20260709/h6_pre_recording_snapshot_20260712_192927.txt
+?? assets/experiments/hospital_h2_collection_20260709/h6_precheck_verdict_table.csv
+?? assets/experiments/hospital_h2_collection_20260709/h6_precheck_verdict_table.json
+?? assets/experiments/hospital_h6_routes/rejected/
+?? assets/experiments/rosbags/
+?? assets/experiments/trajectories/execfix_val_90turn_20260710_184526/
+?? assets/experiments/trajectories/execfix_val_chain_20260710_185944/
+?? assets/experiments/trajectories/execfix_val_scurve_20260710_185005/
+?? assets/experiments/trajectories/execfix_val_straight_20260710_184042/
+?? assets/experiments/trajectories/execfix_val_uturn_20260710_185453/
+?? assets/experiments/trajectories/h21_ft_H_a_20260710_021915/
+?? assets/experiments/trajectories/h21_ft_H_b_20260710_022938/
+?? assets/experiments/trajectories/h21_ft_I_a_20260710_023949/
+?? assets/experiments/trajectories/h21_ft_I_b_20260710_025040/
+?? assets/experiments/trajectories/h21_ft_K_a_20260710_030100/
+?? assets/experiments/trajectories/h21_ft_K_b_20260710_031001/
+?? assets/experiments/trajectories/h21_ft_M_20260710_031948/
+?? assets/experiments/trajectories/h21_td_M_20260710_033003/
+?? assets/experiments/trajectories/h21probe_H_g_20260710_014748/
+?? assets/experiments/trajectories/h21probe_H_s_20260710_014332/
+?? assets/experiments/trajectories/h21probe_I_g_20260710_015617/
+?? assets/experiments/trajectories/h21probe_I_s_20260710_015203/
+?? assets/experiments/trajectories/h21probe_K_g_20260710_020446/
+?? assets/experiments/trajectories/h21probe_K_s_20260710_020029/
+?? assets/experiments/trajectories/h21probe_M_g_20260710_021312/
+?? assets/experiments/trajectories/h21probe_M_s_20260710_020900/
+?? assets/experiments/trajectories/h22demo_J_a_20260710_050731/
+?? assets/experiments/trajectories/h22demo_J_b_20260710_052318/
+?? assets/experiments/trajectories/h22demo_J_c_20260710_053905/
+?? assets/experiments/trajectories/h22pre2_route_H_v2_20260710_042509/
+?? assets/experiments/trajectories/h22pre2_route_I_v2_20260710_042954/
+?? assets/experiments/trajectories/h22pre2_route_J_v2_20260710_043438/
+?? assets/experiments/trajectories/h22pre2_route_K_v2_20260710_043932/
+?? assets/experiments/trajectories/h22pre2_route_M_v2_20260710_044413/
+?? assets/experiments/trajectories/h22pre3_route_H_v3_20260710_055602/
+?? assets/experiments/trajectories/h22pre3_route_I_v3_20260710_060047/
+?? assets/experiments/trajectories/h22pre3_route_K_v3_20260710_060547/
+?? assets/experiments/trajectories/h22pre3_route_M_v3_20260710_061032/
+?? assets/experiments/trajectories/h22pre_route_H_v2_20260710_035423/
+?? assets/experiments/trajectories/h22pre_route_I_v2_20260710_035852/
+?? assets/experiments/trajectories/h22pre_route_J_v2_20260710_040318/
+?? assets/experiments/trajectories/h22pre_route_K_v2_20260710_040754/
+?? assets/experiments/trajectories/h22pre_route_M_v2_20260710_041223/
+?? assets/experiments/trajectories/h23val2_val_90turn_20260710_073229/
+?? assets/experiments/trajectories/h23val2_val_chain_20260710_074717/
+?? assets/experiments/trajectories/h23val2_val_scurve_20260710_073717/
+?? assets/experiments/trajectories/h23val2_val_uturn_20260710_074213/
+?? assets/experiments/trajectories/h23val3_val_chain_20260710_080729/
+?? assets/experiments/trajectories/h23val3_val_scurve_20260710_075615/
+?? assets/experiments/trajectories/h23val3_val_uturn_20260710_080152/
+?? assets/experiments/trajectories/h23val_val_90turn_20260710_070637/
+?? assets/experiments/trajectories/h23val_val_chain_20260710_072102/
+?? assets/experiments/trajectories/h23val_val_scurve_20260710_071126/
+?? assets/experiments/trajectories/h23val_val_straight_20260710_070149/
+?? assets/experiments/trajectories/h23val_val_uturn_20260710_071613/
+?? assets/experiments/trajectories/h24_90turn_a_20260710_194950/
+?? assets/experiments/trajectories/h24_90turn_b_20260710_200643/
+?? assets/experiments/trajectories/h24_I_a_20260710_212851/
+?? assets/experiments/trajectories/h24_I_b_20260710_214602/
+?? assets/experiments/trajectories/h24_J_a_20260710_205331/
+?? assets/experiments/trajectories/h24_J_b_20260710_211036/
+?? assets/experiments/trajectories/h24_scurve_a_20260710_202257/
+?? assets/experiments/trajectories/h24_scurve_b_20260710_203800/
+?? assets/experiments/trajectories/h24_straight_a_20260710_192309/
+?? assets/experiments/trajectories/h24_straight_b_20260710_193626/
+?? assets/experiments/trajectories/h24_test_chain_a_20260710_223718/
+?? assets/experiments/trajectories/h24_test_chain_b_20260710_225447/
+?? assets/experiments/trajectories/h24_test_uturn_a_20260710_220326/
+?? assets/experiments/trajectories/h24_test_uturn_b_20260710_222002/
+?? assets/experiments/trajectories/h2_ft_H_a_20260709_005345/
+?? assets/experiments/trajectories/h2_ft_H_b_20260709_075342/
+?? assets/experiments/trajectories/h2_ft_I_a_20260709_025233/
+?? assets/experiments/trajectories/h2_ft_I_b_20260709_095236/
+?? assets/experiments/trajectories/h2_ft_J_a_20260709_042726/
+?? assets/experiments/trajectories/h2_ft_J_b_20260709_113328/
+?? assets/experiments/trajectories/h2_ft_K_a_20260709_061333/
+?? assets/experiments/trajectories/h2_ft_K_b_20260709_132427/
+?? assets/experiments/trajectories/h2_ft_L_20260709_205308/
+?? assets/experiments/trajectories/h2_ft_L_r2_20260709_223911/
+?? assets/experiments/trajectories/h2_ft_L_solo2_20260710_011212/
+?? assets/experiments/trajectories/h2_ft_M_20260709_211630/
+?? assets/experiments/trajectories/h2_ft_M_r2_20260709_230513/
+?? assets/experiments/trajectories/h2_ft_M_solo_20260710_001614/
+?? assets/experiments/trajectories/h2_td_H_20260709_145838/
+?? assets/experiments/trajectories/h2_td_H_r2_20260709_213946/
+?? assets/experiments/trajectories/h2_td_H_r_20260709_191133/
+?? assets/experiments/trajectories/h2_td_I_20260709_162827/
+?? assets/experiments/trajectories/h2_td_I_r2_20260709_215238/
+?? assets/experiments/trajectories/h2_td_I_r_20260709_193556/
+?? assets/experiments/trajectories/h2_td_I_solo_20260709_233353/
+?? assets/experiments/trajectories/h2_td_J_20260709_200141/
+?? assets/experiments/trajectories/h2_td_J_r2_20260709_213519/
+?? assets/experiments/trajectories/h2_td_K_20260709_202645/
+?? assets/experiments/trajectories/h2_td_K_r2_20260709_221353/
+?? assets/experiments/trajectories/h2_td_K_solo_20260709_234012/
+?? assets/experiments/trajectories/h2_td_L_20260709_213517/
+?? assets/experiments/trajectories/h2_td_L_20260709_232740/
+?? assets/experiments/trajectories/h2_td_M_20260709_214029/
+?? assets/experiments/trajectories/h2_td_M_solo_20260710_012744/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_000_20260710_233824/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_001_20260710_234314/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_002_20260710_234808/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_005_20260710_235302/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_007_20260710_235754/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_008_20260711_000235/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_009_20260711_000722/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_011_20260711_001217/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_012_20260711_001708/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_013_20260711_002158/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_015_20260711_002649/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_016_20260711_003143/
+?? assets/experiments/trajectories/h4pre_h4_navgen_31_017_20260711_003632/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_000_a_20260711_025218/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_000_a_20260711_062032/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_000_b_20260711_030837/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_000_b_20260711_063635/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_001_a_20260711_032459/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_001_a_20260711_065059/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_001_b_20260711_034400/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_001_b_20260711_072642/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_002_a_20260711_040105/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_002_a_20260711_074612/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_002_b_20260711_041626/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_002_b_20260711_080010/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_005_a_20260711_043246/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_005_a_20260711_081529/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_005_b_20260711_044717/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_005_b_20260711_083211/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_007_a_20260711_050247/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_007_a_20260711_084715/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_007_b_20260711_090144/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_008_a_20260711_113523/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_008_b_20260711_115029/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_009_a_20260711_091557/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_009_b_20260711_093348/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_011_a_20260711_095129/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_011_b_20260711_100853/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_012_a_20260711_120600/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_012_b_20260711_122325/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_013_a_20260711_102623/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_013_b_20260711_104420/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_015_a_20260711_110153/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_016_a_20260711_123934/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_016_b_20260711_125743/
+?? assets/experiments/trajectories/h4rec_h4_navgen_31_017_a_20260711_111916/
+?? assets/experiments/trajectories/h6_smoke_uturn01_20260712_170136/
+?? assets/experiments/trajectories/h6_smoke_uturn01_full_20260712_171140/
+?? assets/experiments/trajectories/h6pre_h6_chain_01_20260712_174806/
+?? assets/experiments/trajectories/h6pre_h6_chain_01_20260712_183924/
+?? assets/experiments/trajectories/h6pre_h6_chain_02_20260712_181415/
+?? assets/experiments/trajectories/h6pre_h6_compound_01_20260712_180527/
+?? assets/experiments/trajectories/h6pre_h6_ftL_01_20260712_175218/
+?? assets/experiments/trajectories/h6pre_h6_sharpmulti_01_20260712_175643/
+?? assets/experiments/trajectories/h6pre_h6_tightcorr_01_20260712_180106/
+?? assets/experiments/trajectories/h6pre_h6_uturn_01_20260712_174342/
+?? assets/experiments/trajectories/h6pre_h6_uturn_02_20260712_180949/
+?? assets/experiments/trajectories/yaw_test_20260710_063415/
+?? assets/experiments/trajectories/yaw_test_20260710_084009/
+?? assets/experiments/trajectories/yaw_test_20260710_085548/
+?? assets/experiments/trajectories/yaw_test_20260710_172200/
+?? assets/experiments/trajectories/yaw_test_20260710_173751/
+?? assets/experiments/trajectories/yaw_test_20260710_180103/
+?? assets/experiments/trajectories/yaw_test_20260710_180647/
+?? assets/robots/yahboom_m3_pro/yahboom_m3pro.bak-20260708-0602.usd
+?? assets/robots/yahboom_m3_pro/yahboom_m3pro.bak-20260708-0612.usd
+?? assets/robots/yahboom_m3_pro/yahboom_m3pro.bak-20260708-1411.usd
+?? checkpoints/
+?? configs/gnm/gnm_h4_navgen_diversity.yaml
+?? configs/gnm/gnm_h5_mixed_replay.yaml
+?? configs/gnm/isaac_office_stopping_demo.yaml
+?? datasets/isaac_hospital_h3clean/
+?? datasets/isaac_hospital_h4/
+?? datasets/isaac_hospital_h5/
+?? datasets/isaac_hospital_imagenav_v0/
+?? datasets/isaac_hospital_split/
+?? datasets/vlntube_expanded/
+?? datasets/vlntube_generated/
+?? datasets/vlntube_scene_holdout/
+?? scripts/gnm/build_h4_dataset_root.py
+?? scripts/gnm/build_h5_split_manifest.py
+?? scripts/gnm/h4_governance_adjudicate.py
+?? scripts/gnm/h5_governance_adjudicate.py
+?? scripts/gnm/h6_precheck_verdicts.py
+?? scripts/gnm/isaac_office_stopping_demo.py
+?? scripts/gnm/isaac_tracka_metrics_showcase.py
+?? scripts/gnm/isaac_tracka_metrics_showcase.py.bak_before_scene_usd
+?? scripts/gnm/isaac_tracka_metrics_showcase.py.bak_scene_usd
+?? scripts/gnm/probe_isaac_assets.py
+?? scripts/gnm/record_isaac_tracka_showcase.sh
+?? scripts/gnm/validate_h4_dataset.py
+?? tests/gnm/test_isaac_office_stopping_demo.py
+
+--- [2/3] MINE (H6-scoped) vs UNRELATED (must NOT be committed) ---
+H6-SCOPED (mine):
+    M assets/experiments/hospital_h2_collection_20260709/h6_route_family_approval_table.csv
+    M assets/experiments/hospital_h6_routes/h6_chain_01.json
+    M scripts/datasets/hospital_h6_generate_hard_routes.py
+    M scripts/gnm/execution_feasibility_decider.py
+   ?? assets/experiments/hospital_h2_collection_20260709/h6_excluded_routes.json
+   ?? assets/experiments/hospital_h2_collection_20260709/h6_pre_recording_snapshot_20260712_192927.txt
+   ?? assets/experiments/hospital_h2_collection_20260709/h6_precheck_verdict_table.csv
+   ?? assets/experiments/hospital_h2_collection_20260709/h6_precheck_verdict_table.json
+   ?? assets/experiments/hospital_h6_routes/rejected/
+   ?? scripts/gnm/h6_precheck_verdicts.py
+UNRELATED pre-existing (exclude from any commit):
+    M scripts/datasets/convert_hospital_rosbags_to_gnm.py
+    M scripts/datasets/hospital_navgen_sample_routes.py
+    M scripts/gnm/06_evaluate.py
+   ?? assets/experiments/hospital_h2_collection_20260709/h4_precheck_verdict_table.json
+
+--- [4] old out-of-bounds chain_01 preserved as rejected evidence ---
+   present; reason: exceeds +/-6.0m runtime XY control-authority bound; out-of-bounds waypoints: [[-6.4, -4.55
+--- [5] active chain_01 in-bounds ---
+   x[-3.50,0.50] y[-1.00,-0.45] within +/-6m: True
+--- [6] static decider 8/8 + REJECT_XY_BOUND active ---
+   static: 8 /8 PASS_DEMONSTRATION
+   old chain_01 -> REJECT_XY_BOUND
+--- [7] live prechecks 8/8 PASS + route set matches ---
+   live: 8 / 8 PASS
+   route set == precheck set: True (8 routes)
+--- [8] disk (need >150G) ---
+   360G free, 59% used
+--- [9] stale Isaac/ROS/rosbag procs ---
+--- [10] DDS shm ---
+--- [+] active rclone/archive jobs ---

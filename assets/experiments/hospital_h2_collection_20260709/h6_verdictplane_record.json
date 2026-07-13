@@ -1,0 +1,16 @@
+{
+  "action": "promote_model",
+  "candidate": "h6_hard_families",
+  "scope": "internal Isaac-Hospital-ImageNav-v0 line only",
+  "verdict": "deny",
+  "governance_mode": "DIAGNOSTIC_ONLY_NOT_PROMOTED",
+  "matched_rule": {
+    "match": {
+      "tool": "model.promote",
+      "args.driftguard_net_gate": "promote",
+      "args.diagnostic_only": true
+    },
+    "decision": "deny"
+  },
+  "reason": "H6 is a diagnostic coverage experiment; promotion is blocked by policy pending explicit human approval. VerdictPlane denies the promote action (computed dual-guard net_gate=promote)."
+}

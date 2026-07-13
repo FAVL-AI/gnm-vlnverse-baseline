@@ -1,0 +1,10 @@
+{
+  "expected_goal_id": "h2_weave_J",
+  "observed_goal_ids": [
+    "h2_weave_J"
+  ],
+  "single_fixed_goal": true,
+  "boundary": "All H6 episodes share one FIXED placeholder goal image (h2_weave_J). Metrics computed against it measure route-family-diverse scripted imitation under the current pipeline, NOT goal-image conditioning. No goal-conditioning claim is admissible from this collection.",
+  "not_real_robot": true,
+  "not_public_benchmark": true
+}

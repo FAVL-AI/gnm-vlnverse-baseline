@@ -1,0 +1,73 @@
+{
+  "project": "gnm-vlnverse-baseline",
+  "case_study": "h6_hard_families",
+  "run_name": "h5_mixed_replay_on_h6_heldouts",
+  "seed": 42,
+  "model": {
+    "name": "MobileNetV2-GNM",
+    "condition": "h5_reference",
+    "checkpoint_path": "checkpoints/h5_mixed_replay_finetune/best.pt",
+    "checkpoint_sha256": "39acd488f2274f1c6ef8ec6932a0ea3a2648fedcc5da76371b6b8cb5339db865",
+    "selected_by": "n/a (reference)"
+  },
+  "dataset": {
+    "name": "Isaac-Hospital-ImageNav-v0 / H6 hard-route families",
+    "camera": "Yahboom front-facing RGB (Isaac Sim)",
+    "train_episodes": 10,
+    "val_episodes": 2,
+    "train_families": "uturn_01/chain_01/ftL_01/sharpmulti_01/tightcorr_01 (a+b)",
+    "val_family": "compound_01 (a+b)",
+    "heldout_h6hard": "uturn_02/chain_02 (n=4, fresh)",
+    "heldout_h4": "008/012/016 (n=6)",
+    "heldout_prior": "uturn/chain/ftL (n=6)",
+    "goal": "h2_weave_J (FIXED placeholder)",
+    "leakage_check": "PASS",
+    "scripted_expert": true
+  },
+  "metrics": {
+    "test_h4": {
+      "sr": 0.3333,
+      "osr": 1.0,
+      "spl": 0.3333,
+      "ne_m": 5.0226,
+      "ndtw": 0.3821,
+      "tl_m": 4.4032,
+      "cls": 0.5905
+    },
+    "test_h6hard": {
+      "sr": 0.0,
+      "osr": 0.0,
+      "spl": 0.0,
+      "ne_m": 8.2499,
+      "ndtw": 0.1586,
+      "tl_m": 4.8129,
+      "cls": 0.134
+    },
+    "test_prior": {
+      "sr": 0.0,
+      "osr": 0.3333,
+      "spl": 0.0,
+      "ne_m": 7.1864,
+      "ndtw": 0.2895,
+      "tl_m": 4.4162,
+      "cls": 0.254
+    },
+    "test_combined": {
+      "sr": 0.1667,
+      "osr": 0.6667,
+      "spl": 0.1667,
+      "ne_m": 6.1045,
+      "ndtw": 0.3358,
+      "tl_m": 4.4097,
+      "cls": 0.4223
+    }
+  },
+  "collision_rate": "N/A offline (CR 0.0 by construction); recorded collections were 0-contact / route_completed=True",
+  "governance_mode": "DIAGNOSTIC_ONLY_NOT_PROMOTED",
+  "driftguard": {
+    "promotion_candidate": false,
+    "incumbent": null,
+    "decision": "prior_diagnostic_reference"
+  },
+  "claim_boundary": "Internal Isaac-Hospital-ImageNav-v0 simulation evidence; fixed placeholder goal => NOT goal-image conditioning evidence; scripted-expert imitation; not real-robot, not a public benchmark, no SOTA claim."
+}

@@ -1,0 +1,100 @@
+{
+  "net_gate": "promote",
+  "governance_mode": "DIAGNOSTIC_ONLY_NOT_PROMOTED",
+  "rule": "net PROMOTE would require BOTH the H6-hard-heldout improvement guard AND the prior-heldout non-regression guard (SR & SPL >= incumbent, NE not materially worse). Reported as diagnostic; promotion is administratively BLOCKED pending explicit human approval regardless of this gate.",
+  "improvement_guard_h6hard": {
+    "test": "h6_fresh_hard_heldout_uturn02_chain02",
+    "n_test_episodes": 4,
+    "pass": true,
+    "checks": {
+      "sr": {
+        "incumbent": 0.0,
+        "candidate": 0.0,
+        "pass": true
+      },
+      "spl": {
+        "incumbent": 0.0,
+        "candidate": 0.0,
+        "pass": true
+      },
+      "ne_m": {
+        "incumbent": 21.3614,
+        "candidate": 10.5754,
+        "pass": true,
+        "material_worsening_threshold_m": 0.1
+      }
+    }
+  },
+  "regression_guard_prior_heldout": {
+    "test": "prior_heldout_uturn_chain_ftL",
+    "n_test_episodes": 6,
+    "pass": true,
+    "checks": {
+      "sr": {
+        "incumbent": 0.1667,
+        "candidate": 0.1667,
+        "pass": true
+      },
+      "spl": {
+        "incumbent": 0.1667,
+        "candidate": 0.1667,
+        "pass": true
+      },
+      "ne_m": {
+        "incumbent": 12.7611,
+        "candidate": 7.7329,
+        "pass": true,
+        "material_worsening_threshold_m": 0.1
+      }
+    }
+  },
+  "context_h4_heldout": {
+    "test": "h4_heldout_families_008_012_016",
+    "n_test_episodes": 6,
+    "pass": true,
+    "checks": {
+      "sr": {
+        "incumbent": 0.0,
+        "candidate": 0.3333,
+        "pass": true
+      },
+      "spl": {
+        "incumbent": 0.0,
+        "candidate": 0.3007,
+        "pass": true
+      },
+      "ne_m": {
+        "incumbent": 14.0356,
+        "candidate": 6.1472,
+        "pass": true,
+        "material_worsening_threshold_m": 0.1
+      }
+    }
+  },
+  "combined_aggregate_context": {
+    "test": "combined_heldout_n12",
+    "n_test_episodes": 12,
+    "pass": true,
+    "checks": {
+      "sr": {
+        "incumbent": 0.0833,
+        "candidate": 0.25,
+        "pass": true
+      },
+      "spl": {
+        "incumbent": 0.0833,
+        "candidate": 0.2337,
+        "pass": true
+      },
+      "ne_m": {
+        "incumbent": 13.3983,
+        "candidate": 6.94,
+        "pass": true,
+        "material_worsening_threshold_m": 0.1
+      }
+    }
+  },
+  "incumbent_run": "h1_hospital_front_rgb_finetune",
+  "candidate_run": "h6_hard_families_seed42",
+  "note": "H6 vs H1 on fresh HARD held-out (guard PASS): SR 0.000->0.000, SPL 0.000->0.000, NE 21.36->10.58 m, nDTW 0.021->0.111 (n=4). prior held-out (guard PASS): SR 0.167->0.167, SPL 0.167->0.167, NE 12.76->7.73 m, nDTW 0.276->0.325 (n=6). H4 held-out context: SR 0.000->0.333, SPL 0.000->0.301, NE 14.04->6.15 m, nDTW 0.167->0.378 (n=6). combined context: SR 0.083->0.250, SPL 0.083->0.234, NE 13.40->6.94 m, nDTW 0.222->0.351 (n=12). Fixed placeholder goal => success/SPL measure scripted-imitation reproduction, not goal-image conditioning."
+}

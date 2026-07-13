@@ -1,0 +1,102 @@
+{
+  "n_episodes": 16,
+  "all_clean": true,
+  "per_episode": [
+    {
+      "episode_label": "h6rec_h6_uturn_01_a",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_uturn_01_b",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_chain_01_a",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_chain_01_b",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_ftL_01_a",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_ftL_01_b",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_sharpmulti_01_a",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_sharpmulti_01_b",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_tightcorr_01_a",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_tightcorr_01_b",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_compound_01_a",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_compound_01_b",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_uturn_02_a",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_uturn_02_b",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_chain_02_a",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    },
+    {
+      "episode_label": "h6rec_h6_chain_02_b",
+      "cleanup_status": "clean",
+      "stale_procs_after": [],
+      "dds_shm_after": []
+    }
+  ]
+}

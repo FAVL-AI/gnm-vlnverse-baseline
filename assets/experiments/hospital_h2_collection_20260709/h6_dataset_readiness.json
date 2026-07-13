@@ -1,0 +1,12 @@
+{
+  "ready_for_training": true,
+  "artifacts_all_complete": true,
+  "leakage_clean": true,
+  "single_fixed_goal": true,
+  "counts": {
+    "train": 10,
+    "val": 2,
+    "test_h6hard": 4
+  },
+  "data_root": "datasets/isaac_hospital_h6"
+}

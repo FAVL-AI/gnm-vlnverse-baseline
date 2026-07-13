@@ -1,0 +1,165 @@
+{
+  "note": "per-route-family held-out results; success = SR>=1 at 3 m; diagnostic; fixed placeholder goal (h6hard) => imitation fidelity, not goal conditioning",
+  "table": {
+    "test_h4/navgen_31_008": {
+      "h1": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 16.8
+      },
+      "h5": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 7.231
+      },
+      "h6": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 8.818
+      }
+    },
+    "test_h4/navgen_31_012": {
+      "h1": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 16.547
+      },
+      "h5": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 6.234
+      },
+      "h6": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 8.634
+      }
+    },
+    "test_h4/navgen_31_016": {
+      "h1": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 8.761
+      },
+      "h5": {
+        "n": 2,
+        "successes": 2,
+        "SR": 1.0,
+        "mean_NE_m": 1.603
+      },
+      "h6": {
+        "n": 2,
+        "successes": 2,
+        "SR": 1.0,
+        "mean_NE_m": 0.989
+      }
+    },
+    "test_h6hard/chain_02": {
+      "h1": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 16.433
+      },
+      "h5": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 5.154
+      },
+      "h6": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 7.421
+      }
+    },
+    "test_h6hard/uturn_02": {
+      "h1": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 26.29
+      },
+      "h5": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 11.346
+      },
+      "h6": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 13.729
+      }
+    },
+    "test_prior/chain": {
+      "h1": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 19.578
+      },
+      "h5": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 11.1
+      },
+      "h6": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 12.64
+      }
+    },
+    "test_prior/ftL": {
+      "h1": {
+        "n": 2,
+        "successes": 1,
+        "SR": 0.5,
+        "mean_NE_m": 3.071
+      },
+      "h5": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 5.585
+      },
+      "h6": {
+        "n": 2,
+        "successes": 1,
+        "SR": 0.5,
+        "mean_NE_m": 3.59
+      }
+    },
+    "test_prior/uturn": {
+      "h1": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 15.635
+      },
+      "h5": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 4.874
+      },
+      "h6": {
+        "n": 2,
+        "successes": 0,
+        "SR": 0.0,
+        "mean_NE_m": 6.968
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "h6_final_adjudication": "DIAGNOSTIC_ONLY_NOT_PROMOTED",
+  "experiment": "H6 hard-route-family coverage diagnostic",
+  "hypothesis": "adding CLEAN hard-route families (uturn/chain/ftL/sharpmulti/tightcorr) to TRAINING improves success on hard held-out route families \u2014 the H5 coverage gap, not just a balance gap",
+  "improvement_guard_h6hard": true,
+  "regression_guard_prior_heldout": true,
+  "driftguard_net": "promote",
+  "verdictplane_verdict": "deny",
+  "h6hard_result": "SR 0.000->0.000, SPL 0.000->0.000, NE 21.36->10.58 m, nDTW 0.021->0.111 (n=4)",
+  "prior_heldout_result": "SR 0.167->0.167, SPL 0.167->0.167, NE 12.76->7.73 m, nDTW 0.276->0.325 (n=6)",
+  "h4_heldout_result": "SR 0.000->0.333, SPL 0.000->0.301, NE 14.04->6.15 m, nDTW 0.167->0.378 (n=6)",
+  "combined_result": "SR 0.083->0.250, SPL 0.083->0.234, NE 13.40->6.94 m, nDTW 0.222->0.351 (n=12)",
+  "final_promotion_decision": "NOT PROMOTED (DIAGNOSTIC ONLY)",
+  "incumbent": "h1_hospital_front_rgb_finetune RETAINED",
+  "candidate": "h6_hard_families retained as diagnostic evidence",
+  "collision_regression": "none (CR 0.0 offline; collections 0-contact)",
+  "small_n_caveat": "held-out sets are n=4 (h6hard) / n=6 (h4, prior) / n=12 (combined); single-episode flips move SR by 0.17-0.25",
+  "claim_boundary": "fixed placeholder goal => NOT goal-image conditioning; scripted-expert imitation; diagnostic only",
+  "next_options": [
+    "accept H6 as diagnostic-only (current)",
+    "if H6 lifts hard held-out without prior regression, plan a goal-conditioned (non-fixed-goal) follow-up before any promotion",
+    "expand hard-family variants / episodes to reduce small-n"
+  ]
+}

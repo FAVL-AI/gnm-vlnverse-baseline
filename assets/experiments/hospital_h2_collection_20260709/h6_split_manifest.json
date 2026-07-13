@@ -1,0 +1,33 @@
+{
+  "scope": "NEW H6 hard-family recordings only (allowlist; RECORDED_OK)",
+  "splits": {
+    "train": [
+      "h6rec_h6_uturn_01_a",
+      "h6rec_h6_uturn_01_b",
+      "h6rec_h6_chain_01_a",
+      "h6rec_h6_chain_01_b",
+      "h6rec_h6_ftL_01_a",
+      "h6rec_h6_ftL_01_b",
+      "h6rec_h6_sharpmulti_01_a",
+      "h6rec_h6_sharpmulti_01_b",
+      "h6rec_h6_tightcorr_01_a",
+      "h6rec_h6_tightcorr_01_b"
+    ],
+    "val": [
+      "h6rec_h6_compound_01_a",
+      "h6rec_h6_compound_01_b"
+    ],
+    "fresh_heldout": [
+      "h6rec_h6_uturn_02_a",
+      "h6rec_h6_uturn_02_b",
+      "h6rec_h6_chain_02_a",
+      "h6rec_h6_chain_02_b"
+    ]
+  },
+  "counts": {
+    "train": 10,
+    "val": 2,
+    "fresh_heldout": 4
+  },
+  "note": "downstream full-dataset split (mix with H4/H2.4 per h6_plan sec 4) is a separate training-prep step, gated on review; not built here."
+}

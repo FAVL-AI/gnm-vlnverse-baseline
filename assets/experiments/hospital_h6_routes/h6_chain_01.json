@@ -3,39 +3,39 @@
   "route_type": "chain",
   "waypoints": [
     [
-      -4.0,
-      -4.0
+      -3.5,
+      -1.0
     ],
     [
-      -4.8,
-      -4.55
+      -2.7,
+      -0.45
     ],
     [
-      -5.6,
-      -4.0
+      -1.9,
+      -1.0
     ],
     [
-      -6.4,
-      -4.55
+      -1.1,
+      -0.45
     ],
     [
-      -7.2,
-      -4.0
+      -0.3,
+      -1.0
     ],
     [
-      -8.0,
-      -4.55
+      0.5,
+      -0.45
     ]
   ],
   "start_pose": {
-    "x": -4.0,
-    "y": -4.0,
+    "x": -3.5,
+    "y": -1.0,
     "yaw_rad": 0.0
   },
   "goal_pose": {
-    "x": -8.0,
-    "y": -4.55,
+    "x": 0.5,
+    "y": -0.45,
     "yaw_rad": 0.0
   },
-  "provenance": "H6 authored hard-route template, decider-gated (check_map + check_curvature); measured occupancy + continuous yaw model"
+  "provenance": "H6 hard-route template, RE-AUTHORED within +/-6.0m runtime XY control-authority bound (prior placement left the box -> live precheck left_xy_bounds e-stop); decider-gated (check_map + check_xy_bound + check_curvature)"
 }

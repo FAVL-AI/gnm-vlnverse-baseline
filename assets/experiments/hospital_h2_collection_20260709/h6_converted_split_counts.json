@@ -1,0 +1,40 @@
+{
+  "counts": {
+    "train": 10,
+    "val": 2,
+    "test_h6hard": 4
+  },
+  "route_type_coverage": {
+    "chain": {
+      "train": 2,
+      "val": 0,
+      "test_h6hard": 2
+    },
+    "compound_turn": {
+      "train": 0,
+      "val": 2,
+      "test_h6hard": 0
+    },
+    "ftL_sharp": {
+      "train": 2,
+      "val": 0,
+      "test_h6hard": 0
+    },
+    "sharp_multi_turn": {
+      "train": 2,
+      "val": 0,
+      "test_h6hard": 0
+    },
+    "tight_corridor_turn": {
+      "train": 2,
+      "val": 0,
+      "test_h6hard": 0
+    },
+    "uturn": {
+      "train": 2,
+      "val": 0,
+      "test_h6hard": 2
+    }
+  },
+  "n_episodes": 16
+}

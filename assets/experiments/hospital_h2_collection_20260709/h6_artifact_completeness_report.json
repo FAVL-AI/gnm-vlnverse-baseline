@@ -1,0 +1,103 @@
+{
+  "n_episodes": 16,
+  "n_complete": 16,
+  "all_complete": true,
+  "items": [
+    {
+      "episode_label": "h6rec_h6_uturn_01_a",
+      "rosbag_bytes": 1964363776,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_uturn_01_a_20260712_195504"
+    },
+    {
+      "episode_label": "h6rec_h6_uturn_01_b",
+      "rosbag_bytes": 1964339200,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_uturn_01_b_20260712_200832"
+    },
+    {
+      "episode_label": "h6rec_h6_chain_01_a",
+      "rosbag_bytes": 1964318720,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_chain_01_a_20260712_202208"
+    },
+    {
+      "episode_label": "h6rec_h6_chain_01_b",
+      "rosbag_bytes": 1966211072,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_chain_01_b_20260712_203554"
+    },
+    {
+      "episode_label": "h6rec_h6_ftL_01_a",
+      "rosbag_bytes": 1965260800,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_ftL_01_a_20260712_205017"
+    },
+    {
+      "episode_label": "h6rec_h6_ftL_01_b",
+      "rosbag_bytes": 1966157824,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_ftL_01_b_20260712_210254"
+    },
+    {
+      "episode_label": "h6rec_h6_sharpmulti_01_a",
+      "rosbag_bytes": 1921835008,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_sharpmulti_01_a_20260712_211543"
+    },
+    {
+      "episode_label": "h6rec_h6_sharpmulti_01_b",
+      "rosbag_bytes": 1958785024,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_sharpmulti_01_b_20260712_212824"
+    },
+    {
+      "episode_label": "h6rec_h6_tightcorr_01_a",
+      "rosbag_bytes": 1965289472,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_tightcorr_01_a_20260712_214230"
+    },
+    {
+      "episode_label": "h6rec_h6_tightcorr_01_b",
+      "rosbag_bytes": 1956032512,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_tightcorr_01_b_20260712_215508"
+    },
+    {
+      "episode_label": "h6rec_h6_compound_01_a",
+      "rosbag_bytes": 1953243136,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_compound_01_a_20260712_220936"
+    },
+    {
+      "episode_label": "h6rec_h6_compound_01_b",
+      "rosbag_bytes": 1966161920,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_compound_01_b_20260712_222300"
+    },
+    {
+      "episode_label": "h6rec_h6_uturn_02_a",
+      "rosbag_bytes": 1968984064,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_uturn_02_a_20260712_223754"
+    },
+    {
+      "episode_label": "h6rec_h6_uturn_02_b",
+      "rosbag_bytes": 1965305856,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_uturn_02_b_20260712_225103"
+    },
+    {
+      "episode_label": "h6rec_h6_chain_02_a",
+      "rosbag_bytes": 1964384256,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_chain_02_a_20260712_230437"
+    },
+    {
+      "episode_label": "h6rec_h6_chain_02_b",
+      "rosbag_bytes": 1964322816,
+      "artifact_complete": true,
+      "episode_dir": "assets/experiments/trajectories/h6rec_h6_chain_02_b_20260712_231754"
+    }
+  ]
+}

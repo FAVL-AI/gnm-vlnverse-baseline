@@ -6,15 +6,16 @@ routes, collectors, maps, and measured robot dynamics are checked BEFORE
 training data is accepted. Its job is not to make the robot smarter; it
 is to stop bad data from entering the research pipeline.
 
-Five checks -> seven verdicts:
+Six checks -> eight verdicts:
   1 map feasibility (measured occupancy, robot-radius dilation)
-  2 yaw/curvature feasibility (measured yaw calibration curve)
-  3 controller feasibility (full-route precheck telemetry)
-  4 collector validity (scripted expert vs learned-policy rollout)
-  5 evidence integrity (process + artifact completeness)
+  2 XY-bound feasibility (runtime control-authority safety box, +/-6 m)
+  3 yaw/curvature feasibility (measured yaw calibration curve)
+  4 controller feasibility (full-route precheck telemetry)
+  5 collector validity (scripted expert vs learned-policy rollout)
+  6 evidence integrity (process + artifact completeness)
 
 Verdicts: PASS_DEMONSTRATION | PASS_EVALUATION_ONLY | REJECT_MAP_DEFECT |
-REJECT_YAW_INFEASIBLE | REJECT_CONTROLLER_INFEASIBLE |
+REJECT_XY_BOUND | REJECT_YAW_INFEASIBLE | REJECT_CONTROLLER_INFEASIBLE |
 REJECT_ARTIFACT_INCOMPLETE | REJECT_POLICY_NOT_EXPERT
 
 Literature anchors (components exist; the combined gate is ours):
@@ -34,6 +35,9 @@ REPO = Path(__file__).resolve().parents[2]
 NAVGEN = REPO / "assets/datasets/isaac_hospital_navgen_v0"
 ROBOT_RADIUS_M = 0.20
 CURVATURE_MARGIN = 0.8          # use only 80% of measured capability
+RUNTIME_XY_LIMIT_M = 6.0        # control-authority XY safety box; mirrors the
+                                # live m3pro_ros2_bringup watchdog (leaving it
+                                # e-stops with cl_stop_reason=left_xy_bounds)
 
 
 def load_measured_map():
@@ -125,6 +129,16 @@ def check_curvature(waypoints, yaw_model, v_nominal=0.15,
     return kappa_max, violations
 
 
+def check_xy_bound(waypoints, limit=RUNTIME_XY_LIMIT_M):
+    """Runtime XY control-authority envelope (static mirror of the live
+    watchdog). Returns the waypoints outside the +/-limit box (empty ==
+    in-bounds). A route can be map-clean and curvature-feasible yet still
+    plan outside this box, in which case the live controller e-stops
+    (cl_stop_reason=left_xy_bounds) mid-route -- infeasible for collection."""
+    return [[round(x, 3), round(y, 3)] for x, y in waypoints
+            if abs(x) > limit or abs(y) > limit]
+
+
 def decide(route_file, collector_type, route_family_seen_by_policy=False,
            precheck=None, artifacts_complete=None):
     """precheck: dict with completed/total_contacts/max_streak (optional).
@@ -141,6 +155,14 @@ def decide(route_file, collector_type, route_family_seen_by_policy=False,
                 "route_id": route.get("route_id"),
                 "occupied_intersections": hits[:8],
                 "n_intersections": len(hits)}
+
+    oob = check_xy_bound(wp)
+    if oob:
+        return {"verdict": "REJECT_XY_BOUND",
+                "route_id": route.get("route_id"),
+                "out_of_bounds_waypoints": oob[:8],
+                "n_out_of_bounds": len(oob),
+                "limit_m": RUNTIME_XY_LIMIT_M}
 
     kmax, viol = check_curvature(wp, yaw_model)
     if viol and isinstance(viol, list) and isinstance(viol[0], dict):
