@@ -1,0 +1,107 @@
+{
+  "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+  "asset_is_hospital_usd": true,
+  "isaac_sim_version": "5.1.0.0",
+  "resolution": [
+    1280,
+    720
+  ],
+  "robot_camera_height_m": 0.35,
+  "synthetic": false,
+  "placeholder": false,
+  "warning_on_every_visual": "Target hospital-scene render \u2014 not original H6 training/evaluation data.",
+  "claim_boundary": "These are TARGET-SCENE re-renders of the real Isaac hospital.usd for the corrected deck and the next hospital run. Route labels are route-TYPE illustrations, not the original H6 split data. They are NOT the H6 training/evaluation frames (H6 ran in the procedural --scene stage). They are static-camera views, not recorded trajectories.",
+  "timestamp": "2026-07-13T04:36:58",
+  "routes": [
+    {
+      "id": "hospital_render_uturn",
+      "illustration_label": "u-turn route-type illustration \u2014 target hospital scene",
+      "frames": {
+        "start": {
+          "file": "hospital_render_uturn_start.png",
+          "candidate": "r04"
+        },
+        "mid": {
+          "file": "hospital_render_uturn_mid.png",
+          "candidate": "r01"
+        },
+        "goal": {
+          "file": "hospital_render_uturn_goal.png",
+          "candidate": "r02"
+        }
+      },
+      "contact_sheet": "hospital_render_uturn_contact_sheet.png"
+    },
+    {
+      "id": "hospital_render_chain",
+      "illustration_label": "chain route-type illustration \u2014 repaired route pattern",
+      "frames": {
+        "start": {
+          "file": "hospital_render_chain_start.png",
+          "candidate": "r05"
+        },
+        "mid": {
+          "file": "hospital_render_chain_mid.png",
+          "candidate": "r03"
+        },
+        "goal": {
+          "file": "hospital_render_chain_goal.png",
+          "candidate": "r07"
+        }
+      },
+      "contact_sheet": "hospital_render_chain_contact_sheet.png"
+    },
+    {
+      "id": "hospital_render_compound",
+      "illustration_label": "compound-turn route-type illustration \u2014 validation-style route pattern",
+      "frames": {
+        "start": {
+          "file": "hospital_render_compound_start.png",
+          "candidate": "r12"
+        },
+        "mid": {
+          "file": "hospital_render_compound_mid.png",
+          "candidate": "r08"
+        },
+        "goal": {
+          "file": "hospital_render_compound_goal.png",
+          "candidate": "r11"
+        }
+      },
+      "contact_sheet": "hospital_render_compound_contact_sheet.png"
+    },
+    {
+      "id": "hospital_render_unseen",
+      "illustration_label": "unseen chain/u-turn route-type illustration \u2014 fresh-held-out-style pattern",
+      "frames": {
+        "start": {
+          "file": "hospital_render_unseen_start.png",
+          "candidate": "r14"
+        },
+        "mid": {
+          "file": "hospital_render_unseen_mid.png",
+          "candidate": "r16"
+        },
+        "goal": {
+          "file": "hospital_render_unseen_goal.png",
+          "candidate": "r09"
+        }
+      },
+      "contact_sheet": "hospital_render_unseen_contact_sheet.png"
+    }
+  ],
+  "context_renders": [
+    {
+      "id": "hospital_context_reception",
+      "file": "hospital_context_reception.png",
+      "candidate": "ctx2",
+      "note": "hospital scene context render \u2014 not used as training/evaluation image (camera raised above robot height for overview)"
+    },
+    {
+      "id": "hospital_context_corridor",
+      "file": "hospital_context_corridor.png",
+      "candidate": "ctx1",
+      "note": "hospital scene context render \u2014 not used as training/evaluation image (camera raised above robot height for overview)"
+    }
+  ]
+}
