@@ -1,0 +1,64 @@
+{
+  "gate": {
+    "method": "aHash 16x16 (crude); recommend a learned embedding (CLIP/DINO cosine) or SSIM for the recording-time final gate",
+    "cross_split_max": 0.8,
+    "within_split_max": 0.85,
+    "failure_action": "reject the frame as visual leakage; if two same-split frames exceed within-split, keep only one; if no split-distinct set survives, re-scope H8-S"
+  },
+  "distinct_scene_inventory": {
+    "vending_alcove_east_facing": [
+      "lobby",
+      "midwest_A",
+      "midwest_B",
+      "east_A",
+      "east_B",
+      "lookalike_test"
+    ],
+    "seating_alcove_west_facing": [
+      "searchW1",
+      "searchW2"
+    ]
+  },
+  "n_distinct_scenes": 2,
+  "candidates": [
+    {
+      "candidate_id": "searchW1",
+      "view": "west-facing (yaw\u2248180) \u2014 waiting-chairs + water cooler",
+      "spawn_isaac_world": [
+        1.0,
+        0.1,
+        3.14159
+      ],
+      "collisions": 0,
+      "camera_valid": true,
+      "in_envelope": true,
+      "ahash_vs_lobby_train": 0.812,
+      "ahash_vs_east_test": 0.738,
+      "ahash_vs_midwestB_val": 0.586,
+      "semantically_distinct": true,
+      "passes_ahash_cross_split_gate": false,
+      "note": "Semantically distinct scene (seating end of the SAME alcove), but aHash vs lobby\u22480.81 exceeds the crude cross-split gate; same physical alcove as the vending views (shared floor/ceiling/wheelchair context)."
+    },
+    {
+      "candidate_id": "searchW2",
+      "view": "west-facing (yaw\u2248180) \u2014 waiting-chairs + water cooler",
+      "spawn_isaac_world": [
+        -2.0,
+        -0.2,
+        3.14159
+      ],
+      "collisions": 0,
+      "camera_valid": true,
+      "in_envelope": true,
+      "ahash_vs_lobby_train": 0.777,
+      "ahash_vs_east_test": 0.727,
+      "ahash_vs_midwestB_val": 0.551,
+      "semantically_distinct": true,
+      "passes_ahash_cross_split_gate": true,
+      "note": "Semantically distinct scene (seating end of the SAME alcove), but aHash vs lobby\u22480.81 exceeds the crude cross-split gate; same physical alcove as the vending views (shared floor/ceiling/wheelchair context)."
+    }
+  ],
+  "any_candidate_passes_ahash_cross_split": true,
+  "decision": "LIMITED_CAUSAL_PILOT_DEFER_HELDOUT_TO_H8M",
+  "rerun_H8S_design_gate_now": false
+}

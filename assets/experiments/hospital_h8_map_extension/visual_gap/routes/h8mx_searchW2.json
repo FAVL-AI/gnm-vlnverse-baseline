@@ -1,0 +1,26 @@
+{
+  "route_id": "h8mx_searchW2",
+  "family": "visual_search",
+  "intended_split": "test_candidate",
+  "waypoints": [
+    [
+      -2.0,
+      -0.2
+    ],
+    [
+      -2.3,
+      -0.2
+    ],
+    [
+      -2.6,
+      -0.2
+    ]
+  ],
+  "start_pose": {
+    "x": -2.0,
+    "y": -0.2,
+    "yaw_rad": 3.14159
+  },
+  "spawn_pose_isaac_world": "-2.0,-0.2,3.14159",
+  "provenance": "H8 imagery-gap search: yaw~180 (face away from vending alcove) to test for a visually distinct in-envelope view. Validation-only, CL_BOUND_XY unchanged."
+}
