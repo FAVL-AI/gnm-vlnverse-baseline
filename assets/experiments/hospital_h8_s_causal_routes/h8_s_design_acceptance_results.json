@@ -1,0 +1,394 @@
+{
+  "scope": "DESIGN ONLY \u2014 no collection, no training. 8-12 paired decision frames.",
+  "summary": {
+    "n_decision_frames": 10,
+    "n_active": 8,
+    "n_deferred": 2,
+    "all_active_pass": true,
+    "split_integrity_ok": false,
+    "design_ready_to_record": false,
+    "tier_counts": {
+      "PROVEN": 5,
+      "REQUIRES_VALIDATION": 3,
+      "DEFERRED": 2
+    },
+    "family_counts": {
+      "corridor_t_junction": 1,
+      "same_start_fork": 1,
+      "shared_corridor_branch": 2,
+      "near_far_same_approach": 3,
+      "stop_vs_go": 1,
+      "same_room_diff_object": 1,
+      "visually_similar_diff_location": 1
+    },
+    "families_covered": [
+      "corridor_t_junction",
+      "near_far_same_approach",
+      "same_room_diff_object",
+      "same_start_fork",
+      "shared_corridor_branch",
+      "stop_vs_go",
+      "visually_similar_diff_location"
+    ],
+    "leakage_group_split_violations": {},
+    "goal_image_coord_leakage_across_splits": {
+      "(1.0, -0.2)": [
+        "test",
+        "train"
+      ],
+      "(1.2, 0.0)": [
+        "train",
+        "val"
+      ]
+    },
+    "family_by_split": {
+      "train": {
+        "corridor_t_junction": 1,
+        "same_start_fork": 1,
+        "shared_corridor_branch": 1,
+        "near_far_same_approach": 1,
+        "stop_vs_go": 1
+      },
+      "test": {
+        "shared_corridor_branch": 1,
+        "near_far_same_approach": 1
+      },
+      "val": {
+        "near_far_same_approach": 1
+      },
+      "none": {
+        "same_room_diff_object": 1,
+        "visually_similar_diff_location": 1
+      }
+    },
+    "gates": {
+      "margin_deg": 30.0,
+      "stop_min_m": 0.6,
+      "feas_tol_m": 0.3
+    }
+  },
+  "decision_frames": [
+    {
+      "route_id": "h8s_df01_tjunction",
+      "family": "corridor_t_junction",
+      "gate_type": "action_branch",
+      "feasibility_tier": "PROVEN",
+      "leakage_group": "G_junction",
+      "split": "train",
+      "o_d": [
+        0.2,
+        -0.2
+      ],
+      "expected_action_A": [
+        0.0,
+        1.0
+      ],
+      "expected_action_B": [
+        1.0,
+        0.0
+      ],
+      "feasibility_geometry": {
+        "o_d_on_map": true,
+        "goalA_on_map": true,
+        "goalB_on_map": true,
+        "all_endpoints_on_confirmed_map": true
+      },
+      "action_angle_separation_deg": 90.0,
+      "checks": {
+        "shared_decision_frame": true,
+        "two_goals_distinct": true,
+        "actions_differ": true,
+        "action_angle_sep_ge_30deg": true,
+        "not_route_solvable_without_goal": true,
+        "endpoints_on_confirmed_map": true
+      },
+      "pass": true
+    },
+    {
+      "route_id": "h8s_df02_fork",
+      "family": "same_start_fork",
+      "gate_type": "action_branch",
+      "feasibility_tier": "PROVEN",
+      "leakage_group": "G_junction",
+      "split": "train",
+      "o_d": [
+        0.2,
+        0.0
+      ],
+      "expected_action_A": [
+        0.8,
+        0.6
+      ],
+      "expected_action_B": [
+        0.9701,
+        -0.2425
+      ],
+      "feasibility_geometry": {
+        "o_d_on_map": true,
+        "goalA_on_map": true,
+        "goalB_on_map": true,
+        "all_endpoints_on_confirmed_map": true
+      },
+      "action_angle_separation_deg": 50.91,
+      "checks": {
+        "shared_decision_frame": true,
+        "two_goals_distinct": true,
+        "actions_differ": true,
+        "action_angle_sep_ge_30deg": true,
+        "not_route_solvable_without_goal": true,
+        "endpoints_on_confirmed_map": true
+      },
+      "pass": true
+    },
+    {
+      "route_id": "h8s_df03_branch_corridor",
+      "family": "shared_corridor_branch",
+      "gate_type": "action_branch",
+      "feasibility_tier": "REQUIRES_VALIDATION",
+      "leakage_group": "G_corridor",
+      "split": "train",
+      "o_d": [
+        0.0,
+        0.6
+      ],
+      "expected_action_A": [
+        1.0,
+        0.0
+      ],
+      "expected_action_B": [
+        0.7071,
+        0.7071
+      ],
+      "feasibility_geometry": {
+        "o_d_on_map": true,
+        "goalA_on_map": true,
+        "goalB_on_map": true,
+        "all_endpoints_on_confirmed_map": true
+      },
+      "action_angle_separation_deg": 45.0,
+      "checks": {
+        "shared_decision_frame": true,
+        "two_goals_distinct": true,
+        "actions_differ": true,
+        "action_angle_sep_ge_30deg": true,
+        "not_route_solvable_without_goal": true,
+        "endpoints_on_confirmed_map": true
+      },
+      "pass": true
+    },
+    {
+      "route_id": "h8s_df04_branch_wait",
+      "family": "shared_corridor_branch",
+      "gate_type": "action_branch",
+      "feasibility_tier": "REQUIRES_VALIDATION",
+      "leakage_group": "G_wait2",
+      "split": "test",
+      "o_d": [
+        -0.4,
+        0.1
+      ],
+      "expected_action_A": [
+        0.9778,
+        0.2095
+      ],
+      "expected_action_B": [
+        0.9333,
+        -0.359
+      ],
+      "feasibility_geometry": {
+        "o_d_on_map": true,
+        "goalA_on_map": true,
+        "goalB_on_map": true,
+        "all_endpoints_on_confirmed_map": true
+      },
+      "action_angle_separation_deg": 33.13,
+      "checks": {
+        "shared_decision_frame": true,
+        "two_goals_distinct": true,
+        "actions_differ": true,
+        "action_angle_sep_ge_30deg": true,
+        "not_route_solvable_without_goal": true,
+        "endpoints_on_confirmed_map": true
+      },
+      "pass": true
+    },
+    {
+      "route_id": "h8s_df05_nearfar_corridor",
+      "family": "near_far_same_approach",
+      "gate_type": "stop_conditioning",
+      "feasibility_tier": "PROVEN",
+      "leakage_group": "G_junction",
+      "split": "train",
+      "o_d": [
+        -0.8,
+        -0.2
+      ],
+      "expected_action_A": [
+        1.0,
+        0.0
+      ],
+      "expected_action_B": [
+        1.0,
+        0.0
+      ],
+      "feasibility_geometry": {
+        "o_d_on_map": true,
+        "goalA_on_map": true,
+        "goalB_on_map": true,
+        "all_endpoints_on_confirmed_map": true
+      },
+      "goal_distance_A_m": 1.0,
+      "goal_distance_B_m": 1.8,
+      "stop_distance_separation_m": 0.8,
+      "shared_direction_angle_deg": 0.0,
+      "checks": {
+        "shared_decision_frame": true,
+        "two_goals_distinct": true,
+        "same_direction_ok": true,
+        "stop_distance_sep_ge_min": true,
+        "not_route_solvable_without_goal": true,
+        "endpoints_on_confirmed_map": true
+      },
+      "pass": true
+    },
+    {
+      "route_id": "h8s_df06_nearfar_reception",
+      "family": "near_far_same_approach",
+      "gate_type": "stop_conditioning",
+      "feasibility_tier": "PROVEN",
+      "leakage_group": "G_reception",
+      "split": "val",
+      "o_d": [
+        -2.6,
+        -0.8
+      ],
+      "expected_action_A": [
+        1.0,
+        -0.0
+      ],
+      "expected_action_B": [
+        0.9935,
+        -0.1141
+      ],
+      "feasibility_geometry": {
+        "o_d_on_map": true,
+        "goalA_on_map": true,
+        "goalB_on_map": true,
+        "all_endpoints_on_confirmed_map": true
+      },
+      "goal_distance_A_m": 1.897,
+      "goal_distance_B_m": 3.883,
+      "stop_distance_separation_m": 1.986,
+      "shared_direction_angle_deg": -0.0,
+      "checks": {
+        "shared_decision_frame": true,
+        "two_goals_distinct": true,
+        "same_direction_ok": true,
+        "stop_distance_sep_ge_min": true,
+        "not_route_solvable_without_goal": true,
+        "endpoints_on_confirmed_map": true
+      },
+      "pass": true
+    },
+    {
+      "route_id": "h8s_df07_nearfar_waiting",
+      "family": "near_far_same_approach",
+      "gate_type": "stop_conditioning",
+      "feasibility_tier": "PROVEN",
+      "leakage_group": "G_waiting",
+      "split": "test",
+      "o_d": [
+        -2.2,
+        1.0
+      ],
+      "expected_action_A": [
+        1.0,
+        0.0
+      ],
+      "expected_action_B": [
+        0.9998,
+        -0.0195
+      ],
+      "feasibility_geometry": {
+        "o_d_on_map": true,
+        "goalA_on_map": true,
+        "goalB_on_map": true,
+        "all_endpoints_on_confirmed_map": true
+      },
+      "goal_distance_A_m": 1.803,
+      "goal_distance_B_m": 3.418,
+      "stop_distance_separation_m": 1.615,
+      "shared_direction_angle_deg": 0.0,
+      "checks": {
+        "shared_decision_frame": true,
+        "two_goals_distinct": true,
+        "same_direction_ok": true,
+        "stop_distance_sep_ge_min": true,
+        "not_route_solvable_without_goal": true,
+        "endpoints_on_confirmed_map": true
+      },
+      "pass": true
+    },
+    {
+      "route_id": "h8s_df08_stop_vs_go",
+      "family": "stop_vs_go",
+      "gate_type": "stop_conditioning",
+      "feasibility_tier": "REQUIRES_VALIDATION",
+      "leakage_group": "G_corridor",
+      "split": "train",
+      "o_d": [
+        0.0,
+        0.0
+      ],
+      "expected_action_A": [
+        1.0,
+        0.0
+      ],
+      "expected_action_B": [
+        1.0,
+        0.0
+      ],
+      "feasibility_geometry": {
+        "o_d_on_map": true,
+        "goalA_on_map": true,
+        "goalB_on_map": true,
+        "all_endpoints_on_confirmed_map": true
+      },
+      "goal_distance_A_m": 0.2,
+      "goal_distance_B_m": 1.2,
+      "stop_distance_separation_m": 1.0,
+      "shared_direction_angle_deg": 0.0,
+      "checks": {
+        "shared_decision_frame": true,
+        "two_goals_distinct": true,
+        "same_direction_ok": true,
+        "stop_distance_sep_ge_min": true,
+        "not_route_solvable_without_goal": true,
+        "endpoints_on_confirmed_map": true
+      },
+      "pass": true
+    },
+    {
+      "route_id": "h8s_df09_sameroom_object",
+      "family": "same_room_diff_object",
+      "gate_type": "action_branch",
+      "feasibility_tier": "DEFERRED",
+      "leakage_group": "G_deferred",
+      "split": "none",
+      "gate": "N/A (deferred)",
+      "pass": null,
+      "reason": "Requires a confirmed hospital room with >=2 distinct goal objects at different bearings (e.g. reception desk vs vending bay). No such multi-object room is mapped in the proven-free lobby; DEFER pending render/drive validation of a room."
+    },
+    {
+      "route_id": "h8s_df10_visually_similar",
+      "family": "visually_similar_diff_location",
+      "gate_type": "action_branch",
+      "feasibility_tier": "DEFERRED",
+      "leakage_group": "G_deferred",
+      "split": "none",
+      "gate": "N/A (deferred)",
+      "pass": null,
+      "reason": "Requires two goal images that look alike but sit at different locations (e.g. two similar doorways/corridor ends). Confirming visual similarity + spatial difference needs render validation; DEFER."
+    }
+  ]
+}
