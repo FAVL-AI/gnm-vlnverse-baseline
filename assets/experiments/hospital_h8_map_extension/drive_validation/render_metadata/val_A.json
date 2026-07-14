@@ -1,0 +1,14 @@
+{
+  "zone": "val_A",
+  "n_camera_msgs": 1454,
+  "frames_in_sheet": 3,
+  "img_wh": [
+    640,
+    480
+  ],
+  "lower_frame_black_fraction": 0.0,
+  "mean_brightness": 69.0,
+  "overexposed_fraction": 0.0057,
+  "underexposed_fraction": 0.0273,
+  "camera_valid": true
+}

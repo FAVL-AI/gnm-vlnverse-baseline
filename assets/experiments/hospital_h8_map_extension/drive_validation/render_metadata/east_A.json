@@ -1,0 +1,14 @@
+{
+  "zone": "east_A",
+  "n_camera_msgs": 1451,
+  "frames_in_sheet": 3,
+  "img_wh": [
+    640,
+    480
+  ],
+  "lower_frame_black_fraction": 0.0,
+  "mean_brightness": 54.5,
+  "overexposed_fraction": 0.0017,
+  "underexposed_fraction": 0.0537,
+  "camera_valid": true
+}

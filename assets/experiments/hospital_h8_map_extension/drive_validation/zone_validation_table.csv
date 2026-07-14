@@ -1,0 +1,10 @@
+zone,intended_split,family,in_envelope,status,collisions,camera_valid,lower_frame_black_fraction,drive_m,scene_gate_pass,spawn_isaac_world,reason
+east_A,test,near_far_same_approach,True,PROVEN_FOR_ROUTE_DESIGN,0,True,0.0,0.705,True,"[1.4, 0.1, 0.0]","0 collisions, scene-gate PASS, camera valid, drove within envelope"
+east_B,test,stop_vs_go,True,PROVEN_FOR_ROUTE_DESIGN,0,True,0.0,0.503,True,"[2.6, 0.1, 0.0]","0 collisions, scene-gate PASS, camera valid, drove within envelope"
+lookalike_test,test,visually_similar_diff_location,True,PROVEN_FOR_ROUTE_DESIGN,0,True,0.0,0.203,True,"[3.0, 0.1, 0.0]","0 collisions, scene-gate PASS, camera valid, drove within envelope"
+lobby,train,corridor_t_junction,True,PROVEN_FOR_ROUTE_DESIGN,0,True,0.0,1.702,True,"[-1.0, -0.2, 0.0]","0 collisions, scene-gate PASS, camera valid, drove within envelope"
+west_C,train,shared_corridor_branch,True,REJECTED_COLLISION,7678,False,0.2629,0.411,True,"[-5.3, 0.1, 0.0]",7678 PhysX base_link contacts + camera invalid (lower-frame black 0.2629) — navmap-free but NOT drivable here
+val_A,val,near_far_same_approach,True,NEEDS_RETRY,25,True,0.0,0.495,True,"[-3.8, 0.1, 0.0]",25 PhysX base_link contacts (borderline); one retry advised
+west_A,train,near_far_same_approach,False,DEFERRED_SAFETY_ENVELOPE_LIMITED,,,,,,"[-8.5, 0.1, 0.0]","|x|=8.5 > CL_BOUND_XY=6.0; would estop. Not run. Deferred by safety envelope, NOT a route-design or collision failure."
+west_B,train,stop_vs_go,False,DEFERRED_SAFETY_ENVELOPE_LIMITED,,,,,,"[-6.8, 0.1, 0.0]","|x|=6.8 > CL_BOUND_XY=6.0; would estop. Not run. Deferred by safety envelope, NOT a route-design or collision failure."
+hardneg_farwest,hard-negative,any,False,DEFERRED_SAFETY_ENVELOPE_LIMITED,,,,,,"[-9.9, 0.1, 0.0]","|x|=9.9 > CL_BOUND_XY=6.0; would estop. Not run. Deferred by safety envelope, NOT a route-design or collision failure."

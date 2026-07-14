@@ -1,0 +1,228 @@
+{
+  "scene": "hospital.usd",
+  "isaac_sim_version": "5.1.0.0",
+  "repository_commit": "2c9b4e151410fa47ce6acc789c52d73d7b238967",
+  "map_transform": {
+    "navmap_read_offset_bringup_to_world": [
+      2.956,
+      -6.24
+    ],
+    "measured_free_frac": 1.0,
+    "note": "offset is for READING the navmap only; spawn uses bringup(=isaac-world) coords directly."
+  },
+  "robot_asset": "yahboom_m3_pro",
+  "controller": "gnm-control route-follow, holonomic base, camera-raise 0.12 m",
+  "physics_timestep_s": 0.016666666666666666,
+  "camera_topic": "/camera/image_raw",
+  "safety_watchdog": {
+    "CL_BOUND_XY": 6.0,
+    "unchanged": true,
+    "note": "hardcoded absolute-isaac-world bound; NOT modified"
+  },
+  "repetitions_per_zone": 1,
+  "zones": [
+    {
+      "zone": "east_A",
+      "intended_split": "test",
+      "family": "near_far_same_approach",
+      "spawn_isaac_world": [
+        1.4,
+        0.1,
+        0.0
+      ],
+      "in_envelope": true,
+      "status": "PROVEN_FOR_ROUTE_DESIGN",
+      "reason": "0 collisions, scene-gate PASS, camera valid, drove within envelope",
+      "episode_id": "h8mx_val_east_A_20260714_215023",
+      "collisions": 0,
+      "scene_gate_pass": true,
+      "drive_m": 0.705,
+      "camera_valid": true,
+      "lower_frame_black_fraction": 0.0,
+      "mean_brightness": 54.5,
+      "x_range": [
+        1.4,
+        2.11
+      ]
+    },
+    {
+      "zone": "east_B",
+      "intended_split": "test",
+      "family": "stop_vs_go",
+      "spawn_isaac_world": [
+        2.6,
+        0.1,
+        0.0
+      ],
+      "in_envelope": true,
+      "status": "PROVEN_FOR_ROUTE_DESIGN",
+      "reason": "0 collisions, scene-gate PASS, camera valid, drove within envelope",
+      "episode_id": "h8mx_val_east_B_20260714_224539",
+      "collisions": 0,
+      "scene_gate_pass": true,
+      "drive_m": 0.503,
+      "camera_valid": true,
+      "lower_frame_black_fraction": 0.0,
+      "mean_brightness": 52.8,
+      "x_range": [
+        2.6,
+        3.1
+      ]
+    },
+    {
+      "zone": "lookalike_test",
+      "intended_split": "test",
+      "family": "visually_similar_diff_location",
+      "spawn_isaac_world": [
+        3.0,
+        0.1,
+        0.0
+      ],
+      "in_envelope": true,
+      "status": "PROVEN_FOR_ROUTE_DESIGN",
+      "reason": "0 collisions, scene-gate PASS, camera valid, drove within envelope",
+      "episode_id": "h8mx_val_lookalike_test_20260714_225818",
+      "collisions": 0,
+      "scene_gate_pass": true,
+      "drive_m": 0.203,
+      "camera_valid": true,
+      "lower_frame_black_fraction": 0.0,
+      "mean_brightness": 52.9,
+      "x_range": [
+        3.0,
+        3.2
+      ]
+    },
+    {
+      "zone": "lobby",
+      "intended_split": "train",
+      "family": "corridor_t_junction",
+      "spawn_isaac_world": [
+        -1.0,
+        -0.2,
+        0.0
+      ],
+      "in_envelope": true,
+      "status": "PROVEN_FOR_ROUTE_DESIGN",
+      "reason": "0 collisions, scene-gate PASS, camera valid, drove within envelope",
+      "episode_id": "h8mx_val_lobby_20260714_223318",
+      "collisions": 0,
+      "scene_gate_pass": true,
+      "drive_m": 1.702,
+      "camera_valid": true,
+      "lower_frame_black_fraction": 0.0,
+      "mean_brightness": 55.3,
+      "x_range": [
+        -1.0,
+        0.7
+      ]
+    },
+    {
+      "zone": "west_C",
+      "intended_split": "train",
+      "family": "shared_corridor_branch",
+      "spawn_isaac_world": [
+        -5.3,
+        0.1,
+        0.0
+      ],
+      "in_envelope": true,
+      "status": "REJECTED_COLLISION",
+      "reason": "7678 PhysX base_link contacts + camera invalid (lower-frame black 0.2629) \u2014 navmap-free but NOT drivable here",
+      "episode_id": "h8mx_val_west_C_20260714_220849",
+      "collisions": 7678,
+      "scene_gate_pass": true,
+      "drive_m": 0.411,
+      "camera_valid": false,
+      "lower_frame_black_fraction": 0.2629,
+      "mean_brightness": 44.4,
+      "x_range": [
+        -5.3,
+        -4.89
+      ]
+    },
+    {
+      "zone": "val_A",
+      "intended_split": "val",
+      "family": "near_far_same_approach",
+      "spawn_isaac_world": [
+        -3.8,
+        0.1,
+        0.0
+      ],
+      "in_envelope": true,
+      "status": "NEEDS_RETRY",
+      "reason": "25 PhysX base_link contacts (borderline); one retry advised",
+      "episode_id": "h8mx_val_val_A_20260714_222106",
+      "collisions": 25,
+      "scene_gate_pass": true,
+      "drive_m": 0.495,
+      "camera_valid": true,
+      "lower_frame_black_fraction": 0.0,
+      "mean_brightness": 69.0,
+      "x_range": [
+        -3.79,
+        -3.3
+      ]
+    },
+    {
+      "zone": "west_A",
+      "intended_split": "train",
+      "family": "near_far_same_approach",
+      "spawn_isaac_world": [
+        -8.5,
+        0.1,
+        0.0
+      ],
+      "in_envelope": false,
+      "status": "DEFERRED_SAFETY_ENVELOPE_LIMITED",
+      "reason": "|x|=8.5 > CL_BOUND_XY=6.0; would estop. Not run. Deferred by safety envelope, NOT a route-design or collision failure."
+    },
+    {
+      "zone": "west_B",
+      "intended_split": "train",
+      "family": "stop_vs_go",
+      "spawn_isaac_world": [
+        -6.8,
+        0.1,
+        0.0
+      ],
+      "in_envelope": false,
+      "status": "DEFERRED_SAFETY_ENVELOPE_LIMITED",
+      "reason": "|x|=6.8 > CL_BOUND_XY=6.0; would estop. Not run. Deferred by safety envelope, NOT a route-design or collision failure."
+    },
+    {
+      "zone": "hardneg_farwest",
+      "intended_split": "hard-negative",
+      "family": "any",
+      "spawn_isaac_world": [
+        -9.9,
+        0.1,
+        0.0
+      ],
+      "in_envelope": false,
+      "status": "DEFERRED_SAFETY_ENVELOPE_LIMITED",
+      "reason": "|x|=9.9 > CL_BOUND_XY=6.0; would estop. Not run. Deferred by safety envelope, NOT a route-design or collision failure."
+    }
+  ],
+  "success_gate": {
+    "at_least_6_of_8_pass": false,
+    "val_has_proven_zone": false,
+    "test_has_proven_zone": true,
+    "train_has_proven_zone": true,
+    "splits_coordinate_disjoint": true,
+    "n_proven": 4,
+    "proven_by_split": {
+      "train": [
+        "lobby"
+      ],
+      "val": [],
+      "test": [
+        "east_A",
+        "east_B",
+        "lookalike_test"
+      ]
+    },
+    "map_extension_sufficient_for_H8S": false
+  }
+}

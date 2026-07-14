@@ -1,0 +1,86 @@
+{
+  "east_A": {
+    "zone": "east_A",
+    "n_camera_msgs": 1451,
+    "frames_in_sheet": 3,
+    "img_wh": [
+      640,
+      480
+    ],
+    "lower_frame_black_fraction": 0.0,
+    "mean_brightness": 54.5,
+    "overexposed_fraction": 0.0017,
+    "underexposed_fraction": 0.0537,
+    "camera_valid": true
+  },
+  "west_C": {
+    "zone": "west_C",
+    "n_camera_msgs": 1454,
+    "frames_in_sheet": 3,
+    "img_wh": [
+      640,
+      480
+    ],
+    "lower_frame_black_fraction": 0.2629,
+    "mean_brightness": 44.4,
+    "overexposed_fraction": 0.0058,
+    "underexposed_fraction": 0.4412,
+    "camera_valid": false
+  },
+  "val_A": {
+    "zone": "val_A",
+    "n_camera_msgs": 1454,
+    "frames_in_sheet": 3,
+    "img_wh": [
+      640,
+      480
+    ],
+    "lower_frame_black_fraction": 0.0,
+    "mean_brightness": 69.0,
+    "overexposed_fraction": 0.0057,
+    "underexposed_fraction": 0.0273,
+    "camera_valid": true
+  },
+  "lobby": {
+    "zone": "lobby",
+    "n_camera_msgs": 1442,
+    "frames_in_sheet": 3,
+    "img_wh": [
+      640,
+      480
+    ],
+    "lower_frame_black_fraction": 0.0,
+    "mean_brightness": 55.3,
+    "overexposed_fraction": 0.0027,
+    "underexposed_fraction": 0.051,
+    "camera_valid": true
+  },
+  "east_B": {
+    "zone": "east_B",
+    "n_camera_msgs": 1455,
+    "frames_in_sheet": 3,
+    "img_wh": [
+      640,
+      480
+    ],
+    "lower_frame_black_fraction": 0.0,
+    "mean_brightness": 52.8,
+    "overexposed_fraction": 0.0017,
+    "underexposed_fraction": 0.0523,
+    "camera_valid": true
+  },
+  "lookalike_test": {
+    "zone": "lookalike_test",
+    "n_camera_msgs": 1458,
+    "frames_in_sheet": 3,
+    "img_wh": [
+      640,
+      480
+    ],
+    "lower_frame_black_fraction": 0.0,
+    "mean_brightness": 52.9,
+    "overexposed_fraction": 0.0017,
+    "underexposed_fraction": 0.0505,
+    "camera_valid": true
+  }
+}

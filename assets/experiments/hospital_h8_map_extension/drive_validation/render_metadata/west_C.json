@@ -1,0 +1,14 @@
+{
+  "zone": "west_C",
+  "n_camera_msgs": 1454,
+  "frames_in_sheet": 3,
+  "img_wh": [
+    640,
+    480
+  ],
+  "lower_frame_black_fraction": 0.2629,
+  "mean_brightness": 44.4,
+  "overexposed_fraction": 0.0058,
+  "underexposed_fraction": 0.4412,
+  "camera_valid": false
+}

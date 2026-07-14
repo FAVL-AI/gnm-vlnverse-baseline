@@ -1,0 +1,32 @@
+{
+  "route_id": "h8mx_lobby_val",
+  "family": "corridor_t_junction",
+  "intended_split": "train",
+  "waypoints": [
+    [
+      -1.0,
+      -0.2
+    ],
+    [
+      0.2,
+      -0.2
+    ],
+    [
+      1.0,
+      -0.2
+    ]
+  ],
+  "decision_point_index": 1,
+  "start_pose": {
+    "x": -1.0,
+    "y": -0.2,
+    "yaw_rad": 0.0
+  },
+  "goal_pose": {
+    "x": 1.0,
+    "y": -0.2,
+    "yaw_rad": 0.0
+  },
+  "spawn_pose_isaac_world": "-1.0,-0.2,0",
+  "provenance": "H8 map-extension DRIVE VALIDATION route (isaac-world=bringup coords, NO navmap offset). Short bounded drive within +-6m safety envelope."
+}
