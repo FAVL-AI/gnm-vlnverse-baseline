@@ -1,0 +1,16 @@
+episode,black_pixels_pct,bottom_black_band_pct,usable_pct,mean_luma
+h7_reception_01,42.4,38.3,57.6,22.9
+h7_reception_02,42.3,38.4,57.7,23.5
+h7_corridor_01,42.1,38.3,57.9,22.1
+h7_corridor_02,42.3,38.3,57.7,21.7
+h7_turn_01,40.2,38.3,59.8,54.1
+h7_turn_02,41.1,38.3,58.9,39.4
+h7_waiting_01,40.9,38.3,59.1,25.4
+h7_waiting_02,40.8,38.3,59.2,25.9
+AGGREGATE,41.5,38.3,58.5,
+
+--- camera OPTION comparison (robot+hospital renders) ---
+option,config,mean_black_pct,mean_usable_pct
+current,"level (90,0,-90) — as recorded in H7 pilot",41.8,58.2
+pitch_up,"upward pitch ~15° (105,0,-90)",10.7,89.2
+raise_mount,"raised mount +0.12 m, level",3.4,96.6

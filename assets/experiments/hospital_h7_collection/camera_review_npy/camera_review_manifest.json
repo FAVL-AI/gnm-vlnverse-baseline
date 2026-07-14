@@ -1,0 +1,281 @@
+{
+  "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+  "variants": {
+    "current": {
+      "rot": [
+        90.0,
+        0.0,
+        -90.0
+      ],
+      "tr": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "pitch_up": {
+      "rot": [
+        75.0,
+        0.0,
+        -90.0
+      ],
+      "tr": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "pitch_dn": {
+      "rot": [
+        105.0,
+        0.0,
+        -90.0
+      ],
+      "tr": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "raise_z": {
+      "rot": [
+        90.0,
+        0.0,
+        -90.0
+      ],
+      "tr": [
+        0.0,
+        0.0,
+        0.12
+      ]
+    },
+    "raise_y": {
+      "rot": [
+        90.0,
+        0.0,
+        -90.0
+      ],
+      "tr": [
+        0.0,
+        0.12,
+        0.0
+      ]
+    }
+  },
+  "routes": [
+    "reception_01",
+    "turn_01"
+  ],
+  "renders": [
+    {
+      "route": "reception_01",
+      "frame": "start",
+      "variant": "current",
+      "file": "reception_01__start__current.npy",
+      "mean_luma": 19.2
+    },
+    {
+      "route": "reception_01",
+      "frame": "start",
+      "variant": "pitch_up",
+      "file": "reception_01__start__pitch_up.npy",
+      "mean_luma": 11.4
+    },
+    {
+      "route": "reception_01",
+      "frame": "start",
+      "variant": "pitch_dn",
+      "file": "reception_01__start__pitch_dn.npy",
+      "mean_luma": 33.1
+    },
+    {
+      "route": "reception_01",
+      "frame": "start",
+      "variant": "raise_z",
+      "file": "reception_01__start__raise_z.npy",
+      "mean_luma": 41.9
+    },
+    {
+      "route": "reception_01",
+      "frame": "start",
+      "variant": "raise_y",
+      "file": "reception_01__start__raise_y.npy",
+      "mean_luma": 39.6
+    },
+    {
+      "route": "reception_01",
+      "frame": "mid",
+      "variant": "current",
+      "file": "reception_01__mid__current.npy",
+      "mean_luma": 21.4
+    },
+    {
+      "route": "reception_01",
+      "frame": "mid",
+      "variant": "pitch_up",
+      "file": "reception_01__mid__pitch_up.npy",
+      "mean_luma": 13.7
+    },
+    {
+      "route": "reception_01",
+      "frame": "mid",
+      "variant": "pitch_dn",
+      "file": "reception_01__mid__pitch_dn.npy",
+      "mean_luma": 35.5
+    },
+    {
+      "route": "reception_01",
+      "frame": "mid",
+      "variant": "raise_z",
+      "file": "reception_01__mid__raise_z.npy",
+      "mean_luma": 44.9
+    },
+    {
+      "route": "reception_01",
+      "frame": "mid",
+      "variant": "raise_y",
+      "file": "reception_01__mid__raise_y.npy",
+      "mean_luma": 42.2
+    },
+    {
+      "route": "reception_01",
+      "frame": "goal",
+      "variant": "current",
+      "file": "reception_01__goal__current.npy",
+      "mean_luma": 22.6
+    },
+    {
+      "route": "reception_01",
+      "frame": "goal",
+      "variant": "pitch_up",
+      "file": "reception_01__goal__pitch_up.npy",
+      "mean_luma": 14.4
+    },
+    {
+      "route": "reception_01",
+      "frame": "goal",
+      "variant": "pitch_dn",
+      "file": "reception_01__goal__pitch_dn.npy",
+      "mean_luma": 37.2
+    },
+    {
+      "route": "reception_01",
+      "frame": "goal",
+      "variant": "raise_z",
+      "file": "reception_01__goal__raise_z.npy",
+      "mean_luma": 47.1
+    },
+    {
+      "route": "reception_01",
+      "frame": "goal",
+      "variant": "raise_y",
+      "file": "reception_01__goal__raise_y.npy",
+      "mean_luma": 43.8
+    },
+    {
+      "route": "turn_01",
+      "frame": "start",
+      "variant": "current",
+      "file": "turn_01__start__current.npy",
+      "mean_luma": 23.2
+    },
+    {
+      "route": "turn_01",
+      "frame": "start",
+      "variant": "pitch_up",
+      "file": "turn_01__start__pitch_up.npy",
+      "mean_luma": 14.8
+    },
+    {
+      "route": "turn_01",
+      "frame": "start",
+      "variant": "pitch_dn",
+      "file": "turn_01__start__pitch_dn.npy",
+      "mean_luma": 38.1
+    },
+    {
+      "route": "turn_01",
+      "frame": "start",
+      "variant": "raise_z",
+      "file": "turn_01__start__raise_z.npy",
+      "mean_luma": 48.5
+    },
+    {
+      "route": "turn_01",
+      "frame": "start",
+      "variant": "raise_y",
+      "file": "turn_01__start__raise_y.npy",
+      "mean_luma": 44.9
+    },
+    {
+      "route": "turn_01",
+      "frame": "mid",
+      "variant": "current",
+      "file": "turn_01__mid__current.npy",
+      "mean_luma": 23.8
+    },
+    {
+      "route": "turn_01",
+      "frame": "mid",
+      "variant": "pitch_up",
+      "file": "turn_01__mid__pitch_up.npy",
+      "mean_luma": 14.9
+    },
+    {
+      "route": "turn_01",
+      "frame": "mid",
+      "variant": "pitch_dn",
+      "file": "turn_01__mid__pitch_dn.npy",
+      "mean_luma": 38.9
+    },
+    {
+      "route": "turn_01",
+      "frame": "mid",
+      "variant": "raise_z",
+      "file": "turn_01__mid__raise_z.npy",
+      "mean_luma": 49.5
+    },
+    {
+      "route": "turn_01",
+      "frame": "mid",
+      "variant": "raise_y",
+      "file": "turn_01__mid__raise_y.npy",
+      "mean_luma": 45.7
+    },
+    {
+      "route": "turn_01",
+      "frame": "goal",
+      "variant": "current",
+      "file": "turn_01__goal__current.npy",
+      "mean_luma": 24.1
+    },
+    {
+      "route": "turn_01",
+      "frame": "goal",
+      "variant": "pitch_up",
+      "file": "turn_01__goal__pitch_up.npy",
+      "mean_luma": 14.8
+    },
+    {
+      "route": "turn_01",
+      "frame": "goal",
+      "variant": "pitch_dn",
+      "file": "turn_01__goal__pitch_dn.npy",
+      "mean_luma": 39.3
+    },
+    {
+      "route": "turn_01",
+      "frame": "goal",
+      "variant": "raise_z",
+      "file": "turn_01__goal__raise_z.npy",
+      "mean_luma": 50.2
+    },
+    {
+      "route": "turn_01",
+      "frame": "goal",
+      "variant": "raise_y",
+      "file": "turn_01__goal__raise_y.npy",
+      "mean_luma": 46.2
+    }
+  ]
+}
