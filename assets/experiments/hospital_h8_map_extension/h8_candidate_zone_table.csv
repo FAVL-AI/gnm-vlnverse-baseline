@@ -1,0 +1,14 @@
+candidate_id,kind,family,intended_split,bringup_rect,representative_o_d,corridor_width_m,visual_uniqueness,est_collision_risk,status,notes
+h8mx_west_A,corridor_continuation,near_far_same_approach,train,"[-8.5, -7.0, -0.55, 1.0]","[-7.75, 0.1]",1.85,distinct (west end),low,NEEDS_DRIVE_VALIDATION,West corridor run; goal selects stop distance along +x. New reachable space.
+h8mx_west_B,corridor_continuation,stop_vs_go,train,"[-6.8, -5.5, -0.55, 1.0]","[-6.15, 0.1]",1.85,distinct,low,NEEDS_DRIVE_VALIDATION,West corridor; stop-here vs continue. Visual confuser for h8mx_lookalike_test.
+h8mx_west_C,corridor_continuation,shared_corridor_branch,train,"[-5.3, -4.0, -0.55, 1.0]","[-4.65, 0.1]",1.85,distinct,low,NEEDS_DRIVE_VALIDATION,West corridor; lateral branch within ~1.8 m width (short-baseline >=30 deg like DF01/02).
+h8mx_val_A,corridor_continuation,near_far_same_approach,val,"[-3.8, -3.0, -0.55, 1.0]","[-3.4, 0.1]",1.85,distinct (val band),low,NEEDS_DRIVE_VALIDATION,"Held-out val band, x disjoint from train/test goal coords."
+h8mx_lobby_proven,proven_lobby,corridor_t_junction,train,"[-2.31, 0.91, -0.55, 1.0]","[-0.7, 0.1]",1.85,as recorded,low,PROVEN,Already-recorded proven lobby (H7/H8). Existing train decision frames.
+h8mx_east_A,corridor_continuation,near_far_same_approach,test,"[1.4, 2.4, -0.55, 1.0]","[1.9, 0.1]",1.85,distinct (east band),low,NEEDS_DRIVE_VALIDATION,Held-out test band; spatially far from train. New reachable space.
+h8mx_east_B,corridor_continuation,stop_vs_go,test,"[2.6, 3.5, -0.55, 1.0]","[3.05, 0.1]",1.85,distinct (east end),low,NEEDS_DRIVE_VALIDATION,East corridor end; test stop-conditioning. New reachable space.
+h8mx_lookalike_test,visually_similar_diff_location,visually_similar_diff_location,test,"[3.0, 3.5, -0.55, 1.0]","[3.25, 0.1]",1.85,REQUIRES RENDER CONFIRM,low,NEEDS_DRIVE_VALIDATION,"Test goal whose APPEARANCE must be render-confirmed similar to west confuser h8mx_west_B; COORDINATES disjoint (east vs west) -> only appearance is shared, which is the adversarial design."
+h8mx_hardneg_farwest,hard_negative,any,hard-negative,"[-9.9, -9.0, -0.55, 1.0]","[-9.45, 0.1]",1.85,distinct,low,NEEDS_DRIVE_VALIDATION,Far-west corridor end as a WRONG goal for east routes (mismatched-goal ablation); x disjoint from all correct-goal bands.
+h8mx_side_corridor,deferred_room,side_corridor,none,,,,,,DEFERRED,No reachable side corridor in robot slab (walls in z-slab).
+h8mx_reception_room,deferred_room,reception_side_room,none,,,,,,DEFERRED,Reception hall not reachable (sealed in slab).
+h8mx_waiting_elevator_bin,deferred_room,waiting_elevator_bin,none,,,,,,DEFERRED,Waiting/elevator/bin alcoves not reachable in slab.
+h8mx_same_room_object,deferred_room,same_room_diff_object,none,,,,,,DEFERRED,No reachable multi-object room; DF09 stays deferred.

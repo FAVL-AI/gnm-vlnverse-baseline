@@ -1,0 +1,624 @@
+{
+  "frame_fit": {
+    "theta_deg": 0,
+    "t_bringup_to_world": [
+      2.9562,
+      -6.24
+    ],
+    "inverse_world_to_bringup": [
+      -2.9562,
+      6.24
+    ],
+    "full_driven_free_frac": 1.0,
+    "n_driven_points": 65440
+  },
+  "reachable_envelope_bringup": {
+    "x_min": -9.956231,
+    "x_max": 3.993769000000001,
+    "y_min": -0.7599910000000003,
+    "y_max": 1.0900089999999993,
+    "cells": 10640
+  },
+  "reachable_envelope_raw_bringup": {
+    "x_min": -9.956231,
+    "x_max": 3.993769000000001,
+    "y_min": -0.7599910000000003,
+    "y_max": 1.390009,
+    "cells": 12320
+  },
+  "proven_lobby_bringup": {
+    "x_min": -2.31,
+    "x_max": 0.91,
+    "y_min": -0.76,
+    "y_max": 0.92
+  },
+  "corridor_width_profile": [
+    [
+      -9.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -9.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -9.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -9.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -8.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -8.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -8.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -8.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -7.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -7.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -7.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -7.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -6.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -6.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -6.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -6.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -5.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -5.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -5.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -5.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -4.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -4.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -4.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -4.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -3.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -3.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -3.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -3.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -2.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -2.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -2.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -2.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -1.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -1.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -1.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -1.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -0.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -0.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -0.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      -0.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      0.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      0.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      0.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      0.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      1.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      1.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      1.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      1.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      2.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      2.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      2.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      2.875,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      3.125,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      3.375,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      3.625,
+      1.85,
+      -0.76,
+      1.09
+    ],
+    [
+      3.875,
+      1.85,
+      -0.76,
+      1.09
+    ]
+  ],
+  "leakage_clean_split_bands": true,
+  "split_band_conflicts": [],
+  "status_counts": {
+    "NEEDS_DRIVE_VALIDATION": 8,
+    "PROVEN": 1,
+    "DEFERRED": 4
+  },
+  "n_zones": 13,
+  "zones": [
+    {
+      "candidate_id": "h8mx_west_A",
+      "kind": "corridor_continuation",
+      "bringup_rect": [
+        -8.5,
+        -7.0,
+        -0.55,
+        1.0
+      ],
+      "representative_o_d": [
+        -7.75,
+        0.1
+      ],
+      "corridor_width_m": 1.85,
+      "intended_split": "train",
+      "family": "near_far_same_approach",
+      "visual_uniqueness": "distinct (west end)",
+      "est_collision_risk": "low",
+      "status": "NEEDS_DRIVE_VALIDATION",
+      "notes": "West corridor run; goal selects stop distance along +x. New reachable space."
+    },
+    {
+      "candidate_id": "h8mx_west_B",
+      "kind": "corridor_continuation",
+      "bringup_rect": [
+        -6.8,
+        -5.5,
+        -0.55,
+        1.0
+      ],
+      "representative_o_d": [
+        -6.15,
+        0.1
+      ],
+      "corridor_width_m": 1.85,
+      "intended_split": "train",
+      "family": "stop_vs_go",
+      "visual_uniqueness": "distinct",
+      "est_collision_risk": "low",
+      "status": "NEEDS_DRIVE_VALIDATION",
+      "notes": "West corridor; stop-here vs continue. Visual confuser for h8mx_lookalike_test."
+    },
+    {
+      "candidate_id": "h8mx_west_C",
+      "kind": "corridor_continuation",
+      "bringup_rect": [
+        -5.3,
+        -4.0,
+        -0.55,
+        1.0
+      ],
+      "representative_o_d": [
+        -4.65,
+        0.1
+      ],
+      "corridor_width_m": 1.85,
+      "intended_split": "train",
+      "family": "shared_corridor_branch",
+      "visual_uniqueness": "distinct",
+      "est_collision_risk": "low",
+      "status": "NEEDS_DRIVE_VALIDATION",
+      "notes": "West corridor; lateral branch within ~1.8 m width (short-baseline >=30 deg like DF01/02)."
+    },
+    {
+      "candidate_id": "h8mx_val_A",
+      "kind": "corridor_continuation",
+      "bringup_rect": [
+        -3.8,
+        -3.0,
+        -0.55,
+        1.0
+      ],
+      "representative_o_d": [
+        -3.4,
+        0.1
+      ],
+      "corridor_width_m": 1.85,
+      "intended_split": "val",
+      "family": "near_far_same_approach",
+      "visual_uniqueness": "distinct (val band)",
+      "est_collision_risk": "low",
+      "status": "NEEDS_DRIVE_VALIDATION",
+      "notes": "Held-out val band, x disjoint from train/test goal coords."
+    },
+    {
+      "candidate_id": "h8mx_lobby_proven",
+      "kind": "proven_lobby",
+      "bringup_rect": [
+        -2.31,
+        0.91,
+        -0.55,
+        1.0
+      ],
+      "representative_o_d": [
+        -0.7,
+        0.1
+      ],
+      "corridor_width_m": 1.85,
+      "intended_split": "train",
+      "family": "corridor_t_junction",
+      "visual_uniqueness": "as recorded",
+      "est_collision_risk": "low",
+      "status": "PROVEN",
+      "notes": "Already-recorded proven lobby (H7/H8). Existing train decision frames."
+    },
+    {
+      "candidate_id": "h8mx_east_A",
+      "kind": "corridor_continuation",
+      "bringup_rect": [
+        1.4,
+        2.4,
+        -0.55,
+        1.0
+      ],
+      "representative_o_d": [
+        1.9,
+        0.1
+      ],
+      "corridor_width_m": 1.85,
+      "intended_split": "test",
+      "family": "near_far_same_approach",
+      "visual_uniqueness": "distinct (east band)",
+      "est_collision_risk": "low",
+      "status": "NEEDS_DRIVE_VALIDATION",
+      "notes": "Held-out test band; spatially far from train. New reachable space."
+    },
+    {
+      "candidate_id": "h8mx_east_B",
+      "kind": "corridor_continuation",
+      "bringup_rect": [
+        2.6,
+        3.5,
+        -0.55,
+        1.0
+      ],
+      "representative_o_d": [
+        3.05,
+        0.1
+      ],
+      "corridor_width_m": 1.85,
+      "intended_split": "test",
+      "family": "stop_vs_go",
+      "visual_uniqueness": "distinct (east end)",
+      "est_collision_risk": "low",
+      "status": "NEEDS_DRIVE_VALIDATION",
+      "notes": "East corridor end; test stop-conditioning. New reachable space."
+    },
+    {
+      "candidate_id": "h8mx_lookalike_test",
+      "kind": "visually_similar_diff_location",
+      "bringup_rect": [
+        3.0,
+        3.5,
+        -0.55,
+        1.0
+      ],
+      "representative_o_d": [
+        3.25,
+        0.1
+      ],
+      "corridor_width_m": 1.85,
+      "intended_split": "test",
+      "family": "visually_similar_diff_location",
+      "visual_uniqueness": "REQUIRES RENDER CONFIRM",
+      "est_collision_risk": "low",
+      "status": "NEEDS_DRIVE_VALIDATION",
+      "notes": "Test goal whose APPEARANCE must be render-confirmed similar to west confuser h8mx_west_B; COORDINATES disjoint (east vs west) -> only appearance is shared, which is the adversarial design."
+    },
+    {
+      "candidate_id": "h8mx_hardneg_farwest",
+      "kind": "hard_negative",
+      "bringup_rect": [
+        -9.9,
+        -9.0,
+        -0.55,
+        1.0
+      ],
+      "representative_o_d": [
+        -9.45,
+        0.1
+      ],
+      "corridor_width_m": 1.85,
+      "intended_split": "hard-negative",
+      "family": "any",
+      "visual_uniqueness": "distinct",
+      "est_collision_risk": "low",
+      "status": "NEEDS_DRIVE_VALIDATION",
+      "notes": "Far-west corridor end as a WRONG goal for east routes (mismatched-goal ablation); x disjoint from all correct-goal bands."
+    },
+    {
+      "candidate_id": "h8mx_side_corridor",
+      "kind": "deferred_room",
+      "bringup_rect": null,
+      "representative_o_d": null,
+      "corridor_width_m": null,
+      "intended_split": "none",
+      "family": "side_corridor",
+      "visual_uniqueness": null,
+      "est_collision_risk": null,
+      "status": "DEFERRED",
+      "notes": "No reachable side corridor in robot slab (walls in z-slab)."
+    },
+    {
+      "candidate_id": "h8mx_reception_room",
+      "kind": "deferred_room",
+      "bringup_rect": null,
+      "representative_o_d": null,
+      "corridor_width_m": null,
+      "intended_split": "none",
+      "family": "reception_side_room",
+      "visual_uniqueness": null,
+      "est_collision_risk": null,
+      "status": "DEFERRED",
+      "notes": "Reception hall not reachable (sealed in slab)."
+    },
+    {
+      "candidate_id": "h8mx_waiting_elevator_bin",
+      "kind": "deferred_room",
+      "bringup_rect": null,
+      "representative_o_d": null,
+      "corridor_width_m": null,
+      "intended_split": "none",
+      "family": "waiting_elevator_bin",
+      "visual_uniqueness": null,
+      "est_collision_risk": null,
+      "status": "DEFERRED",
+      "notes": "Waiting/elevator/bin alcoves not reachable in slab."
+    },
+    {
+      "candidate_id": "h8mx_same_room_object",
+      "kind": "deferred_room",
+      "bringup_rect": null,
+      "representative_o_d": null,
+      "corridor_width_m": null,
+      "intended_split": "none",
+      "family": "same_room_diff_object",
+      "visual_uniqueness": null,
+      "est_collision_risk": null,
+      "status": "DEFERRED",
+      "notes": "No reachable multi-object room; DF09 stays deferred."
+    }
+  ]
+}
