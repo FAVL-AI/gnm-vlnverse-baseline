@@ -1,0 +1,12 @@
+{
+  "route_id": "h8_d1_routeA_turn_up",
+  "design_id": "h8_proto_01_corridor_tjunction",
+  "family": "shared_corridor_branch_choice",
+  "branch_label": "turn_up_left",
+  "waypoints": [[-1.0, -0.2], [0.2, -0.2], [0.2, 0.8]],
+  "decision_point_index": 1,
+  "decision_point": {"x": 0.2, "y": -0.2, "approach_heading_rad": 0.0},
+  "start_pose": {"x": -1.0, "y": -0.2, "yaw_rad": 0.0},
+  "goal_pose": {"x": 0.2, "y": 0.8, "yaw_rad": 1.5708},
+  "provenance": "H8 paired-branch route in hospital.usd bringup frame. Waypoints reuse ONLY coordinates proven navigable by successfully-recorded H7 routes (turn_02 prefix/arm; corridor y=0; corridor_02/waiting_01 goal endpoints). Shared prefix to a single decision point o_d (waypoint index 1); branches to distinct goals. Scene-identity gated + raised mount at record time; collision-report is ground truth. Route A prefix+arm identical to proven h7_turn_02."
+}

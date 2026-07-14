@@ -1,0 +1,209 @@
+{
+  "gate": "H8 Option A paired-branch acceptance \u2014 RECORDED mode",
+  "scope": "recorded design validation only \u2014 no training, no promotion",
+  "margin_deg": 30.0,
+  "visual_pix_min": 12.0,
+  "camera_raise_expected_m": 0.12,
+  "n_designs": 2,
+  "all_pass": true,
+  "designs": [
+    {
+      "design_id": "h8_proto_01_corridor_tjunction",
+      "family": "shared_corridor_branch_choice",
+      "routeA_episode": "h8_d1_routeA_turn_up_20260714_154933",
+      "routeB_episode": "h8_d1_routeB_straight_20260714_183358",
+      "collisions": {
+        "routeA": 0,
+        "routeB": 0
+      },
+      "route_completed": {
+        "routeA": true,
+        "routeB": true
+      },
+      "scene_gate": {
+        "routeA": {
+          "file": "assets/experiments/hospital_h7_scene_gate/h8_d1_routeA_turn_up_20260714_154933.json",
+          "pass": true,
+          "checks": {
+            "hospital_reference_authored": true,
+            "prim_count_ok": true,
+            "scene_mode_hospital": true,
+            "no_procedural_landmarks": true,
+            "front_camera_exists": true,
+            "resolution_declared": true
+          }
+        },
+        "routeB": {
+          "file": "assets/experiments/hospital_h7_scene_gate/h8_d1_routeB_straight_20260714_183358.json",
+          "pass": true,
+          "checks": {
+            "hospital_reference_authored": true,
+            "prim_count_ok": true,
+            "scene_mode_hospital": true,
+            "no_procedural_landmarks": true,
+            "front_camera_exists": true,
+            "resolution_declared": true
+          }
+        }
+      },
+      "camera_mount_raise_m": {
+        "routeA": 0.12,
+        "routeB": 0.12
+      },
+      "decision_frame": {
+        "design_o_d": [
+          0.2,
+          -0.2
+        ],
+        "recorded_o_d_pos": [
+          -0.09431499987840652,
+          -0.21376299858093262
+        ],
+        "recorded_o_d_yaw_rad": 0.0,
+        "frame_index": 46,
+        "match_error_m": 0.295,
+        "source": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d1_routeA_turn_up_20260714_154933/46.jpg",
+        "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_01_corridor_tjunction_o_d.jpg"
+      },
+      "goalA": {
+        "branch": "turn_up_left",
+        "recorded_pos": [
+          0.14424100518226624,
+          0.5127300024032593
+        ],
+        "frame_index": 118,
+        "expected_action_dx_dy": [
+          0.312,
+          0.9501
+        ],
+        "source": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d1_routeA_turn_up_20260714_154933/118.jpg",
+        "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_01_corridor_tjunction_goalA_turn_up_left.jpg"
+      },
+      "goalB": {
+        "branch": "straight",
+        "recorded_pos": [
+          0.7006229758262634,
+          -0.21381300687789917
+        ],
+        "frame_index": 121,
+        "expected_action_dx_dy": [
+          1.0,
+          -0.0001
+        ],
+        "source": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d1_routeB_straight_20260714_183358/121.jpg",
+        "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_01_corridor_tjunction_goalB_straight.jpg"
+      },
+      "action_angle_separation_deg": 71.83,
+      "goalA_goalB_mean_abs_pixel_diff": 43.617,
+      "checks": {
+        "1_scene_gate_pass": true,
+        "2_camera_mount_raise_0p12": true,
+        "3_shared_decision_frame_exists": true,
+        "4_real_goal_images_exist": true,
+        "5_goalA_goalB_visually_distinct": true,
+        "6_action_separation_ge_30deg": true,
+        "7_not_route_solvable_without_goal": true
+      },
+      "pass": true
+    },
+    {
+      "design_id": "h8_proto_02_samestart_fork",
+      "family": "same_start_different_goal",
+      "routeA_episode": "h8_d2_routeA_fwdleft_20260714_184624",
+      "routeB_episode": "h8_d2_routeB_fwdright_20260714_185908",
+      "collisions": {
+        "routeA": 0,
+        "routeB": 0
+      },
+      "route_completed": {
+        "routeA": true,
+        "routeB": true
+      },
+      "scene_gate": {
+        "routeA": {
+          "file": "assets/experiments/hospital_h7_scene_gate/h8_d2_routeA_fwdleft_20260714_184624.json",
+          "pass": true,
+          "checks": {
+            "hospital_reference_authored": true,
+            "prim_count_ok": true,
+            "scene_mode_hospital": true,
+            "no_procedural_landmarks": true,
+            "front_camera_exists": true,
+            "resolution_declared": true
+          }
+        },
+        "routeB": {
+          "file": "assets/experiments/hospital_h7_scene_gate/h8_d2_routeB_fwdright_20260714_185908.json",
+          "pass": true,
+          "checks": {
+            "hospital_reference_authored": true,
+            "prim_count_ok": true,
+            "scene_mode_hospital": true,
+            "no_procedural_landmarks": true,
+            "front_camera_exists": true,
+            "resolution_declared": true
+          }
+        }
+      },
+      "camera_mount_raise_m": {
+        "routeA": 0.12,
+        "routeB": 0.12
+      },
+      "decision_frame": {
+        "design_o_d": [
+          0.2,
+          0.0
+        ],
+        "recorded_o_d_pos": [
+          0.15745499730110168,
+          0.10673099756240845
+        ],
+        "recorded_o_d_yaw_rad": 0.4738,
+        "frame_index": 60,
+        "match_error_m": 0.115,
+        "source": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d2_routeA_fwdleft_20260714_184624/60.jpg",
+        "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_02_samestart_fork_o_d.jpg"
+      },
+      "goalA": {
+        "branch": "forward_left",
+        "recorded_pos": [
+          0.7564380168914795,
+          0.427825003862381
+        ],
+        "frame_index": 120,
+        "expected_action_dx_dy": [
+          0.9998,
+          0.0182
+        ],
+        "source": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d2_routeA_fwdleft_20260714_184624/120.jpg",
+        "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_02_samestart_fork_goalA_forward_left.jpg"
+      },
+      "goalB": {
+        "branch": "forward_right",
+        "recorded_pos": [
+          0.7122939825057983,
+          -0.1258540004491806
+        ],
+        "frame_index": 120,
+        "expected_action_dx_dy": [
+          0.6442,
+          -0.7648
+        ],
+        "source": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d2_routeB_fwdright_20260714_185908/120.jpg",
+        "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_02_samestart_fork_goalB_forward_right.jpg"
+      },
+      "action_angle_separation_deg": 50.94,
+      "goalA_goalB_mean_abs_pixel_diff": 30.539,
+      "checks": {
+        "1_scene_gate_pass": true,
+        "2_camera_mount_raise_0p12": true,
+        "3_shared_decision_frame_exists": true,
+        "4_real_goal_images_exist": true,
+        "5_goalA_goalB_visually_distinct": true,
+        "6_action_separation_ge_30deg": true,
+        "7_not_route_solvable_without_goal": true
+      },
+      "pass": true
+    }
+  ]
+}

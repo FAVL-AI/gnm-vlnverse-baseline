@@ -1,0 +1,5 @@
+episode_name,route_id,rc,camera_raise_m,started,ended
+h8_d1_routeA_turn_up,h8_d1_routeA_turn_up,0,0.12,2026-07-14T15:45:15+01:00,2026-07-14T15:57:20+01:00
+h8_d1_routeB_straight,h8_d1_routeB_straight,0,0.12,2026-07-14T18:29:46+01:00,2026-07-14T18:42:17+01:00
+h8_d2_routeA_fwdleft,h8_d2_routeA_fwdleft,0,0.12,2026-07-14T18:42:17+01:00,2026-07-14T18:55:03+01:00
+h8_d2_routeB_fwdright,h8_d2_routeB_fwdright,0,0.12,2026-07-14T18:55:03+01:00,2026-07-14T19:07:40+01:00

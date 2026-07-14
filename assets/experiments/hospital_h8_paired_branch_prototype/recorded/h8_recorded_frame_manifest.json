@@ -1,0 +1,101 @@
+{
+  "scope": "recorded design validation only \u2014 no training, no promotion",
+  "designs": [
+    {
+      "design_id": "h8_proto_01_corridor_tjunction",
+      "family": "shared_corridor_branch_choice",
+      "routeA_episode": "h8_d1_routeA_turn_up_20260714_154933",
+      "routeB_episode": "h8_d1_routeB_straight_20260714_183358",
+      "scene_gate_pass": true,
+      "scene_gate_files": [
+        "assets/experiments/hospital_h7_scene_gate/h8_d1_routeA_turn_up_20260714_154933.json",
+        "assets/experiments/hospital_h7_scene_gate/h8_d1_routeB_straight_20260714_183358.json"
+      ],
+      "camera_mount_raise_m": {
+        "routeA": 0.12,
+        "routeB": 0.12
+      },
+      "from_recorded_camera_image_raw": true,
+      "images": {
+        "o_d": {
+          "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_01_corridor_tjunction_o_d.jpg",
+          "source_frame": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d1_routeA_turn_up_20260714_154933/46.jpg",
+          "frame_index": 46,
+          "recorded_pos": [
+            -0.09431499987840652,
+            -0.21376299858093262
+          ]
+        },
+        "goalA": {
+          "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_01_corridor_tjunction_goalA_turn_up_left.jpg",
+          "source_frame": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d1_routeA_turn_up_20260714_154933/118.jpg",
+          "frame_index": 118,
+          "recorded_pos": [
+            0.14424100518226624,
+            0.5127300024032593
+          ]
+        },
+        "goalB": {
+          "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_01_corridor_tjunction_goalB_straight.jpg",
+          "source_frame": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d1_routeB_straight_20260714_183358/121.jpg",
+          "frame_index": 121,
+          "recorded_pos": [
+            0.7006229758262634,
+            -0.21381300687789917
+          ]
+        }
+      },
+      "action_angle_separation_deg": 71.83,
+      "goalA_goalB_mean_abs_pixel_diff": 43.617,
+      "pass": true
+    },
+    {
+      "design_id": "h8_proto_02_samestart_fork",
+      "family": "same_start_different_goal",
+      "routeA_episode": "h8_d2_routeA_fwdleft_20260714_184624",
+      "routeB_episode": "h8_d2_routeB_fwdright_20260714_185908",
+      "scene_gate_pass": true,
+      "scene_gate_files": [
+        "assets/experiments/hospital_h7_scene_gate/h8_d2_routeA_fwdleft_20260714_184624.json",
+        "assets/experiments/hospital_h7_scene_gate/h8_d2_routeB_fwdright_20260714_185908.json"
+      ],
+      "camera_mount_raise_m": {
+        "routeA": 0.12,
+        "routeB": 0.12
+      },
+      "from_recorded_camera_image_raw": true,
+      "images": {
+        "o_d": {
+          "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_02_samestart_fork_o_d.jpg",
+          "source_frame": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d2_routeA_fwdleft_20260714_184624/60.jpg",
+          "frame_index": 60,
+          "recorded_pos": [
+            0.15745499730110168,
+            0.10673099756240845
+          ]
+        },
+        "goalA": {
+          "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_02_samestart_fork_goalA_forward_left.jpg",
+          "source_frame": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d2_routeA_fwdleft_20260714_184624/120.jpg",
+          "frame_index": 120,
+          "recorded_pos": [
+            0.7564380168914795,
+            0.427825003862381
+          ]
+        },
+        "goalB": {
+          "image": "assets/experiments/hospital_h8_paired_branch_prototype/recorded/frames/h8_proto_02_samestart_fork_goalB_forward_right.jpg",
+          "source_frame": "datasets/isaac_hospital_imagenav_v0/unassigned/h8_d2_routeB_fwdright_20260714_185908/120.jpg",
+          "frame_index": 120,
+          "recorded_pos": [
+            0.7122939825057983,
+            -0.1258540004491806
+          ]
+        }
+      },
+      "action_angle_separation_deg": 50.94,
+      "goalA_goalB_mean_abs_pixel_diff": 30.539,
+      "pass": true
+    }
+  ]
+}
