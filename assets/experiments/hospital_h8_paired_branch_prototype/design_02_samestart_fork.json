@@ -1,0 +1,30 @@
+{
+  "design_id": "h8_proto_02_samestart_fork",
+  "family": "same_start_different_goal",
+  "description": "Identical spawn pose and identical approach; the corridor forks into two doorways at a shallower angle than the T-junction. The goal image selects the forward-left vs forward-right doorway. Tests that the 30 deg action-separation gate holds even for a moderate (non-extreme) branch.",
+  "scene": "hospital.usd",
+  "camera_mount_raise_m": 0.12,
+  "coordinate_note": "Scene-local metres, design intent. To be mapped to hospital.usd nav coordinates at collection. yaw_deg measured CCW from world +x; robot heads +x.",
+  "start": { "x": 0.0, "y": 0.0, "yaw_deg": 0.0 },
+  "approach_waypoints": [ [1.0, 0.0], [2.0, 0.0] ],
+  "decision_point": {
+    "x": 3.0, "y": 0.0, "yaw_deg": 0.0,
+    "note": "At the fork, still facing +x. This pose defines the single shared decision frame o_d used for both goals."
+  },
+  "goals": [
+    {
+      "goal_id": "A",
+      "branch_label": "forward_left_doorway",
+      "position": { "x": 8.0, "y": 3.0 },
+      "planned_goal_image": "goals_planned/design_02_goalA_left.png",
+      "recorded": false
+    },
+    {
+      "goal_id": "B",
+      "branch_label": "forward_right_doorway",
+      "position": { "x": 8.0, "y": -3.0 },
+      "planned_goal_image": "goals_planned/design_02_goalB_right.png",
+      "recorded": false
+    }
+  ]
+}

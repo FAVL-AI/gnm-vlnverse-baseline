@@ -1,0 +1,147 @@
+{
+  "gate": "H8 Option A paired-branch build-time label acceptance",
+  "scope": "DESIGN VALIDATION ONLY \u2014 no collection, no training, no promotion",
+  "margin_deg": 30.0,
+  "goal_sep_min_m": 1.5,
+  "action_diff_min": 0.2,
+  "n_designs": 2,
+  "all_pass": true,
+  "designs": [
+    {
+      "design_id": "h8_proto_01_corridor_tjunction",
+      "family": "shared_corridor_branch_choice",
+      "file": "design_01_corridor_tjunction.json",
+      "start": {
+        "x": 0.0,
+        "y": 0.0,
+        "yaw_deg": 0.0
+      },
+      "decision_point": {
+        "x": 4.0,
+        "y": 0.0,
+        "yaw_deg": 0.0,
+        "note": "At the T-junction facing the far wall; must branch left or right. This pose defines the single shared decision frame o_d used for both goals."
+      },
+      "goals": [
+        {
+          "goal_id": "A",
+          "branch": "left",
+          "position": {
+            "x": 4.5,
+            "y": 5.0
+          },
+          "planned_goal_image": "goals_planned/design_01_goalA_left.png",
+          "expected_action_dx_dy": [
+            0.0995,
+            0.995
+          ],
+          "bearing_from_decision_deg": 84.29,
+          "range_from_decision_m": 5.025
+        },
+        {
+          "goal_id": "B",
+          "branch": "right",
+          "position": {
+            "x": 4.5,
+            "y": -5.0
+          },
+          "planned_goal_image": "goals_planned/design_01_goalB_right.png",
+          "expected_action_dx_dy": [
+            0.0995,
+            -0.995
+          ],
+          "bearing_from_decision_deg": -84.29,
+          "range_from_decision_m": 5.025
+        }
+      ],
+      "action_angle_separation_deg": 168.58,
+      "unit_action_l2_diff": 1.9901,
+      "goal_separation_m": 10.0,
+      "visual_distinctness": {
+        "mode": "design-time (visual DEFERRED to collection)",
+        "distinct": null
+      },
+      "geometric_distinctness_proxy": {
+        "goal_separation_m": 10.0,
+        "floor_m": 1.5,
+        "distinct": true
+      },
+      "checks": {
+        "1_shared_decision_frame": true,
+        "2_goals_distinct": true,
+        "3_actions_differ": true,
+        "4_angle_separation_ge_30deg": true,
+        "5_not_route_solvable_without_goal": true
+      },
+      "pass": true
+    },
+    {
+      "design_id": "h8_proto_02_samestart_fork",
+      "family": "same_start_different_goal",
+      "file": "design_02_samestart_fork.json",
+      "start": {
+        "x": 0.0,
+        "y": 0.0,
+        "yaw_deg": 0.0
+      },
+      "decision_point": {
+        "x": 3.0,
+        "y": 0.0,
+        "yaw_deg": 0.0,
+        "note": "At the fork, still facing +x. This pose defines the single shared decision frame o_d used for both goals."
+      },
+      "goals": [
+        {
+          "goal_id": "A",
+          "branch": "forward_left_doorway",
+          "position": {
+            "x": 8.0,
+            "y": 3.0
+          },
+          "planned_goal_image": "goals_planned/design_02_goalA_left.png",
+          "expected_action_dx_dy": [
+            0.8575,
+            0.5145
+          ],
+          "bearing_from_decision_deg": 30.96,
+          "range_from_decision_m": 5.831
+        },
+        {
+          "goal_id": "B",
+          "branch": "forward_right_doorway",
+          "position": {
+            "x": 8.0,
+            "y": -3.0
+          },
+          "planned_goal_image": "goals_planned/design_02_goalB_right.png",
+          "expected_action_dx_dy": [
+            0.8575,
+            -0.5145
+          ],
+          "bearing_from_decision_deg": -30.96,
+          "range_from_decision_m": 5.831
+        }
+      ],
+      "action_angle_separation_deg": 61.93,
+      "unit_action_l2_diff": 1.029,
+      "goal_separation_m": 6.0,
+      "visual_distinctness": {
+        "mode": "design-time (visual DEFERRED to collection)",
+        "distinct": null
+      },
+      "geometric_distinctness_proxy": {
+        "goal_separation_m": 6.0,
+        "floor_m": 1.5,
+        "distinct": true
+      },
+      "checks": {
+        "1_shared_decision_frame": true,
+        "2_goals_distinct": true,
+        "3_actions_differ": true,
+        "4_angle_separation_ge_30deg": true,
+        "5_not_route_solvable_without_goal": true
+      },
+      "pass": true
+    }
+  ]
+}

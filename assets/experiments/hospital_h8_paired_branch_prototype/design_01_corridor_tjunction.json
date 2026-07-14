@@ -1,0 +1,30 @@
+{
+  "design_id": "h8_proto_01_corridor_tjunction",
+  "family": "shared_corridor_branch_choice",
+  "description": "Shared corridor approach to a T-junction. The current RGB decision frame is identical for both goals; the goal image selects LEFT vs RIGHT branch. A goal-blind policy sees one observation and cannot satisfy both branches.",
+  "scene": "hospital.usd",
+  "camera_mount_raise_m": 0.12,
+  "coordinate_note": "Scene-local metres, design intent. To be mapped to hospital.usd nav coordinates at collection. yaw_deg measured CCW from world +x; robot heads +x down the corridor.",
+  "start": { "x": 0.0, "y": 0.0, "yaw_deg": 0.0 },
+  "approach_waypoints": [ [1.5, 0.0], [3.0, 0.0] ],
+  "decision_point": {
+    "x": 4.0, "y": 0.0, "yaw_deg": 0.0,
+    "note": "At the T-junction facing the far wall; must branch left or right. This pose defines the single shared decision frame o_d used for both goals."
+  },
+  "goals": [
+    {
+      "goal_id": "A",
+      "branch_label": "left",
+      "position": { "x": 4.5, "y": 5.0 },
+      "planned_goal_image": "goals_planned/design_01_goalA_left.png",
+      "recorded": false
+    },
+    {
+      "goal_id": "B",
+      "branch_label": "right",
+      "position": { "x": 4.5, "y": -5.0 },
+      "planned_goal_image": "goals_planned/design_01_goalB_right.png",
+      "recorded": false
+    }
+  ]
+}
