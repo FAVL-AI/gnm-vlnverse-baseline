@@ -1,0 +1,29 @@
+{
+  "route_id": "h7_corridor_02",
+  "route_type": "corridor_straight",
+  "waypoints": [
+    [
+      -1.5,
+      0.6
+    ],
+    [
+      0.0,
+      0.6
+    ],
+    [
+      1.0,
+      0.6
+    ]
+  ],
+  "start_pose": {
+    "x": -1.5,
+    "y": 0.6,
+    "yaw_rad": 0.0
+  },
+  "goal_pose": {
+    "x": 1.0,
+    "y": 0.6,
+    "yaw_rad": 0.0
+  },
+  "provenance": "H7-Hospital route authored on render-confirmed free lobby floor (v1 = gated-pilot robot-height camera positions); scene-identity gated at record time; collision-report is ground truth."
+}

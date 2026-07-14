@@ -681,6 +681,29 @@ traj_log = TrajectoryLogger(
     policy_mode="gnm_closed_loop" if CL_MODE else "manual_cmd_vel",
     extra_fields=_extra_cols)
 
+# --- HOSPITAL SCENE-IDENTITY GATE (fail closed BEFORE any recording) ---
+# Opt-in via --scene-gate so existing behaviour is unchanged. When set, the run
+# refuses to record unless the live stage is proven to be the real hospital.usd
+# (reference authored, prim count above threshold, scene mode = hospital, no
+# procedural landmark cubes, front RGB camera present). Static renders are visual
+# proof only; a recorded episode is training data, so it must clear this gate.
+if "--scene-gate" in sys.argv:
+    sys.path.insert(0, str(REPO / "scripts/gnm"))
+    from hospital_scene_identity_gate import (
+        verify_hospital_scene, write_scene_identity_manifest)
+    _gate = verify_hospital_scene(stage, scene_mode=SCENE, front_cam_path=CAM_PRIM,
+                                  resolution=[640, 480])
+    _gate_dir = REPO / "assets/experiments/hospital_h7_scene_gate"
+    _gate_dir.mkdir(parents=True, exist_ok=True)
+    write_scene_identity_manifest(_gate_dir / f"{EPISODE_ID}.json", _gate,
+                                  run_kind="m3pro_bringup_episode",
+                                  extra={"episode_id": EPISODE_ID, "scene_arg": SCENE})
+    print(f"[scene-gate] checks={_gate['checks']} PASS={_gate['pass']}", flush=True)
+    if not _gate["pass"]:
+        print(f"[scene-gate] FAIL — refusing to record. reasons={_gate['reasons']}",
+              flush=True)
+        sys.exit(5)
+
 bag_proc = None
 bag_path = None
 if "--episode" in sys.argv:

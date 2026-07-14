@@ -1,0 +1,37 @@
+{
+  "dataset": "H7-Hospital Front-RGB ImageNav",
+  "scene": "real Isaac 5.1 hospital.usd",
+  "counts": {
+    "train": 4,
+    "val": 2,
+    "test": 2
+  },
+  "splits": {
+    "train": [
+      "h7_reception_01",
+      "h7_corridor_01",
+      "h7_turn_01",
+      "h7_waiting_01"
+    ],
+    "val": [
+      "h7_reception_02",
+      "h7_corridor_02"
+    ],
+    "test": [
+      "h7_turn_02",
+      "h7_waiting_02"
+    ]
+  },
+  "episode_ids": {
+    "h7_reception_01": "h7_reception_01_20260714_000815",
+    "h7_corridor_01": "h7_corridor_01_20260714_004338",
+    "h7_turn_01": "h7_turn_01_20260714_011847",
+    "h7_waiting_01": "h7_waiting_01_20260714_015109",
+    "h7_reception_02": "h7_reception_02_20260714_002503",
+    "h7_corridor_02": "h7_corridor_02_20260714_010145",
+    "h7_turn_02": "h7_turn_02_20260714_013617",
+    "h7_waiting_02": "h7_waiting_02_20260714_020630"
+  },
+  "design": "instance-disjoint a/b variants; test/val = unseen route INSTANCES of trained families",
+  "timestamp": "2026-07-14T02:50:49"
+}

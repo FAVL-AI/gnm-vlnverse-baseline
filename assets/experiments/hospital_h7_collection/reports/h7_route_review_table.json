@@ -1,0 +1,282 @@
+[
+  {
+    "route_id": "h7_corridor_01",
+    "family": "corridor_straight",
+    "variant": "01",
+    "split_target": "train",
+    "risk": "LOW",
+    "confirmation": "drive-covered (y=0 line inside reception_01 path; goal trimmed x=1.0)",
+    "start": [
+      -1.5,
+      0.0
+    ],
+    "mid": [
+      0.0,
+      0.0
+    ],
+    "goal": [
+      1.0,
+      0.0
+    ],
+    "waypoints": [
+      [
+        -1.5,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "landmarks": "corridor walls, floor, ceiling lights"
+  },
+  {
+    "route_id": "h7_corridor_02",
+    "family": "corridor_straight",
+    "variant": "02",
+    "split_target": "val",
+    "risk": "LOW",
+    "confirmation": "drive-covered (y=0.6 bracketed by driven y=0 & y=0.8; goal trimmed x=1.0)",
+    "start": [
+      -1.5,
+      0.6
+    ],
+    "mid": [
+      0.0,
+      0.6
+    ],
+    "goal": [
+      1.0,
+      0.6
+    ],
+    "waypoints": [
+      [
+        -1.5,
+        0.6
+      ],
+      [
+        0.0,
+        0.6
+      ],
+      [
+        1.0,
+        0.6
+      ]
+    ],
+    "landmarks": "corridor, doors"
+  },
+  {
+    "route_id": "h7_reception_01",
+    "family": "reception_to_corridor",
+    "variant": "01",
+    "split_target": "train",
+    "risk": "LOW",
+    "confirmation": "drive-CONFIRMED (smoke, 0 contacts)",
+    "start": [
+      -2.6,
+      -0.8
+    ],
+    "mid": [
+      -0.8,
+      -0.2
+    ],
+    "goal": [
+      1.2,
+      0.0
+    ],
+    "waypoints": [
+      [
+        -2.6,
+        -0.8
+      ],
+      [
+        -0.8,
+        -0.2
+      ],
+      [
+        1.2,
+        0.0
+      ]
+    ],
+    "landmarks": "reception desk, wheelchair, vending, corridor opening"
+  },
+  {
+    "route_id": "h7_reception_02",
+    "family": "reception_to_corridor",
+    "variant": "02",
+    "split_target": "val",
+    "risk": "LOW",
+    "confirmation": "drive-covered (within 0-contact envelope, x<=1.0, y<=0.4)",
+    "start": [
+      -2.6,
+      -0.3
+    ],
+    "mid": [
+      -0.8,
+      0.2
+    ],
+    "goal": [
+      1.0,
+      0.4
+    ],
+    "waypoints": [
+      [
+        -2.6,
+        -0.3
+      ],
+      [
+        -0.8,
+        0.2
+      ],
+      [
+        1.0,
+        0.4
+      ]
+    ],
+    "landmarks": "reception desk, wheelchair, open floor"
+  },
+  {
+    "route_id": "h7_turn_01",
+    "family": "turn_t_junction",
+    "variant": "01",
+    "split_target": "train",
+    "risk": "LOW",
+    "confirmation": "drive-CONFIRMED (valcheck, 0 contacts)",
+    "start": [
+      -1.0,
+      0.8
+    ],
+    "mid": [
+      0.2,
+      0.8
+    ],
+    "goal": [
+      0.2,
+      -0.2
+    ],
+    "waypoints": [
+      [
+        -1.0,
+        0.8
+      ],
+      [
+        0.2,
+        0.8
+      ],
+      [
+        0.2,
+        -0.2
+      ]
+    ],
+    "landmarks": "wall corner, T-junction, bin"
+  },
+  {
+    "route_id": "h7_turn_02",
+    "family": "turn_t_junction",
+    "variant": "02",
+    "split_target": "test",
+    "risk": "LOW",
+    "confirmation": "drive-covered (mirror of turn_01; points within driven envelope)",
+    "start": [
+      -1.0,
+      -0.2
+    ],
+    "mid": [
+      0.2,
+      -0.2
+    ],
+    "goal": [
+      0.2,
+      0.8
+    ],
+    "waypoints": [
+      [
+        -1.0,
+        -0.2
+      ],
+      [
+        0.2,
+        -0.2
+      ],
+      [
+        0.2,
+        0.8
+      ]
+    ],
+    "landmarks": "wall corner, T-junction, bin"
+  },
+  {
+    "route_id": "h7_waiting_01",
+    "family": "waiting_to_doorway",
+    "variant": "01",
+    "split_target": "train",
+    "risk": "LOW",
+    "confirmation": "drive-CONFIRMED (valcheck, 0 contacts)",
+    "start": [
+      -2.2,
+      1.0
+    ],
+    "mid": [
+      -0.5,
+      0.4
+    ],
+    "goal": [
+      1.0,
+      -0.2
+    ],
+    "waypoints": [
+      [
+        -2.2,
+        1.0
+      ],
+      [
+        -0.5,
+        0.4
+      ],
+      [
+        1.0,
+        -0.2
+      ]
+    ],
+    "landmarks": "waiting tables, glass doorway, bin"
+  },
+  {
+    "route_id": "h7_waiting_02",
+    "family": "waiting_to_doorway",
+    "variant": "02",
+    "split_target": "test",
+    "risk": "LOW",
+    "confirmation": "drive-covered (within waiting_01/reception_01 envelope)",
+    "start": [
+      -2.0,
+      0.6
+    ],
+    "mid": [
+      -0.4,
+      0.1
+    ],
+    "goal": [
+      0.9,
+      -0.4
+    ],
+    "waypoints": [
+      [
+        -2.0,
+        0.6
+      ],
+      [
+        -0.4,
+        0.1
+      ],
+      [
+        0.9,
+        -0.4
+      ]
+    ],
+    "landmarks": "waiting tables, glass doorway, bin"
+  }
+]

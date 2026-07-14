@@ -1,0 +1,29 @@
+{
+  "route_id": "h7_waiting_01",
+  "route_type": "waiting_to_doorway",
+  "waypoints": [
+    [
+      -2.2,
+      1.0
+    ],
+    [
+      -0.5,
+      0.4
+    ],
+    [
+      1.0,
+      -0.2
+    ]
+  ],
+  "start_pose": {
+    "x": -2.2,
+    "y": 1.0,
+    "yaw_rad": -0.3393
+  },
+  "goal_pose": {
+    "x": 1.0,
+    "y": -0.2,
+    "yaw_rad": -0.3805
+  },
+  "provenance": "H7-Hospital route authored on render-confirmed free lobby floor (v1 = gated-pilot robot-height camera positions); scene-identity gated at record time; collision-report is ground truth."
+}

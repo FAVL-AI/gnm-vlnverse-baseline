@@ -1,0 +1,23 @@
+{
+  "episode_disjoint": true,
+  "route_disjoint": true,
+  "route_instance_shared_across_splits": false,
+  "family_shared_train_vs_eval": {
+    "note": "families shared by DESIGN (a/b instance-disjoint); eval = unseen INSTANCES of trained families, matching the H6 route-instance generalization protocol",
+    "train_families": [
+      "corridor_straight",
+      "reception_to_corridor",
+      "turn_t_junction",
+      "waiting_to_doorway"
+    ],
+    "val_test_families": [
+      "corridor_straight",
+      "reception_to_corridor",
+      "turn_t_junction",
+      "waiting_to_doorway"
+    ]
+  },
+  "goal_image_fixed_across_all": true,
+  "goal_fixed_caveat": "single fixed goal image (h2_weave_J) across all episodes \u2192 NOT goal-conditioning evidence; imitation-fidelity only",
+  "leakage_clean_episode_and_route_level": true
+}

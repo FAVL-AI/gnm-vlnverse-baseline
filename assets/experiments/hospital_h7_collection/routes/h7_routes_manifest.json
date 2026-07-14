@@ -1,0 +1,55 @@
+{
+  "dataset": "H7-Hospital Front-RGB ImageNav",
+  "scene": "hospital",
+  "asset": "Isaac 5.1 hospital.usd",
+  "routes": [
+    {
+      "route_id": "h7_reception_01",
+      "route_type": "reception_to_corridor",
+      "n_waypoints": 3,
+      "length_m": 3.91
+    },
+    {
+      "route_id": "h7_reception_02",
+      "route_type": "reception_to_corridor",
+      "n_waypoints": 3,
+      "length_m": 3.68
+    },
+    {
+      "route_id": "h7_corridor_01",
+      "route_type": "corridor_straight",
+      "n_waypoints": 3,
+      "length_m": 2.5
+    },
+    {
+      "route_id": "h7_corridor_02",
+      "route_type": "corridor_straight",
+      "n_waypoints": 3,
+      "length_m": 2.5
+    },
+    {
+      "route_id": "h7_turn_01",
+      "route_type": "turn_t_junction",
+      "n_waypoints": 3,
+      "length_m": 2.2
+    },
+    {
+      "route_id": "h7_turn_02",
+      "route_type": "turn_t_junction",
+      "n_waypoints": 3,
+      "length_m": 2.2
+    },
+    {
+      "route_id": "h7_waiting_01",
+      "route_type": "waiting_to_doorway",
+      "n_waypoints": 3,
+      "length_m": 3.42
+    },
+    {
+      "route_id": "h7_waiting_02",
+      "route_type": "waiting_to_doorway",
+      "n_waypoints": 3,
+      "length_m": 3.07
+    }
+  ]
+}

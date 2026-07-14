@@ -1,0 +1,15 @@
+{
+  "exclusion_criteria": [
+    "route_not_completed",
+    "contact",
+    "emergency_stop",
+    "xy_bound/stop_reason",
+    "scene_gate_fail",
+    "missing_artifact",
+    "cleanup_fail"
+  ],
+  "rule": "any triggered criterion => episode excluded, preserved here, never used for training, never silently repaired",
+  "n_excluded": 0,
+  "excluded": [],
+  "n_usable": 8
+}
