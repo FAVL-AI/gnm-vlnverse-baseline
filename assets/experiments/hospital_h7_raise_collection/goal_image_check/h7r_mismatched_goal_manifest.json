@@ -1,0 +1,178 @@
+{
+  "model": "checkpoints/h7r_hospital_pilot_finetune/best.pt",
+  "note": "goal POSITION always = episode's own endpoint; only the goal IMAGE is swapped. SR/NE measure completing the episode's OWN route.",
+  "conditions": {
+    "correct": {
+      "SR": 1.0,
+      "OSR": 1.0,
+      "SPL": 0.9078,
+      "NE": 2.5411,
+      "nDTW": 0.6458,
+      "mean_final_pos_delta_m": 0.0
+    },
+    "placeholder": {
+      "SR": 1.0,
+      "OSR": 1.0,
+      "SPL": 0.9515,
+      "NE": 2.088,
+      "nDTW": 0.6955,
+      "mean_final_pos_delta_m": 0.659
+    },
+    "mismatch_same_fam": {
+      "SR": 0.5,
+      "OSR": 1.0,
+      "SPL": 0.5,
+      "NE": 2.916,
+      "nDTW": 0.612,
+      "mean_final_pos_delta_m": 0.501
+    },
+    "mismatch_diff_fam": {
+      "SR": 1.0,
+      "OSR": 1.0,
+      "SPL": 0.8789,
+      "NE": 2.5021,
+      "nDTW": 0.6537,
+      "mean_final_pos_delta_m": 0.497
+    }
+  },
+  "episodes": [
+    {
+      "episode": "h7r_turn_02",
+      "family": "turn_t_junction",
+      "own_goal_frame": "datasets/isaac_hospital_h7r/test/h7r_turn_02_20260714_054954/176.jpg",
+      "mismatch_same_fam": "turn_01",
+      "mismatch_diff_fam": "reception_01",
+      "conditions": {
+        "correct": {
+          "goal_image": "own final frame (datasets/isaac_hospital_h7r/test/h7r_turn_02_20260714_054954/176.jpg)",
+          "SR": 1.0,
+          "OSR": 1.0,
+          "SPL": 0.8155,
+          "NE": 2.6075,
+          "nDTW": 0.6298,
+          "stop_step": 176,
+          "n_steps": 176,
+          "final_pos": [
+            2.449,
+            -0.706
+          ],
+          "final_pos_delta_from_correct_m": 0.0
+        },
+        "placeholder": {
+          "goal_image": "fixed h2_weave_J placeholder",
+          "SR": 1.0,
+          "OSR": 1.0,
+          "SPL": 0.903,
+          "NE": 2.3669,
+          "nDTW": 0.652,
+          "stop_step": 176,
+          "n_steps": 176,
+          "final_pos": [
+            2.236,
+            -0.595
+          ],
+          "final_pos_delta_from_correct_m": 0.241
+        },
+        "mismatch_same_fam": {
+          "goal_image": "turn_01 final frame (datasets/isaac_hospital_h7r/train/h7r_turn_01_20260714_052544/176.jpg)",
+          "SR": 0.0,
+          "OSR": 1.0,
+          "SPL": 0.0,
+          "NE": 3.4347,
+          "nDTW": 0.5541,
+          "stop_step": 176,
+          "n_steps": 176,
+          "final_pos": [
+            3.34,
+            -0.745
+          ],
+          "final_pos_delta_from_correct_m": 0.892
+        },
+        "mismatch_diff_fam": {
+          "goal_image": "reception_01 final frame (datasets/isaac_hospital_h7r/train/h7r_reception_01_20260714_042711/176.jpg)",
+          "SR": 1.0,
+          "OSR": 1.0,
+          "SPL": 0.7578,
+          "NE": 2.8095,
+          "nDTW": 0.6101,
+          "stop_step": 176,
+          "n_steps": 176,
+          "final_pos": [
+            2.654,
+            -0.749
+          ],
+          "final_pos_delta_from_correct_m": 0.21
+        }
+      }
+    },
+    {
+      "episode": "h7r_waiting_02",
+      "family": "waiting_to_doorway",
+      "own_goal_frame": "datasets/isaac_hospital_h7r/test/h7r_waiting_02_20260714_062024/176.jpg",
+      "mismatch_same_fam": "waiting_01",
+      "mismatch_diff_fam": "corridor_01",
+      "conditions": {
+        "correct": {
+          "goal_image": "own final frame (datasets/isaac_hospital_h7r/test/h7r_waiting_02_20260714_062024/176.jpg)",
+          "SR": 1.0,
+          "OSR": 1.0,
+          "SPL": 1.0,
+          "NE": 2.4746,
+          "nDTW": 0.6618,
+          "stop_step": 176,
+          "n_steps": 176,
+          "final_pos": [
+            3.065,
+            0.204
+          ],
+          "final_pos_delta_from_correct_m": 0.0
+        },
+        "placeholder": {
+          "goal_image": "fixed h2_weave_J placeholder",
+          "SR": 1.0,
+          "OSR": 1.0,
+          "SPL": 1.0,
+          "NE": 1.8091,
+          "nDTW": 0.739,
+          "stop_step": 176,
+          "n_steps": 176,
+          "final_pos": [
+            2.405,
+            -0.649
+          ],
+          "final_pos_delta_from_correct_m": 1.078
+        },
+        "mismatch_same_fam": {
+          "goal_image": "waiting_01 final frame (datasets/isaac_hospital_h7r/train/h7r_waiting_01_20260714_060451/176.jpg)",
+          "SR": 1.0,
+          "OSR": 1.0,
+          "SPL": 1.0,
+          "NE": 2.3973,
+          "nDTW": 0.6699,
+          "stop_step": 176,
+          "n_steps": 176,
+          "final_pos": [
+            3.002,
+            0.115
+          ],
+          "final_pos_delta_from_correct_m": 0.109
+        },
+        "mismatch_diff_fam": {
+          "goal_image": "corridor_01 final frame (datasets/isaac_hospital_h7r/train/h7r_corridor_01_20260714_045626/176.jpg)",
+          "SR": 1.0,
+          "OSR": 1.0,
+          "SPL": 1.0,
+          "NE": 2.1948,
+          "nDTW": 0.6973,
+          "stop_step": 176,
+          "n_steps": 176,
+          "final_pos": [
+            2.814,
+            -0.539
+          ],
+          "final_pos_delta_from_correct_m": 0.784
+        }
+      }
+    }
+  ]
+}
