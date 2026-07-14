@@ -1,0 +1,284 @@
+{
+  "scope": "offline action-probe \u2014 no training, no promotion",
+  "models": {
+    "H1_incumbent": {
+      "designs": [
+        {
+          "design_id": "h8_proto_01_corridor_tjunction",
+          "family": "shared_corridor_branch_choice",
+          "expected": {
+            "goalA_angle": 71.8,
+            "goalB_angle": -0.0,
+            "separation_deg": 71.83
+          },
+          "pred": {
+            "goalA": {
+              "act_dx_dy": [
+                0.0892,
+                -0.004
+              ],
+              "angle_deg": -2.6,
+              "mag": 0.0893,
+              "dist": 0.6023
+            },
+            "goalB": {
+              "act_dx_dy": [
+                0.0909,
+                -0.0033
+              ],
+              "angle_deg": -2.1,
+              "mag": 0.0909,
+              "dist": 0.616
+            },
+            "placeholder": {
+              "act_dx_dy": [
+                0.0983,
+                -0.004
+              ],
+              "angle_deg": -2.3,
+              "mag": 0.0984,
+              "dist": 0.6783
+            },
+            "mismatch": {
+              "act_dx_dy": [
+                0.0908,
+                -0.003
+              ],
+              "angle_deg": -1.9,
+              "mag": 0.0909,
+              "dist": 0.561
+            }
+          },
+          "branch_choice": {
+            "goalA_correct": false,
+            "goalB_correct": true
+          },
+          "action_angle_error_deg": {
+            "goalA": 74.4,
+            "goalB": 2.1
+          },
+          "pred_action_change_A_to_B_deg": 0.53,
+          "goal_sensitivity_S": 0.007,
+          "displacement_shift_A_to_B": 0.0019,
+          "stop_output_change_A_to_B": 0.0137
+        },
+        {
+          "design_id": "h8_proto_02_samestart_fork",
+          "family": "same_start_different_goal",
+          "expected": {
+            "goalA_angle": 1.0,
+            "goalB_angle": -49.9,
+            "separation_deg": 50.94
+          },
+          "pred": {
+            "goalA": {
+              "act_dx_dy": [
+                0.086,
+                -0.006
+              ],
+              "angle_deg": -4.0,
+              "mag": 0.0862,
+              "dist": 0.4933
+            },
+            "goalB": {
+              "act_dx_dy": [
+                0.0879,
+                -0.007
+              ],
+              "angle_deg": -4.5,
+              "mag": 0.0881,
+              "dist": 0.5459
+            },
+            "placeholder": {
+              "act_dx_dy": [
+                0.0975,
+                -0.0055
+              ],
+              "angle_deg": -3.2,
+              "mag": 0.0977,
+              "dist": 0.6187
+            },
+            "mismatch": {
+              "act_dx_dy": [
+                0.0847,
+                -0.0066
+              ],
+              "angle_deg": -4.5,
+              "mag": 0.085,
+              "dist": 0.5317
+            }
+          },
+          "branch_choice": {
+            "goalA_correct": true,
+            "goalB_correct": false
+          },
+          "action_angle_error_deg": {
+            "goalA": 5.0,
+            "goalB": 45.4
+          },
+          "pred_action_change_A_to_B_deg": 0.53,
+          "goal_sensitivity_S": 0.01,
+          "displacement_shift_A_to_B": 0.0021,
+          "stop_output_change_A_to_B": 0.0526
+        }
+      ],
+      "summary": {
+        "branch_choice_accuracy": 0.5,
+        "mean_goal_sensitivity_S": 0.009,
+        "mean_pred_action_change_deg": 0.53,
+        "mean_action_angle_error_deg": 31.7,
+        "verdict": "goal_image_insensitive_route_motion_dominated"
+      }
+    },
+    "H7r_candidate": {
+      "designs": [
+        {
+          "design_id": "h8_proto_01_corridor_tjunction",
+          "family": "shared_corridor_branch_choice",
+          "expected": {
+            "goalA_angle": 71.8,
+            "goalB_angle": -0.0,
+            "separation_deg": 71.83
+          },
+          "pred": {
+            "goalA": {
+              "act_dx_dy": [
+                0.0156,
+                -0.0045
+              ],
+              "angle_deg": -16.1,
+              "mag": 0.0162,
+              "dist": 0.9451
+            },
+            "goalB": {
+              "act_dx_dy": [
+                0.0163,
+                -0.0052
+              ],
+              "angle_deg": -17.9,
+              "mag": 0.0171,
+              "dist": 0.974
+            },
+            "placeholder": {
+              "act_dx_dy": [
+                0.014,
+                -0.0053
+              ],
+              "angle_deg": -20.6,
+              "mag": 0.015,
+              "dist": 0.9476
+            },
+            "mismatch": {
+              "act_dx_dy": [
+                0.0169,
+                -0.0033
+              ],
+              "angle_deg": -11.0,
+              "mag": 0.0173,
+              "dist": 0.8594
+            }
+          },
+          "branch_choice": {
+            "goalA_correct": false,
+            "goalB_correct": true
+          },
+          "action_angle_error_deg": {
+            "goalA": 88.0,
+            "goalB": 17.9
+          },
+          "pred_action_change_A_to_B_deg": 1.75,
+          "goal_sensitivity_S": 0.024,
+          "displacement_shift_A_to_B": 0.001,
+          "stop_output_change_A_to_B": 0.0289
+        },
+        {
+          "design_id": "h8_proto_02_samestart_fork",
+          "family": "same_start_different_goal",
+          "expected": {
+            "goalA_angle": 1.0,
+            "goalB_angle": -49.9,
+            "separation_deg": 50.94
+          },
+          "pred": {
+            "goalA": {
+              "act_dx_dy": [
+                0.0125,
+                -0.0032
+              ],
+              "angle_deg": -14.5,
+              "mag": 0.0129,
+              "dist": 0.8548
+            },
+            "goalB": {
+              "act_dx_dy": [
+                0.0138,
+                -0.0033
+              ],
+              "angle_deg": -13.3,
+              "mag": 0.0141,
+              "dist": 0.8992
+            },
+            "placeholder": {
+              "act_dx_dy": [
+                0.011,
+                -0.0031
+              ],
+              "angle_deg": -15.9,
+              "mag": 0.0115,
+              "dist": 0.9442
+            },
+            "mismatch": {
+              "act_dx_dy": [
+                0.0119,
+                -0.0044
+              ],
+              "angle_deg": -20.2,
+              "mag": 0.0127,
+              "dist": 0.937
+            }
+          },
+          "branch_choice": {
+            "goalA_correct": true,
+            "goalB_correct": false
+          },
+          "action_angle_error_deg": {
+            "goalA": 15.6,
+            "goalB": 36.6
+          },
+          "pred_action_change_A_to_B_deg": 1.25,
+          "goal_sensitivity_S": 0.025,
+          "displacement_shift_A_to_B": 0.0012,
+          "stop_output_change_A_to_B": 0.0444
+        }
+      ],
+      "summary": {
+        "branch_choice_accuracy": 0.5,
+        "mean_goal_sensitivity_S": 0.024,
+        "mean_pred_action_change_deg": 1.5,
+        "mean_action_angle_error_deg": 39.5,
+        "verdict": "goal_image_insensitive_route_motion_dominated"
+      }
+    }
+  },
+  "summary": {
+    "H1_incumbent": {
+      "branch_choice_accuracy": 0.5,
+      "mean_goal_sensitivity_S": 0.009,
+      "mean_pred_action_change_deg": 0.53,
+      "mean_action_angle_error_deg": 31.7,
+      "verdict": "goal_image_insensitive_route_motion_dominated"
+    },
+    "H7r_candidate": {
+      "branch_choice_accuracy": 0.5,
+      "mean_goal_sensitivity_S": 0.024,
+      "mean_pred_action_change_deg": 1.5,
+      "mean_action_angle_error_deg": 39.5,
+      "verdict": "goal_image_insensitive_route_motion_dominated"
+    }
+  },
+  "thresholds": {
+    "branch_acc_pass": 0.75,
+    "S_pass": 0.5,
+    "pred_change_min_deg": 15.0
+  }
+}

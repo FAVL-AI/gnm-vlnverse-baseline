@@ -1,0 +1,22 @@
+# H8 action-probe matrix — predicted [Δx,Δy] per (model, design, goal condition)
+
+Same shared decision frame `o_d`; only the goal image changes across conditions. `exp_angle` = expected robot-frame action angle to that goal (from committed recorded acceptance). Angles in degrees; `[Δx,Δy]` in robot frame (real units).
+
+| model | design | condition | pred_dx | pred_dy | pred_angle | exp_angle | angle_err | dist |
+|---|---|---|---|---|---|---|---|---|
+| H1_incumbent | h8_proto_01_corridor_tjunction | goalA | 0.0892 | -0.004 | -2.6 | 71.8 | 74.4 | 0.6023 |
+| H1_incumbent | h8_proto_01_corridor_tjunction | goalB | 0.0909 | -0.0033 | -2.1 | -0.0 | 2.1 | 0.616 |
+| H1_incumbent | h8_proto_01_corridor_tjunction | placeholder | 0.0983 | -0.004 | -2.3 |  |  | 0.6783 |
+| H1_incumbent | h8_proto_01_corridor_tjunction | mismatch | 0.0908 | -0.003 | -1.9 |  |  | 0.561 |
+| H1_incumbent | h8_proto_02_samestart_fork | goalA | 0.086 | -0.006 | -4.0 | 1.0 | 5.0 | 0.4933 |
+| H1_incumbent | h8_proto_02_samestart_fork | goalB | 0.0879 | -0.007 | -4.5 | -49.9 | 45.4 | 0.5459 |
+| H1_incumbent | h8_proto_02_samestart_fork | placeholder | 0.0975 | -0.0055 | -3.2 |  |  | 0.6187 |
+| H1_incumbent | h8_proto_02_samestart_fork | mismatch | 0.0847 | -0.0066 | -4.5 |  |  | 0.5317 |
+| H7r_candidate | h8_proto_01_corridor_tjunction | goalA | 0.0156 | -0.0045 | -16.1 | 71.8 | 88.0 | 0.9451 |
+| H7r_candidate | h8_proto_01_corridor_tjunction | goalB | 0.0163 | -0.0052 | -17.9 | -0.0 | 17.9 | 0.974 |
+| H7r_candidate | h8_proto_01_corridor_tjunction | placeholder | 0.014 | -0.0053 | -20.6 |  |  | 0.9476 |
+| H7r_candidate | h8_proto_01_corridor_tjunction | mismatch | 0.0169 | -0.0033 | -11.0 |  |  | 0.8594 |
+| H7r_candidate | h8_proto_02_samestart_fork | goalA | 0.0125 | -0.0032 | -14.5 | 1.0 | 15.6 | 0.8548 |
+| H7r_candidate | h8_proto_02_samestart_fork | goalB | 0.0138 | -0.0033 | -13.3 | -49.9 | 36.6 | 0.8992 |
+| H7r_candidate | h8_proto_02_samestart_fork | placeholder | 0.011 | -0.0031 | -15.9 |  |  | 0.9442 |
+| H7r_candidate | h8_proto_02_samestart_fork | mismatch | 0.0119 | -0.0044 | -20.2 |  |  | 0.937 |
