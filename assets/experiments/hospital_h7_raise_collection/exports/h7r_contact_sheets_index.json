@@ -1,0 +1,114 @@
+[
+  {
+    "episode": "h7r_reception_01",
+    "episode_id": "h7r_reception_01_20260714_042711",
+    "split": "train",
+    "route_type": "h7_reception_01",
+    "image_raw_msgs": 2117,
+    "frames": {
+      "start": "h7r_reception_01_start.png",
+      "current": "h7r_reception_01_current.png",
+      "goal": "h7r_reception_01_goal.png"
+    },
+    "contact_sheet": "h7r_reception_01_contact_sheet.png",
+    "source": "recorded /camera/image_raw (not a re-render)"
+  },
+  {
+    "episode": "h7r_corridor_01",
+    "episode_id": "h7r_corridor_01_20260714_045626",
+    "split": "train",
+    "route_type": "h7_corridor_01",
+    "image_raw_msgs": 2122,
+    "frames": {
+      "start": "h7r_corridor_01_start.png",
+      "current": "h7r_corridor_01_current.png",
+      "goal": "h7r_corridor_01_goal.png"
+    },
+    "contact_sheet": "h7r_corridor_01_contact_sheet.png",
+    "source": "recorded /camera/image_raw (not a re-render)"
+  },
+  {
+    "episode": "h7r_turn_01",
+    "episode_id": "h7r_turn_01_20260714_052544",
+    "split": "train",
+    "route_type": "h7_turn_01",
+    "image_raw_msgs": 2121,
+    "frames": {
+      "start": "h7r_turn_01_start.png",
+      "current": "h7r_turn_01_current.png",
+      "goal": "h7r_turn_01_goal.png"
+    },
+    "contact_sheet": "h7r_turn_01_contact_sheet.png",
+    "source": "recorded /camera/image_raw (not a re-render)"
+  },
+  {
+    "episode": "h7r_waiting_01",
+    "episode_id": "h7r_waiting_01_20260714_060451",
+    "split": "train",
+    "route_type": "h7_waiting_01",
+    "image_raw_msgs": 2124,
+    "frames": {
+      "start": "h7r_waiting_01_start.png",
+      "current": "h7r_waiting_01_current.png",
+      "goal": "h7r_waiting_01_goal.png"
+    },
+    "contact_sheet": "h7r_waiting_01_contact_sheet.png",
+    "source": "recorded /camera/image_raw (not a re-render)"
+  },
+  {
+    "episode": "h7r_reception_02",
+    "episode_id": "h7r_reception_02_20260714_044133",
+    "split": "val",
+    "route_type": "h7_reception_02",
+    "image_raw_msgs": 2122,
+    "frames": {
+      "start": "h7r_reception_02_start.png",
+      "current": "h7r_reception_02_current.png",
+      "goal": "h7r_reception_02_goal.png"
+    },
+    "contact_sheet": "h7r_reception_02_contact_sheet.png",
+    "source": "recorded /camera/image_raw (not a re-render)"
+  },
+  {
+    "episode": "h7r_corridor_02",
+    "episode_id": "h7r_corridor_02_20260714_051150",
+    "split": "val",
+    "route_type": "h7_corridor_02",
+    "image_raw_msgs": 2123,
+    "frames": {
+      "start": "h7r_corridor_02_start.png",
+      "current": "h7r_corridor_02_current.png",
+      "goal": "h7r_corridor_02_goal.png"
+    },
+    "contact_sheet": "h7r_corridor_02_contact_sheet.png",
+    "source": "recorded /camera/image_raw (not a re-render)"
+  },
+  {
+    "episode": "h7r_turn_02",
+    "episode_id": "h7r_turn_02_20260714_054954",
+    "split": "test",
+    "route_type": "h7_turn_02",
+    "image_raw_msgs": 2121,
+    "frames": {
+      "start": "h7r_turn_02_start.png",
+      "current": "h7r_turn_02_current.png",
+      "goal": "h7r_turn_02_goal.png"
+    },
+    "contact_sheet": "h7r_turn_02_contact_sheet.png",
+    "source": "recorded /camera/image_raw (not a re-render)"
+  },
+  {
+    "episode": "h7r_waiting_02",
+    "episode_id": "h7r_waiting_02_20260714_062024",
+    "split": "test",
+    "route_type": "h7_waiting_02",
+    "image_raw_msgs": 2121,
+    "frames": {
+      "start": "h7r_waiting_02_start.png",
+      "current": "h7r_waiting_02_current.png",
+      "goal": "h7r_waiting_02_goal.png"
+    },
+    "contact_sheet": "h7r_waiting_02_contact_sheet.png",
+    "source": "recorded /camera/image_raw (not a re-render)"
+  }
+]

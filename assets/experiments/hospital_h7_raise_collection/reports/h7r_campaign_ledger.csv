@@ -1,0 +1,11 @@
+episode_name,route_id,rc,camera_raise_m,started,ended
+h7r_reception_01,h7_reception_01,0,0.12,2026-07-14T04:23:00+01:00,2026-07-14T04:37:24+01:00
+h7r_reception_02,h7_reception_02,0,0.12,2026-07-14T04:37:29+01:00,2026-07-14T04:52:16+01:00
+h7r_corridor_01,h7_corridor_01,0,0.12,2026-07-14T04:52:21+01:00,2026-07-14T05:07:31+01:00
+h7r_corridor_02,h7_corridor_02,0,0.12,2026-07-14T05:07:36+01:00,2026-07-14T05:21:35+01:00
+h7r_turn_01,h7_turn_01,0,0.12,2026-07-14T05:21:40+01:00,2026-07-14T05:37:06+01:00
+h7r_turn_02,h7_turn_02,0,0.12,2026-07-14T05:45:49+01:00,2026-07-14T06:00:40+01:00
+h7r_waiting_01,h7_waiting_01,0,0.12,2026-07-14T06:00:46+01:00,2026-07-14T06:16:11+01:00
+h7r_waiting_02,h7_waiting_02,0,0.12,2026-07-14T06:16:16+01:00,2026-07-14T06:30:02+01:00
+# provenance: first full run recorded 5 episodes rc=0 (reception_01,reception_02,corridor_01,corridor_02,turn_01) then was KILLED EXTERNALLY ~74min in during turn_02 (not crash/OOM/disk/systemic; no orphan procs, GPU idle).
+# partial turn_02 (2.7M incomplete bag+traj, id 20260714_054118) was DISCARDED and NOT used; stale DDS shm cleared. Remaining 3 (turn_02,waiting_01,waiting_02) re-recorded in a resume run. All 8 data rows above are clean rc=0 completed episodes (turn_02 = resumed id 20260714_054954).

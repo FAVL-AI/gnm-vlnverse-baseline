@@ -250,6 +250,13 @@ cam = UsdGeom.Camera.Define(stage, CAM_PRIM)
 cam.CreateFocalLengthAttr(18.0)
 cam.CreateClippingRangeAttr(Gf.Vec2f(0.02, 10000.0))
 UsdGeom.XformCommonAPI(cam).SetRotate(Gf.Vec3f(90.0, 0.0, -90.0))
+# Opt-in mount-height raise (local +Z on camera_link) to reduce robot-body
+# occlusion of the lower frame. Default 0.0 keeps the H1-H6 sensor unchanged;
+# the H7 raised-mount pilot passes --camera-raise 0.12 (level horizon kept).
+CAM_RAISE = float(_argval("--camera-raise", "0.0"))
+if CAM_RAISE:
+    UsdGeom.XformCommonAPI(cam).SetTranslate(Gf.Vec3d(0.0, 0.0, CAM_RAISE))
+    print(f"[camera] mount raised +{CAM_RAISE:.3f} m (local +Z), rotation unchanged", flush=True)
 
 import omni.replicator.core as rep
 
@@ -591,6 +598,7 @@ if "--capture-goal" in sys.argv:
         "robot_asset_path": str(ROBOT_USD.relative_to(REPO)),
         "camera_prim": CAM_PRIM,
         "camera_frame_id": "camera_link",
+        "camera_mount_raise_m": round(CAM_RAISE, 4),
         "image_resolution": [int(frame.shape[1]), int(frame.shape[0])],
         "robot_pose_at_capture": {
             "x": round(float(gp[0]), 4), "y": round(float(gp[1]), 4),
@@ -1251,6 +1259,8 @@ if CL_MODE:
         "predicted_distance_at_stop": goal_stop_pred,
         "residual_motion_after_stop_m": residual_after_stop,
         "closed_loop": True,
+        "camera_prim": CAM_PRIM,
+        "camera_mount_raise_m": round(CAM_RAISE, 4),
         "goal_id": GOAL_SEL,
         "goal_image": str(_goal_img.relative_to(REPO)),
         "goal_scene_aligned": GOAL_SEL is not None,

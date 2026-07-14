@@ -1,0 +1,125 @@
+{
+  "all_complete": true,
+  "episodes": [
+    {
+      "episode": "h7r_reception_01",
+      "episode_id": "h7r_reception_01_20260714_042711",
+      "checks": {
+        "trajectory_dir": true,
+        "episode_metadata": true,
+        "trajectory_jsonl": true,
+        "trajectory_csv": true,
+        "rosbag": true,
+        "scene_gate_manifest": true,
+        "contact_sheet": true,
+        "start_mid_goal_frames": true
+      },
+      "complete": true
+    },
+    {
+      "episode": "h7r_corridor_01",
+      "episode_id": "h7r_corridor_01_20260714_045626",
+      "checks": {
+        "trajectory_dir": true,
+        "episode_metadata": true,
+        "trajectory_jsonl": true,
+        "trajectory_csv": true,
+        "rosbag": true,
+        "scene_gate_manifest": true,
+        "contact_sheet": true,
+        "start_mid_goal_frames": true
+      },
+      "complete": true
+    },
+    {
+      "episode": "h7r_turn_01",
+      "episode_id": "h7r_turn_01_20260714_052544",
+      "checks": {
+        "trajectory_dir": true,
+        "episode_metadata": true,
+        "trajectory_jsonl": true,
+        "trajectory_csv": true,
+        "rosbag": true,
+        "scene_gate_manifest": true,
+        "contact_sheet": true,
+        "start_mid_goal_frames": true
+      },
+      "complete": true
+    },
+    {
+      "episode": "h7r_waiting_01",
+      "episode_id": "h7r_waiting_01_20260714_060451",
+      "checks": {
+        "trajectory_dir": true,
+        "episode_metadata": true,
+        "trajectory_jsonl": true,
+        "trajectory_csv": true,
+        "rosbag": true,
+        "scene_gate_manifest": true,
+        "contact_sheet": true,
+        "start_mid_goal_frames": true
+      },
+      "complete": true
+    },
+    {
+      "episode": "h7r_reception_02",
+      "episode_id": "h7r_reception_02_20260714_044133",
+      "checks": {
+        "trajectory_dir": true,
+        "episode_metadata": true,
+        "trajectory_jsonl": true,
+        "trajectory_csv": true,
+        "rosbag": true,
+        "scene_gate_manifest": true,
+        "contact_sheet": true,
+        "start_mid_goal_frames": true
+      },
+      "complete": true
+    },
+    {
+      "episode": "h7r_corridor_02",
+      "episode_id": "h7r_corridor_02_20260714_051150",
+      "checks": {
+        "trajectory_dir": true,
+        "episode_metadata": true,
+        "trajectory_jsonl": true,
+        "trajectory_csv": true,
+        "rosbag": true,
+        "scene_gate_manifest": true,
+        "contact_sheet": true,
+        "start_mid_goal_frames": true
+      },
+      "complete": true
+    },
+    {
+      "episode": "h7r_turn_02",
+      "episode_id": "h7r_turn_02_20260714_054954",
+      "checks": {
+        "trajectory_dir": true,
+        "episode_metadata": true,
+        "trajectory_jsonl": true,
+        "trajectory_csv": true,
+        "rosbag": true,
+        "scene_gate_manifest": true,
+        "contact_sheet": true,
+        "start_mid_goal_frames": true
+      },
+      "complete": true
+    },
+    {
+      "episode": "h7r_waiting_02",
+      "episode_id": "h7r_waiting_02_20260714_062024",
+      "checks": {
+        "trajectory_dir": true,
+        "episode_metadata": true,
+        "trajectory_jsonl": true,
+        "trajectory_csv": true,
+        "rosbag": true,
+        "scene_gate_manifest": true,
+        "contact_sheet": true,
+        "start_mid_goal_frames": true
+      },
+      "complete": true
+    }
+  ]
+}

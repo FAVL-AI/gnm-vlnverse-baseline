@@ -1,0 +1,38 @@
+{
+  "dataset": "H7-Hospital Front-RGB ImageNav (raised-mount)",
+  "scene": "real Isaac 5.1 hospital.usd",
+  "camera": "front RGB camera_link/rgb_camera raised +0.12 m, level horizon",
+  "counts": {
+    "train": 4,
+    "val": 2,
+    "test": 2
+  },
+  "splits": {
+    "train": [
+      "h7r_reception_01",
+      "h7r_corridor_01",
+      "h7r_turn_01",
+      "h7r_waiting_01"
+    ],
+    "val": [
+      "h7r_reception_02",
+      "h7r_corridor_02"
+    ],
+    "test": [
+      "h7r_turn_02",
+      "h7r_waiting_02"
+    ]
+  },
+  "episode_ids": {
+    "h7r_reception_01": "h7r_reception_01_20260714_042711",
+    "h7r_corridor_01": "h7r_corridor_01_20260714_045626",
+    "h7r_turn_01": "h7r_turn_01_20260714_052544",
+    "h7r_waiting_01": "h7r_waiting_01_20260714_060451",
+    "h7r_reception_02": "h7r_reception_02_20260714_044133",
+    "h7r_corridor_02": "h7r_corridor_02_20260714_051150",
+    "h7r_turn_02": "h7r_turn_02_20260714_054954",
+    "h7r_waiting_02": "h7r_waiting_02_20260714_062024"
+  },
+  "design": "instance-disjoint a/b variants; test/val = unseen route INSTANCES of trained families",
+  "timestamp": "2026-07-14T06:33:28"
+}

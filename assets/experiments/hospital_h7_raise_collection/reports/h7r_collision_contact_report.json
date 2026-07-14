@@ -1,0 +1,79 @@
+{
+  "total_contacts_all_episodes": 0,
+  "episodes_with_contact": [],
+  "any_emergency_stop": false,
+  "episodes": [
+    {
+      "episode": "h7r_reception_01",
+      "split": "train",
+      "total_contacts": 0,
+      "max_contact_streak": 0,
+      "first_contact_step": null,
+      "emergency_stop": false,
+      "stop_reason": null
+    },
+    {
+      "episode": "h7r_corridor_01",
+      "split": "train",
+      "total_contacts": 0,
+      "max_contact_streak": 0,
+      "first_contact_step": null,
+      "emergency_stop": false,
+      "stop_reason": null
+    },
+    {
+      "episode": "h7r_turn_01",
+      "split": "train",
+      "total_contacts": 0,
+      "max_contact_streak": 0,
+      "first_contact_step": null,
+      "emergency_stop": false,
+      "stop_reason": null
+    },
+    {
+      "episode": "h7r_waiting_01",
+      "split": "train",
+      "total_contacts": 0,
+      "max_contact_streak": 0,
+      "first_contact_step": null,
+      "emergency_stop": false,
+      "stop_reason": null
+    },
+    {
+      "episode": "h7r_reception_02",
+      "split": "val",
+      "total_contacts": 0,
+      "max_contact_streak": 0,
+      "first_contact_step": null,
+      "emergency_stop": false,
+      "stop_reason": null
+    },
+    {
+      "episode": "h7r_corridor_02",
+      "split": "val",
+      "total_contacts": 0,
+      "max_contact_streak": 0,
+      "first_contact_step": null,
+      "emergency_stop": false,
+      "stop_reason": null
+    },
+    {
+      "episode": "h7r_turn_02",
+      "split": "test",
+      "total_contacts": 0,
+      "max_contact_streak": 0,
+      "first_contact_step": null,
+      "emergency_stop": false,
+      "stop_reason": null
+    },
+    {
+      "episode": "h7r_waiting_02",
+      "split": "test",
+      "total_contacts": 0,
+      "max_contact_streak": 0,
+      "first_contact_step": null,
+      "emergency_stop": false,
+      "stop_reason": null
+    }
+  ]
+}

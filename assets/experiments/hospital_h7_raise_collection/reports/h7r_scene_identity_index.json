@@ -1,0 +1,125 @@
+{
+  "all_pass": true,
+  "episodes": [
+    {
+      "episode": "h7r_reception_01",
+      "episode_id": "h7r_reception_01_20260714_042711",
+      "manifest": "assets/experiments/hospital_h7_scene_gate/h7r_reception_01_20260714_042711.json",
+      "scene_identity_pass": true,
+      "checks": {
+        "hospital_reference_authored": true,
+        "prim_count_ok": true,
+        "scene_mode_hospital": true,
+        "no_procedural_landmarks": true,
+        "front_camera_exists": true,
+        "resolution_declared": true
+      },
+      "hospital_prim_count": 1909
+    },
+    {
+      "episode": "h7r_corridor_01",
+      "episode_id": "h7r_corridor_01_20260714_045626",
+      "manifest": "assets/experiments/hospital_h7_scene_gate/h7r_corridor_01_20260714_045626.json",
+      "scene_identity_pass": true,
+      "checks": {
+        "hospital_reference_authored": true,
+        "prim_count_ok": true,
+        "scene_mode_hospital": true,
+        "no_procedural_landmarks": true,
+        "front_camera_exists": true,
+        "resolution_declared": true
+      },
+      "hospital_prim_count": 1909
+    },
+    {
+      "episode": "h7r_turn_01",
+      "episode_id": "h7r_turn_01_20260714_052544",
+      "manifest": "assets/experiments/hospital_h7_scene_gate/h7r_turn_01_20260714_052544.json",
+      "scene_identity_pass": true,
+      "checks": {
+        "hospital_reference_authored": true,
+        "prim_count_ok": true,
+        "scene_mode_hospital": true,
+        "no_procedural_landmarks": true,
+        "front_camera_exists": true,
+        "resolution_declared": true
+      },
+      "hospital_prim_count": 1909
+    },
+    {
+      "episode": "h7r_waiting_01",
+      "episode_id": "h7r_waiting_01_20260714_060451",
+      "manifest": "assets/experiments/hospital_h7_scene_gate/h7r_waiting_01_20260714_060451.json",
+      "scene_identity_pass": true,
+      "checks": {
+        "hospital_reference_authored": true,
+        "prim_count_ok": true,
+        "scene_mode_hospital": true,
+        "no_procedural_landmarks": true,
+        "front_camera_exists": true,
+        "resolution_declared": true
+      },
+      "hospital_prim_count": 1909
+    },
+    {
+      "episode": "h7r_reception_02",
+      "episode_id": "h7r_reception_02_20260714_044133",
+      "manifest": "assets/experiments/hospital_h7_scene_gate/h7r_reception_02_20260714_044133.json",
+      "scene_identity_pass": true,
+      "checks": {
+        "hospital_reference_authored": true,
+        "prim_count_ok": true,
+        "scene_mode_hospital": true,
+        "no_procedural_landmarks": true,
+        "front_camera_exists": true,
+        "resolution_declared": true
+      },
+      "hospital_prim_count": 1909
+    },
+    {
+      "episode": "h7r_corridor_02",
+      "episode_id": "h7r_corridor_02_20260714_051150",
+      "manifest": "assets/experiments/hospital_h7_scene_gate/h7r_corridor_02_20260714_051150.json",
+      "scene_identity_pass": true,
+      "checks": {
+        "hospital_reference_authored": true,
+        "prim_count_ok": true,
+        "scene_mode_hospital": true,
+        "no_procedural_landmarks": true,
+        "front_camera_exists": true,
+        "resolution_declared": true
+      },
+      "hospital_prim_count": 1909
+    },
+    {
+      "episode": "h7r_turn_02",
+      "episode_id": "h7r_turn_02_20260714_054954",
+      "manifest": "assets/experiments/hospital_h7_scene_gate/h7r_turn_02_20260714_054954.json",
+      "scene_identity_pass": true,
+      "checks": {
+        "hospital_reference_authored": true,
+        "prim_count_ok": true,
+        "scene_mode_hospital": true,
+        "no_procedural_landmarks": true,
+        "front_camera_exists": true,
+        "resolution_declared": true
+      },
+      "hospital_prim_count": 1909
+    },
+    {
+      "episode": "h7r_waiting_02",
+      "episode_id": "h7r_waiting_02_20260714_062024",
+      "manifest": "assets/experiments/hospital_h7_scene_gate/h7r_waiting_02_20260714_062024.json",
+      "scene_identity_pass": true,
+      "checks": {
+        "hospital_reference_authored": true,
+        "prim_count_ok": true,
+        "scene_mode_hospital": true,
+        "no_procedural_landmarks": true,
+        "front_camera_exists": true,
+        "resolution_declared": true
+      },
+      "hospital_prim_count": 1909
+    }
+  ]
+}
