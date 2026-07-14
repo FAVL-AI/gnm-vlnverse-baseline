@@ -1,0 +1,373 @@
+{
+  "scene": "hospital.usd",
+  "repository_commit": "8413c098ac93b9630e1c3984efac5e0e904de1f2",
+  "safety_watchdog": {
+    "CL_BOUND_XY": 6.0,
+    "unchanged": true
+  },
+  "navmap_read_offset_bringup_to_world": [
+    2.956,
+    -6.24
+  ],
+  "spawn_note": "candidate bringup coords are isaac-world; spawned directly, no offset",
+  "visual_audit": {
+    "proven_split": {
+      "lobby": "train",
+      "midwest_B": "val",
+      "east_A": "test",
+      "east_B": "test",
+      "lookalike_test": "test",
+      "midwest_A": "train"
+    },
+    "pairwise": {
+      "lobby|lobby": 1.0,
+      "lobby|midwest_B": 0.641,
+      "lobby|east_A": 0.863,
+      "lobby|east_B": 0.832,
+      "lobby|lookalike_test": 0.789,
+      "lobby|midwest_A": 0.809,
+      "midwest_B|lobby": 0.641,
+      "midwest_B|midwest_B": 1.0,
+      "midwest_B|east_A": 0.566,
+      "midwest_B|east_B": 0.543,
+      "midwest_B|lookalike_test": 0.531,
+      "midwest_B|midwest_A": 0.762,
+      "east_A|lobby": 0.863,
+      "east_A|midwest_B": 0.566,
+      "east_A|east_A": 1.0,
+      "east_A|east_B": 0.93,
+      "east_A|lookalike_test": 0.887,
+      "east_A|midwest_A": 0.766,
+      "east_B|lobby": 0.832,
+      "east_B|midwest_B": 0.543,
+      "east_B|east_A": 0.93,
+      "east_B|east_B": 1.0,
+      "east_B|lookalike_test": 0.957,
+      "east_B|midwest_A": 0.742,
+      "lookalike_test|lobby": 0.789,
+      "lookalike_test|midwest_B": 0.531,
+      "lookalike_test|east_A": 0.887,
+      "lookalike_test|east_B": 0.957,
+      "lookalike_test|lookalike_test": 1.0,
+      "lookalike_test|midwest_A": 0.723,
+      "midwest_A|lobby": 0.809,
+      "midwest_A|midwest_B": 0.762,
+      "midwest_A|east_A": 0.766,
+      "midwest_A|east_B": 0.742,
+      "midwest_A|lookalike_test": 0.723,
+      "midwest_A|midwest_A": 1.0
+    },
+    "high_sim_pairs": [
+      {
+        "a": "lobby",
+        "b": "midwest_A",
+        "sim": 0.809,
+        "kind": "same-split"
+      },
+      {
+        "a": "east_A",
+        "b": "lobby",
+        "sim": 0.863,
+        "kind": "CROSS-SPLIT"
+      },
+      {
+        "a": "east_A",
+        "b": "east_B",
+        "sim": 0.93,
+        "kind": "same-split"
+      },
+      {
+        "a": "east_A",
+        "b": "lookalike_test",
+        "sim": 0.887,
+        "kind": "same-split"
+      },
+      {
+        "a": "east_B",
+        "b": "lobby",
+        "sim": 0.832,
+        "kind": "CROSS-SPLIT"
+      },
+      {
+        "a": "east_B",
+        "b": "lookalike_test",
+        "sim": 0.957,
+        "kind": "same-split"
+      }
+    ]
+  },
+  "gate_preconditions": {
+    "each_split_has_proven_zone": true,
+    "coords_disjoint_across_splits": true,
+    "visual_distinctness_acceptable": false,
+    "enough_distinct_zones": false,
+    "n_proven": 6,
+    "proven_by_split": {
+      "train": [
+        "lobby",
+        "midwest_A"
+      ],
+      "val": [
+        "midwest_B"
+      ],
+      "test": [
+        "east_A",
+        "east_B",
+        "lookalike_test"
+      ]
+    },
+    "cross_split_similar_pairs": [
+      {
+        "a": "east_A",
+        "b": "lobby",
+        "sim": 0.863,
+        "kind": "CROSS-SPLIT"
+      },
+      {
+        "a": "east_B",
+        "b": "lobby",
+        "sim": 0.832,
+        "kind": "CROSS-SPLIT"
+      }
+    ],
+    "test_near_duplicate_pairs": [
+      {
+        "a": "east_A",
+        "b": "east_B",
+        "sim": 0.93,
+        "kind": "same-split"
+      },
+      {
+        "a": "east_A",
+        "b": "lookalike_test",
+        "sim": 0.887,
+        "kind": "same-split"
+      },
+      {
+        "a": "east_B",
+        "b": "lookalike_test",
+        "sim": 0.957,
+        "kind": "same-split"
+      }
+    ],
+    "ok_to_rerun_H8S_design_gate": false
+  },
+  "zones": [
+    {
+      "zone": "east_A",
+      "intended_split": "test",
+      "family": "near_far_same_approach",
+      "spawn_isaac_world": [
+        1.4,
+        0.1
+      ],
+      "in_envelope": true,
+      "status": "PROVEN_FOR_ROUTE_DESIGN",
+      "reason": "0 collisions, scene-gate PASS, camera valid",
+      "episode_id": "h8mx_val_east_A_20260714_215023",
+      "collisions": 0,
+      "camera_valid": true,
+      "scene_gate_pass": true,
+      "driven_x": [
+        1.4,
+        2.11
+      ]
+    },
+    {
+      "zone": "east_B",
+      "intended_split": "test",
+      "family": "stop_vs_go",
+      "spawn_isaac_world": [
+        2.6,
+        0.1
+      ],
+      "in_envelope": true,
+      "status": "PROVEN_FOR_ROUTE_DESIGN",
+      "reason": "0 collisions, scene-gate PASS, camera valid",
+      "episode_id": "h8mx_val_east_B_20260714_224539",
+      "collisions": 0,
+      "camera_valid": true,
+      "scene_gate_pass": true,
+      "driven_x": [
+        2.6,
+        3.1
+      ]
+    },
+    {
+      "zone": "lookalike_test",
+      "intended_split": "test",
+      "family": "visually_similar_diff_location",
+      "spawn_isaac_world": [
+        3.0,
+        0.1
+      ],
+      "in_envelope": true,
+      "status": "PROVEN_FOR_ROUTE_DESIGN",
+      "reason": "0 collisions, scene-gate PASS, camera valid",
+      "episode_id": "h8mx_val_lookalike_test_20260714_225818",
+      "collisions": 0,
+      "camera_valid": true,
+      "scene_gate_pass": true,
+      "driven_x": [
+        3.0,
+        3.2
+      ]
+    },
+    {
+      "zone": "lobby",
+      "intended_split": "train",
+      "family": "corridor_t_junction",
+      "spawn_isaac_world": [
+        -1.0,
+        -0.2
+      ],
+      "in_envelope": true,
+      "status": "PROVEN_FOR_ROUTE_DESIGN",
+      "reason": "0 collisions, scene-gate PASS, camera valid",
+      "episode_id": "h8mx_val_lobby_20260714_223318",
+      "collisions": 0,
+      "camera_valid": true,
+      "scene_gate_pass": true,
+      "driven_x": [
+        -1.0,
+        0.7
+      ]
+    },
+    {
+      "zone": "midwest_A",
+      "intended_split": "train",
+      "family": "near_far_same_approach",
+      "spawn_isaac_world": [
+        -2.8,
+        -0.2
+      ],
+      "in_envelope": true,
+      "status": "PROVEN_FOR_ROUTE_DESIGN",
+      "reason": "0 collisions, scene-gate PASS, camera valid",
+      "episode_id": "h8mx_val_midwest_A_20260714_234300",
+      "collisions": 0,
+      "camera_valid": true,
+      "scene_gate_pass": true,
+      "driven_x": [
+        -2.8,
+        -2.3
+      ]
+    },
+    {
+      "zone": "midwest_B",
+      "intended_split": "val",
+      "family": "near_far_same_approach",
+      "spawn_isaac_world": [
+        -3.4,
+        -0.2
+      ],
+      "in_envelope": true,
+      "status": "PROVEN_FOR_ROUTE_DESIGN",
+      "reason": "0 collisions, scene-gate PASS, camera valid",
+      "episode_id": "h8mx_val_midwest_B_20260714_235324",
+      "collisions": 0,
+      "camera_valid": true,
+      "scene_gate_pass": true,
+      "driven_x": [
+        -3.4,
+        -2.9
+      ]
+    },
+    {
+      "zone": "west_C",
+      "intended_split": "train",
+      "family": "shared_corridor_branch",
+      "spawn_isaac_world": [
+        -5.3,
+        0.1
+      ],
+      "in_envelope": true,
+      "status": "REJECTED_COLLISION",
+      "reason": "7678 contacts + camera invalid (black 0.2629)",
+      "episode_id": "h8mx_val_west_C_20260714_220849",
+      "collisions": 7678,
+      "camera_valid": false,
+      "scene_gate_pass": true,
+      "driven_x": [
+        -5.3,
+        -4.89
+      ]
+    },
+    {
+      "zone": "val_A",
+      "intended_split": "val",
+      "family": "near_far_same_approach",
+      "spawn_isaac_world": [
+        -3.8,
+        0.1
+      ],
+      "in_envelope": true,
+      "status": "REJECTED_COLLISION",
+      "reason": "25 contacts on BOTH the initial pass and the retry (reproducible obstacle at x\u2248-3.8); not recoverable by retry",
+      "episode_id": "h8mx_val_val_A_20260714_222106",
+      "collisions": 25,
+      "camera_valid": true,
+      "scene_gate_pass": true,
+      "driven_x": [
+        -3.79,
+        -3.3
+      ]
+    },
+    {
+      "zone": "val_A_retry",
+      "intended_split": "val",
+      "family": "near_far_same_approach",
+      "spawn_isaac_world": [
+        -3.8,
+        0.1
+      ],
+      "in_envelope": true,
+      "status": "NEEDS_RETRY",
+      "reason": "25 contacts (borderline)",
+      "episode_id": "h8mx_val_val_A_retry_20260714_232717",
+      "collisions": 25,
+      "camera_valid": true,
+      "scene_gate_pass": true,
+      "driven_x": [
+        -3.79,
+        -3.3
+      ]
+    },
+    {
+      "zone": "west_A",
+      "intended_split": "train",
+      "family": "near_far_same_approach",
+      "spawn_isaac_world": [
+        -8.5,
+        0.1
+      ],
+      "in_envelope": false,
+      "status": "DEFERRED_SAFETY_ENVELOPE_LIMITED",
+      "reason": "|x|=8.5>CL_BOUND_XY=6.0; not run; not a failure"
+    },
+    {
+      "zone": "west_B",
+      "intended_split": "train",
+      "family": "stop_vs_go",
+      "spawn_isaac_world": [
+        -6.8,
+        0.1
+      ],
+      "in_envelope": false,
+      "status": "DEFERRED_SAFETY_ENVELOPE_LIMITED",
+      "reason": "|x|=6.8>CL_BOUND_XY=6.0; not run; not a failure"
+    },
+    {
+      "zone": "hardneg_farwest",
+      "intended_split": "hard-negative",
+      "family": "any",
+      "spawn_isaac_world": [
+        -9.9,
+        0.1
+      ],
+      "in_envelope": false,
+      "status": "DEFERRED_SAFETY_ENVELOPE_LIMITED",
+      "reason": "|x|=9.9>CL_BOUND_XY=6.0; not run; not a failure"
+    }
+  ]
+}

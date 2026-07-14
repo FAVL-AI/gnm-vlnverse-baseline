@@ -1,0 +1,32 @@
+{
+  "route_id": "h8mx_midwest_B",
+  "family": "near_far_same_approach",
+  "intended_split": "val",
+  "waypoints": [
+    [
+      -3.4,
+      -0.2
+    ],
+    [
+      -3.0,
+      -0.2
+    ],
+    [
+      -2.6,
+      -0.2
+    ]
+  ],
+  "decision_point_index": 1,
+  "start_pose": {
+    "x": -3.4,
+    "y": -0.2,
+    "yaw_rad": 0.0
+  },
+  "goal_pose": {
+    "x": -2.6,
+    "y": -0.2,
+    "yaw_rad": 0.0
+  },
+  "spawn_pose_isaac_world": "-3.4,-0.2,0",
+  "provenance": "H8 map-extension RECOVERY drive-validation (isaac-world coords, no navmap offset, within +-6m envelope, CL_BOUND_XY unchanged)."
+}

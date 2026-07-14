@@ -1,0 +1,7 @@
+{
+  "zone": "midwest_A",
+  "n_camera_msgs": 1456,
+  "lower_frame_black_fraction": 0.0,
+  "mean_brightness": 63.5,
+  "camera_valid": true
+}

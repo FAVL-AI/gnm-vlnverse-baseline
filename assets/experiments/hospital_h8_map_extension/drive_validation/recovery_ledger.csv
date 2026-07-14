@@ -1,0 +1,4 @@
+zone,episode_name,spawn_pose,rc,started,ended
+val_A_retry,h8mx_val_val_A_retry,"-3.8,0.1,0",0,2026-07-14T23:23:11+01:00,2026-07-14T23:38:55+01:00
+midwest_A,h8mx_val_midwest_A,"-2.8,-0.2,0",0,2026-07-14T23:38:55+01:00,2026-07-14T23:49:19+01:00
+midwest_B,h8mx_val_midwest_B,"-3.4,-0.2,0",0,2026-07-14T23:49:19+01:00,2026-07-15T00:00:29+01:00

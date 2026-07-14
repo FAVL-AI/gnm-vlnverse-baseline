@@ -1,0 +1,86 @@
+{
+  "proven_split": {
+    "lobby": "train",
+    "midwest_B": "val",
+    "east_A": "test",
+    "east_B": "test",
+    "lookalike_test": "test",
+    "midwest_A": "train"
+  },
+  "pairwise": {
+    "lobby|lobby": 1.0,
+    "lobby|midwest_B": 0.641,
+    "lobby|east_A": 0.863,
+    "lobby|east_B": 0.832,
+    "lobby|lookalike_test": 0.789,
+    "lobby|midwest_A": 0.809,
+    "midwest_B|lobby": 0.641,
+    "midwest_B|midwest_B": 1.0,
+    "midwest_B|east_A": 0.566,
+    "midwest_B|east_B": 0.543,
+    "midwest_B|lookalike_test": 0.531,
+    "midwest_B|midwest_A": 0.762,
+    "east_A|lobby": 0.863,
+    "east_A|midwest_B": 0.566,
+    "east_A|east_A": 1.0,
+    "east_A|east_B": 0.93,
+    "east_A|lookalike_test": 0.887,
+    "east_A|midwest_A": 0.766,
+    "east_B|lobby": 0.832,
+    "east_B|midwest_B": 0.543,
+    "east_B|east_A": 0.93,
+    "east_B|east_B": 1.0,
+    "east_B|lookalike_test": 0.957,
+    "east_B|midwest_A": 0.742,
+    "lookalike_test|lobby": 0.789,
+    "lookalike_test|midwest_B": 0.531,
+    "lookalike_test|east_A": 0.887,
+    "lookalike_test|east_B": 0.957,
+    "lookalike_test|lookalike_test": 1.0,
+    "lookalike_test|midwest_A": 0.723,
+    "midwest_A|lobby": 0.809,
+    "midwest_A|midwest_B": 0.762,
+    "midwest_A|east_A": 0.766,
+    "midwest_A|east_B": 0.742,
+    "midwest_A|lookalike_test": 0.723,
+    "midwest_A|midwest_A": 1.0
+  },
+  "high_sim_pairs": [
+    {
+      "a": "lobby",
+      "b": "midwest_A",
+      "sim": 0.809,
+      "kind": "same-split"
+    },
+    {
+      "a": "east_A",
+      "b": "lobby",
+      "sim": 0.863,
+      "kind": "CROSS-SPLIT"
+    },
+    {
+      "a": "east_A",
+      "b": "east_B",
+      "sim": 0.93,
+      "kind": "same-split"
+    },
+    {
+      "a": "east_A",
+      "b": "lookalike_test",
+      "sim": 0.887,
+      "kind": "same-split"
+    },
+    {
+      "a": "east_B",
+      "b": "lobby",
+      "sim": 0.832,
+      "kind": "CROSS-SPLIT"
+    },
+    {
+      "a": "east_B",
+      "b": "lookalike_test",
+      "sim": 0.957,
+      "kind": "same-split"
+    }
+  ]
+}

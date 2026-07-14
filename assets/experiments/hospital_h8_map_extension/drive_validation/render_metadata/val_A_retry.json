@@ -1,0 +1,7 @@
+{
+  "zone": "val_A_retry",
+  "n_camera_msgs": 1458,
+  "lower_frame_black_fraction": 0.0,
+  "mean_brightness": 69.1,
+  "camera_valid": true
+}
