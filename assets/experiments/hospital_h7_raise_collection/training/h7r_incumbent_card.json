@@ -1,0 +1,59 @@
+{
+  "project": "gnm-vlnverse-baseline",
+  "case_study": "h7r_raised_mount_hospital_pilot",
+  "run_name": "h1_hospital_front_rgb_finetune_on_h7r_heldouts",
+  "seed": 42,
+  "model": {
+    "name": "MobileNetV2-GNM",
+    "condition": "incumbent",
+    "checkpoint_path": "checkpoints/hospital_front_rgb_finetune/best.pt",
+    "checkpoint_sha256": "d269a0fb0c6d8bd74c31f764574def223984f21f17b5ad275707139fcdc35c23",
+    "selected_by": "H7r validation split (lowest val action loss)"
+  },
+  "dataset": {
+    "name": "Isaac-Hospital-ImageNav-H7r (raised-mount pilot)",
+    "scene": "real Isaac 5.1 hospital.usd (scene-gated)",
+    "camera": "Yahboom front RGB, raised +0.12 m (level horizon), occlusion removed",
+    "train_episodes": 4,
+    "val_episodes": 2,
+    "test_episodes": 2,
+    "train_families": [
+      "reception_to_corridor",
+      "corridor_straight",
+      "turn_t_junction",
+      "waiting_to_doorway"
+    ],
+    "heldout_test": "turn_02, waiting_02 (unseen route INSTANCES of trained families)",
+    "holdout_type": "instance-disjoint a/b (H6 route-instance protocol)",
+    "leakage_check": "PASS (episode+route disjoint)",
+    "goal_image": "FIXED placeholder h2_weave_J (imitation-fidelity, NOT goal-conditioning)"
+  },
+  "metrics_h7r_test": {
+    "sr": 0.0,
+    "osr": 1.0,
+    "spl": 0.0,
+    "ne_m": 15.426,
+    "ndtw": 0.0776
+  },
+  "metrics_h7r_val_sanity": {
+    "sr": 0.0,
+    "osr": 1.0,
+    "spl": 0.0,
+    "ne_m": 15.0837,
+    "ndtw": 0.0795
+  },
+  "metrics_ood_h4_test": {
+    "sr": 0.0,
+    "osr": 1.0,
+    "spl": 0.0,
+    "ne_m": 14.0356,
+    "ndtw": 0.1671
+  },
+  "collision_rate": "N/A offline (contacts=0 at collection)",
+  "driftguard": {
+    "promotion_candidate": false,
+    "incumbent": null,
+    "decision": "incumbent_reference"
+  },
+  "claim_boundary": "DIAGNOSTIC ONLY. Internal Isaac-Hospital-ImageNav-H7r simulation evidence at n_test=2; fixed placeholder goal image => NOT goal-image conditioning; single seed; not real-robot, not a public benchmark, not SOTA. A positive train-ability signal, not a promotion."
+}

@@ -1,0 +1,15 @@
+{
+  "action": "promote_model",
+  "candidate": "h7r_hospital_pilot",
+  "scope": "internal Isaac-Hospital-ImageNav-H7r line only",
+  "verdict": "deny",
+  "matched_rule": {
+    "match": {
+      "tool": "model.promote",
+      "args.driftguard_net_gate": "promote_guard_pass",
+      "args.n_test_episodes": 2
+    },
+    "decision": "deny"
+  },
+  "reason": "guard passes strongly (SR 0.000->1.000, SPL 0.000->0.908, NE 15.43->2.54 m on H7r held-out) but promotion is DENIED: diagnostic pilot at n_test=2, fixed placeholder goal image, single seed. Retain incumbent; mark candidate diagnostic-only."
+}

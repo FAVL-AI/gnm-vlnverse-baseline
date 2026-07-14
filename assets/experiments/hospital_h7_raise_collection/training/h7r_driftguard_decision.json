@@ -1,0 +1,60 @@
+{
+  "net_gate": "promote_guard_pass",
+  "promotion_allowed": false,
+  "promotion_block_reason": "DIAGNOSTIC pilot: n_test=2 below the promotion floor and per the pre-registered rule (improve-but-small-n => diagnostic only); fixed placeholder goal image; single seed.",
+  "rule": "mechanical improvement guard on the H7r held-out test: candidate SR & SPL >= incumbent AND candidate NE <= incumbent NE + 0.1 m. PASS here is a positive SIGNAL, NOT an auto-promotion \u2014 promotion needs a larger held-out set and Frank's approval.",
+  "primary_heldout_h7r_test": {
+    "test": "h7r_test_turn02_waiting02",
+    "n_test_episodes": 2,
+    "guard_pass": true,
+    "checks": {
+      "sr": {
+        "incumbent": 0.0,
+        "candidate": 1.0,
+        "pass": true
+      },
+      "spl": {
+        "incumbent": 0.0,
+        "candidate": 0.9078,
+        "pass": true
+      },
+      "ne_m": {
+        "incumbent": 15.426,
+        "candidate": 2.5411,
+        "pass": true,
+        "material_worsening_threshold_m": 0.1
+      }
+    },
+    "extra": {
+      "ndtw": {
+        "incumbent": 0.0776,
+        "candidate": 0.6458
+      },
+      "osr": {
+        "incumbent": 1.0,
+        "candidate": 1.0
+      }
+    }
+  },
+  "ood_reference_h4_test": {
+    "note": "out-of-domain (procedural H4) \u2014 diagnostic only, NOT a guard",
+    "incumbent": {
+      "sr": 0.0,
+      "osr": 1.0,
+      "spl": 0.0,
+      "ne_m": 14.0356,
+      "ndtw": 0.1671
+    },
+    "candidate": {
+      "sr": 0.0,
+      "osr": 0.6667,
+      "spl": 0.0,
+      "ne_m": 4.2713,
+      "ndtw": 0.362
+    }
+  },
+  "small_n": true,
+  "incumbent_run": "h1_hospital_front_rgb_finetune",
+  "candidate_run": "h7r_hospital_pilot_seed42",
+  "collision_regression": "none (CR 0.000 offline on all sets; physics contacts=0 at collection; offline CR N/A)"
+}

@@ -1,0 +1,60 @@
+{
+  "project": "gnm-vlnverse-baseline",
+  "case_study": "h7r_raised_mount_hospital_pilot",
+  "run_name": "h7r_hospital_pilot_seed42",
+  "seed": 42,
+  "model": {
+    "name": "MobileNetV2-GNM",
+    "condition": "h7r_candidate",
+    "checkpoint_path": "checkpoints/h7r_hospital_pilot_finetune/best.pt",
+    "checkpoint_sha256": "6edf25bab959b56bc8e16ed01ff5143433f0990fb406aadd00f583c7fa6a3d0d",
+    "selected_by": "H7r validation split (lowest val action loss)"
+  },
+  "dataset": {
+    "name": "Isaac-Hospital-ImageNav-H7r (raised-mount pilot)",
+    "scene": "real Isaac 5.1 hospital.usd (scene-gated)",
+    "camera": "Yahboom front RGB, raised +0.12 m (level horizon), occlusion removed",
+    "train_episodes": 4,
+    "val_episodes": 2,
+    "test_episodes": 2,
+    "train_families": [
+      "reception_to_corridor",
+      "corridor_straight",
+      "turn_t_junction",
+      "waiting_to_doorway"
+    ],
+    "heldout_test": "turn_02, waiting_02 (unseen route INSTANCES of trained families)",
+    "holdout_type": "instance-disjoint a/b (H6 route-instance protocol)",
+    "leakage_check": "PASS (episode+route disjoint)",
+    "goal_image": "FIXED placeholder h2_weave_J (imitation-fidelity, NOT goal-conditioning)"
+  },
+  "metrics_h7r_test": {
+    "sr": 1.0,
+    "osr": 1.0,
+    "spl": 0.9078,
+    "ne_m": 2.5411,
+    "ndtw": 0.6458
+  },
+  "metrics_h7r_val_sanity": {
+    "sr": 1.0,
+    "osr": 1.0,
+    "spl": 1.0,
+    "ne_m": 2.0614,
+    "ndtw": 0.6328
+  },
+  "metrics_ood_h4_test": {
+    "sr": 0.0,
+    "osr": 0.6667,
+    "spl": 0.0,
+    "ne_m": 4.2713,
+    "ndtw": 0.362
+  },
+  "collision_rate": "N/A offline (contacts=0 at collection)",
+  "driftguard": {
+    "promotion_candidate": true,
+    "incumbent": "h1_hospital_front_rgb_finetune",
+    "decision": "promote_guard_pass",
+    "promotion_allowed": false
+  },
+  "claim_boundary": "DIAGNOSTIC ONLY. Internal Isaac-Hospital-ImageNav-H7r simulation evidence at n_test=2; fixed placeholder goal image => NOT goal-image conditioning; single seed; not real-robot, not a public benchmark, not SOTA. A positive train-ability signal, not a promotion."
+}

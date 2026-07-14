@@ -1,0 +1,56 @@
+{
+  "dataset": "Isaac-Hospital-ImageNav-H7r (raised-mount pilot)",
+  "scene": "real Isaac 5.1 hospital.usd",
+  "camera": "front RGB camera_link/rgb_camera raised +0.12 m, level horizon",
+  "counts": {
+    "train": 4,
+    "val": 2,
+    "test": 2
+  },
+  "train": [
+    "h7r_corridor_01",
+    "h7r_reception_01",
+    "h7r_turn_01",
+    "h7r_waiting_01"
+  ],
+  "val": [
+    "h7r_corridor_02",
+    "h7r_reception_02"
+  ],
+  "test": [
+    "h7r_turn_02",
+    "h7r_waiting_02"
+  ],
+  "train_families": [
+    "corridor_straight",
+    "reception_to_corridor",
+    "turn_t_junction",
+    "waiting_to_doorway"
+  ],
+  "val_families": [
+    "corridor_straight",
+    "reception_to_corridor"
+  ],
+  "test_families": [
+    "turn_t_junction",
+    "waiting_to_doorway"
+  ],
+  "episode_ids": {
+    "h7r_reception_01": "h7r_reception_01_20260714_042711",
+    "h7r_corridor_01": "h7r_corridor_01_20260714_045626",
+    "h7r_turn_01": "h7r_turn_01_20260714_052544",
+    "h7r_waiting_01": "h7r_waiting_01_20260714_060451",
+    "h7r_reception_02": "h7r_reception_02_20260714_044133",
+    "h7r_corridor_02": "h7r_corridor_02_20260714_051150",
+    "h7r_turn_02": "h7r_turn_02_20260714_054954",
+    "h7r_waiting_02": "h7r_waiting_02_20260714_062024"
+  },
+  "design": "instance-disjoint a/b (H6 route-instance protocol); families shared train<->eval BY DESIGN; eval = unseen route INSTANCES of trained families",
+  "leakage_proof": {
+    "episode_disjoint": true,
+    "route_disjoint": true,
+    "goal_image_fixed_across_all": "h2_weave_J (placeholder; imitation-fidelity, not goal-conditioning)"
+  },
+  "firewall": "route_completed & 0 contacts & scene_gate_pass & camera_mount_raise_m=0.12 asserted per episode",
+  "claim_boundary": "diagnostic-only hospital pilot; NOT a promotion, NOT SOTA, NOT real-robot"
+}

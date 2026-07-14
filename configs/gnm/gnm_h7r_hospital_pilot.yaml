@@ -1,0 +1,52 @@
+# H7r raised-mount hospital pilot — DIAGNOSTIC fine-tune (NOT a promotion run).
+# Identical pipeline/convention to H4/H5/H6 except the training data: the 8-episode
+# raised-mount hospital pilot recorded in the verified Isaac hospital.usd with the
+# front camera raised +0.12 m (level horizon) — occlusion removed (bottom-third
+# black 0.0% vs the original occluded H7 pilot's 38.3%). Weights-only init from the
+# retained H1 hospital incumbent; fresh optimizer/scheduler; select on H7r val.
+# Purpose: verify whether the small, scene-gated, raised-camera hospital pilot can
+# produce a measurable navigation signal at all. Small n — DIAGNOSTIC ONLY.
+# Goal image is the FIXED placeholder h2_weave_J across all episodes (imitation-
+# fidelity, NOT goal-conditioning) — same caveat as H4/H5.
+model:
+  context_size: 5
+  goal_conditioned: true
+  action_dim: 2
+  hidden_dim: 256
+  encoder: mobilenet
+  out_dim: 512
+  pretrained: true
+data:
+  data_root: datasets/isaac_hospital_h7r
+  image_size: [96, 96]
+  max_goal_dist: 20
+  action_std: [0.115528, 0.115528]   # same normalization as incumbent/H3-clean/H4/H5
+  augment: true
+  num_workers: 4
+  pin_memory: true
+training:
+  epochs: 50
+  batch_size: 128
+  lr: 1e-4
+  weight_decay: 1e-4
+  warmup_frac: 0.05
+  max_grad_norm: 1.0
+  action_weight: 0.5
+  loss_type: mse
+  patience: 10
+  seed: 42
+  init_ckpt: checkpoints/hospital_front_rgb_finetune/best.pt   # H1 incumbent, weights only, fresh optimizer
+checkpoint:
+  output_dir: checkpoints/h7r_hospital_pilot_finetune
+  log_every: 50
+wandb:
+  project: fleetsafe-gnm-vlnverse
+  entity: null
+  name: h7r_hospital_pilot_seed42
+  tags: [gnm, track_A, hospital, h7r, raised_mount, diagnostic]
+  notes: "H7r raised-mount hospital pilot (8 eps: train4/val2/test2, real hospital.usd, camera +0.12m level, occlusion removed); init weights-only from H1 incumbent; select on H7r val; DIAGNOSTIC ONLY, not a promotion run."
+evaluation:
+  success_threshold: 3.0
+  stop_threshold: 0.15
+  max_steps: 500
+  track: A

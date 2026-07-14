@@ -1,0 +1,25 @@
+{
+  "h7r_final_adjudication": "DIAGNOSTIC_ONLY_NOT_PROMOTED",
+  "hypothesis": "the corrected scene-gated, raised-camera 8-episode hospital pilot can produce a measurable navigation signal (i.e. it can train at all)",
+  "hypothesis_result": "SUPPORTED (diagnostic, small-n): candidate improves the H7r held-out test from incumbent SR 0.000/SPL 0.000/NE 15.43 m to SR 1.000/SPL 0.908/NE 2.54 m (nDTW 0.078->0.646); guard PASS",
+  "h7r_heldout_test_result": "turn_02 & waiting_02 both SUCCEED for the candidate (SR 1.000) vs both FAIL for incumbent (SR 0.000); NE 2.54 m vs 15.43 m",
+  "h7r_val_sanity": "candidate SR 1.000/SPL 1.000/NE 2.06 m (selection split \u2014 sanity only, not a claim)",
+  "ood_h4_diagnostic": "out-of-domain procedural H4 test: candidate SR 0.000 (=incumbent 0.000) but NE improves 14.04->4.27 m and nDTW 0.167->0.362; OSR drops 1.000->0.667 => hospital-specialised, no catastrophic OOD break",
+  "h6_procedural_reference": "H6 procedural model on H7r test = SR 0.500/SPL 0.500/NE 3.62 m (reference: candidate > H6 > incumbent on hospital held-out)",
+  "driftguard_guard_pass": true,
+  "driftguard_net": "promote_guard_pass",
+  "verdictplane_verdict": "deny",
+  "collision_regression": "none",
+  "final_promotion_decision": "NOT PROMOTED (diagnostic-only)",
+  "incumbent": "h1_hospital_front_rgb_finetune RETAINED",
+  "candidate": "h7r_hospital_pilot retained as diagnostic evidence (first hospital dataset candidate with a positive signal)",
+  "reason": "Strong positive train-ability signal on the raised-mount hospital pilot, but per the pre-registered rule this is DIAGNOSTIC ONLY: n_test=2 is far below any promotion floor, the goal image is a fixed placeholder, and it is a single seed. Do not promote; retain incumbent; the signal justifies a larger (20/5/10) collection ONLY with Frank's approval.",
+  "small_n_caveat": "n_test=2, n_val=2, n_train=4; single seed 42; results are directional, not statistical",
+  "visual_distribution_caveat": "incumbent trained on earlier OCCLUDED-camera hospital data => part of its held-out failure is the raised-camera visual shift; candidate also > H6 procedural model (SR 1.0 vs 0.5) on same test = cleaner evidence of learned route behaviour",
+  "claim_boundary": "evidence that the scene-gated raised-camera hospital pilot is trainable and beats the incumbent on its own held-out instances; fixed placeholder goal image => not goal-image conditioning; internal sim only",
+  "next_options": [
+    "accept H7r as diagnostic-only (default)",
+    "with approval: 20/5/10 raised-mount hospital collection + multi-seed before any promotion",
+    "add a scene-aligned (non-placeholder) goal image to test goal-conditioning"
+  ]
+}

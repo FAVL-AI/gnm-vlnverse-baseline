@@ -1,0 +1,55 @@
+{
+  "invariant": "OSR >= SR for every run (Oracle Success Rate >= Success Rate)",
+  "invariant_holds_all_runs": true,
+  "definitions_source": "gnm_vlnverse/evaluation/metrics.py (Anderson et al. 2018)",
+  "definitions": {
+    "SR": "mean binary: final position within 3.0 m of goal",
+    "OSR": "mean binary: EVER within 3.0 m of goal along the path (>= SR always)",
+    "SPL": "mean success * shortest/max(actual,shortest) path length [0..1]",
+    "NE": "mean final distance to goal (m), lower better",
+    "nDTW": "mean exp(-DTW/(len_ref*3)) path-match similarity [0..1]"
+  },
+  "clarification": "the 0.908 reported for the H7r candidate on the held-out test is SPL, NOT OSR; the candidate OSR = 1.000 (>= SR 1.000). Earlier compressed summary omitted the OSR column, which caused the SPL value to be misread as OSR.",
+  "per_run_SR_OSR": {
+    "inc_test": {
+      "SR": 0.0,
+      "OSR": 1.0,
+      "OSR_ge_SR": true
+    },
+    "cand_test": {
+      "SR": 1.0,
+      "OSR": 1.0,
+      "OSR_ge_SR": true
+    },
+    "h6ref_test": {
+      "SR": 0.5,
+      "OSR": 1.0,
+      "OSR_ge_SR": true
+    },
+    "cand_val": {
+      "SR": 1.0,
+      "OSR": 1.0,
+      "OSR_ge_SR": true
+    },
+    "cand_train": {
+      "SR": 1.0,
+      "OSR": 1.0,
+      "OSR_ge_SR": true
+    },
+    "inc_val": {
+      "SR": 0.0,
+      "OSR": 1.0,
+      "OSR_ge_SR": true
+    },
+    "cand_ood_h4": {
+      "SR": 0.0,
+      "OSR": 0.6667,
+      "OSR_ge_SR": true
+    },
+    "inc_ood_h4": {
+      "SR": 0.0,
+      "OSR": 1.0,
+      "OSR_ge_SR": true
+    }
+  }
+}

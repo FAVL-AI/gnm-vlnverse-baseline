@@ -1,0 +1,15 @@
+{
+  "seed": 42,
+  "epochs_max": 50,
+  "epochs_run": 12,
+  "batch_size": 128,
+  "lr": "1e-4",
+  "init_ckpt": "checkpoints/hospital_front_rgb_finetune/best.pt",
+  "init_mode": "weights-only (model_state), fresh optimizer/scheduler",
+  "select_on": "H7r validation split (lowest val action loss)",
+  "best_val_action_loss": 0.051233,
+  "train_samples": 704,
+  "val_samples": 352,
+  "candidate_ckpt": "checkpoints/h7r_hospital_pilot_finetune/best.pt",
+  "train_command": "WANDB_MODE=offline python scripts/gnm/04_train_gnm.py --cfg configs/gnm/gnm_h7r_hospital_pilot.yaml"
+}
