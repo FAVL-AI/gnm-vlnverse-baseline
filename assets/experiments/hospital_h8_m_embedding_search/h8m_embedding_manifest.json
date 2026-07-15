@@ -1,0 +1,297 @@
+{
+  "status": "VALIDATION_ONLY",
+  "step": "H8-M Step B embedding distinctness search",
+  "primary_metric": "DINO ViT-S/16 cosine (timm vit_small_patch16_224.dino)",
+  "secondary_metrics": [
+    "aHash 16x16",
+    "global SSIM"
+  ],
+  "scene_gate": true,
+  "render": {
+    "resolution": [
+      640,
+      480
+    ],
+    "camera_height_m": 0.47,
+    "camera_raise_note": "~0.12 m above 0.35 m base; level horizon",
+    "free_camera_no_robot_body": true,
+    "occlusion_note": "free camera has NO robot chassis; lower_frame_black reflects scene geometry only. Chassis lower-frame occlusion is a Step-C drive check.",
+    "hospital_prim_count": 1909
+  },
+  "n_goal_views": 17,
+  "views_rendered": 24,
+  "thresholds": {
+    "T_dup_dino": 0.92,
+    "T_cross_dino": 0.6,
+    "T_cross_init": 0.6,
+    "T_dup_init": 0.92,
+    "calibration": "T_cross set at the largest gap in the observed cross-split DINO-cosine distribution (clamped to [0.45,0.80]); T_dup kept at the near-duplicate default."
+  },
+  "similarity_stats_dino": {
+    "cross_split": {
+      "n": 106,
+      "min": 0.157,
+      "max": 0.914,
+      "mean": 0.456
+    },
+    "within_split": {
+      "n": 22,
+      "min": 0.235,
+      "max": 0.865,
+      "mean": 0.482
+    },
+    "within_zone": {
+      "n": 8,
+      "min": 0.232,
+      "max": 0.909,
+      "mean": 0.559
+    }
+  },
+  "zone_assessment": {
+    "h8m_recep_junction": {
+      "split_role": "test",
+      "feasibility": "NEEDS_RENDER_VALIDATION+NEEDS_DRIVE_VALIDATION",
+      "goal_views_render_valid": {
+        "h8m_recep_junction__goalA": false,
+        "h8m_recep_junction__goalB": false
+      },
+      "all_goal_views_render_valid": false,
+      "cross_split_max_dino": 0.514,
+      "cross_split_arg": "h8m_lookalike_confuser__goalB",
+      "within_zone_goalA_vs_goalB_dino": 0.283,
+      "same_split_duplicate_max_dino": 0.545,
+      "duplicate_arg": "h8m_recep_fork__goalB",
+      "status": "render_invalid_needs_coordinate_correction",
+      "needs_drive_validation": true,
+      "mean_luma": {
+        "h8m_recep_junction__goalA": 0.0,
+        "h8m_recep_junction__goalB": 29.8
+      },
+      "lower_frame_black": {
+        "h8m_recep_junction__goalA": 1.0,
+        "h8m_recep_junction__goalB": 0.7999
+      }
+    },
+    "h8m_recep_fork": {
+      "split_role": "test",
+      "feasibility": "NEEDS_RENDER_VALIDATION+NEEDS_DRIVE_VALIDATION",
+      "goal_views_render_valid": {
+        "h8m_recep_fork__goalA": true,
+        "h8m_recep_fork__goalB": true
+      },
+      "all_goal_views_render_valid": true,
+      "cross_split_max_dino": 0.688,
+      "cross_split_arg": "h8m_side_corridor__goalA",
+      "within_zone_goalA_vs_goalB_dino": 0.663,
+      "same_split_duplicate_max_dino": 0.545,
+      "duplicate_arg": "h8m_recep_junction__goalB",
+      "status": "visually_indistinct_reject_or_merge",
+      "needs_drive_validation": true,
+      "mean_luma": {
+        "h8m_recep_fork__goalA": 16.9,
+        "h8m_recep_fork__goalB": 74.6
+      },
+      "lower_frame_black": {
+        "h8m_recep_fork__goalA": 0.0218,
+        "h8m_recep_fork__goalB": 0.2578
+      }
+    },
+    "h8m_recep_desk_multiobj": {
+      "split_role": "train",
+      "feasibility": "NEEDS_RENDER_VALIDATION+NEEDS_DRIVE_VALIDATION",
+      "goal_views_render_valid": {
+        "h8m_recep_desk_multiobj__goalA": true,
+        "h8m_recep_desk_multiobj__goalB": true
+      },
+      "all_goal_views_render_valid": true,
+      "cross_split_max_dino": 0.854,
+      "cross_split_arg": "h8m_east_vending_nearfar__goalA",
+      "within_zone_goalA_vs_goalB_dino": 0.232,
+      "same_split_duplicate_max_dino": 0.865,
+      "duplicate_arg": "h8m_lobby_vending_nearfar__goalB",
+      "status": "visually_indistinct_reject_or_merge",
+      "needs_drive_validation": true,
+      "mean_luma": {
+        "h8m_recep_desk_multiobj__goalA": 138.1,
+        "h8m_recep_desk_multiobj__goalB": 38.2
+      },
+      "lower_frame_black": {
+        "h8m_recep_desk_multiobj__goalA": 0.0,
+        "h8m_recep_desk_multiobj__goalB": 0.0108
+      }
+    },
+    "h8m_side_corridor": {
+      "split_role": "val",
+      "feasibility": "NEEDS_RENDER_VALIDATION+NEEDS_DRIVE_VALIDATION",
+      "goal_views_render_valid": {
+        "h8m_side_corridor__goalA": true,
+        "h8m_side_corridor__goalB": true
+      },
+      "all_goal_views_render_valid": true,
+      "cross_split_max_dino": 0.815,
+      "cross_split_arg": "h8m_lobby_vending_nearfar__goalA",
+      "within_zone_goalA_vs_goalB_dino": 0.408,
+      "same_split_duplicate_max_dino": 0.785,
+      "duplicate_arg": "h8m_east_vending_nearfar__goalB",
+      "status": "visually_indistinct_reject_or_merge",
+      "needs_drive_validation": true,
+      "mean_luma": {
+        "h8m_side_corridor__goalA": 20.0,
+        "h8m_side_corridor__goalB": 32.8
+      },
+      "lower_frame_black": {
+        "h8m_side_corridor__goalA": 0.0315,
+        "h8m_side_corridor__goalB": 0.0
+      }
+    },
+    "h8m_waiting_seating": {
+      "split_role": "train",
+      "feasibility": "NEEDS_RENDER_VALIDATION",
+      "goal_views_render_valid": {
+        "h8m_waiting_seating__goalA": true,
+        "h8m_waiting_seating__goalB": true
+      },
+      "all_goal_views_render_valid": true,
+      "cross_split_max_dino": 0.599,
+      "cross_split_arg": "h8m_side_corridor__goalB",
+      "within_zone_goalA_vs_goalB_dino": 0.775,
+      "same_split_duplicate_max_dino": 0.606,
+      "duplicate_arg": "h8m_lobby_vending_nearfar__goalA",
+      "status": "visually_distinct",
+      "needs_drive_validation": false,
+      "mean_luma": {
+        "h8m_waiting_seating__goalA": 26.8,
+        "h8m_waiting_seating__goalB": 34.0
+      },
+      "lower_frame_black": {
+        "h8m_waiting_seating__goalA": 0.0018,
+        "h8m_waiting_seating__goalB": 0.0003
+      }
+    },
+    "h8m_lobby_vending_nearfar": {
+      "split_role": "train",
+      "feasibility": "DRIVE_VALIDATED",
+      "goal_views_render_valid": {
+        "h8m_lobby_vending_nearfar__goalA": true,
+        "h8m_lobby_vending_nearfar__goalB": true
+      },
+      "all_goal_views_render_valid": true,
+      "cross_split_max_dino": 0.914,
+      "cross_split_arg": "h8m_east_vending_nearfar__goalA",
+      "within_zone_goalA_vs_goalB_dino": 0.84,
+      "same_split_duplicate_max_dino": 0.865,
+      "duplicate_arg": "h8m_recep_desk_multiobj__goalB",
+      "status": "visually_indistinct_reject_or_merge",
+      "needs_drive_validation": false,
+      "mean_luma": {
+        "h8m_lobby_vending_nearfar__goalA": 46.6,
+        "h8m_lobby_vending_nearfar__goalB": 45.1
+      },
+      "lower_frame_black": {
+        "h8m_lobby_vending_nearfar__goalA": 0.0,
+        "h8m_lobby_vending_nearfar__goalB": 0.0
+      }
+    },
+    "h8m_east_vending_nearfar": {
+      "split_role": "val",
+      "feasibility": "DRIVE_VALIDATED",
+      "goal_views_render_valid": {
+        "h8m_east_vending_nearfar__goalA": true,
+        "h8m_east_vending_nearfar__goalB": true
+      },
+      "all_goal_views_render_valid": true,
+      "cross_split_max_dino": 0.914,
+      "cross_split_arg": "h8m_lobby_vending_nearfar__goalB",
+      "within_zone_goalA_vs_goalB_dino": 0.909,
+      "same_split_duplicate_max_dino": 0.785,
+      "duplicate_arg": "h8m_side_corridor__goalB",
+      "status": "visually_indistinct_reject_or_merge",
+      "needs_drive_validation": false,
+      "mean_luma": {
+        "h8m_east_vending_nearfar__goalA": 41.8,
+        "h8m_east_vending_nearfar__goalB": 40.7
+      },
+      "lower_frame_black": {
+        "h8m_east_vending_nearfar__goalA": 0.0,
+        "h8m_east_vending_nearfar__goalB": 0.0
+      }
+    },
+    "h8m_lookalike_confuser": {
+      "split_role": "hard_negative",
+      "feasibility": "NEEDS_RENDER_VALIDATION+NEEDS_DRIVE_VALIDATION",
+      "goal_views_render_valid": {
+        "h8m_lookalike_confuser__goalA": true,
+        "h8m_lookalike_confuser__goalB": true
+      },
+      "all_goal_views_render_valid": true,
+      "cross_split_max_dino": 0.768,
+      "cross_split_arg": "h8m_recep_desk_multiobj__goalB",
+      "within_zone_goalA_vs_goalB_dino": 0.365,
+      "same_split_duplicate_max_dino": 0.734,
+      "duplicate_arg": "placeholder_h2_weave_J",
+      "status": "hard_negative_candidate",
+      "needs_drive_validation": true,
+      "mean_luma": {
+        "h8m_lookalike_confuser__goalA": 29.0,
+        "h8m_lookalike_confuser__goalB": 35.0
+      },
+      "lower_frame_black": {
+        "h8m_lookalike_confuser__goalA": 0.0497,
+        "h8m_lookalike_confuser__goalB": 0.0001
+      }
+    },
+    "h8m_hardneg_crossscene": {
+      "split_role": "hard_negative",
+      "feasibility": "DESIGN_ONLY",
+      "goal_views_render_valid": {
+        "placeholder_h2_weave_J": true
+      },
+      "all_goal_views_render_valid": true,
+      "cross_split_max_dino": 0.697,
+      "cross_split_arg": "h8m_side_corridor__goalB",
+      "within_zone_goalA_vs_goalB_dino": null,
+      "same_split_duplicate_max_dino": 0.734,
+      "duplicate_arg": "h8m_lookalike_confuser__goalB",
+      "status": "hard_negative_candidate",
+      "needs_drive_validation": false,
+      "mean_luma": {
+        "placeholder_h2_weave_J": null
+      },
+      "lower_frame_black": {
+        "placeholder_h2_weave_J": null
+      }
+    }
+  },
+  "recep_junction_check": {
+    "decision_frame_render_visible": true,
+    "goalA_render_valid": false,
+    "goalB_render_valid": false,
+    "goalA_luma": 0.0,
+    "goalB_luma": 29.8,
+    "goalA_lower_black": 1.0,
+    "goalB_lower_black": 0.7999,
+    "goalA_goalB_dino_cosine": 0.283,
+    "goalA_goalB_visually_distinguishable": false,
+    "no_black_lower_frame_occlusion_decision": true,
+    "within_safe_spawn_relocation_plan": true,
+    "branch_render_valid": false,
+    "drive_feasibility": "NOT_TESTED_UNTIL_STEP_C",
+    "note": "free-camera render: scene visibility + distinctness only; chassis occlusion and drivability are Step-C checks. A goal view that is black-void (luma~0) means the proposed branch coordinate points into unlit void/wall -> NOT a valid junction."
+  },
+  "distinct_zones": [
+    "h8m_waiting_seating"
+  ],
+  "indistinct_zones": [
+    "h8m_recep_fork",
+    "h8m_recep_desk_multiobj",
+    "h8m_side_corridor",
+    "h8m_lobby_vending_nearfar",
+    "h8m_east_vending_nearfar"
+  ],
+  "decision_rule_outcome": "RE_SCOPE_H8M_ANGULAR_BRANCH_NOT_RENDER_VALID",
+  "caveats": [
+    "Validation-only render: free camera, no robot body -> lower-frame occlusion reflects scene geometry, NOT chassis; chassis occlusion + drivability are Step-C checks.",
+    "Distinctness is embedding-based (DINO) + aHash/SSIM; no training, no rollout, no promotion.",
+    "Coordinates are Step-A design seeds; a distinct render does NOT prove drive feasibility."
+  ]
+}

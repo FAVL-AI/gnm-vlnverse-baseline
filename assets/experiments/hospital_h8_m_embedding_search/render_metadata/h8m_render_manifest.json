@@ -1,0 +1,508 @@
+{
+  "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+  "isaac_sim_version": "5.1.0.0",
+  "resolution": [
+    640,
+    480
+  ],
+  "camera_height_m": 0.47,
+  "camera_raise_note": "~0.12 m above 0.35 m base; level horizon",
+  "focal_length_mm": 18.0,
+  "free_camera_no_robot_body": true,
+  "occlusion_note": "free camera has NO robot chassis; lower_frame_black reflects scene geometry only. Chassis lower-frame occlusion is a Step-C drive check.",
+  "hospital_prim_count": 1909,
+  "scene_gate": {
+    "pass": true,
+    "checks": {
+      "hospital_reference_authored": true,
+      "prim_count_ok": true,
+      "scene_mode_hospital": true,
+      "no_procedural_landmarks": true,
+      "front_camera_exists": true,
+      "resolution_declared": true,
+      "image_hospital_like": true
+    },
+    "reasons": [],
+    "observed": {
+      "hospital_reference_asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+      "hospital_prim_count": 1909,
+      "scene_mode": "hospital",
+      "procedural_landmark_prims": [],
+      "front_camera_path": "/World/Cam_scene_gate_probe",
+      "resolution": [
+        640,
+        480
+      ],
+      "visual_stats": {
+        "mean_luma": 31.97,
+        "std_luma": 26.65,
+        "min_std_required": 10.0,
+        "luma_window": [
+          15.0,
+          235.0
+        ]
+      }
+    },
+    "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd"
+  },
+  "synthetic": false,
+  "n_views": 24,
+  "views": [
+    {
+      "view_id": "h8m_recep_junction__decision",
+      "zone_id": "h8m_recep_junction",
+      "role": "decision",
+      "eye": [
+        0.6,
+        0.0,
+        0.47
+      ],
+      "target": [
+        2.6,
+        0.0,
+        0.47
+      ],
+      "heading_deg": 0.0,
+      "mean_luma": 38.1,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_recep_junction__goalA",
+      "zone_id": "h8m_recep_junction",
+      "role": "goalA",
+      "eye": [
+        2.5,
+        2.2,
+        0.47
+      ],
+      "target": [
+        3.807239740692185,
+        3.7136460155383197,
+        0.47
+      ],
+      "heading_deg": 49.2,
+      "mean_luma": 0.0,
+      "lower_frame_black_frac": 1.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_recep_junction__goalB",
+      "zone_id": "h8m_recep_junction",
+      "role": "goalB",
+      "eye": [
+        2.5,
+        -2.2,
+        0.47
+      ],
+      "target": [
+        3.807239740692185,
+        -3.7136460155383197,
+        0.47
+      ],
+      "heading_deg": -49.2,
+      "mean_luma": 29.8,
+      "lower_frame_black_frac": 0.7999,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_recep_fork__decision",
+      "zone_id": "h8m_recep_fork",
+      "role": "decision",
+      "eye": [
+        -0.5,
+        0.0,
+        0.47
+      ],
+      "target": [
+        1.5,
+        0.0,
+        0.47
+      ],
+      "heading_deg": 0.0,
+      "mean_luma": 43.5,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_recep_fork__goalA",
+      "zone_id": "h8m_recep_fork",
+      "role": "goalA",
+      "eye": [
+        1.5,
+        1.8,
+        0.47
+      ],
+      "target": [
+        2.986588292494333,
+        3.137929463244899,
+        0.47
+      ],
+      "heading_deg": 42.0,
+      "mean_luma": 16.9,
+      "lower_frame_black_frac": 0.0218,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_recep_fork__goalB",
+      "zone_id": "h8m_recep_fork",
+      "role": "goalB",
+      "eye": [
+        1.5,
+        -1.8,
+        0.47
+      ],
+      "target": [
+        2.986588292494333,
+        -3.137929463244899,
+        0.47
+      ],
+      "heading_deg": -42.0,
+      "mean_luma": 74.6,
+      "lower_frame_black_frac": 0.2578,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_recep_desk_multiobj__decision",
+      "zone_id": "h8m_recep_desk_multiobj",
+      "role": "decision",
+      "eye": [
+        0.8,
+        0.5,
+        0.47
+      ],
+      "target": [
+        2.8,
+        0.5,
+        0.47
+      ],
+      "heading_deg": 0.0,
+      "mean_luma": 41.0,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_recep_desk_multiobj__goalA",
+      "zone_id": "h8m_recep_desk_multiobj",
+      "role": "goalA",
+      "eye": [
+        0.8,
+        2.0,
+        0.47
+      ],
+      "target": [
+        0.8000000000000002,
+        4.0,
+        0.47
+      ],
+      "heading_deg": 90.0,
+      "mean_luma": 138.1,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_recep_desk_multiobj__goalB",
+      "zone_id": "h8m_recep_desk_multiobj",
+      "role": "goalB",
+      "eye": [
+        2.2,
+        0.8,
+        0.47
+      ],
+      "target": [
+        4.15560482815482,
+        1.219058177461747,
+        0.47
+      ],
+      "heading_deg": 12.1,
+      "mean_luma": 38.2,
+      "lower_frame_black_frac": 0.0108,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_side_corridor__decision",
+      "zone_id": "h8m_side_corridor",
+      "role": "decision",
+      "eye": [
+        2.0,
+        -1.5,
+        0.47
+      ],
+      "target": [
+        1.9999926535897934,
+        0.49999999998650746,
+        0.47
+      ],
+      "heading_deg": 90.0,
+      "mean_luma": 59.2,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_side_corridor__goalA",
+      "zone_id": "h8m_side_corridor",
+      "role": "goalA",
+      "eye": [
+        2.0,
+        1.5,
+        0.47
+      ],
+      "target": [
+        2.0,
+        3.5,
+        0.47
+      ],
+      "heading_deg": 90.0,
+      "mean_luma": 20.0,
+      "lower_frame_black_frac": 0.0315,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_side_corridor__goalB",
+      "zone_id": "h8m_side_corridor",
+      "role": "goalB",
+      "eye": [
+        4.0,
+        -1.0,
+        0.47
+      ],
+      "target": [
+        5.940285000290664,
+        -0.5149287499273341,
+        0.47
+      ],
+      "heading_deg": 14.0,
+      "mean_luma": 32.8,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_waiting_seating__decision",
+      "zone_id": "h8m_waiting_seating",
+      "role": "decision",
+      "eye": [
+        0.5,
+        0.1,
+        0.47
+      ],
+      "target": [
+        -1.4999999999460303,
+        0.09998530717958672,
+        0.47
+      ],
+      "heading_deg": 180.0,
+      "mean_luma": 42.4,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_waiting_seating__goalA",
+      "zone_id": "h8m_waiting_seating",
+      "role": "goalA",
+      "eye": [
+        -1.5,
+        0.1,
+        0.47
+      ],
+      "target": [
+        -3.5,
+        0.10000000000000026,
+        0.47
+      ],
+      "heading_deg": 180.0,
+      "mean_luma": 26.8,
+      "lower_frame_black_frac": 0.0018,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_waiting_seating__goalB",
+      "zone_id": "h8m_waiting_seating",
+      "role": "goalB",
+      "eye": [
+        -1.0,
+        1.0,
+        0.47
+      ],
+      "target": [
+        -2.714985851425088,
+        2.028991510855053,
+        0.47
+      ],
+      "heading_deg": 149.0,
+      "mean_luma": 34.0,
+      "lower_frame_black_frac": 0.0003,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_lobby_vending_nearfar__decision",
+      "zone_id": "h8m_lobby_vending_nearfar",
+      "role": "decision",
+      "eye": [
+        -1.0,
+        -0.2,
+        0.47
+      ],
+      "target": [
+        1.0,
+        -0.2,
+        0.47
+      ],
+      "heading_deg": 0.0,
+      "mean_luma": 48.5,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_lobby_vending_nearfar__goalA",
+      "zone_id": "h8m_lobby_vending_nearfar",
+      "role": "goalA",
+      "eye": [
+        -0.4,
+        -0.2,
+        0.47
+      ],
+      "target": [
+        1.6,
+        -0.2,
+        0.47
+      ],
+      "heading_deg": 0.0,
+      "mean_luma": 46.6,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_lobby_vending_nearfar__goalB",
+      "zone_id": "h8m_lobby_vending_nearfar",
+      "role": "goalB",
+      "eye": [
+        0.6,
+        -0.2,
+        0.47
+      ],
+      "target": [
+        2.6,
+        -0.2,
+        0.47
+      ],
+      "heading_deg": 0.0,
+      "mean_luma": 45.1,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_east_vending_nearfar__decision",
+      "zone_id": "h8m_east_vending_nearfar",
+      "role": "decision",
+      "eye": [
+        1.4,
+        0.1,
+        0.47
+      ],
+      "target": [
+        3.4,
+        0.1,
+        0.47
+      ],
+      "heading_deg": 0.0,
+      "mean_luma": 42.2,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_east_vending_nearfar__goalA",
+      "zone_id": "h8m_east_vending_nearfar",
+      "role": "goalA",
+      "eye": [
+        1.7,
+        0.1,
+        0.47
+      ],
+      "target": [
+        3.7,
+        0.1,
+        0.47
+      ],
+      "heading_deg": 0.0,
+      "mean_luma": 41.8,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_east_vending_nearfar__goalB",
+      "zone_id": "h8m_east_vending_nearfar",
+      "role": "goalB",
+      "eye": [
+        2.1,
+        0.1,
+        0.47
+      ],
+      "target": [
+        4.1,
+        0.1,
+        0.47
+      ],
+      "heading_deg": 0.0,
+      "mean_luma": 40.7,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_lookalike_confuser__decision",
+      "zone_id": "h8m_lookalike_confuser",
+      "role": "decision",
+      "eye": [
+        3.0,
+        0.0,
+        0.47
+      ],
+      "target": [
+        5.0,
+        0.0,
+        0.47
+      ],
+      "heading_deg": 0.0,
+      "mean_luma": 38.9,
+      "lower_frame_black_frac": 0.0,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_lookalike_confuser__goalA",
+      "zone_id": "h8m_lookalike_confuser",
+      "role": "goalA",
+      "eye": [
+        3.8,
+        0.6,
+        0.47
+      ],
+      "target": [
+        5.3999999999999995,
+        1.8000000000000003,
+        0.47
+      ],
+      "heading_deg": 36.9,
+      "mean_luma": 29.0,
+      "lower_frame_black_frac": 0.0497,
+      "empty": false
+    },
+    {
+      "view_id": "h8m_lookalike_confuser__goalB",
+      "zone_id": "h8m_lookalike_confuser",
+      "role": "goalB",
+      "eye": [
+        3.8,
+        -0.6,
+        0.47
+      ],
+      "target": [
+        5.3999999999999995,
+        -1.8000000000000003,
+        0.47
+      ],
+      "heading_deg": -36.9,
+      "mean_luma": 35.0,
+      "lower_frame_black_frac": 0.0001,
+      "empty": false
+    }
+  ]
+}
