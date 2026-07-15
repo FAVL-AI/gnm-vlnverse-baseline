@@ -1,0 +1,380 @@
+{
+  "status": "DESIGN_ONLY",
+  "scene": "hospital.usd",
+  "coordinate_frame": "isaac-world (=bringup); spawn directly, no navmap offset",
+  "safety": {
+    "CL_BOUND_XY": 6.0,
+    "unchanged": true,
+    "rule": "poses must be within +/-6 m absolute; outside -> DEFERRED, not a bound change"
+  },
+  "note": "All coordinates PROPOSED/hypothesized; distinct-room zones UNVALIDATED (no render, no drive). Distinctness/duplicate_risk are ESTIMATES pending Step-B CLIP/DINO.",
+  "min_angular_separation_for_true_branch_deg": 30.0,
+  "zones": [
+    {
+      "zone_id": "h8m_recep_junction",
+      "area": "corridor junction (reception hall)",
+      "family": "branch_choice_t_junction",
+      "split_role": "test",
+      "spawn": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "o_d": [
+        0.6,
+        0.0
+      ],
+      "goalA": [
+        2.5,
+        2.2
+      ],
+      "goalB": [
+        2.5,
+        -2.2
+      ],
+      "feasibility": "NEEDS_RENDER_VALIDATION+NEEDS_DRIVE_VALIDATION",
+      "distinctness": "high",
+      "duplicate_risk": "low",
+      "note": "PRIMARY true angular branch (left vs right wing). Existence of a drivable junction within +/-6 m is UNPROVEN \u2014 highest-risk, most important zone.",
+      "expected_action_A": [
+        1.9,
+        2.2
+      ],
+      "expected_action_B": [
+        1.9,
+        -2.2
+      ],
+      "expected_action_angle_A_deg": 49.2,
+      "expected_action_angle_B_deg": -49.2,
+      "expected_action_angle_separation_deg": 98.4,
+      "goal_pair_angularly_separated": true,
+      "is_true_angular_branch": true,
+      "within_envelope": true,
+      "coord_note": "within +/-6 m envelope",
+      "proposed_embedding_check": "CLIP or DINO cosine at Step B (primary); aHash + SSIM secondary"
+    },
+    {
+      "zone_id": "h8m_recep_fork",
+      "area": "shared-corridor fork (reception)",
+      "family": "shared_corridor_fork",
+      "split_role": "test",
+      "spawn": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "o_d": [
+        -0.5,
+        0.0
+      ],
+      "goalA": [
+        1.5,
+        1.8
+      ],
+      "goalB": [
+        1.5,
+        -1.8
+      ],
+      "feasibility": "NEEDS_RENDER_VALIDATION+NEEDS_DRIVE_VALIDATION",
+      "distinctness": "moderate",
+      "duplicate_risk": "moderate",
+      "note": "Second divergent family; may be the same physical junction as recep_junction (dedupe at render time).",
+      "expected_action_A": [
+        2.0,
+        1.8
+      ],
+      "expected_action_B": [
+        2.0,
+        -1.8
+      ],
+      "expected_action_angle_A_deg": 42.0,
+      "expected_action_angle_B_deg": -42.0,
+      "expected_action_angle_separation_deg": 84.0,
+      "goal_pair_angularly_separated": true,
+      "is_true_angular_branch": true,
+      "within_envelope": true,
+      "coord_note": "within +/-6 m envelope",
+      "proposed_embedding_check": "CLIP or DINO cosine at Step B (primary); aHash + SSIM secondary"
+    },
+    {
+      "zone_id": "h8m_recep_desk_multiobj",
+      "area": "reception desk (multi-object)",
+      "family": "same_room_different_object",
+      "split_role": "train",
+      "spawn": [
+        0.5,
+        1.0,
+        0.0
+      ],
+      "o_d": [
+        0.8,
+        0.5
+      ],
+      "goalA": [
+        0.8,
+        2.0
+      ],
+      "goalB": [
+        2.2,
+        0.8
+      ],
+      "feasibility": "NEEDS_RENDER_VALIDATION+NEEDS_DRIVE_VALIDATION",
+      "distinctness": "moderate",
+      "duplicate_risk": "moderate",
+      "note": "Object-level grounding (desk vs signage/plant) within one room.",
+      "expected_action_A": [
+        0.0,
+        1.5
+      ],
+      "expected_action_B": [
+        1.4,
+        0.3
+      ],
+      "expected_action_angle_A_deg": 90.0,
+      "expected_action_angle_B_deg": 12.1,
+      "expected_action_angle_separation_deg": 77.9,
+      "goal_pair_angularly_separated": true,
+      "is_true_angular_branch": false,
+      "within_envelope": true,
+      "coord_note": "within +/-6 m envelope",
+      "proposed_embedding_check": "CLIP or DINO cosine at Step B (primary); aHash + SSIM secondary"
+    },
+    {
+      "zone_id": "h8m_side_corridor",
+      "area": "side corridor",
+      "family": "same_start_different_goal",
+      "split_role": "val",
+      "spawn": [
+        2.0,
+        -2.0,
+        1.5708
+      ],
+      "o_d": [
+        2.0,
+        -1.5
+      ],
+      "goalA": [
+        2.0,
+        1.5
+      ],
+      "goalB": [
+        4.0,
+        -1.0
+      ],
+      "feasibility": "NEEDS_RENDER_VALIDATION+NEEDS_DRIVE_VALIDATION",
+      "distinctness": "moderate",
+      "duplicate_risk": "low",
+      "note": "Straight-ahead vs into-a-room from one start; north-facing approach (yaw=pi/2).",
+      "expected_action_A": [
+        3.0,
+        -0.0
+      ],
+      "expected_action_B": [
+        0.5,
+        -2.0
+      ],
+      "expected_action_angle_A_deg": -0.0,
+      "expected_action_angle_B_deg": -76.0,
+      "expected_action_angle_separation_deg": 76.0,
+      "goal_pair_angularly_separated": true,
+      "is_true_angular_branch": true,
+      "within_envelope": true,
+      "coord_note": "within +/-6 m envelope",
+      "proposed_embedding_check": "CLIP or DINO cosine at Step B (primary); aHash + SSIM secondary"
+    },
+    {
+      "zone_id": "h8m_waiting_seating",
+      "area": "waiting area (seating + water cooler)",
+      "family": "same_room_different_object",
+      "split_role": "train",
+      "spawn": [
+        1.0,
+        0.1,
+        3.1416
+      ],
+      "o_d": [
+        0.5,
+        0.1
+      ],
+      "goalA": [
+        -1.5,
+        0.1
+      ],
+      "goalB": [
+        -1.0,
+        1.0
+      ],
+      "feasibility": "NEEDS_RENDER_VALIDATION",
+      "distinctness": "low",
+      "duplicate_risk": "high",
+      "note": "West-facing seating end RENDERED in H8 visual search (searchW1/W2) but it is the SAME alcove as the vending views \u2014 LOW distinctness, must pass the embedding gate or be dropped; not a distinct room.",
+      "expected_action_A": [
+        2.0,
+        -0.0
+      ],
+      "expected_action_B": [
+        1.5,
+        -0.9
+      ],
+      "expected_action_angle_A_deg": -0.0,
+      "expected_action_angle_B_deg": -31.0,
+      "expected_action_angle_separation_deg": 31.0,
+      "goal_pair_angularly_separated": true,
+      "is_true_angular_branch": false,
+      "within_envelope": true,
+      "coord_note": "within +/-6 m envelope",
+      "proposed_embedding_check": "CLIP or DINO cosine at Step B (primary); aHash + SSIM secondary"
+    },
+    {
+      "zone_id": "h8m_lobby_vending_nearfar",
+      "area": "lobby vending alcove (H8-S)",
+      "family": "near_far_stop_conditioning",
+      "split_role": "train",
+      "spawn": [
+        -1.0,
+        -0.2,
+        0.0
+      ],
+      "o_d": [
+        -1.0,
+        -0.2
+      ],
+      "goalA": [
+        -0.4,
+        -0.2
+      ],
+      "goalB": [
+        0.6,
+        -0.2
+      ],
+      "feasibility": "DRIVE_VALIDATED",
+      "distinctness": "low",
+      "duplicate_risk": "high",
+      "note": "Carried forward from H8-S (0 collisions). SECONDARY distance/stop axis only (collinear, 0 deg). Same alcove as east/waiting.",
+      "expected_action_A": [
+        0.6,
+        0.0
+      ],
+      "expected_action_B": [
+        1.6,
+        0.0
+      ],
+      "expected_action_angle_A_deg": 0.0,
+      "expected_action_angle_B_deg": 0.0,
+      "expected_action_angle_separation_deg": 0.0,
+      "goal_pair_angularly_separated": false,
+      "is_true_angular_branch": false,
+      "within_envelope": true,
+      "coord_note": "within +/-6 m envelope",
+      "proposed_embedding_check": "CLIP or DINO cosine at Step B (primary); aHash + SSIM secondary"
+    },
+    {
+      "zone_id": "h8m_east_vending_nearfar",
+      "area": "east vending alcove (H8-S)",
+      "family": "near_far_stop_conditioning",
+      "split_role": "val",
+      "spawn": [
+        1.4,
+        0.1,
+        0.0
+      ],
+      "o_d": [
+        1.4,
+        0.1
+      ],
+      "goalA": [
+        1.7,
+        0.1
+      ],
+      "goalB": [
+        2.1,
+        0.1
+      ],
+      "feasibility": "DRIVE_VALIDATED",
+      "distinctness": "low",
+      "duplicate_risk": "high",
+      "note": "Carried forward from H8-S (0 collisions). SECONDARY distance/stop axis only.",
+      "expected_action_A": [
+        0.3,
+        0.0
+      ],
+      "expected_action_B": [
+        0.7,
+        0.0
+      ],
+      "expected_action_angle_A_deg": 0.0,
+      "expected_action_angle_B_deg": 0.0,
+      "expected_action_angle_separation_deg": 0.0,
+      "goal_pair_angularly_separated": false,
+      "is_true_angular_branch": false,
+      "within_envelope": true,
+      "coord_note": "within +/-6 m envelope",
+      "proposed_embedding_check": "CLIP or DINO cosine at Step B (primary); aHash + SSIM secondary"
+    },
+    {
+      "zone_id": "h8m_lookalike_confuser",
+      "area": "visually-similar distinct corridor ends",
+      "family": "visually_similar_distinct_location",
+      "split_role": "hard_negative",
+      "spawn": [
+        3.0,
+        0.0,
+        0.0
+      ],
+      "o_d": [
+        3.0,
+        0.0
+      ],
+      "goalA": [
+        3.8,
+        0.6
+      ],
+      "goalB": [
+        3.8,
+        -0.6
+      ],
+      "feasibility": "NEEDS_RENDER_VALIDATION+NEEDS_DRIVE_VALIDATION",
+      "distinctness": "low",
+      "duplicate_risk": "high",
+      "note": "Adversarial look-alike pair \u2014 LOW distinctness BY DESIGN; only valid as a labelled hard-negative if the embedding gate separates the two, never as a distinct held-out example.",
+      "expected_action_A": [
+        0.8,
+        0.6
+      ],
+      "expected_action_B": [
+        0.8,
+        -0.6
+      ],
+      "expected_action_angle_A_deg": 36.9,
+      "expected_action_angle_B_deg": -36.9,
+      "expected_action_angle_separation_deg": 73.7,
+      "goal_pair_angularly_separated": true,
+      "is_true_angular_branch": false,
+      "within_envelope": true,
+      "coord_note": "within +/-6 m envelope",
+      "proposed_embedding_check": "CLIP or DINO cosine at Step B (primary); aHash + SSIM secondary"
+    },
+    {
+      "zone_id": "h8m_hardneg_crossscene",
+      "area": "cross-scene mismatch goal",
+      "family": "hard_negative_mismatch",
+      "split_role": "hard_negative",
+      "spawn": null,
+      "o_d": null,
+      "goalA": null,
+      "goalB": null,
+      "feasibility": "DESIGN_ONLY",
+      "distinctness": "n/a",
+      "duplicate_risk": "n/a",
+      "note": "Cross-scene wrong goal (placeholder assets/experiments/goals/h2_weave_J) paired to any decision frame for the mismatched-goal ablation. No new coordinates.",
+      "expected_action_A": null,
+      "expected_action_B": null,
+      "expected_action_angle_A_deg": null,
+      "expected_action_angle_B_deg": null,
+      "expected_action_angle_separation_deg": null,
+      "is_true_angular_branch": false,
+      "within_envelope": true,
+      "coord_note": "no coordinates"
+    }
+  ]
+}

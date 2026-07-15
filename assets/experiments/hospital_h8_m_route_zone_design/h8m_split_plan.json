@@ -1,0 +1,50 @@
+{
+  "status": "DESIGN_ONLY_DRAFT",
+  "target_min_distinct_decision_frames": {
+    "train": 12,
+    "val": 4,
+    "test": 6
+  },
+  "draft_split_by_zone": {
+    "train": [
+      "h8m_recep_desk_multiobj",
+      "h8m_waiting_seating",
+      "h8m_lobby_vending_nearfar"
+    ],
+    "val": [
+      "h8m_side_corridor",
+      "h8m_east_vending_nearfar"
+    ],
+    "test": [
+      "h8m_recep_junction",
+      "h8m_recep_fork"
+    ],
+    "hard_negative": [
+      "h8m_lookalike_confuser",
+      "h8m_hardneg_crossscene"
+    ]
+  },
+  "draft_zone_counts": {
+    "train": 3,
+    "val": 2,
+    "test": 2,
+    "hard_negative": 2
+  },
+  "rules": [
+    "no reused decision frame across splits",
+    "no reused goal image across splits",
+    "no coordinate reuse across splits",
+    "route-family balance where possible",
+    "the held-out TEST split must contain >=1 true angular branch family"
+  ],
+  "cross_split_coordinate_reuse": [],
+  "coordinate_integrity_ok": true,
+  "test_has_true_angular_branch": true,
+  "drive_validated_zones_now": [
+    "h8m_lobby_vending_nearfar",
+    "h8m_east_vending_nearfar"
+  ],
+  "target_scale_met_by_current_candidates": false,
+  "feasibility_verdict": "NOT_YET_FEASIBLE_AT_TARGET_SCALE",
+  "feasibility_reason": "Only the 2 H8-S alcove zones are drive-validated NOW, and both are collinear (secondary axis). Every distinct-room and angular-branch zone is UNVALIDATED. One decision frame per zone was drafted, so the current candidate set yields far fewer than train>=12/val>=4/test>=6 distinct frames. Reaching the target requires (a) render+drive validation of >=3-4 genuinely distinct rooms incl. a true junction, and (b) authoring multiple decision frames per validated zone. Per H8-M acceptance, collection must NOT proceed until that scale and the embedding distinctness gate are met."
+}

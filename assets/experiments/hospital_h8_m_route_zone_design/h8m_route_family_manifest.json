@@ -1,0 +1,45 @@
+{
+  "status": "DESIGN_ONLY",
+  "required_families": [
+    "branch_choice_t_junction",
+    "same_start_different_goal",
+    "shared_corridor_fork",
+    "same_room_different_object",
+    "visually_similar_distinct_location",
+    "near_far_stop_conditioning",
+    "hard_negative_mismatch"
+  ],
+  "families": {
+    "branch_choice_t_junction": [
+      "h8m_recep_junction"
+    ],
+    "shared_corridor_fork": [
+      "h8m_recep_fork"
+    ],
+    "same_room_different_object": [
+      "h8m_recep_desk_multiobj",
+      "h8m_waiting_seating"
+    ],
+    "same_start_different_goal": [
+      "h8m_side_corridor"
+    ],
+    "near_far_stop_conditioning": [
+      "h8m_lobby_vending_nearfar",
+      "h8m_east_vending_nearfar"
+    ],
+    "visually_similar_distinct_location": [
+      "h8m_lookalike_confuser"
+    ],
+    "hard_negative_mismatch": [
+      "h8m_hardneg_crossscene"
+    ]
+  },
+  "true_angular_branch_zones": [
+    "h8m_recep_junction",
+    "h8m_recep_fork",
+    "h8m_side_corridor"
+  ],
+  "has_true_angular_branch": true,
+  "primary_axis": "angular branch-divergence (T-junction/fork)",
+  "secondary_axis": "near/far stop-conditioning (H8-S carry-forward, collinear)"
+}
