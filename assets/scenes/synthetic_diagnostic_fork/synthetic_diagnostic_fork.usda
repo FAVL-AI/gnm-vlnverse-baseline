@@ -89,6 +89,27 @@ def Xform "World"
                 token outputs:surface
             }
         }
+        def Material "MatDark"
+        {
+            token outputs:surface.connect = </World/Looks/MatDark/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.11, 0.11, 0.13)
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+        def Material "MatYellow"
+        {
+            token outputs:surface.connect = </World/Looks/MatYellow/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.94, 0.84, 0.12)
+                token outputs:surface
+            }
+        }
     }
 
     # ---- Structure: floor, corridor side walls, coloured end panels, markers ----
@@ -242,6 +263,162 @@ def Xform "World"
             double radius = 0.16
             rel material:binding = </World/Looks/MatWhite>
             double3 xformOp:translate = (0, -3.35, 1.2)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        # ============================================================================
+        # R2 branch-specific STRUCTURAL + TEXTURAL identities (gate-6 fix).
+        # Each branch gets a distinct SHAPE FAMILY so a structure-focused, largely
+        # colour-invariant encoder (DINO) sees genuinely different scenes, not one
+        # recoloured corridor: North=ROUND(spheres), West=POINTED(cones),
+        # East=BOXY(cubes/crate), South=CYLINDRICAL(cylinder/vertical bars).
+        # Big signs sit high on the end wall and wall patterns are flush (depth kept
+        # >= 3.0 m); floor props are offset + low so central depth-openness is preserved.
+        # ============================================================================
+
+        # ---- North (branch A, blue, ROUND): big circular disc sign + horizontal
+        #      industrial stripes + sphere floor prop ----
+        def Sphere "N_sign_disc" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double radius = 0.6
+            rel material:binding = </World/Looks/MatWhite>
+            double3 xformOp:translate = (0, 3.34, 1.6)
+            double3 xformOp:scale = (1.0, 0.28, 1.0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "N_stripe_1" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (0, 3.47, 0.55)
+            double3 xformOp:scale = (0.9, 0.03, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "N_stripe_2" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (0, 3.47, 1.0)
+            double3 xformOp:scale = (0.9, 0.03, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "N_stripe_3" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (0, 3.47, 2.05)
+            double3 xformOp:scale = (0.9, 0.03, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Sphere "N_prop_sphere" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double radius = 0.28
+            rel material:binding = </World/Looks/MatBlue>
+            double3 xformOp:translate = (0.68, 2.7, 0.3)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        # ---- West (branch B, green, POINTED): big triangular (cone) sign + cone
+        #      floor prop ----
+        def Cone "W_sign_triangle" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 1.0
+            double radius = 0.5
+            rel material:binding = </World/Looks/MatYellow>
+            double3 xformOp:translate = (-3.33, 0, 1.65)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cone "W_prop_prism" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 0.7
+            double radius = 0.32
+            rel material:binding = </World/Looks/MatGreen>
+            double3 xformOp:translate = (-2.7, 0.68, 0.35)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cone "W_chevron_lo" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 0.45
+            double radius = 0.16
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (-3.2, -0.55, 0.25)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        # ---- East (branch B distractor, orange, BOXY): big square sign + checker
+        #      tiles + crate floor prop ----
+        def Cube "E_sign_square" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWhite>
+            double3 xformOp:translate = (3.46, 0, 1.6)
+            double3 xformOp:scale = (0.04, 0.5, 0.5)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "E_tile_1" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (3.47, -0.38, 0.7)
+            double3 xformOp:scale = (0.03, 0.17, 0.17)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "E_tile_2" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (3.47, 0.38, 0.7)
+            double3 xformOp:scale = (0.03, 0.17, 0.17)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "E_tile_3" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (3.47, 0, 1.15)
+            double3 xformOp:scale = (0.03, 0.17, 0.17)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "E_prop_crate" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatOrange>
+            double3 xformOp:translate = (2.7, 0.68, 0.32)
+            double3 xformOp:scale = (0.3, 0.3, 0.3)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # ---- South (approach, red, CYLINDRICAL): vertical bars + cylinder prop ----
+        def Cube "S_bar_1" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (-0.5, -3.47, 1.15)
+            double3 xformOp:scale = (0.08, 0.02, 0.8)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "S_bar_2" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (0, -3.47, 1.15)
+            double3 xformOp:scale = (0.08, 0.02, 0.8)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "S_bar_3" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (0.5, -3.47, 1.15)
+            double3 xformOp:scale = (0.08, 0.02, 0.8)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cylinder "S_prop_cylinder" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 0.8
+            double radius = 0.26
+            rel material:binding = </World/Looks/MatRed>
+            double3 xformOp:translate = (0.68, -2.7, 0.42)
             uniform token[] xformOpOrder = ["xformOp:translate"]
         }
     }

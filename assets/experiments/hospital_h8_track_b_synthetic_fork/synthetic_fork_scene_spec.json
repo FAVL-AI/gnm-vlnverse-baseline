@@ -1,7 +1,11 @@
 {
   "label": "SYNTHETIC_DIAGNOSTIC_ONLY",
   "not": ["hospital", "real_world", "benchmark", "SOTA", "promotion", "autonomy_claim"],
-  "status": "DESIGN_SPEC_ONLY_NOT_BUILT_NOT_RENDERED_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED_NOT_COMMITTED",
+  "status": "R2_REVISED_FOR_VISUAL_DISTINCTNESS_RENDER_SCAN_GATES_1_7_ONLY_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED",
+  "revision_history": {
+    "r1": "flat-colour end walls + small centered markers. Render-scan (commit be6ba04): geometry gates 1-4,7 PASS, but GATE 6 (embedding distinctness) FAILED (DINO 0.734 goal images / 0.79 center N-vs-W >= 0.60) — branches structurally identical, differ only in hue + small marker.",
+    "r2": "each branch given a distinct SHAPE FAMILY (round/pointed/boxy/cylindrical) + large sign + floor prop + wall pattern, to make branch goal views structurally/texturally distinct for a structure-focused encoder. Re-run render-scan gates 1-7 only."
+  },
   "purpose": "Idealized, authored branch-choice junction to test the H8 goal-conditioned angular branch-selection hypothesis in isolation from scene-sourcing confounds, after five real-world-like Isaac scenes failed the Track-B render-valid-junction gate. A synthetic diagnostic isolates the model/objective question from the (now-exhausted) real-asset geometry question.",
   "provenance": {
     "authored_by_project": true,
@@ -33,11 +37,12 @@
     "wall_height_m": 2.5,
     "robot_eye_z_m": 0.47,
     "arms": {
-      "N": {"heading_deg": 90,  "end_wall_inner_y": 3.5,  "role": "branch_A_straight",           "color": "blue",   "marker": "white_circle",   "floor_cue": "forward_arrow"},
-      "S": {"heading_deg": 270, "end_wall_inner_y": -3.5, "role": "approach_decision_corridor",   "color": "red",    "marker": "white_cross",    "floor_cue": "start_pad"},
-      "E": {"heading_deg": 0,   "end_wall_inner_x": 3.5,  "role": "distractor_right_optional",    "color": "orange", "marker": "white_square",   "floor_cue": "right_arrow"},
-      "W": {"heading_deg": 180, "end_wall_inner_x": -3.5, "role": "branch_B_left",                "color": "green",  "marker": "white_triangle", "floor_cue": "left_arrow"}
+      "N": {"heading_deg": 90,  "end_wall_inner_y": 3.5,  "role": "branch_A_straight",           "color": "blue",   "shape_family_r2": "ROUND",       "identity_r2": "big white circular disc sign (high on wall) + 3 dark horizontal industrial stripes + blue sphere floor prop"},
+      "S": {"heading_deg": 270, "end_wall_inner_y": -3.5, "role": "approach_decision_corridor",   "color": "red",    "shape_family_r2": "CYLINDRICAL", "identity_r2": "3 dark vertical bars (flush) + red cylinder floor prop"},
+      "E": {"heading_deg": 0,   "end_wall_inner_x": 3.5,  "role": "distractor_right_optional",    "color": "orange", "shape_family_r2": "BOXY",        "identity_r2": "big white square sign + 3 dark checker tiles + orange crate (cube) floor prop"},
+      "W": {"heading_deg": 180, "end_wall_inner_x": -3.5, "role": "branch_B_left",                "color": "green",  "shape_family_r2": "POINTED",     "identity_r2": "big yellow triangular (cone) sign + green cone floor prop + dark chevron cone"}
     },
+    "branch_visual_identity_r2_note": "R2 gate-6 fix: each branch has a distinct SHAPE FAMILY (round/pointed/boxy/cylindrical), not just a hue + small centered marker, so a structure-focused, largely colour-invariant encoder (DINO) sees genuinely different scenes. Signs sit high on the end wall and wall patterns are flush (depth kept >= 3.0 m); floor props are offset + low so central depth-openness is preserved.",
     "safety_envelope": {
       "CL_BOUND_XY": 6.0,
       "CL_BOUND_XY_unchanged": true,

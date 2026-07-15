@@ -113,6 +113,30 @@ render-valid junction gate, pending render-scan validation** — nothing below i
 
 **No render, no recording, no drive, no training, no commit until reviewed and approved.**
 
+## 5b. R2 revision — visual distinctness fix (gate-6)
+
+The R1 render-scan (commit `be6ba04`) showed the geometry is valid (gates 1–4, 7 pass) but **gate 6
+(embedding distinctness) failed**: DINO cosine 0.734 (blue vs green goal images) and 0.79 (center N
+vs W), both ≥ 0.60. Contact-sheet verification confirmed the cause — the four corridors were
+**structurally identical**, differing only in end-wall hue + a small centered marker, and DINO is
+structure-focused and largely colour-invariant.
+
+R2 fix: give each branch a distinct **shape family** (not just a hue), keeping the same valid 4-way
+cross geometry, 90° A–B separation, and all coordinates inside `CL_BOUND_XY = 6.0`:
+
+| branch | colour | shape family | large sign | floor prop | wall pattern |
+|---|---|---|---|---|---|
+| N (A, straight) | blue | **ROUND** | white circular disc | blue sphere | 3 horizontal industrial stripes |
+| W (B, left) | green | **POINTED** | yellow triangular (cone) | green cone | dark chevron |
+| E (distractor) | orange | **BOXY** | white square | orange crate (cube) | dark checker tiles |
+| S (approach) | red | **CYLINDRICAL** | — | red cylinder | dark vertical bars |
+
+Depth-safety: signs sit **high** on the end wall and wall patterns are **flush** (depth kept
+≥ 3.0 m); floor props are **offset + low** so the central depth-openness reading is preserved. Result
+is verified by re-running render-scan gates 1–7 (see
+`assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r2/`). No hue-only or small-marker-
+only differences remain.
+
 ## 6. Claim boundary (canonical statements — apply to every artifact in this design set)
 
 1. This is a **SYNTHETIC_DIAGNOSTIC_ONLY** scene.

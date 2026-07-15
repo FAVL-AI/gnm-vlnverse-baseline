@@ -6,6 +6,12 @@ authorised by this document. This is the ordered gate sequence to run *later, on
 > **SYNTHETIC_DIAGNOSTIC_ONLY** — a pass here is diagnostic evidence about the model/objective on an
 > idealised junction, never real-scene, hospital, or benchmark evidence. `CL_BOUND_XY` unchanged.
 
+**Revision status:** R1 render-scan (commit `be6ba04`) passed gates 1–4, 7 but **failed gate 6
+(embedding distinctness)**. R2 revised the scene to give each branch a distinct **shape family**
+(round/pointed/boxy/cylindrical) + large sign + floor prop + wall pattern; gates 1–7 are being
+re-run under `assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r2/`. Drive-validation
+(gate 8) and everything after remain deferred until gates 1–7 pass and are reviewed.
+
 ## Ordered validation gates (each must pass before the next)
 
 1. **Scene-load gate** — the USDA loads; `defaultPrim` resolves; expected prims present (floor, 4

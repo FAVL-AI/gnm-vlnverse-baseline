@@ -1,6 +1,7 @@
 {
   "label": "SYNTHETIC_DIAGNOSTIC_ONLY",
-  "status": "DESIGN_SPEC_ONLY_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED",
+  "status": "R2_REVISED_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED",
+  "revision_r2_note": "R2 gate-6 fix: branch goal views are now structurally distinct by SHAPE FAMILY (A/N=ROUND: white disc sign + blue sphere prop + horizontal stripes; B/W=POINTED: yellow cone sign + green cone prop; distractor E=BOXY: square sign + crate; approach S=CYLINDRICAL: vertical bars + cylinder), not just recoloured end walls.",
   "scene": "synthetic_diagnostic_fork (four_way_cross)",
   "frame": "ENU, meters, yaw 0=+X east / N=90 / W=180 / S=270",
   "decision_point": [0.0, 0.0],
@@ -10,7 +11,7 @@
       "id": "route_A_straight_north",
       "goal_xy": [0.0, 3.0],
       "goal_heading_deg": 90,
-      "goal_view": "blue end wall + white circle",
+      "goal_view": "blue end wall, ROUND identity: big white circular disc sign + blue sphere prop + horizontal industrial stripes",
       "waypoints": [[0.0, -3.0], [0.0, -1.0], [0.0, 0.0], [0.0, 1.0], [0.0, 3.0]],
       "decision_local_action": "STRAIGHT",
       "action_sequence_summary": ["forward", "forward", "(decision) forward", "forward"]
@@ -19,7 +20,7 @@
       "id": "route_B_left_west",
       "goal_xy": [-3.0, 0.0],
       "goal_heading_deg": 180,
-      "goal_view": "green end wall + white triangle",
+      "goal_view": "green end wall, POINTED identity: big yellow triangular (cone) sign + green cone prop + dark chevron",
       "waypoints": [[0.0, -3.0], [0.0, -1.0], [0.0, 0.0], [-1.0, 0.0], [-3.0, 0.0]],
       "decision_local_action": "TURN_LEFT_90",
       "action_sequence_summary": ["forward", "forward", "(decision) turn_left_90", "forward", "forward"]

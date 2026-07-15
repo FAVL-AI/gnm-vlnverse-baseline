@@ -1,0 +1,12 @@
+# Synthetic Fork Visual Similarity Matrix (DINO ViT-S/16 cosine)
+
+Lower = more visually distinct. The designed goal branches (goalA_img blue vs goalB_img green, and center:N vs center:W) should be < 0.6.
+
+| view | center:N | center:E | center:W | center:S | goalA_img | goalB_img |
+|---|---|---|---|---|---|---|
+| center:N | 1.0 | 0.731 | 0.62 | 0.656 | 0.57 | 0.632 |
+| center:E | 0.731 | 1.0 | 0.72 | 0.85 | 0.553 | 0.617 |
+| center:W | 0.62 | 0.72 | 1.0 | 0.685 | 0.462 | 0.747 |
+| center:S | 0.656 | 0.85 | 0.685 | 1.0 | 0.501 | 0.585 |
+| goalA_img | 0.57 | 0.553 | 0.462 | 0.501 | 1.0 | 0.649 |
+| goalB_img | 0.632 | 0.617 | 0.747 | 0.585 | 0.649 | 1.0 |

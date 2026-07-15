@@ -25,7 +25,10 @@ import torch, timm
 
 REPO = Path("/home/favl/robotics/gnm-vlnverse-baseline")
 HANDOFF = Path(os.environ.get("H8_SFORK_HANDOFF", "/tmp/h8_sfork_npy"))
-OUT = REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_validation"
+OUT = Path(os.environ.get(
+    "H8_SFORK_OUT",
+    str(REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_validation")))
+PREFIX = os.environ.get("H8_SFORK_PREFIX", "synthetic_fork")  # r2 run overrides -> synthetic_fork_r2
 CS = OUT / "contact_sheets"; RM = OUT / "render_metadata"
 for d in (OUT, CS, RM):
     d.mkdir(parents=True, exist_ok=True)
@@ -201,7 +204,7 @@ sim = [(lab, im) for lab, im in sim if im is not None]
 labels = [s[0] for s in sim]; imgs = [s[1] for s in sim]
 mat = [[1.0 if i == j else dino_pair(imgs[i], imgs[j]) for j in range(len(imgs))]
        for i in range(len(imgs))]
-with open(OUT / "synthetic_fork_visual_similarity_matrix.csv", "w", newline="") as f:
+with open(OUT / f"{PREFIX}_visual_similarity_matrix.csv", "w", newline="") as f:
     w = csv.writer(f, lineterminator="\n"); w.writerow(["view"] + labels)
     for i, lab in enumerate(labels):
         w.writerow([lab] + mat[i])
@@ -211,7 +214,7 @@ mm = ["# Synthetic Fork Visual Similarity Matrix (DINO ViT-S/16 cosine)", "",
       "| view | " + " | ".join(labels) + " |", "|" + "---|" * (len(labels) + 1)]
 for i, lab in enumerate(labels):
     mm.append(f"| {lab} | " + " | ".join(f"{mat[i][j]}" for j in range(len(labels))) + " |")
-(OUT / "synthetic_fork_visual_similarity_matrix.md").write_text("\n".join(mm) + "\n")
+(OUT / f"{PREFIX}_visual_similarity_matrix.md").write_text("\n".join(mm) + "\n")
 
 # ── manifest + table + report ─────────────────────────────────────────────────
 manifest = {"label": "SYNTHETIC_DIAGNOSTIC_ONLY", "status": "VALIDATION_ONLY_GATES_1_7",
@@ -237,9 +240,9 @@ manifest = {"label": "SYNTHETIC_DIAGNOSTIC_ONLY", "status": "VALIDATION_ONLY_GAT
                                "not real-scene evidence", "not benchmark evidence", "not promotion",
                                "not full ImageNav evidence", "not SOTA", "no autonomy claim",
                                "no training authorization", "CL_BOUND_XY unchanged"]}
-(OUT / "synthetic_fork_render_validation_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+(OUT / f"{PREFIX}_render_validation_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 
-with open(OUT / "synthetic_fork_render_validation_table.csv", "w", newline="") as f:
+with open(OUT / f"{PREFIX}_render_validation_table.csv", "w", newline="") as f:
     w = csv.writer(f, lineterminator="\n")
     w.writerow(["gate", "pass", "detail"])
     for g, p, d in gates:
@@ -309,7 +312,7 @@ rep = [
     "`scripts/gnm/h8_track_b_synthetic_fork_render.py` (isaac), "
     "`scripts/gnm/h8_track_b_synthetic_fork_analyze.py` (this). Raw .npy in scratchpad (not committed).",
 ]
-(OUT / "synthetic_fork_render_validation_report.md").write_text("\n".join(rep) + "\n")
+(OUT / f"{PREFIX}_render_validation_report.md").write_text("\n".join(rep) + "\n")
 (RM / "sfork_render_scan_render_manifest.json").write_text(json.dumps(man, indent=2) + "\n")
 
 print(json.dumps({"scene_load_ok": sc.get("scene_load_ok"), "opens": opens,
