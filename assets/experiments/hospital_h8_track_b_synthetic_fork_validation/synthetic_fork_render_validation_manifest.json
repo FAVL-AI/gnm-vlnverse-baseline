@@ -1,0 +1,200 @@
+{
+  "label": "SYNTHETIC_DIAGNOSTIC_ONLY",
+  "status": "VALIDATION_ONLY_GATES_1_7",
+  "scene": "synthetic_diagnostic_fork",
+  "asset_path": "/home/favl/robotics/gnm-vlnverse-baseline/assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+  "scene_load_ok": true,
+  "prim_count": 34,
+  "world_bbox": [
+    -4.0,
+    -4.0,
+    -0.1,
+    4.0,
+    4.0,
+    2.5
+  ],
+  "thresholds": {
+    "luma_min": 15.0,
+    "lower_black_max": 0.5,
+    "branch_open_min_depth_m": 3.0,
+    "open_floor_reject_min_depth_m": 4.0,
+    "min_branch_sep_deg": 30.0,
+    "branch_distinct_dino": 0.6
+  },
+  "center_depths_m": {
+    "E": 3.5,
+    "N": 3.5,
+    "W": 3.5,
+    "S": 3.5
+  },
+  "center_luma": {
+    "E": 139.7,
+    "N": 139.1,
+    "W": 125.4,
+    "S": 127.5
+  },
+  "center_lower_black_frac": {
+    "E": 0.0,
+    "N": 0.0,
+    "W": 0.0,
+    "S": 0.0
+  },
+  "opens": [
+    "E",
+    "N",
+    "W",
+    "S"
+  ],
+  "open_floor": false,
+  "ns_open": true,
+  "ew_open": true,
+  "designed_branch_pair": {
+    "A": "N",
+    "B": "W",
+    "sep_deg": 90.0
+  },
+  "dino_goalimg": 0.734,
+  "dino_center": 0.79,
+  "auto_classification": "RENDER_VALID_BUT_VISUALLY_WEAK",
+  "auto_reason": "branches not distinct (DINO 0.734 >= 0.6)",
+  "gates": [
+    {
+      "gate": "1_scene_load",
+      "pass": true,
+      "detail": "ref_authored=True prims=34 bbox=[-4.0, -4.0, -0.1, 4.0, 4.0, 2.5]"
+    },
+    {
+      "gate": "2_render_validity",
+      "pass": true,
+      "detail": "decision/goalA/goalB + center N/W all luma>=15.0, black<=0.5, non-empty; depth_present=True"
+    },
+    {
+      "gate": "3_depth_openness",
+      "pass": true,
+      "detail": "branch N depth=3.5 m, branch W depth=3.5 m (both >= 3.0)"
+    },
+    {
+      "gate": "4_open_floor_guard",
+      "pass": true,
+      "detail": "all-4 >= 4.0 m? False (guard passes when NOT open-floor); depths E/N/W/S=[3.5, 3.5, 3.5, 3.5]"
+    },
+    {
+      "gate": "5_visual_verification",
+      "pass": null,
+      "detail": "MANDATORY human/contact-sheet inspection \u2014 recorded separately after this script; automated verdict must be confirmed by eye before RENDER_VALID_JUNCTION stands"
+    },
+    {
+      "gate": "6_embedding_distinctness",
+      "pass": false,
+      "detail": "DINO cosine(goalA_img,goalB_img)=0.734, cosine(centerN,centerW)=0.79; threshold < 0.6"
+    },
+    {
+      "gate": "7_action_angle",
+      "pass": true,
+      "detail": "branch A=N (STRAIGHT) vs B=W (TURN_LEFT_90): sep=90.0 deg (>= 30.0); different local actions"
+    }
+  ],
+  "gates_1_4_6_7_auto_pass": false,
+  "gate_5_visual_verification": "DONE_CONFIRMS_FAILURE: genuine walled 4-way cross geometry (four bounded colored-end corridors; not open-floor/collinear/wall-only), but all four corridors are structurally identical differing only in end-wall hue + marker shape; DINO structure-focused/colour-invariant -> confirms gate-6 embedding-distinctness failure; no RENDER_VALID_JUNCTION override",
+  "decision_rule_outcome": "SYNTHETIC_FORK_RENDER_SCAN_FAILED_REVISE_GEOMETRY_OR_MARKERS",
+  "named_frames": {
+    "decision": {
+      "mean_luma": 153.5,
+      "lower_frame_black_frac": 0.0,
+      "median_depth_central_m": 4.7,
+      "eye": [
+        0.0,
+        -1.2,
+        0.47
+      ],
+      "yaw_deg": 90.0
+    },
+    "goalA_img": {
+      "mean_luma": 85.1,
+      "lower_frame_black_frac": 0.0,
+      "median_depth_central_m": 1.3,
+      "eye": [
+        0.0,
+        2.2,
+        0.47
+      ],
+      "yaw_deg": 90.0
+    },
+    "goalB_img": {
+      "mean_luma": 72.9,
+      "lower_frame_black_frac": 0.0,
+      "median_depth_central_m": 1.3,
+      "eye": [
+        -2.2,
+        0.0,
+        0.47
+      ],
+      "yaw_deg": 180.0
+    }
+  },
+  "center_views": {
+    "E": {
+      "mean_luma": 139.7,
+      "lower_frame_black_frac": 0.0,
+      "median_depth_central_m": 3.5,
+      "eye": [
+        0.0,
+        0.0,
+        0.47
+      ],
+      "yaw_deg": 0.0
+    },
+    "N": {
+      "mean_luma": 139.1,
+      "lower_frame_black_frac": 0.0,
+      "median_depth_central_m": 3.5,
+      "eye": [
+        0.0,
+        0.0,
+        0.47
+      ],
+      "yaw_deg": 90.0
+    },
+    "W": {
+      "mean_luma": 125.4,
+      "lower_frame_black_frac": 0.0,
+      "median_depth_central_m": 3.5,
+      "eye": [
+        0.0,
+        0.0,
+        0.47
+      ],
+      "yaw_deg": 180.0
+    },
+    "S": {
+      "mean_luma": 127.5,
+      "lower_frame_black_frac": 0.0,
+      "median_depth_central_m": 3.5,
+      "eye": [
+        0.0,
+        0.0,
+        0.47
+      ],
+      "yaw_deg": 270.0
+    }
+  },
+  "gates_not_run": [
+    "drive_validation",
+    "recorded_mode",
+    "leakage_audit",
+    "action_probe",
+    "training"
+  ],
+  "claim_boundary": [
+    "SYNTHETIC_DIAGNOSTIC_ONLY",
+    "not hospital evidence",
+    "not real-scene evidence",
+    "not benchmark evidence",
+    "not promotion",
+    "not full ImageNav evidence",
+    "not SOTA",
+    "no autonomy claim",
+    "no training authorization",
+    "CL_BOUND_XY unchanged"
+  ]
+}
