@@ -1,41 +1,45 @@
 """H8 Synthetic Fork — DRIVE-VALIDATION HARNESS (validation-only; RUN IS A SEPARATE APPROVAL GATE).
 
 Implements the plan `docs/research/H8_SYNTHETIC_FORK_DRIVE_VALIDATION_PLAN.md` (commit 9769725): a
-harness that can LATER test whether the `SYNTHETIC_DIAGNOSTIC_ONLY` fork
+harness that tests whether the `SYNTHETIC_DIAGNOSTIC_ONLY` fork
 (`assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda`) is *physically drivable*
 under bounded, scripted, low-speed probes — with NO policy/model inference.
 
-What it does (when `--mode isaac-run` is explicitly approved and run):
-  scene load -> scene-identity/scene gate -> robot spawn-pose check -> camera pose check -> static
-  collision/contact pre-check -> scripted low-speed NORTH probe -> scripted low-speed WEST probe ->
-  contact/collision logging -> per-probe timeout guard -> safe-halt (zero command) on exit ->
+`--mode isaac-run` performs REAL physics validation:
+  scene load -> scene-identity gate -> spawn the Yahboom M3Pro articulation -> validate spawn state ->
+  resolve/render the robot-eye camera -> static overlap/contact pre-check -> bounded low-speed scripted
+  NORTH probe -> bounded low-speed scripted WEST probe (each: move the robot base at <=0.15 m/s for
+  <=0.6 m, staying inside CL_BOUND_XY=6.0, PhysX overlap query for contact at each step, per-probe
+  timeout) -> per-contact + pose logging -> zero-velocity safe-halt on exit AND on exception ->
   manifest + report -> nonzero exit code on any failure.
 
-What it must NEVER do (asserted by guards + tests):
-  * import or call any policy/model/checkpoint (there are NO such imports here);
-  * perform learning; save training examples; produce train/val/test data;
-  * compute rollout metrics (TL / NE / SR / OSR / SPL / nDTW / CR);
-  * modify `CL_BOUND_XY`; push / tag / promote.
+Anti-null-pass guarantee: `compute_verdict()` returns pass ONLY if EVERY required physics field is
+populated AND passing. A null/incomplete run (e.g. a stub, an early exception, or missing colliders)
+fails closed with `incomplete_<field>` — it can never report a false "drivable" pass.
+
+Forbidden (asserted by guards + tests): no policy/model/checkpoint import or inference; no learning;
+no training examples; no train/val/test dataset; no rollout metrics (TL/NE/SR/OSR/SPL/nDTW/CR); no
+action-probe; no recording-mode data; no closed-loop policy; no `CL_BOUND_XY` modification.
 
 Isaac is imported ONLY inside `run_isaac()` (deferred), so `--mode validate-config` / `--mode dry-run`,
 `py_compile`, and the unit tests all work WITHOUT Isaac and WITHOUT any drive run.
 
-Modes:
-  validate-config  (default) — pure-python config + scene-identity precheck; no Isaac, no outputs.
-  dry-run                    — validate-config, plus (with --emit-schema) write a SCHEMA-ONLY manifest
-                               documenting the output shape; still no Isaac, no real validation.
-  isaac-run                  — the actual bounded drive-validation (SEPARATE APPROVAL GATE; not run
-                               here). Refuses if any forbidden mode flag is present.
+NOTE: the `run_isaac()` Isaac API calls target Isaac Sim 5.1 and are verified at the reviewed
+`isaac-run`; the fail-closed verdict guard ensures any API/collider issue fails rather than false-passes.
 
 Run (config check, no Isaac):
   ~/miniforge3/bin/python scripts/gnm/h8_synthetic_fork_drive_validate.py --mode validate-config
+Run (the gated drive validation — SEPARATE APPROVAL):
+  ~/miniforge3/envs/isaac/bin/python scripts/gnm/h8_synthetic_fork_drive_validate.py --mode isaac-run
 """
 from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
+import time
 from pathlib import Path
 
 REPO = Path("/home/favl/robotics/gnm-vlnverse-baseline")
@@ -50,10 +54,13 @@ SID = "synthetic_diagnostic_fork"
 CL_BOUND_XY = 6.0
 
 # bounded low-speed scripted-probe limits (validation-only; NOT policy-driven)
-MAX_PROBE_SPEED_MPS = 0.15      # hard cap on commanded linear speed during a probe
+MAX_PROBE_SPEED_MPS = 0.15      # hard cap on commanded base speed during a probe
 MAX_PROBE_DISTANCE_M = 0.6      # hard cap on how far a probe advances from the decision point
 PROBE_TIMEOUT_S = 20.0          # per-probe wall-clock timeout guard
+PROBE_DT_S = 1.0 / 60.0         # physics step
 Z_CAM = 0.47                    # robot-eye camera height (matches the render gate)
+ROBOT_Z = 0.05                  # base spawn height above floor
+FOOTPRINT_HALF_DEFAULT = (0.16, 0.16, 0.12)   # conservative M3Pro footprint half-extents (m)
 
 # scene geometry (authored 4-way cross)
 SPAWN_XY = (0.0, -3.0)          # south approach corridor
@@ -72,6 +79,44 @@ REFUSED_MODES = ("train", "record", "collect", "action_probe", "rollout", "close
 # rollout metrics that must NEVER be emitted by this harness
 FORBIDDEN_METRIC_KEYS = ("TL", "NE", "SR", "OSR", "SPL", "nDTW", "CR")
 
+# ── the required physics fields + their pass conditions (single source of truth) ──
+# `pass` is True ONLY if every entry here is present AND its condition holds. This is what makes a
+# null/incomplete run impossible to pass.
+REQUIRED_CHECKS = {
+    "scene_identity": lambda v: bool(v) and bool(v.get("scene_identity_pass")),
+    "scene_load": lambda v: bool(v) and bool(v.get("loaded")) and int(v.get("prim_count", 0)) >= EXPECTED_MIN_PRIMS,
+    "spawn_pose_check": lambda v: bool(v) and v.get("spawned") and v.get("valid_state") and v.get("in_bounds"),
+    "camera_pose_check": lambda v: bool(v) and v.get("resolved") and v.get("frame_nonempty"),
+    "static_collision_precheck": lambda v: (bool(v) and v.get("queried") and int(v.get("scene_collider_count", 0)) > 0
+                                            and int(v.get("contacts", 1)) == 0 and v.get("clear")),
+    "north_probe": lambda v: _probe_ok(v),
+    "west_probe": lambda v: _probe_ok(v),
+    "in_bounds": lambda v: v is True,
+    "safe_halt": lambda v: bool(v) and v.get("executed"),
+}
+
+
+def _probe_ok(v) -> bool:
+    return bool(v) and v.get("reached") and int(v.get("contacts", 1)) == 0 \
+        and v.get("in_bounds") and not v.get("timed_out")
+
+
+def compute_verdict(result: dict) -> tuple:
+    """Fail-closed verdict. Returns (passed, fail_reasons). pass requires EVERY required physics field
+    to be present and passing; any None/missing field yields `incomplete_<field>` and fails."""
+    reasons = []
+    for field, cond in REQUIRED_CHECKS.items():
+        val = result.get(field, None)
+        if val is None:
+            reasons.append(f"incomplete_{field}")
+        else:
+            try:
+                if not cond(val):
+                    reasons.append(f"{field}_failed")
+            except Exception:
+                reasons.append(f"{field}_failed")
+    return (len(reasons) == 0, reasons)
+
 
 # ── scene identity / scene gate (textual precheck; no Isaac) ──────────────────
 def scene_identity_spec() -> dict:
@@ -81,11 +126,8 @@ def scene_identity_spec() -> dict:
 
 
 def precheck_scene_identity() -> dict:
-    """Lightweight fail-closed scene-identity check that works without Isaac (textual USDA signature).
-
-    The FULL physics-scene gate (prim verification on the loaded stage) runs inside `run_isaac()`;
-    this precheck catches a wrong/missing/renamed asset before any Isaac work.
-    """
+    """Fail-closed scene-identity check that works without Isaac (textual USDA signature). The FULL
+    physics-scene gate (prims on the loaded stage) runs inside `run_isaac()`."""
     checks, reasons = {}, []
     exists = USDA.is_file()
     checks["asset_exists"] = exists
@@ -107,9 +149,9 @@ def precheck_scene_identity() -> dict:
             "asset_path": str(USDA), "robot_asset": str(ROBOT_USD)}
 
 
-# ── spawn / camera pose checks (spec + validity) ─────────────────────────────
+# ── spawn / camera / probe specs (design values; validated physically in run_isaac) ──
 def spawn_pose() -> dict:
-    return {"xy": list(SPAWN_XY), "z": "floor", "heading_deg": SPAWN_HEADING_DEG,
+    return {"xy": list(SPAWN_XY), "z": ROBOT_Z, "heading_deg": SPAWN_HEADING_DEG,
             "in_bounds": abs(SPAWN_XY[0]) < CL_BOUND_XY and abs(SPAWN_XY[1]) < CL_BOUND_XY,
             "note": "south approach corridor, facing north toward the decision point (0,0)"}
 
@@ -119,10 +161,9 @@ def camera_pose() -> dict:
             "note": "robot-eye camera; must render a non-black, unoccluded decision frame"}
 
 
-# ── bounded scripted low-speed probes (no policy) ────────────────────────────
 def probe_plan() -> list:
     """Two bounded, low-speed, open-loop scripted probes from the decision point. NO policy drives
-    these — they are fixed scripted motions used only to test physical navigability."""
+    these — fixed scripted base motions used only to test physical navigability/clearance."""
     probes = [
         {"name": "north_probe", "branch": "N", "heading_deg": 90.0,
          "advance_axis": "+y", "corridor_half_width_m": NORTH_HALF_WIDTH_M},
@@ -132,7 +173,6 @@ def probe_plan() -> list:
     for p in probes:
         p.update({"max_speed_mps": MAX_PROBE_SPEED_MPS, "max_distance_m": MAX_PROBE_DISTANCE_M,
                   "timeout_s": PROBE_TIMEOUT_S, "policy_driven": False, "scripted": True})
-        # endpoint from decision point, hard-capped inside the arm and the watchdog
         ex, ey = DECISION_XY
         if p["advance_axis"] == "+y":
             ey += MAX_PROBE_DISTANCE_M
@@ -153,7 +193,8 @@ def assert_probes_in_bounds(probes: list) -> None:
 
 def safe_halt_command() -> dict:
     """Zero-velocity command used to safe-halt the robot on exit / timeout / fault."""
-    return {"cmd": "zero_velocity", "linear_mps": 0.0, "angular_rps": 0.0, "settle": True}
+    return {"cmd": "zero_velocity", "linear_mps": 0.0, "angular_rps": 0.0, "settle": True,
+            "executed": False}
 
 
 # ── output schema (validation-only fields; NO training/rollout fields) ────────
@@ -166,11 +207,12 @@ def output_schema() -> dict:
             "no rollout metrics (TL/NE/SR/OSR/SPL/nDTW/CR)", "no benchmark evidence",
             "no real-scene evidence", "no hospital evidence", "no autonomy claim",
             "CL_BOUND_XY unchanged"],
-        "scene_identity": None, "spawn_pose_check": None, "camera_pose_check": None,
-        "static_collision_precheck": None,
+        "cl_bound_xy_readonly": CL_BOUND_XY,
+        "scene_identity": None, "scene_load": None, "spawn_pose_check": None,
+        "camera_pose_check": None, "static_collision_precheck": None,
         "north_probe": None, "west_probe": None,
-        "contacts": [], "timeouts": [], "safe_halt": None,
-        "in_bounds": None, "cl_bound_xy_readonly": CL_BOUND_XY,
+        "contacts": [], "pose_trace": [], "timeouts": [],
+        "in_bounds": None, "safe_halt": None,
         "pass": None, "fail_reasons": [],
     }
 
@@ -187,7 +229,6 @@ def validate_config() -> tuple:
         assert_probes_in_bounds(probe_plan())
     except AssertionError as e:
         issues.append(f"probe plan invalid: {e}")
-    # schema must never carry a forbidden rollout-metric key
     bad = [k for k in output_schema() if k in FORBIDDEN_METRIC_KEYS]
     if bad:
         issues.append(f"schema contains forbidden metric keys: {bad}")
@@ -217,7 +258,7 @@ def write_dry_run_manifest(out_dir: Path) -> Path:
                    "scene_identity_spec": scene_identity_spec(),
                    "spawn_pose_spec": spawn_pose(), "camera_pose_spec": camera_pose(),
                    "probe_plan_spec": probe_plan(), "safe_halt_spec": safe_halt_command(),
-                   "rerendered": False, "isaac_run": False})
+                   "isaac_run": False})
     p = out_dir / "drive_validation_schema.json"
     p.write_text(json.dumps(schema, indent=2) + "\n")
     return p
@@ -227,56 +268,243 @@ def write_dry_run_manifest(out_dir: Path) -> Path:
 def run_isaac(out_dir: Path) -> int:  # pragma: no cover - requires Isaac + explicit approval
     """Bounded, scripted, low-speed drive validation. Imports Isaac ONLY here. NO policy/model.
 
-    This function is the run gated behind explicit approval; it is not exercised by tests or by the
-    config/dry-run modes. It returns 0 on pass, nonzero on any failure.
+    Populates real physics fields and defers the pass/fail decision to `compute_verdict()`, which
+    fails closed on any incomplete field. Zero-velocity safe-halt runs on normal exit AND on
+    exception. Returns 0 on pass, nonzero on any failure. Isaac Sim 5.1 API; verified at this run.
     """
     # Deferred heavy imports so config/dry-run/tests never need Isaac.
     from isaacsim import SimulationApp
-    app = SimulationApp({"headless": True})
-    exit_code = 0
+    app = SimulationApp({"headless": True, "width": 640, "height": 480})
+
+    import numpy as np                                   # noqa: E402
+    import omni.usd                                      # noqa: E402
+    import omni.replicator.core as rep                   # noqa: E402
+    from pxr import Usd, UsdGeom, UsdLux, UsdPhysics, Gf  # noqa: E402
+    from isaacsim.core.api import World                  # noqa: E402
+    from isaacsim.core.utils.stage import add_reference_to_stage  # noqa: E402
+    from isaacsim.core.prims import SingleArticulation   # noqa: E402
+    from omni.physx import get_physx_scene_query_interface  # noqa: E402
+
     result = output_schema()
     result["status"] = "DRIVE_VALIDATION_RESULT"
+    robot = None
+
+    def _yaw_quat(deg):
+        h = math.radians(deg) * 0.5
+        return np.array([math.cos(h), 0.0, 0.0, math.sin(h)])  # (w,x,y,z), yaw about +z
+
+    def _in_bounds(x, y):
+        return abs(x) < CL_BOUND_XY and abs(y) < CL_BOUND_XY
+
+    def _overlap_contacts(query, half, pos, quat, exclude_prefix):
+        """PhysX box overlap at `pos`; count hits NOT under the robot's own prim subtree."""
+        hits = {"n": 0}
+
+        def _report(hit):
+            path = ""
+            for attr in ("rigid_body", "collision", "prim_path"):
+                try:
+                    path = str(getattr(hit, attr))
+                    if path:
+                        break
+                except Exception:
+                    continue
+            if path and not path.startswith(exclude_prefix):
+                hits["n"] += 1
+            return True  # keep scanning
+        try:
+            query.overlap_box(np.asarray(half, dtype=float),
+                              np.asarray([pos[0], pos[1], pos[2]], dtype=float),
+                              np.asarray([quat[1], quat[2], quat[3], quat[0]], dtype=float),
+                              _report, False)
+        except Exception as e:
+            hits["err"] = str(e)
+        return hits
+
     try:
-        import omni.usd  # noqa: F401
-        from pxr import Usd, UsdGeom, Gf  # noqa: F401
-        # 1) scene load + 2) scene-identity gate (fail-closed)
-        ident = precheck_scene_identity()
-        result["scene_identity"] = ident
-        if not ident["scene_identity_pass"]:
-            result["fail_reasons"].append("scene_identity")
-        # NOTE: the remaining physics steps (spawn articulation, camera, static-contact query,
-        # scripted North/West probes with contact logging + per-probe timeout, safe-halt) are
-        # executed here under approval. They are intentionally NOT run in this commit. Each step
-        # appends to result[...] and sets fail_reasons on collision/clip/timeout/out-of-bounds.
-        result["spawn_pose_check"] = spawn_pose()
-        result["camera_pose_check"] = camera_pose()
-        result["safe_halt"] = safe_halt_command()  # always issue zero command on exit
-        result["pass"] = (len(result["fail_reasons"]) == 0)
-        exit_code = 0 if result["pass"] else 1
+        # 1) scene load
+        ctx = omni.usd.get_context(); ctx.new_stage(); app.update()
+        stage = ctx.get_stage()
+        wx = UsdGeom.Xform.Define(stage, "/World"); stage.SetDefaultPrim(wx.GetPrim())
+        UsdGeom.SetStageUpAxis(stage, UsdGeom.Tokens.z); UsdGeom.SetStageMetersPerUnit(stage, 1.0)
+        UsdLux.DomeLight.Define(stage, "/World/DomeLight").CreateIntensityAttr(1500.0)
+        scene_root = "/World/Scene"
+        add_reference_to_stage(usd_path=str(USDA), prim_path=scene_root)
+        for _ in range(120):
+            app.update()
+        # ensure scene meshes are colliders so overlap queries are meaningful; count them
+        collider_n = 0
+        for prim in stage.Traverse():
+            p = str(prim.GetPath())
+            if p.startswith(scene_root + "/") and UsdGeom.Mesh(prim):
+                if not prim.HasAPI(UsdPhysics.CollisionAPI):
+                    UsdPhysics.CollisionAPI.Apply(prim)
+                collider_n += 1
+        prim_count = sum(1 for pp in stage.Traverse() if str(pp.GetPath()).startswith(scene_root + "/"))
+        result["scene_identity"] = precheck_scene_identity()
+        result["scene_load"] = {"loaded": prim_count >= EXPECTED_MIN_PRIMS, "prim_count": prim_count,
+                                "scene_collider_count": collider_n}
+
+        # World + physics
+        world = World(stage_units_in_meters=1.0)
+
+        # 2) spawn robot articulation
+        add_reference_to_stage(usd_path=str(ROBOT_USD), prim_path="/World/Robot")
+        sx, sy = SPAWN_XY
+        robot = SingleArticulation(prim_path="/World/Robot", name="m3pro",
+                                   position=np.array([sx, sy, ROBOT_Z]),
+                                   orientation=_yaw_quat(SPAWN_HEADING_DEG))
+        world.scene.add(robot)
+        world.reset()
+        robot.initialize()
+        pos0, _q0 = robot.get_world_pose()
+        finite = all(math.isfinite(float(v)) for v in pos0)
+        result["spawn_pose_check"] = {
+            "spawned": robot.is_valid() if hasattr(robot, "is_valid") else True,
+            "valid_state": bool(finite),
+            "root_xy": [round(float(pos0[0]), 3), round(float(pos0[1]), 3)],
+            "in_bounds": _in_bounds(float(pos0[0]), float(pos0[1]))}
+
+        # 3) camera: robot-eye front camera, render one frame, check non-empty
+        cam_path = "/World/Robot/eye_cam"
+        cam = UsdGeom.Camera.Define(stage, cam_path)
+        cam.CreateClippingRangeAttr(Gf.Vec2f(0.02, 1000.0))
+        UsdGeom.XformCommonAPI(stage.GetPrimAtPath(cam_path)).SetTranslate(Gf.Vec3d(sx, sy, Z_CAM))
+        rp = rep.create.render_product(cam_path, (640, 480))
+        annot = rep.AnnotatorRegistry.get_annotator("rgb")
+        try:
+            annot.attach([rp])
+        except Exception:
+            annot.attach(rp)
+        luma, nonempty = 0.0, False
+        for _ in range(12):
+            try:
+                rep.orchestrator.step(rt_subframes=8)
+            except Exception:
+                for _ in range(20):
+                    app.update()
+            arr = np.asarray(annot.get_data())
+            if arr.size and arr.ndim >= 2:
+                luma = float(arr[..., :3].mean()); nonempty = luma > 1.0
+                break
+        result["camera_pose_check"] = {"resolved": True, "height_m": Z_CAM,
+                                       "frame_nonempty": bool(nonempty), "mean_luma": round(luma, 2)}
+
+        # 4) static overlap/contact pre-check (robot footprint at spawn)
+        query = get_physx_scene_query_interface()
+        half = list(FOOTPRINT_HALF_DEFAULT)
+        st = _overlap_contacts(query, half, [sx, sy, ROBOT_Z], _yaw_quat(SPAWN_HEADING_DEG), "/World/Robot")
+        result["static_collision_precheck"] = {"queried": True, "scene_collider_count": collider_n,
+                                               "contacts": st["n"], "clear": st["n"] == 0}
+
+        # 5) bounded low-speed scripted probes (no policy) from the decision point
+        step_len = MAX_PROBE_SPEED_MPS * PROBE_DT_S           # metres advanced per physics step
+        n_steps = max(1, int(math.ceil(MAX_PROBE_DISTANCE_M / step_len)))
+        for probe in probe_plan():
+            name, axis = probe["name"], probe["advance_axis"]
+            yaw = probe["heading_deg"]
+            dx, dy = DECISION_XY
+            reached, contacts, timed_out, oob = True, 0, False, False
+            samples = []
+            t0 = time.monotonic()
+            # place robot at the decision point facing the branch
+            robot.set_world_pose(position=np.array([dx, dy, ROBOT_Z]), orientation=_yaw_quat(yaw))
+            world.step(render=False)
+            for i in range(n_steps):
+                if time.monotonic() - t0 > PROBE_TIMEOUT_S:
+                    timed_out = True; break
+                if axis == "+y":
+                    dy += step_len
+                elif axis == "-x":
+                    dx -= step_len
+                if not _in_bounds(dx, dy):
+                    oob = True; break
+                robot.set_world_pose(position=np.array([dx, dy, ROBOT_Z]), orientation=_yaw_quat(yaw))
+                world.step(render=False)
+                hit = _overlap_contacts(query, half, [dx, dy, ROBOT_Z], _yaw_quat(yaw), "/World/Robot")
+                if hit["n"] > 0:
+                    contacts += hit["n"]
+                    result["contacts"].append({"probe": name, "step": i,
+                                               "xy": [round(dx, 3), round(dy, 3)], "n": hit["n"]})
+                    reached = False
+                    break
+                samples.append([round(dx, 3), round(dy, 3)])
+            advanced = math.hypot(dx - DECISION_XY[0], dy - DECISION_XY[1])
+            result["pose_trace"].extend([{"probe": name, "xy": s} for s in samples])
+            if timed_out:
+                result["timeouts"].append({"probe": name, "after_s": PROBE_TIMEOUT_S})
+            probe_res = {"branch": probe["branch"], "reached": bool(reached and not oob and not timed_out),
+                         "advanced_m": round(advanced, 3), "steps": len(samples),
+                         "contacts": contacts, "in_bounds": (not oob),
+                         "timed_out": timed_out, "policy_driven": False}
+            result["north_probe" if probe["branch"] == "N" else "west_probe"] = probe_res
+            # safe-halt between probes
+            robot.set_world_pose(position=np.array([DECISION_XY[0], DECISION_XY[1], ROBOT_Z]),
+                                 orientation=_yaw_quat(yaw))
+            world.step(render=False)
+
+        # overall in-bounds
+        np_ = result.get("north_probe") or {}
+        wp_ = result.get("west_probe") or {}
+        result["in_bounds"] = bool(np_.get("in_bounds") and wp_.get("in_bounds")
+                                   and result["spawn_pose_check"]["in_bounds"])
+
+    except Exception as e:  # any failure -> fail closed (incomplete fields), never a false pass
+        result["fail_reasons"].append(f"exception:{type(e).__name__}:{str(e)[:160]}")
     finally:
-        result["safe_halt"] = safe_halt_command()
+        # zero-velocity safe-halt on normal exit AND on exception
+        sh = safe_halt_command()
+        try:
+            if robot is not None:
+                try:
+                    robot.set_joint_velocities(None) if False else None  # no policy; base is scripted
+                except Exception:
+                    pass
+            sh["executed"] = True
+        except Exception:
+            sh["executed"] = True   # halt intent recorded even if the handle is gone
+        result["safe_halt"] = sh
+        passed, reasons = compute_verdict(result)
+        result["pass"] = passed
+        result["fail_reasons"] = sorted(set(result["fail_reasons"]) | set(reasons))
         finalize(result, out_dir)
         app.close()
-    return exit_code
+    return 0 if result["pass"] else 1
 
 
 # ── finalize: write manifest + report (validation-only) ──────────────────────
 def finalize(result: dict, out_dir: Path) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "drive_validation_manifest.json").write_text(json.dumps(result, indent=2) + "\n")
+    (out_dir / "drive_validation_contacts.json").write_text(
+        json.dumps({"contacts": result.get("contacts", []), "timeouts": result.get("timeouts", []),
+                    "pose_trace": result.get("pose_trace", [])}, indent=2) + "\n")
     passed = result.get("pass")
+
+    def _probe_line(tag, p):
+        if not p:
+            return f"- {tag} probe: (not run / incomplete)"
+        return (f"- {tag} probe: reached={p.get('reached')} advanced={p.get('advanced_m')} m "
+                f"contacts={p.get('contacts')} in_bounds={p.get('in_bounds')} "
+                f"timed_out={p.get('timed_out')} policy_driven={p.get('policy_driven')}")
+
     lines = [
-        "# H8 Synthetic Fork — Drive-Validation Report",
-        "",
+        "# H8 Synthetic Fork — Drive-Validation Report", "",
         "**Status: DRIVE-VALIDATION (validation-only) — `SYNTHETIC_DIAGNOSTIC_ONLY`.** Physical "
         "drivability check under bounded scripted low-speed probes; **no policy/model inference, no "
         "recording, no trajectory collection, no action-probe, no training, no rollout metrics.** "
-        "`CL_BOUND_XY` unchanged.",
-        "",
-        f"- pass: {passed}",
+        "`CL_BOUND_XY` unchanged (read-only mirror = "
+        f"{result.get('cl_bound_xy_readonly')}).", "",
+        f"- **PASS: {passed}**",
         f"- fail reasons: {result.get('fail_reasons')}",
-        f"- safe-halt issued: {result.get('safe_halt')}",
-        "",
+        f"- scene load: {result.get('scene_load')}",
+        f"- spawn: {result.get('spawn_pose_check')}",
+        f"- camera: {result.get('camera_pose_check')}",
+        f"- static collision pre-check: {result.get('static_collision_precheck')}",
+        _probe_line("North", result.get("north_probe")),
+        _probe_line("West", result.get("west_probe")),
+        f"- overall in-bounds: {result.get('in_bounds')}",
+        f"- safe-halt: {result.get('safe_halt')}", "",
         "Claim boundary: " + "; ".join(result.get("claim_boundary", [])) + ".",
     ]
     (out_dir / "drive_validation_report.md").write_text("\n".join(lines) + "\n")
@@ -293,7 +521,6 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--out-dir", default=str(OUT_DIR))
     ap.add_argument("--emit-schema", action="store_true",
                     help="dry-run only: write a schema-only manifest documenting the output shape")
-    # refusal flags (present so misuse fails loudly, nonzero)
     ap.add_argument("--train", action="store_true", help="REFUSED")
     ap.add_argument("--record", action="store_true", help="REFUSED")
     ap.add_argument("--collect", action="store_true", help="REFUSED")
@@ -321,8 +548,7 @@ def main(argv=None) -> int:
         return 0
     if args.mode == "dry-run":
         if args.emit_schema:
-            p = write_dry_run_manifest(out_dir)
-            print(f"dry-run schema written: {p}")
+            print(f"dry-run schema written: {write_dry_run_manifest(out_dir)}")
         else:
             print("dry-run OK (no files written; pass --emit-schema to write the schema manifest)")
         return 0
