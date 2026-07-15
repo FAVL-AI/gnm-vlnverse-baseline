@@ -121,6 +121,42 @@ def test_required_checks_cover_every_physics_stage():
         assert stage in dv.REQUIRED_CHECKS, f"verdict does not gate on {stage}"
 
 
+# ── FIX 1: collider matching covers Gprim primitives (not just Mesh) ──────────
+def test_collider_types_include_gprim_primitives_not_just_mesh():
+    # the DEFER bug was Mesh-only matching; the authored scene is Cube/Cone/Sphere/Cylinder
+    for t in ("Cube", "Cone", "Sphere", "Cylinder", "Mesh"):
+        assert t in dv.GPRIM_COLLIDER_TYPES, f"collider eligibility must include {t}"
+    # curves/points are NOT solid colliders and must not be in the list
+    for t in ("Points", "BasisCurves", "NurbsCurves"):
+        assert t not in dv.GPRIM_COLLIDER_TYPES
+
+
+def test_zero_colliders_still_fails_closed():
+    # even with everything else good, zero colliders must not pass (missing collision geometry)
+    r = _good_result()
+    r["static_collision_precheck"]["scene_collider_count"] = 0
+    assert dv.compute_verdict(r)[0] is False
+
+
+# ── FIX 2: process exit code reflects the manifest verdict ────────────────────
+def test_verdict_exit_code_mapping():
+    assert dv.verdict_exit_code(True) == 0
+    assert dv.verdict_exit_code(False) != 0
+    assert dv.verdict_exit_code(None) != 0   # DEFER / incomplete -> nonzero (fail-closed)
+
+
+def test_run_isaac_forces_exit_code_after_shutdown():
+    # the harness must force the intended exit code after app.close() so Isaac's shutdown cannot
+    # mask a failure by leaving the process at 0.
+    start = HARNESS_SRC.index("def run_isaac(")
+    end = HARNESS_SRC.index("\ndef finalize(", start)
+    src = HARNESS_SRC[start:end]
+    assert "verdict_exit_code(" in src, "run_isaac must derive exit code from the verdict"
+    assert "os._exit(" in src, "run_isaac must force the exit code after cleanup"
+    # os._exit must come AFTER app.close() in the source
+    assert src.index("app.close(") < src.rindex("os._exit("), "force exit must be after app.close()"
+
+
 # ── config / modes / probes / safety (no Isaac) ───────────────────────────────
 def test_config_validation_works_without_isaac():
     ok, issues, ident = dv.validate_config()

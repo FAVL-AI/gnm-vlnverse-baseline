@@ -37,6 +37,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import re
 import sys
 import time
@@ -74,6 +75,11 @@ EXPECTED_MIN_PRIMS = 60         # authored scene has ~92 `def` prims; fail-close
 EXPECTED_DEFAULT_PRIM = "World"
 SCENE_BOUND_ABS = 4.5           # |coord| bound of the authored interior (well inside CL_BOUND_XY)
 
+# Solid UsdGeom.Gprim geometry types that get a collider. The authored synthetic scene uses primitive
+# shapes (Cube/Cone/Sphere/Cylinder), NOT Mesh — so matching Mesh alone found zero colliders. Points
+# and curves are intentionally excluded (not solid collision geometry).
+GPRIM_COLLIDER_TYPES = ("Mesh", "Cube", "Sphere", "Cone", "Cylinder", "Capsule", "Plane")
+
 # modes/behaviours the harness REFUSES — this step is PHYSICAL DRIVABILITY ONLY.
 REFUSED_MODES = ("train", "record", "collect", "action_probe", "rollout", "closed_loop", "twenty_five_ten")
 # rollout metrics that must NEVER be emitted by this harness
@@ -99,6 +105,13 @@ REQUIRED_CHECKS = {
 def _probe_ok(v) -> bool:
     return bool(v) and v.get("reached") and int(v.get("contacts", 1)) == 0 \
         and v.get("in_bounds") and not v.get("timed_out")
+
+
+def verdict_exit_code(passed) -> int:
+    """Process exit code from the manifest verdict: 0 iff pass is exactly True, else nonzero.
+    None / DEFER / False -> 1 (fail-closed). Used to force the exit status even when Isaac's app
+    shutdown would otherwise leave the process at 0."""
+    return 0 if passed is True else 1
 
 
 def compute_verdict(result: dict) -> tuple:
@@ -208,6 +221,7 @@ def output_schema() -> dict:
             "no real-scene evidence", "no hospital evidence", "no autonomy claim",
             "CL_BOUND_XY unchanged"],
         "cl_bound_xy_readonly": CL_BOUND_XY,
+        "prim_type_counts": None, "collider_provenance": None,
         "scene_identity": None, "scene_load": None, "spawn_pose_check": None,
         "camera_pose_check": None, "static_collision_precheck": None,
         "north_probe": None, "west_probe": None,
@@ -332,16 +346,30 @@ def run_isaac(out_dir: Path) -> int:  # pragma: no cover - requires Isaac + expl
         add_reference_to_stage(usd_path=str(USDA), prim_path=scene_root)
         for _ in range(120):
             app.update()
-        # ensure scene meshes are colliders so overlap queries are meaningful; count them
+        # ensure scene GEOMETRY is colliders so overlap queries are meaningful. Broadened from
+        # Mesh-only to all solid UsdGeom.Gprim types (Cube/Cone/Sphere/Cylinder/Capsule/Plane/Mesh),
+        # because the authored scene uses primitive shapes, not Mesh. Record per-type counts +
+        # collider-count provenance.
         collider_n = 0
+        prim_count = 0
+        type_counts, applied_types = {}, {}
         for prim in stage.Traverse():
-            p = str(prim.GetPath())
-            if p.startswith(scene_root + "/") and UsdGeom.Mesh(prim):
+            if not str(prim.GetPath()).startswith(scene_root + "/"):
+                continue
+            prim_count += 1
+            tname = str(prim.GetTypeName())
+            if tname:
+                type_counts[tname] = type_counts.get(tname, 0) + 1
+            if prim.IsA(UsdGeom.Gprim) and tname in GPRIM_COLLIDER_TYPES:
                 if not prim.HasAPI(UsdPhysics.CollisionAPI):
                     UsdPhysics.CollisionAPI.Apply(prim)
                 collider_n += 1
-        prim_count = sum(1 for pp in stage.Traverse() if str(pp.GetPath()).startswith(scene_root + "/"))
+                applied_types[tname] = applied_types.get(tname, 0) + 1
         result["scene_identity"] = precheck_scene_identity()
+        result["prim_type_counts"] = type_counts
+        result["collider_provenance"] = {"eligible_types": list(GPRIM_COLLIDER_TYPES),
+                                         "applied_by_type": applied_types,
+                                         "total_colliders_applied": collider_n}
         result["scene_load"] = {"loaded": prim_count >= EXPECTED_MIN_PRIMS, "prim_count": prim_count,
                                 "scene_collider_count": collider_n}
 
@@ -468,8 +496,19 @@ def run_isaac(out_dir: Path) -> int:  # pragma: no cover - requires Isaac + expl
         result["pass"] = passed
         result["fail_reasons"] = sorted(set(result["fail_reasons"]) | set(reasons))
         finalize(result, out_dir)
-        app.close()
-    return 0 if result["pass"] else 1
+        exit_code = verdict_exit_code(passed)   # 0 iff pass is True, else nonzero (fail-closed)
+        try:
+            sys.stdout.flush(); sys.stderr.flush()
+        except Exception:
+            pass
+        try:
+            app.close()
+        except Exception:
+            pass
+        # Isaac's app shutdown can force the process to exit 0 regardless of the return value. Force
+        # the intended exit code AFTER cleanup so the process status reflects the manifest verdict.
+        os._exit(exit_code)
+    return verdict_exit_code(result.get("pass"))   # unreachable (os._exit above); kept for clarity
 
 
 # ── finalize: write manifest + report (validation-only) ──────────────────────
@@ -498,6 +537,8 @@ def finalize(result: dict, out_dir: Path) -> int:
         f"- **PASS: {passed}**",
         f"- fail reasons: {result.get('fail_reasons')}",
         f"- scene load: {result.get('scene_load')}",
+        f"- prim type counts: {result.get('prim_type_counts')}",
+        f"- collider provenance: {result.get('collider_provenance')}",
         f"- spawn: {result.get('spawn_pose_check')}",
         f"- camera: {result.get('camera_pose_check')}",
         f"- static collision pre-check: {result.get('static_collision_precheck')}",
