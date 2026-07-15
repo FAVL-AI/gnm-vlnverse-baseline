@@ -15,6 +15,9 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import torch, timm
+# Reviewed distinctness rule (Outcome A + E). Sibling module; this script runs from scripts/gnm.
+from h8_distinctness_gate import (REAL_SCENE_DINO_THRESHOLD, REAL_SCENE_MARGIN,
+                                  LEGACY_HARD_THRESHOLD_SUPERSEDED, PROVENANCE)
 
 REPO = Path("/home/favl/robotics/gnm-vlnverse-baseline")
 HANDOFF = Path(os.environ.get("H8_TRACKB_HANDOFF", "/tmp/h8_wfull_npy"))
@@ -32,7 +35,11 @@ OPEN_FLOOR_MIN_DEPTH = 4.0  # m — if ALL 4 cardinal dirs are this open, the po
 #                             guard rejects the open-floor false positive that depth+DINO alone
 #                             flagged (e.g. warehouse open floor vs a shelf), confirmed visually.
 MIN_SEP = 30.0           # deg — expected action-angle separation between the two branches
-BRANCH_DISTINCT = 0.60   # DINO cosine below -> genuinely different branches
+# Outcome A (calibrated, real indoor scenes): distinctness threshold ~0.76 with a margin band,
+# superseding the arbitrary 0.60 (see scripts/gnm/h8_distinctness_gate.py and the gate decision doc).
+# A pass also requires contact-sheet agreement; within-margin cosines are held for that human check.
+BRANCH_DISTINCT = REAL_SCENE_DINO_THRESHOLD
+BRANCH_MARGIN = REAL_SCENE_MARGIN
 
 # ── MANDATORY visual verification (gate 13) ──────────────────────────────────
 # Human review of the contact sheets. Any automated RENDER_VALID_JUNCTION that the images show is
@@ -126,10 +133,18 @@ for sc in man["scenes"]:
                     "bounding corridor walls) — open hall, not a branch-choice junction")
             elif sep < MIN_SEP:
                 cls, reason = "RENDER_VALID_BUT_VISUALLY_WEAK", f"branch sep {sep}deg < {MIN_SEP}"
-            elif dino is not None and dino >= BRANCH_DISTINCT:
-                cls, reason = "RENDER_VALID_BUT_VISUALLY_WEAK", f"branches not distinct (DINO {dino})"
+            elif dino is not None and dino >= BRANCH_DISTINCT + BRANCH_MARGIN:
+                cls, reason = "RENDER_VALID_BUT_VISUALLY_WEAK", (
+                    f"branches not distinct (DINO {dino} >= {round(BRANCH_DISTINCT + BRANCH_MARGIN, 3)}; "
+                    "calibrated, supersedes 0.60)")
+            elif dino is not None and dino > BRANCH_DISTINCT - BRANCH_MARGIN:
+                cls, reason = "RENDER_VALID_BUT_VISUALLY_WEAK", (
+                    f"DINO {dino} within review margin of {BRANCH_DISTINCT} — requires contact-sheet "
+                    "agreement, not auto-distinct")
             else:
-                cls, reason = "RENDER_VALID_JUNCTION", "3+ depth-open divergent branches, distinct"
+                cls, reason = "RENDER_VALID_JUNCTION", (
+                    f"3+ depth-open divergent branches, distinct (DINO {dino} <= "
+                    f"{round(BRANCH_DISTINCT - BRANCH_MARGIN, 3)}; calibrated ~{BRANCH_DISTINCT}, supersedes 0.60)")
         elif len(opens) == 2:
             a, b = opens
             if ang_sep(a, b) >= 179:
@@ -318,9 +333,11 @@ rep = ["# H8-M Track-B Bounded Junction Render Scan (VALIDATION ONLY)", "",
        f"{OPEN_MIN_DEPTH} m)** — arrive via one corridor, choose among >= 2 divergent onward "
        "branches. 2 opposite open = straight corridor; 2 perpendicular = L-corner; both are NOT a "
        "branch choice.",
-       f"- Goal branches must be visually distinct (DINO cosine < {BRANCH_DISTINCT}) and >= "
-       f"{MIN_SEP} deg apart. **Depth openness is mandatory** — luma/DINO alone cannot separate an "
-       "open corridor from a textured wall (the hospital false-positive lesson).", "",
+       f"- Goal branches must be visually distinct (calibrated DINO cosine < {BRANCH_DISTINCT} with "
+       f"±{BRANCH_MARGIN} margin band + contact-sheet agreement; supersedes the arbitrary "
+       f"{LEGACY_HARD_THRESHOLD_SUPERSEDED}, Outcome A) and >= {MIN_SEP} deg apart. **Depth openness "
+       "is mandatory** — luma/DINO alone cannot separate an open corridor from a textured wall (the "
+       f"hospital false-positive lesson). Distinctness rule provenance: {PROVENANCE}", "",
        "## Result",
        f"- Scenes that loaded: {n_load_ok}/{len(scene_summ)}.",
        f"- **RENDER_VALID_JUNCTION:** {', '.join(f'{s}:{p}' for s, p in valid) if valid else 'NONE'}.",

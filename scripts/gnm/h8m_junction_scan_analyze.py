@@ -14,6 +14,9 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import torch, timm
+# Reviewed distinctness rule (Outcome A + E). Sibling module; this script runs from scripts/gnm.
+from h8_distinctness_gate import (REAL_SCENE_DINO_THRESHOLD, REAL_SCENE_MARGIN,
+                                  LEGACY_HARD_THRESHOLD_SUPERSEDED, PROVENANCE)
 
 REPO = Path("/home/favl/robotics/gnm-vlnverse-baseline")
 HANDOFF = Path(os.environ.get("H8M_JSCAN_HANDOFF", "/tmp/h8m_junction_npy"))
@@ -25,7 +28,11 @@ for d in (OUT, CS, RM):
 LUMA_MIN = 15.0       # below -> black-void / wall
 BLACK_MAX = 0.5       # lower-frame black above -> occluded / wall-only
 MIN_SEP = 30.0        # deg — a real angular branch
-BRANCH_DISTINCT = 0.60  # DINO cosine below -> branches are genuinely different corridors
+# Outcome A (calibrated, real indoor scenes): distinctness threshold ~0.76 with a margin band,
+# superseding the arbitrary 0.60 (see scripts/gnm/h8_distinctness_gate.py and the gate decision doc).
+# A pass also requires contact-sheet agreement; within-margin cosines are held for that human check.
+BRANCH_DISTINCT = REAL_SCENE_DINO_THRESHOLD
+BRANCH_MARGIN = REAL_SCENE_MARGIN
 OPEN_MIN_DEPTH = 3.0  # m — a branch view must see >=3 m of open space ahead (else a near wall)
 _MEAN = torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1)
 _STD = torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1)
@@ -101,10 +108,12 @@ for c in man["candidates"]:
         cls = "WALL_ONLY"      # render-valid pixels but a near wall ahead -> not a navigable branch
     elif c["expected_action_angle_sep_deg"] < MIN_SEP:
         cls = "RENDER_VALID_BUT_VISUALLY_WEAK"
-    elif ab is not None and ab >= BRANCH_DISTINCT:
-        cls = "RENDER_VALID_BUT_VISUALLY_WEAK"
+    elif ab is not None and ab >= BRANCH_DISTINCT + BRANCH_MARGIN:
+        cls = "RENDER_VALID_BUT_VISUALLY_WEAK"          # not distinct (calibrated, supersedes 0.60)
+    elif ab is not None and ab > BRANCH_DISTINCT - BRANCH_MARGIN:
+        cls = "RENDER_VALID_BUT_VISUALLY_WEAK"          # within review margin -> needs contact-sheet agreement
     else:
-        cls = "RENDER_VALID_JUNCTION"
+        cls = "RENDER_VALID_JUNCTION"                   # distinct (calibrated ~0.76, supersedes 0.60)
     row["classification"] = cls
     results.append(row)
 
@@ -210,7 +219,9 @@ rep = ["# H8-M Bounded Real-Junction Render Scan (VALIDATION ONLY)", "",
        f"- Render-valid goal view: luma >= {LUMA_MIN} and lower-frame black <= {BLACK_MAX}. "
        f"**Branch OPEN (the decisive test): median central depth >= {OPEN_MIN_DEPTH} m** — a "
        "goal view that renders fine but faces a near wall (small depth) is WALL_ONLY, not a "
-       f"navigable branch. Branch distinctness: DINO cosine < {BRANCH_DISTINCT}. Angular "
+       f"navigable branch. Branch distinctness: calibrated DINO cosine < {BRANCH_DISTINCT} with "
+       f"±{BRANCH_MARGIN} margin + contact-sheet agreement (supersedes the arbitrary "
+       f"{LEGACY_HARD_THRESHOLD_SUPERSEDED}, Outcome A; provenance: {PROVENANCE}). Angular "
        f"separation >= {MIN_SEP} deg.",
        "- **Why depth:** luma + distinctness alone cannot tell an open corridor from a textured "
        "wall (two different walls read as 'valid + distinct'); depth is the criterion that "

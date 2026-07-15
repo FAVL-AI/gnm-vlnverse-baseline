@@ -22,6 +22,9 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import torch, timm
+# Reviewed distinctness rule (Outcome A + E). Sibling module; this script runs from scripts/gnm.
+from h8_distinctness_gate import (advisory_synthetic, distinctness_report_block, PROVENANCE,
+                                  REAL_SCENE_DINO_THRESHOLD)
 
 REPO = Path("/home/favl/robotics/gnm-vlnverse-baseline")
 HANDOFF = Path(os.environ.get("H8_SFORK_HANDOFF", "/tmp/h8_sfork_npy"))
@@ -39,7 +42,9 @@ OPEN_MIN_DEPTH = 3.0
 WALL_MAX_DEPTH = 2.0
 OPEN_FLOOR_MIN_DEPTH = 4.0
 MIN_SEP = 30.0
-BRANCH_DISTINCT = 0.60
+# ADVISORY REFERENCE ONLY (Outcome E): synthetic-fork DINO cosine is logged, NOT a pass/fail gate.
+# The former hard 0.60 threshold is superseded; see h8_distinctness_gate / the gate decision doc.
+BRANCH_DISTINCT = REAL_SCENE_DINO_THRESHOLD
 SID = "synthetic_diagnostic_fork"
 DIRS = ["E", "N", "W", "S"]
 DIR_DEG = {"E": 0.0, "N": 90.0, "W": 180.0, "S": 270.0}
@@ -119,12 +124,17 @@ else:
     chosen_valid, goal_standoff_chosen, _kA, _kB, dino_goalimg, gAi, gBi = (False, None, "goalA_img", "goalB_img", None, gA15, gB15)
 gAi20, gBi20 = gA20, gB20   # keep names used elsewhere
 dino = dino_goalimg if dino_goalimg is not None else dino_center
+# Outcome E: DINO cosine is ADVISORY ONLY for this SYNTHETIC_DIAGNOSTIC_ONLY symmetric cross — it is
+# logged but does NOT gate the classification (the shared corridor perspective dominates DINO on a
+# symmetric cross, so it cannot separate same-from-distinct). Required gates: geometry + action-angle
+# + mandatory gate-5 visual verification.
+adv = advisory_synthetic(dino)
 
-# ── gate cascade (same order as the real-asset scans) ─────────────────────────
-if len(opens) >= 3 and not open_floor and (ns_open == ew_open) and sep >= MIN_SEP \
-        and dino is not None and dino < BRANCH_DISTINCT:
+# ── gate cascade (geometry + action-angle; DINO advisory, NOT gated — Outcome E) ──────────────────
+if len(opens) >= 3 and not open_floor and (ns_open == ew_open) and sep >= MIN_SEP:
     auto_cls = "RENDER_VALID_JUNCTION"
-    auto_reason = "perpendicular depth-open divergent branches (N vs W), distinct"
+    auto_reason = ("perpendicular depth-open divergent branches (N vs W); DINO advisory only "
+                   f"(cosine {dino}, not gated)")
 elif open_floor:
     auto_cls = "OPEN_FLOOR_NOT_JUNCTION"
     auto_reason = f"all 4 cardinal depths >= {OPEN_FLOOR_MIN_DEPTH} m (open floor); needs gate-5 visual override"
@@ -139,7 +149,7 @@ elif sep < MIN_SEP:
     auto_reason = f"branch sep {sep} deg < {MIN_SEP}"
 else:
     auto_cls = "RENDER_VALID_BUT_VISUALLY_WEAK"
-    auto_reason = f"branches not distinct (DINO {dino} >= {BRANCH_DISTINCT})"
+    auto_reason = "required geometry/action-angle gates not all satisfied (DINO is advisory, not gated)"
 
 # ── explicit gate PASS/FAIL table ─────────────────────────────────────────────
 g2_valid = view_valid(named.get("decision")) and view_valid(named.get(_kA)) and view_valid(named.get(_kB)) \
@@ -160,10 +170,11 @@ gates = [
     ("5_visual_verification", None,
      "MANDATORY human/contact-sheet inspection — recorded separately after this script; "
      "automated verdict must be confirmed by eye before RENDER_VALID_JUNCTION stands"),
-    ("6_embedding_distinctness", (dino is not None and dino < BRANCH_DISTINCT),
-     f"DINO goal-image cosine: standoff1.5={dino_goalimg_15}, standoff2.0={dino_goalimg_20}, "
-     f"best={dino_goalimg} @ {goal_standoff_chosen} m; center N-vs-W={dino_center}; "
-     f"threshold < {BRANCH_DISTINCT}"),
+    ("6_embedding_distinctness", None,
+     f"ADVISORY ONLY (Outcome E) — NOT a synthetic pass/fail gate; DINO does not separate "
+     f"same-from-distinct on a symmetric cross. DINO goal-image cosine: standoff1.5={dino_goalimg_15}, "
+     f"standoff2.0={dino_goalimg_20}, best={dino_goalimg} @ {goal_standoff_chosen} m; center "
+     f"N-vs-W={dino_center}; advisory reference {BRANCH_DISTINCT} (former hard 0.60 superseded)"),
     ("7_action_angle", (sep >= MIN_SEP),
      f"branch A=N (STRAIGHT) vs B=W (TURN_LEFT_90): sep={sep} deg (>= {MIN_SEP}); different local actions"),
 ]
@@ -229,8 +240,10 @@ with open(OUT / f"{PREFIX}_visual_similarity_matrix.csv", "w", newline="") as f:
     for i, lab in enumerate(labels):
         w.writerow([lab] + mat[i])
 mm = ["# Synthetic Fork Visual Similarity Matrix (DINO ViT-S/16 cosine)", "",
-      f"Lower = more visually distinct. The designed goal branches (goalA_img blue vs goalB_img "
-      f"green, and center:N vs center:W) should be < {BRANCH_DISTINCT}.", "",
+      "Lower = more visually distinct. **ADVISORY ONLY (Outcome E):** these synthetic-fork cosines "
+      "are recorded but do NOT pass/fail the scene — a symmetric cross shares the same corridor "
+      f"perspective so DINO cannot separate same-from-distinct (advisory reference {BRANCH_DISTINCT}; "
+      "former hard 0.60 superseded).", "",
       "| view | " + " | ".join(labels) + " |", "|" + "---|" * (len(labels) + 1)]
 for i, lab in enumerate(labels):
     mm.append(f"| {lab} | " + " | ".join(f"{mat[i][j]}" for j in range(len(labels))) + " |")
@@ -306,11 +319,13 @@ rep = [
     *[f"| center {d} | {luma.get(d)} | {black.get(d)} | {depth.get(d)} | {branch_open(views.get(d))} "
       f"| {DIR_COLOR.get(d)} |" for d in DIRS],
     f"| open_floor(all4>=4m) | {open_floor} | | | | ns_open={ns_open} ew_open={ew_open} |", "",
-    "## Embedding distinctness",
+    "## Embedding distinctness (ADVISORY ONLY — Outcome E, not a synthetic pass/fail gate)",
     f"- DINO goal-image cosine (blue vs green): standoff 1.5 m = **{dino_goalimg_15}**, "
     f"standoff 2.0 m = **{dino_goalimg_20}**; best = **{dino_goalimg}** @ {goal_standoff_chosen} m "
-    f"(threshold < {BRANCH_DISTINCT}).",
-    f"- DINO cosine(center N, center W) = **{dino_center}**.", "",
+    f"(advisory reference {BRANCH_DISTINCT}; former hard 0.60 superseded).",
+    f"- DINO cosine(center N, center W) = **{dino_center}**.",
+    distinctness_report_block(adv),
+    f"- provenance: {PROVENANCE}", "",
     "## Decision",
     f"**{outcome}.**",
     ("- Automated gates 1-4,6,7 pass and the N-vs-W pair classifies RENDER_VALID_JUNCTION — **hold "
