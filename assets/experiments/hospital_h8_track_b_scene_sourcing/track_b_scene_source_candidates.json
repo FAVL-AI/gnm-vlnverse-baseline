@@ -1,0 +1,74 @@
+{
+  "status": "SOURCING_INVENTORY_ONLY",
+  "step": "H8-M Track-B scene sourcing shortlist (no render, no scan, no train)",
+  "governing_requirements": "docs/research/H8_TRACK_B_SCENE_SOURCING_REQUIREMENTS.md (commit 27c4110)",
+  "boundary": "No real T/Y/cross junction, no angular-branch training. Scene sourcing is the blocker, not the model.",
+  "method": "Repo-local USD review + HTTP HEAD availability checks (no body download, no render) on Isaac stock env variants via the same S3 path hospital.usd used. Junction geometry is NEVER claimed from filename/type — marked UNVERIFIED_UNTIL_RENDER_SCAN unless already rendered with depth-openness evidence.",
+  "s3_root": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments",
+  "licence_note": "NVIDIA Isaac Sim / Omniverse sample assets — research/educational/evaluation use under the NVIDIA Omniverse & Isaac Sim asset terms; verify before any redistribution. Loaded by reference (not vendored into the repo).",
+  "already_failed_do_not_rescan": [
+    {"asset_id": "hospital",         "verdict": "FAILED", "evidence_commit": "ff93e46", "note": "no render-valid junction in safe +/-6 m envelope; Track-A distance/stop-axis scene only"},
+    {"asset_id": "office_isaac",     "verdict": "FAILED", "evidence_commit": "21444e3", "note": "open-plan bullpen; under-lit; no confirmed junction"},
+    {"asset_id": "warehouse_simple", "verdict": "FAILED", "evidence_commit": "21444e3", "note": "open hall; p32 open-floor false positive rejected"},
+    {"asset_id": "warehouse_full",   "verdict": "FAILED", "evidence_commit": "4e919ef", "note": "open floor + straight parallel aisles; p13 straight-aisle false positive downgraded; no cross-aisle/T-junction"}
+  ],
+  "candidates": [
+    {
+      "asset_id": "warehouse_multiple_shelves",
+      "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Simple_Warehouse/warehouse_multiple_shelves.usd",
+      "availability_status": "REACHABLE (HTTP 200, 2319321 bytes)",
+      "licence_usage_note": "NVIDIA Isaac Sim sample asset; research/eval use; load by reference",
+      "scene_type": "warehouse with multiple shelf rows (indoor)",
+      "suggests_t_y_cross_junction": "UNVERIFIED_UNTIL_RENDER_SCAN — multiple shelf rows COULD form cross-aisles/intersections, but its larger sibling warehouse_full showed only straight PARALLEL aisles (no cross-junction). Do NOT claim a junction from the name.",
+      "expected_branch_divergence": "IF a cross-aisle exists, ~90 deg; UNVERIFIED",
+      "expected_goalA_area": "UNKNOWN — one aisle at a putative intersection (TBD by render-scan)",
+      "expected_goalB_area": "UNKNOWN — the crossing aisle (TBD by render-scan)",
+      "expected_lighting_risk": "LOW-MEDIUM (warehouses render well-lit in prior scans, luma ~90-160)",
+      "expected_open_floor_fp_risk": "HIGH (warehouses have large open floor -> open-floor guard + visual verification mandatory)",
+      "expected_wall_only_fp_risk": "MEDIUM (shelf faces read as near walls)",
+      "real_or_synthetic": "real-world-like (Isaac stock)",
+      "proceed_to_bounded_render_scan": true,
+      "role": "PRIMARY (last untried real-world-like candidate; LOW prior probability of a real cross-junction given warehouse_full)"
+    },
+    {
+      "asset_id": "synthetic_diagnostic_fork",
+      "asset_path": "TO BE BUILT — a small authored T/Y/cross of bounded corridors (not yet created)",
+      "availability_status": "NOT_YET_BUILT",
+      "licence_usage_note": "self-authored; no third-party licence",
+      "scene_type": "synthetic corridor T/Y/cross junction",
+      "suggests_t_y_cross_junction": "GUARANTEED BY CONSTRUCTION if built to the geometry spec — but still UNVERIFIED_UNTIL_RENDER_SCAN after build",
+      "expected_branch_divergence": "designable >= 90 deg (clean T/cross) or ~60 deg (Y)",
+      "expected_goalA_area": "designed left/forward branch",
+      "expected_goalB_area": "designed right branch",
+      "expected_lighting_risk": "LOW (authored with adequate lighting)",
+      "expected_open_floor_fp_risk": "LOW (bounded corridors by construction)",
+      "expected_wall_only_fp_risk": "LOW (branches authored open)",
+      "real_or_synthetic": "SYNTHETIC_DIAGNOSTIC_ONLY — never presented as real-scene or benchmark evidence",
+      "proceed_to_bounded_render_scan": true,
+      "role": "BACKUP (guaranteed junction; use if the primary real scene fails the render-scan, or if further stock-asset scanning is declined)"
+    }
+  ],
+  "rejected_sources": [
+    {"asset_id": "warehouse_with_forklifts", "http": 200, "size_bytes": 14116, "reason": "only 14 KB — a prop/overlay stage, not a full navigable scene"},
+    {"asset_id": "simple_room",              "http": 200, "size_bytes": 1630266, "reason": "a single furnished room — no corridor/junction"},
+    {"asset_id": "grid_default_environment", "http": 200, "size_bytes": 13622, "reason": "bare ground grid — no structure"},
+    {"asset_id": "grid_gridroom_black",      "http": 200, "size_bytes": 15582, "reason": "small grid room — no corridors"},
+    {"asset_id": "jetracer_track_solid",     "http": 200, "size_bytes": 7293, "reason": "a driving loop track — curves, not a corridor T/Y/cross branch-choice"},
+    {"asset_id": "office_capitalised",       "http": 404, "reason": "not present (lowercase office.usd already failed)"},
+    {"asset_id": "modular_warehouse",        "http": 404, "reason": "not present at this Isaac 5.1 S3 root"},
+    {"asset_id": "repo_custom_vln_office",   "path": "assets/custom_vln_office/scene_layout.usda", "reason": "single open 16x10 m room — no fork"},
+    {"asset_id": "repo_kujiale_scenes",      "path": "assets/experiments/kujiale_*/scene.usda", "reason": "single procedural rooms — no junction"}
+  ],
+  "decision": {
+    "primary_for_next_render_scan": "warehouse_multiple_shelves",
+    "backup": "synthetic_diagnostic_fork (SYNTHETIC_DIAGNOSTIC_ONLY)",
+    "rule_applied": "Exactly one primary real-world-like scene recommended (the one untried plausible candidate), one backup (synthetic diagnostic fork). If the user prefers to stop stock-asset scanning entirely, promote the synthetic fork to primary.",
+    "honest_prior": "LOW probability the primary contains a real cross-aisle T-junction (warehouse_full, its larger sibling, had only straight parallel aisles). This is a targeted single test of the multi-shelf hypothesis, NOT resumed ad hoc scanning."
+  },
+  "claim_boundary": [
+    "Sourcing only. No render evidence, no drive evidence, no model evidence, no benchmark evidence, no training authorization.",
+    "Junction geometry is UNVERIFIED_UNTIL_RENDER_SCAN for every candidate (never claimed from filename/type).",
+    "No angular branch-choice training until a scene passes the render gates AND drive validation.",
+    "CL_BOUND_XY unchanged; incumbent retained; DIAGNOSTIC_ONLY_NOT_PROMOTED."
+  ]
+}
