@@ -82,8 +82,13 @@ render-valid junction gate, pending render-scan validation** — nothing below i
   `COLLINEAR_AISLE_NOT_JUNCTION`.
 - **Action-angle (by design):** trained pair is perpendicular (90° ≥ 30°) with different local
   actions.
-- **Embedding distinctness (target):** blue+circle vs green+triangle vs distinct floor arrow → DINO
-  cosine target `< 0.60` with margin.
+- **Embedding distinctness (ADVISORY ONLY per Outcome A + E):** blue+circle vs green+triangle vs
+  distinct floor arrow → DINO cosine is **recorded as advisory**, not a hard pass/fail gate for this
+  symmetric fork (the shared corridor perspective dominates DINO on a symmetric cross, so it does not
+  separate same-from-distinct — see `docs/research/H8_TRACK_B_DISTINCTNESS_GATE_DECISION.md`, commit
+  `53106f3`). The former absolute `< 0.60` target is **superseded** for the synthetic fork; for real
+  indoor scenes the gate recalibrates to ≈0.76 with margin + contact-sheet agreement, pending later
+  implementation. Documentation update only — no code/metric change.
 - **Visual verification (mandatory):** the contact sheet must show a walled 4-way cross with four
   distinct arms — the arbiter, exactly as in every Track-B scan. Until it does, render-validity is
   **unproven**.

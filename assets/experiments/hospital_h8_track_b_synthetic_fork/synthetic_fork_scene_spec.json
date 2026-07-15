@@ -84,7 +84,8 @@
     "branch_specific_floor_cues": true,
     "no_blank_black_identical_dark_occluded": true,
     "lighting": {"dome_intensity": 1000, "per_arm_accent": "optional", "target": "luma >= 15, low lower-frame black fraction, unoccluded straight corridors"},
-    "dino_distinctness_target": "cosine(goalA_view, goalB_view) < 0.60 with margin, achieved via distinct hue (blue vs green) AND distinct marker shape (circle vs triangle) AND distinct floor cue (forward vs left arrow)"
+    "dino_distinctness_advisory": "ADVISORY ONLY per Outcome A + E (docs/research/H8_TRACK_B_DISTINCTNESS_GATE_DECISION.md, commit 53106f3): DINO cosine(goalA_view, goalB_view) is recorded but is NOT a hard pass/fail gate for this symmetric fork, because the shared corridor perspective dominates DINO on a symmetric cross (it does not separate same-from-distinct). Branch identity still uses distinct hue (blue vs green) AND marker shape (circle vs triangle) AND floor cue (forward vs left arrow), verified by the mandatory contact-sheet visual check.",
+    "distinctness_gate_status": "synthetic_fork=advisory_only; real_indoor_scenes=recalibrate_DINO_to_approx_0.76_with_margin_and_contact_sheet_agreement_pending_implementation; former_absolute_0.60_threshold_superseded; documentation_update_only_no_code_or_metric_change"
   },
   "min_dataset": {
     "train_episodes": 12,

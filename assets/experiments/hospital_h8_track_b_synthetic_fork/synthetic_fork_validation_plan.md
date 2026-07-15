@@ -6,6 +6,31 @@ authorised by this document. This is the ordered gate sequence to run *later, on
 > **SYNTHETIC_DIAGNOSTIC_ONLY** — a pass here is diagnostic evidence about the model/objective on an
 > idealised junction, never real-scene, hospital, or benchmark evidence. `CL_BOUND_XY` unchanged.
 
+## Reviewed distinctness-gate decision (Outcome A + E) — documentation/planning only
+
+**Adopted in `docs/research/H8_TRACK_B_DISTINCTNESS_GATE_DECISION.md` (commit `53106f3`), on the
+labelled calibration evidence in `assets/experiments/hospital_h8_track_b_distinctness_calibration/`
+(commit `d5e5e25`).** This is a **documentation/planning update only — no metric is implemented, no
+threshold is applied in code, no operational metric is switched.**
+
+- **Outcome A (real indoor scenes):** the DINO distinctness gate is to be **recalibrated around
+  ≈0.76 with documented margin and contact-sheet agreement**, replacing the arbitrary absolute
+  `< 0.60` — *pending later, separately-reviewed implementation.* (Real hospital pairs separate
+  cleanly: SAME 0.83–0.92 vs DISTINCT 0.26–0.68; `< 0.60` was too strict and would miss a real
+  distinct pair at 0.68.)
+- **Outcome E (this synthetic symmetric fork):** **DINO distinctness is ADVISORY ONLY.** On a
+  symmetric 4-way cross every arm shares the same corridor perspective/composition, so DINO cosine
+  does not separate same-from-distinct (it overlaps and even inverts) and **must not be used as a
+  hard pass/fail gate here.** Gate 6 below is therefore **recorded as advisory**, not a blocker.
+- **Required synthetic-fork render-validation gates are 1, 2, 3, 4, 5, and 7** (scene-load,
+  render-validity, depth-openness, open-floor guard, visual/contact-sheet verification, action-angle
+  separation). Gate 6 (embedding distinctness) is advisory and does not gate progression.
+- **The synthetic fork cannot proceed to training until ALL of:** drive validation (gate 8) passes,
+  recorded-mode data (gate 9) exists, split/leakage audit (gate 10) passes, task-level action-probe
+  (gate 11) readiness passes, **and** review approval is given.
+- All claim boundaries below are preserved (`SYNTHETIC_DIAGNOSTIC_ONLY`; not hospital / real-scene /
+  benchmark evidence; no full ImageNav claim; no SOTA; no promotion; no autonomy claim).
+
 **Revision status:** R1 (`be6ba04`) failed gate 6. R2 (`6930b65`) added shape families, improved but
 still failed. R3 (`201f91b`) made the corridor shell branch-specific + pulled goal cameras back — gate
 6 **worsened** (0.62 → 0.654, 0.649 → 0.689), isolating the cause as DINO sensitivity to the shared
@@ -15,7 +40,11 @@ with goal images at 1.5 m and 2.0 m standoff; **no metric/threshold change.** Ga
 `assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/`. Drive-validation (gate 8) and
 everything after remain deferred until gates 1–7 pass and are reviewed.
 
-## Ordered validation gates (each must pass before the next)
+## Ordered validation gates
+
+Required render-validation gates for the synthetic fork are **1, 2, 3, 4, 5, 7** (each must pass
+before the next). **Gate 6 (embedding distinctness) is ADVISORY ONLY** for this symmetric fork per
+the Outcome A + E decision above — its cosine is recorded, but it does not pass or fail the scene.
 
 1. **Scene-load gate** — the USDA loads; `defaultPrim` resolves; expected prims present (floor, 4
    corridor arms, 4 coloured end panels, markers, dome); interior footprint is sane (bounded ≈
@@ -37,8 +66,13 @@ everything after remain deferred until gates 1–7 pass and are reviewed.
    aisle, shelf face, or dead end. This is the arbiter; depth + embedding are necessary but not
    sufficient. No probe is `RENDER_VALID_JUNCTION` without it. Any override is recorded auditable.
 
-6. **Embedding distinctness gate** — DINO ViT-S/16 cosine between the two trained goal views
-   `< 0.60` with margin (blue+circle vs green+triangle + distinct floor cue).
+6. **Embedding distinctness (ADVISORY ONLY for this symmetric fork).** Record DINO ViT-S/16 cosine
+   between the two trained goal views. **This is not a hard pass/fail gate here** (Outcome E): a
+   symmetric cross shares the same corridor perspective, so DINO does not separate same-from-distinct
+   on it. The advisory cosine is logged alongside the mandatory gate-5 visual verification. *For real
+   indoor scenes* (not this synthetic fork), the distinctness gate is to be recalibrated to a DINO
+   threshold ≈0.76 with margin and contact-sheet agreement (Outcome A), pending later implementation —
+   **not** applied in code by this plan.
 
 7. **Action-angle separation gate** — the two branch headings diverge `>= 30°` (design 90°) and map
    to **different local actions** (`STRAIGHT` vs `TURN_LEFT_90`).
@@ -72,11 +106,16 @@ everything after remain deferred until gates 1–7 pass and are reviewed.
 
 ## Decision rule
 
-- **Gates 1–7 pass + gate-5 visual confirmation ⇒** hold for review before drive-validation. Do not
-  treat render-validity as drive-validity.
+- **Required render gates 1, 2, 3, 4, 5, 7 pass + gate-5 visual confirmation (gate 6 advisory cosine
+  recorded) ⇒** hold for review before drive-validation. Do not treat render-validity as
+  drive-validity, and do not block on the advisory DINO cosine.
 - **Gate 8 drive-validation passes ⇒** hold for review before any recording/training.
-- **Any gate fails ⇒** stop; do not force a claim; fix the scene or revisit the design. A negative
-  action-probe (gate 11) after all prior gates pass is itself a valid, publishable diagnostic result.
+- **Training remains blocked until ALL of** gate 8 (drive validation), gate 9 (recorded-mode data),
+  gate 10 (split/leakage audit), gate 11 (action-probe readiness) **pass and review approval is
+  given.**
+- **Any required gate fails ⇒** stop; do not force a claim; fix the scene or revisit the design. A
+  negative action-probe (gate 11) after all prior gates pass is itself a valid, publishable diagnostic
+  result.
 
 ## What this plan does NOT authorise
 

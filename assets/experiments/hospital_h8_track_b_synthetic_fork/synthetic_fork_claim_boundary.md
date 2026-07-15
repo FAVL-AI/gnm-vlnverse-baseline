@@ -11,6 +11,24 @@ itself (large branch-specific high objects + narrowed West corridor), **without*
 or threshold. Nothing about goal-conditioning can be claimed yet; even a full gates-1–7 pass is only
 render-validity, not drive-validity, and authorizes no training.
 
+## Reviewed distinctness-gate decision (Outcome A + E) — documentation only
+
+**Adopted in `docs/research/H8_TRACK_B_DISTINCTNESS_GATE_DECISION.md` (commit `53106f3`), on the
+calibration evidence in `assets/experiments/hospital_h8_track_b_distinctness_calibration/` (commit
+`d5e5e25`). This is a documentation update only — no metric or threshold is implemented in code.**
+
+- **Outcome A (real indoor scenes):** the DINO distinctness gate is to be recalibrated to a threshold
+  ≈0.76 with margin and contact-sheet agreement (real hospital pairs separate cleanly, SAME 0.83–0.92
+  vs DISTINCT 0.26–0.68; the old `< 0.60` was too strict), pending later, separately-reviewed
+  implementation.
+- **Outcome E (this synthetic symmetric fork):** DINO distinctness is **advisory only**; it is **not**
+  a hard pass/fail gate for the synthetic fork (the symmetric cross's shared corridor perspective
+  dominates the embedding, so DINO does not separate same-from-distinct on it).
+- The earlier R1–R4 statements that DINO `< 0.60` is a hard gate the scene must pass are **superseded**
+  for the synthetic fork by this advisory treatment. R1–R4 remain accurate as the negative evidence
+  that motivated the calibration study; nothing about goal-conditioning is claimed.
+- All canonical statements below are unchanged; training remains blocked.
+
 ## Hard label
 
 **`SYNTHETIC_DIAGNOSTIC_ONLY`.** This scene is **authored** by the project, not a real or vendored
