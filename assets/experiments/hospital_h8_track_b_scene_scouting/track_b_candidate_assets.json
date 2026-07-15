@@ -1,0 +1,119 @@
+{
+  "status": "PLANNING_INVENTORY_ONLY",
+  "step": "H8-M Track-B asset-specific render-scan preparation (inventory only)",
+  "context": "hospital.usd cannot support angular branch-choice in its verified +/-6 m envelope (depth-aware junction scan, commit ff93e46; re-scope commit 670219e; plan commit 1a944cb). Track B needs a different scene with a real fork/T-junction. This file turns generic scene TYPES into EXACT candidate assets.",
+  "asset_delivery_note": "The junction-capable candidates are NVIDIA Isaac stock environments delivered via the SAME S3 path that hospital.usd loaded from (proven reachable this session). They are NOT repo-local files; they are exact, enumerated, reachability-checked asset URLs already wired into scripts/gnm/probe_isaac_assets.py. Repo-local scene .usd/.usda were inventoried too and are unsuitable (see local_assets_reviewed).",
+  "s3_root": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments",
+  "reachability_method": "HTTP HEAD (curl -I), no body download, no render, no collection",
+  "honesty_caveats": [
+    "Junction presence/quality is UNVERIFIED for every candidate — no render performed. 'expected_*' fields are hypotheses or design targets, not measurements.",
+    "No coordinates are fabricated: exact junction location and goal A/B regions are TBD by a later bounded render-scan.",
+    "Reachability (HTTP 200) means the asset file exists, NOT that it contains a render-valid junction."
+  ],
+  "local_assets_reviewed": [
+    {"path": "assets/custom_vln_office/scene_layout.usda", "verdict": "UNSUITABLE", "reason": "single open 16x10 m office room (desks/chairs/one partition); no corridor fork or T-junction"},
+    {"path": "assets/isaac/tracka_hospital_replay_stage.usda", "verdict": "UNSUITABLE", "reason": "references hospital.usd (S3) — hospital domain, already proven junction-incapable"},
+    {"path": "assets/experiments/kujiale_*/scene.usda", "verdict": "UNSUITABLE", "reason": "procedural single-room Kujiale scenes (H4 data expansion); rooms, not junctions"}
+  ],
+  "candidates": [
+    {
+      "asset_id": "office_isaac",
+      "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Office/office.usd",
+      "locality": "cloud-delivered Isaac stock env (same delivery path as hospital.usd; not repo-local)",
+      "reachable": {"http_status": 200, "size_bytes": 255916},
+      "scene_type": "office corridor + rooms (indoor)",
+      "expected_junction_location": "UNKNOWN — office layouts typically include a corridor intersection; exact fork/T-junction coords TBD by bounded render-scan",
+      "expected_goalA_region": "UNKNOWN — one divergent corridor branch at the chosen junction (TBD by render-scan)",
+      "expected_goalB_region": "UNKNOWN — the other divergent corridor branch at the chosen junction (TBD by render-scan)",
+      "safe_spawn_relocation_plausible": "plausible in principle (bounded, watchdog-respecting spawn at the decision point); confirm after junction localization; no CL_BOUND_XY change",
+      "expected_action_angle_sep_deg": "design target >= 30 (T-junction ~90); ACTUAL TBD",
+      "expected_render_depth_risk": "interior lighting/render-validity (may need DomeLight as hospital did); depth-openness plausible along corridors; risk MEDIUM",
+      "real_or_synthetic": "real-world-like (stock Isaac interior)",
+      "proceed_to_render_scan": true,
+      "priority": 1
+    },
+    {
+      "asset_id": "warehouse_simple",
+      "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Simple_Warehouse/warehouse.usd",
+      "locality": "cloud-delivered Isaac stock env (same delivery path as hospital.usd; not repo-local)",
+      "reachable": {"http_status": 200, "size_bytes": 1593402},
+      "scene_type": "warehouse aisle grid (indoor)",
+      "expected_junction_location": "UNKNOWN — aisle intersections/cross-junctions typical of a warehouse grid; exact coords TBD by render-scan",
+      "expected_goalA_region": "UNKNOWN — one divergent aisle at the intersection (TBD)",
+      "expected_goalB_region": "UNKNOWN — the crossing aisle at the intersection (TBD)",
+      "safe_spawn_relocation_plausible": "plausible (wide open aisles ease a bounded spawn at an intersection); confirm after localization; no CL_BOUND_XY change",
+      "expected_action_angle_sep_deg": "design target >= 30 (aisle cross ~90); ACTUAL TBD",
+      "expected_render_depth_risk": "depth-openness GOOD (long aisles); MAIN RISK = aisle VISUAL SIMILARITY -> embedding-distinctness may FAIL (two aisles look alike); risk HIGH on distinctness",
+      "real_or_synthetic": "real-world-like (stock Isaac interior)",
+      "proceed_to_render_scan": true,
+      "priority": 2
+    },
+    {
+      "asset_id": "warehouse_full",
+      "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Simple_Warehouse/full_warehouse.usd",
+      "locality": "cloud-delivered Isaac stock env (same delivery path as hospital.usd; not repo-local)",
+      "reachable": {"http_status": 200, "size_bytes": 6823486},
+      "scene_type": "warehouse aisle grid, larger + more shelving (indoor)",
+      "expected_junction_location": "UNKNOWN — more aisle intersections than warehouse.usd; exact coords TBD by render-scan",
+      "expected_goalA_region": "UNKNOWN — one divergent aisle (TBD)",
+      "expected_goalB_region": "UNKNOWN — crossing aisle (TBD)",
+      "safe_spawn_relocation_plausible": "plausible (open aisles); confirm after localization; no CL_BOUND_XY change",
+      "expected_action_angle_sep_deg": "design target >= 30 (aisle cross ~90); ACTUAL TBD",
+      "expected_render_depth_risk": "depth-openness GOOD; distinctness risk slightly LOWER than warehouse_simple (more varied shelving) but still a concern; larger asset (6.8 MB)",
+      "real_or_synthetic": "real-world-like (stock Isaac interior)",
+      "proceed_to_render_scan": true,
+      "priority": 3
+    },
+    {
+      "asset_id": "hospital_alt_wing",
+      "asset_path": "N/A — no independently-validated alternate hospital area exists",
+      "locality": "hospital domain (hospital.usd)",
+      "reachable": {"http_status": 200, "size_bytes": 136828, "note": "asset reachable but domain already proven junction-incapable in the verified envelope"},
+      "scene_type": "hospital wing",
+      "expected_junction_location": "BLOCKED — the hospital envelope junction search already returned zero render-valid junctions",
+      "expected_goalA_region": "N/A",
+      "expected_goalB_region": "N/A",
+      "safe_spawn_relocation_plausible": "would require a NEW validated map/room-access path first (not available)",
+      "expected_action_angle_sep_deg": "N/A",
+      "expected_render_depth_risk": "N/A (blocked)",
+      "real_or_synthetic": "real-world-like",
+      "proceed_to_render_scan": false,
+      "priority": null,
+      "blocked_reason": "Do not re-search the hospital envelope for a junction without a new validated map/room-access path."
+    },
+    {
+      "asset_id": "synthetic_fork_fallback",
+      "asset_path": "DOES NOT EXIST — would require scene creation",
+      "locality": "none (to be authored)",
+      "reachable": {"http_status": null},
+      "scene_type": "synthetic corridor fork",
+      "expected_junction_location": "constructible by design (a clean T/fork), if authored",
+      "expected_goalA_region": "designable",
+      "expected_goalB_region": "designable",
+      "safe_spawn_relocation_plausible": "yes (designed within bounds)",
+      "expected_action_angle_sep_deg": "designable (>= 30)",
+      "expected_render_depth_risk": "LOW (authored to be open)",
+      "real_or_synthetic": "SYNTHETIC — diagnostic-only; NOT hospital or real-world evidence",
+      "proceed_to_render_scan": false,
+      "priority": null,
+      "fallback_reason": "Use ONLY if candidates 1-3 fail render/depth/distinctness; must be clearly labelled synthetic-diagnostic, never presented as real-scene or benchmark evidence."
+    }
+  ],
+  "unavailable_at_this_version": [
+    {"asset": "Office/Office.usd", "http_status": 404},
+    {"asset": "Modular_Warehouse/Modular_Warehouse.usd", "http_status": 404, "note": "would be an indoor-junction candidate; not present at this S3 root/version"}
+  ],
+  "decision": {
+    "suitable_exact_candidates": ["office_isaac", "warehouse_simple", "warehouse_full"],
+    "recommend_for_next_bounded_render_scan": ["office_isaac", "warehouse_simple"],
+    "hold_secondary": ["warehouse_full"],
+    "blocked": ["hospital_alt_wing"],
+    "diagnostic_fallback_only": ["synthetic_fork_fallback"],
+    "rule_applied": "1-3 exact candidate assets identified and reachability-checked -> recommend for next bounded render-scan (render-validity + depth-openness first). Not zero, so no asset-acquisition/scene-creation is required yet. Synthetic fork stays diagnostic-only."
+  },
+  "claim_boundary": [
+    "Planning/inventory only. No render evidence yet. No drive evidence. No model evidence. No benchmark evidence. No promotion.",
+    "Reachability != junction. Candidate junctions are UNVERIFIED until a bounded render-scan.",
+    "CL_BOUND_XY unchanged; incumbent retained; DIAGNOSTIC_ONLY_NOT_PROMOTED."
+  ]
+}

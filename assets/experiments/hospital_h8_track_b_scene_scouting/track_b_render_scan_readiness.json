@@ -1,0 +1,74 @@
+{
+  "status": "PLANNING_INVENTORY_ONLY",
+  "render_authorised": false,
+  "note": "Readiness record for a FUTURE bounded render-scan. This file authorises nothing; render, collection, drive, training, promotion remain blocked until explicitly approved.",
+  "reachability_check": {
+    "method": "HTTP HEAD (curl -I), no body download, no render",
+    "s3_root": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments",
+    "results": [
+      {"asset_id": "office_isaac",    "url_suffix": "Office/office.usd",                    "http_status": 200, "size_bytes": 255916,  "reachable": true},
+      {"asset_id": "warehouse_simple","url_suffix": "Simple_Warehouse/warehouse.usd",        "http_status": 200, "size_bytes": 1593402, "reachable": true},
+      {"asset_id": "warehouse_full",  "url_suffix": "Simple_Warehouse/full_warehouse.usd",   "http_status": 200, "size_bytes": 6823486, "reachable": true},
+      {"asset_id": "hospital_baseline","url_suffix": "Hospital/hospital.usd",                "http_status": 200, "size_bytes": 136828,  "reachable": true, "note": "proven baseline; junction-incapable in verified envelope"},
+      {"asset_id": "office_capitalised","url_suffix": "Office/Office.usd",                   "http_status": 404, "reachable": false},
+      {"asset_id": "modular_warehouse","url_suffix": "Modular_Warehouse/Modular_Warehouse.usd","http_status": 404, "reachable": false}
+    ]
+  },
+  "render_scan_readiness": [
+    {
+      "asset_id": "office_isaac",
+      "reachable": true,
+      "exact_asset_identified": true,
+      "junction_verified": false,
+      "priority": 1,
+      "proceed_to_render_scan": true,
+      "gates_pending_in_order": ["render_validity", "depth_openness", "embedding_distinctness", "design_action_separation", "drive_validation", "recorded_mode", "action_probe"],
+      "primary_expected_risk": "interior lighting / render-validity (may need DomeLight as hospital did)"
+    },
+    {
+      "asset_id": "warehouse_simple",
+      "reachable": true,
+      "exact_asset_identified": true,
+      "junction_verified": false,
+      "priority": 2,
+      "proceed_to_render_scan": true,
+      "gates_pending_in_order": ["render_validity", "depth_openness", "embedding_distinctness", "design_action_separation", "drive_validation", "recorded_mode", "action_probe"],
+      "primary_expected_risk": "aisle visual similarity -> embedding-distinctness may fail even with open depth"
+    },
+    {
+      "asset_id": "warehouse_full",
+      "reachable": true,
+      "exact_asset_identified": true,
+      "junction_verified": false,
+      "priority": 3,
+      "proceed_to_render_scan": false,
+      "hold_reason": "secondary warehouse; run warehouse_simple first, escalate to full only if needed",
+      "gates_pending_in_order": ["render_validity", "depth_openness", "embedding_distinctness", "design_action_separation", "drive_validation", "recorded_mode", "action_probe"]
+    },
+    {
+      "asset_id": "hospital_alt_wing",
+      "reachable": true,
+      "exact_asset_identified": false,
+      "junction_verified": false,
+      "proceed_to_render_scan": false,
+      "blocked_reason": "no independently-validated alternate hospital area; do not re-search hospital envelope without a new validated map/room-access path"
+    },
+    {
+      "asset_id": "synthetic_fork_fallback",
+      "reachable": false,
+      "exact_asset_identified": false,
+      "junction_verified": false,
+      "proceed_to_render_scan": false,
+      "fallback_reason": "does not exist; diagnostic-only if authored; never real-scene/benchmark evidence; use only if candidates 1-3 fail"
+    }
+  ],
+  "recommended_next_bounded_render_scan": ["office_isaac", "warehouse_simple"],
+  "gate_order_first_two": ["render_validity", "depth_openness"],
+  "gate_note": "The bounded render-scan tests render-validity + depth-openness (median central depth >= 3.0 m on BOTH branches) FIRST, mirroring the hospital junction scan. Only assets clearing both advance to embedding-distinctness, then drive-validation, then recorded-mode, then action-probe/training.",
+  "claim_boundary": [
+    "Planning/inventory only. No render/drive/model/benchmark evidence. No promotion.",
+    "Reachability != junction. Junctions UNVERIFIED until a bounded render-scan.",
+    "Track B diagnostic until multi-seed and closed-loop evidence exist: no SOTA, no promotion, no full autonomy claim.",
+    "CL_BOUND_XY unchanged; incumbent retained; DIAGNOSTIC_ONLY_NOT_PROMOTED."
+  ]
+}
