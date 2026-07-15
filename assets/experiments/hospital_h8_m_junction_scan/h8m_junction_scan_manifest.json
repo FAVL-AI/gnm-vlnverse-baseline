@@ -1,0 +1,324 @@
+{
+  "status": "VALIDATION_ONLY",
+  "step": "H8-M bounded real-junction render scan",
+  "scene_gate": true,
+  "render": {
+    "resolution": [
+      640,
+      480
+    ],
+    "camera_height_m": 0.47,
+    "camera_raise_note": "~0.12 m above 0.35 m base; level horizon",
+    "branch_reach_m": 2.0,
+    "free_camera_no_robot_body": true,
+    "hospital_prim_count": 1909
+  },
+  "thresholds": {
+    "luma_min": 15.0,
+    "lower_black_max": 0.5,
+    "min_angle_sep_deg": 30.0,
+    "branch_distinct_dino": 0.6,
+    "branch_open_min_depth_m": 3.0
+  },
+  "n_candidates": 8,
+  "candidates": [
+    {
+      "cand_id": "jc_corr_wmid_T",
+      "kind": "corridor T (+/-y)",
+      "o_d": [
+        -2.5,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        -2.5,
+        1.8
+      ],
+      "goalB": [
+        -2.5,
+        -2.2
+      ],
+      "expected_action_angle_sep_deg": 180,
+      "within_envelope": true,
+      "decision_luma": 50.3,
+      "goalA_luma": 33.1,
+      "goalB_luma": 125.9,
+      "decision_black": 0.0,
+      "goalA_black": 0.0112,
+      "goalB_black": 0.0,
+      "goalA_depth_m": 3.55,
+      "goalB_depth_m": null,
+      "goalA_render_valid": true,
+      "goalB_render_valid": true,
+      "goalA_branch_open": true,
+      "goalB_branch_open": false,
+      "decision_render_valid": true,
+      "branch_dino_cosine": null,
+      "classification": "WALL_ONLY"
+    },
+    {
+      "cand_id": "jc_corr_mid_T",
+      "kind": "corridor T (+/-y)",
+      "o_d": [
+        -1.0,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        -0.9999999999999999,
+        1.8
+      ],
+      "goalB": [
+        -0.9999999999999999,
+        -2.2
+      ],
+      "expected_action_angle_sep_deg": 180,
+      "within_envelope": true,
+      "decision_luma": 44.7,
+      "goalA_luma": 26.8,
+      "goalB_luma": 106.9,
+      "decision_black": 0.0,
+      "goalA_black": 0.2663,
+      "goalB_black": 0.1713,
+      "goalA_depth_m": 3.55,
+      "goalB_depth_m": null,
+      "goalA_render_valid": true,
+      "goalB_render_valid": true,
+      "goalA_branch_open": true,
+      "goalB_branch_open": false,
+      "decision_render_valid": true,
+      "branch_dino_cosine": null,
+      "classification": "WALL_ONLY"
+    },
+    {
+      "cand_id": "jc_corr_c_T",
+      "kind": "corridor T (+/-y)",
+      "o_d": [
+        0.5,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        0.5000000000000001,
+        1.8
+      ],
+      "goalB": [
+        0.5000000000000001,
+        -2.2
+      ],
+      "expected_action_angle_sep_deg": 180,
+      "within_envelope": true,
+      "decision_luma": 39.6,
+      "goalA_luma": 136.4,
+      "goalB_luma": 94.4,
+      "decision_black": 0.0,
+      "goalA_black": 0.0,
+      "goalB_black": 0.1454,
+      "goalA_depth_m": 0.435,
+      "goalB_depth_m": 0.485,
+      "goalA_render_valid": true,
+      "goalB_render_valid": true,
+      "goalA_branch_open": false,
+      "goalB_branch_open": false,
+      "decision_render_valid": true,
+      "branch_dino_cosine": null,
+      "classification": "WALL_ONLY"
+    },
+    {
+      "cand_id": "jc_corr_e_T",
+      "kind": "corridor T (+/-y)",
+      "o_d": [
+        2.0,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        2.0,
+        1.8
+      ],
+      "goalB": [
+        2.0,
+        -2.2
+      ],
+      "expected_action_angle_sep_deg": 180,
+      "within_envelope": true,
+      "decision_luma": 34.9,
+      "goalA_luma": 19.6,
+      "goalB_luma": 126.1,
+      "decision_black": 0.0,
+      "goalA_black": 0.0628,
+      "goalB_black": 0.0,
+      "goalA_depth_m": 0.331,
+      "goalB_depth_m": null,
+      "goalA_render_valid": true,
+      "goalB_render_valid": true,
+      "goalA_branch_open": false,
+      "goalB_branch_open": false,
+      "decision_render_valid": true,
+      "branch_dino_cosine": null,
+      "classification": "WALL_ONLY"
+    },
+    {
+      "cand_id": "jc_recep_fork",
+      "kind": "reception fork (+/-45)",
+      "o_d": [
+        -0.5,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        0.9142135623730951,
+        1.214213562373095
+      ],
+      "goalB": [
+        0.9142135623730951,
+        -1.6142135623730949
+      ],
+      "expected_action_angle_sep_deg": 90,
+      "within_envelope": true,
+      "decision_luma": 45.4,
+      "goalA_luma": 29.6,
+      "goalB_luma": 88.3,
+      "decision_black": 0.0,
+      "goalA_black": 0.0251,
+      "goalB_black": 0.1474,
+      "goalA_depth_m": 1.298,
+      "goalB_depth_m": 1.908,
+      "goalA_render_valid": true,
+      "goalB_render_valid": true,
+      "goalA_branch_open": false,
+      "goalB_branch_open": false,
+      "decision_render_valid": true,
+      "branch_dino_cosine": null,
+      "classification": "WALL_ONLY"
+    },
+    {
+      "cand_id": "jc_corr_end_e",
+      "kind": "east corridor-end fan",
+      "o_d": [
+        3.0,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        4.532088886237956,
+        1.0855752193730785
+      ],
+      "goalB": [
+        4.532088886237956,
+        -1.4855752193730785
+      ],
+      "expected_action_angle_sep_deg": 80,
+      "within_envelope": true,
+      "decision_luma": 34.6,
+      "goalA_luma": 23.7,
+      "goalB_luma": 37.3,
+      "decision_black": 0.0,
+      "goalA_black": 0.1976,
+      "goalB_black": 0.0002,
+      "goalA_depth_m": 1.413,
+      "goalB_depth_m": 1.965,
+      "goalA_render_valid": true,
+      "goalB_render_valid": true,
+      "goalA_branch_open": false,
+      "goalB_branch_open": false,
+      "decision_render_valid": true,
+      "branch_dino_cosine": null,
+      "classification": "WALL_ONLY"
+    },
+    {
+      "cand_id": "jc_corr_end_w",
+      "kind": "west corridor-end fan",
+      "o_d": [
+        -3.0,
+        -0.2
+      ],
+      "approach_yaw_deg": 180.0,
+      "goalA": [
+        -4.532088886237956,
+        -1.4855752193730785
+      ],
+      "goalB": [
+        -4.532088886237956,
+        1.085575219373079
+      ],
+      "expected_action_angle_sep_deg": 80,
+      "within_envelope": true,
+      "decision_luma": 23.3,
+      "goalA_luma": 43.5,
+      "goalB_luma": 0.0,
+      "decision_black": 0.0478,
+      "goalA_black": 0.3797,
+      "goalB_black": 1.0,
+      "goalA_depth_m": 1.083,
+      "goalB_depth_m": 0.239,
+      "goalA_render_valid": true,
+      "goalB_render_valid": false,
+      "goalA_branch_open": false,
+      "goalB_branch_open": false,
+      "decision_render_valid": true,
+      "branch_dino_cosine": null,
+      "classification": "WALL_ONLY"
+    },
+    {
+      "cand_id": "jc_recep_cross",
+      "kind": "reception cross (perp approach)",
+      "o_d": [
+        0.0,
+        -1.5
+      ],
+      "approach_yaw_deg": 90.0,
+      "goalA": [
+        -1.732050807568877,
+        -0.49999999999999933
+      ],
+      "goalB": [
+        1.7320508075688772,
+        -0.5
+      ],
+      "expected_action_angle_sep_deg": 120,
+      "within_envelope": true,
+      "decision_luma": 59.4,
+      "goalA_luma": 37.1,
+      "goalB_luma": 48.9,
+      "decision_black": 0.0,
+      "goalA_black": 0.0006,
+      "goalB_black": 0.0,
+      "goalA_depth_m": 2.86,
+      "goalB_depth_m": 7.696,
+      "goalA_render_valid": true,
+      "goalB_render_valid": true,
+      "goalA_branch_open": false,
+      "goalB_branch_open": true,
+      "decision_render_valid": true,
+      "branch_dino_cosine": null,
+      "classification": "WALL_ONLY"
+    }
+  ],
+  "render_valid_junctions": [],
+  "visually_weak": [],
+  "rgb_only_apparent_junctions": [
+    "jc_corr_wmid_T",
+    "jc_corr_mid_T",
+    "jc_corr_c_T",
+    "jc_corr_e_T",
+    "jc_recep_fork",
+    "jc_corr_end_e",
+    "jc_recep_cross"
+  ],
+  "reclassified_to_wall_only_by_depth": [
+    "jc_corr_wmid_T",
+    "jc_corr_mid_T",
+    "jc_corr_c_T",
+    "jc_corr_e_T",
+    "jc_recep_fork",
+    "jc_corr_end_e",
+    "jc_recep_cross"
+  ],
+  "decision_rule_outcome": "NO_RENDER_VALID_JUNCTION_RECOMMEND_RESCOPE_OR_DIFFERENT_SCENE",
+  "caveats": [
+    "Bounded scan of hypothesized candidates grounded in the known reachable geometry, NOT an exhaustive floor-plan search \u2014 absence here is strong but not a proof that no junction exists anywhere in hospital.usd.",
+    "Free camera, no robot body: render-validity + branch-distinctness only; drivability + chassis occlusion are Step-C checks, not tested here.",
+    "No recording, training, rollout, or promotion; CL_BOUND_XY unchanged."
+  ]
+}

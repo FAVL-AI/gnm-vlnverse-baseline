@@ -1,0 +1,354 @@
+{
+  "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+  "isaac_sim_version": "5.1.0.0",
+  "resolution": [
+    640,
+    480
+  ],
+  "camera_height_m": 0.47,
+  "camera_raise_note": "~0.12 m above 0.35 m base; level horizon",
+  "branch_reach_m": 2.0,
+  "free_camera_no_robot_body": true,
+  "hospital_prim_count": 1909,
+  "scene_gate": {
+    "pass": true,
+    "checks": {
+      "hospital_reference_authored": true,
+      "prim_count_ok": true,
+      "scene_mode_hospital": true,
+      "no_procedural_landmarks": true,
+      "front_camera_exists": true,
+      "resolution_declared": true,
+      "image_hospital_like": true
+    },
+    "reasons": [],
+    "observed": {
+      "hospital_reference_asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+      "hospital_prim_count": 1909,
+      "scene_mode": "hospital",
+      "procedural_landmark_prims": [],
+      "front_camera_path": "/World/JCam_scene_gate_probe",
+      "resolution": [
+        640,
+        480
+      ],
+      "visual_stats": {
+        "mean_luma": 32.4,
+        "std_luma": 26.72,
+        "min_std_required": 10.0,
+        "luma_window": [
+          15.0,
+          235.0
+        ]
+      }
+    },
+    "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd"
+  },
+  "n_candidates": 8,
+  "candidates": [
+    {
+      "cand_id": "jc_corr_wmid_T",
+      "kind": "corridor T (+/-y)",
+      "o_d": [
+        -2.5,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        -2.5,
+        1.8
+      ],
+      "goalB": [
+        -2.5,
+        -2.2
+      ],
+      "branchA_rel_deg": 90,
+      "branchB_rel_deg": -90,
+      "expected_action_angle_sep_deg": 180,
+      "within_envelope": true,
+      "views": {
+        "decision": {
+          "mean_luma": 50.3,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": 13.073
+        },
+        "goalA": {
+          "mean_luma": 33.1,
+          "lower_frame_black_frac": 0.0112,
+          "median_depth_central_m": 3.55
+        },
+        "goalB": {
+          "mean_luma": 125.9,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": null
+        }
+      }
+    },
+    {
+      "cand_id": "jc_corr_mid_T",
+      "kind": "corridor T (+/-y)",
+      "o_d": [
+        -1.0,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        -0.9999999999999999,
+        1.8
+      ],
+      "goalB": [
+        -0.9999999999999999,
+        -2.2
+      ],
+      "branchA_rel_deg": 90,
+      "branchB_rel_deg": -90,
+      "expected_action_angle_sep_deg": 180,
+      "within_envelope": true,
+      "views": {
+        "decision": {
+          "mean_luma": 44.7,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": 12.125
+        },
+        "goalA": {
+          "mean_luma": 26.8,
+          "lower_frame_black_frac": 0.2663,
+          "median_depth_central_m": 3.55
+        },
+        "goalB": {
+          "mean_luma": 106.9,
+          "lower_frame_black_frac": 0.1713,
+          "median_depth_central_m": null
+        }
+      }
+    },
+    {
+      "cand_id": "jc_corr_c_T",
+      "kind": "corridor T (+/-y)",
+      "o_d": [
+        0.5,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        0.5000000000000001,
+        1.8
+      ],
+      "goalB": [
+        0.5000000000000001,
+        -2.2
+      ],
+      "branchA_rel_deg": 90,
+      "branchB_rel_deg": -90,
+      "expected_action_angle_sep_deg": 180,
+      "within_envelope": true,
+      "views": {
+        "decision": {
+          "mean_luma": 39.6,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": 10.66
+        },
+        "goalA": {
+          "mean_luma": 136.4,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": 0.435
+        },
+        "goalB": {
+          "mean_luma": 94.4,
+          "lower_frame_black_frac": 0.1454,
+          "median_depth_central_m": 0.485
+        }
+      }
+    },
+    {
+      "cand_id": "jc_corr_e_T",
+      "kind": "corridor T (+/-y)",
+      "o_d": [
+        2.0,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        2.0,
+        1.8
+      ],
+      "goalB": [
+        2.0,
+        -2.2
+      ],
+      "branchA_rel_deg": 90,
+      "branchB_rel_deg": -90,
+      "expected_action_angle_sep_deg": 180,
+      "within_envelope": true,
+      "views": {
+        "decision": {
+          "mean_luma": 34.9,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": 9.16
+        },
+        "goalA": {
+          "mean_luma": 19.6,
+          "lower_frame_black_frac": 0.0628,
+          "median_depth_central_m": 0.331
+        },
+        "goalB": {
+          "mean_luma": 126.1,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": null
+        }
+      }
+    },
+    {
+      "cand_id": "jc_recep_fork",
+      "kind": "reception fork (+/-45)",
+      "o_d": [
+        -0.5,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        0.9142135623730951,
+        1.214213562373095
+      ],
+      "goalB": [
+        0.9142135623730951,
+        -1.6142135623730949
+      ],
+      "branchA_rel_deg": 45,
+      "branchB_rel_deg": -45,
+      "expected_action_angle_sep_deg": 90,
+      "within_envelope": true,
+      "views": {
+        "decision": {
+          "mean_luma": 45.4,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": 11.626
+        },
+        "goalA": {
+          "mean_luma": 29.6,
+          "lower_frame_black_frac": 0.0251,
+          "median_depth_central_m": 1.298
+        },
+        "goalB": {
+          "mean_luma": 88.3,
+          "lower_frame_black_frac": 0.1474,
+          "median_depth_central_m": 1.908
+        }
+      }
+    },
+    {
+      "cand_id": "jc_corr_end_e",
+      "kind": "east corridor-end fan",
+      "o_d": [
+        3.0,
+        -0.2
+      ],
+      "approach_yaw_deg": 0.0,
+      "goalA": [
+        4.532088886237956,
+        1.0855752193730785
+      ],
+      "goalB": [
+        4.532088886237956,
+        -1.4855752193730785
+      ],
+      "branchA_rel_deg": 40,
+      "branchB_rel_deg": -40,
+      "expected_action_angle_sep_deg": 80,
+      "within_envelope": true,
+      "views": {
+        "decision": {
+          "mean_luma": 34.6,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": 8.16
+        },
+        "goalA": {
+          "mean_luma": 23.7,
+          "lower_frame_black_frac": 0.1976,
+          "median_depth_central_m": 1.413
+        },
+        "goalB": {
+          "mean_luma": 37.3,
+          "lower_frame_black_frac": 0.0002,
+          "median_depth_central_m": 1.965
+        }
+      }
+    },
+    {
+      "cand_id": "jc_corr_end_w",
+      "kind": "west corridor-end fan",
+      "o_d": [
+        -3.0,
+        -0.2
+      ],
+      "approach_yaw_deg": 180.0,
+      "goalA": [
+        -4.532088886237956,
+        -1.4855752193730785
+      ],
+      "goalB": [
+        -4.532088886237956,
+        1.085575219373079
+      ],
+      "branchA_rel_deg": 40,
+      "branchB_rel_deg": -40,
+      "expected_action_angle_sep_deg": 80,
+      "within_envelope": true,
+      "views": {
+        "decision": {
+          "mean_luma": 23.3,
+          "lower_frame_black_frac": 0.0478,
+          "median_depth_central_m": 3.885
+        },
+        "goalA": {
+          "mean_luma": 43.5,
+          "lower_frame_black_frac": 0.3797,
+          "median_depth_central_m": 1.083
+        },
+        "goalB": {
+          "mean_luma": 0.0,
+          "lower_frame_black_frac": 1.0,
+          "median_depth_central_m": 0.239
+        }
+      }
+    },
+    {
+      "cand_id": "jc_recep_cross",
+      "kind": "reception cross (perp approach)",
+      "o_d": [
+        0.0,
+        -1.5
+      ],
+      "approach_yaw_deg": 90.0,
+      "goalA": [
+        -1.732050807568877,
+        -0.49999999999999933
+      ],
+      "goalB": [
+        1.7320508075688772,
+        -0.5
+      ],
+      "branchA_rel_deg": 60,
+      "branchB_rel_deg": -60,
+      "expected_action_angle_sep_deg": 120,
+      "within_envelope": true,
+      "views": {
+        "decision": {
+          "mean_luma": 59.4,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": 3.733
+        },
+        "goalA": {
+          "mean_luma": 37.1,
+          "lower_frame_black_frac": 0.0006,
+          "median_depth_central_m": 2.86
+        },
+        "goalB": {
+          "mean_luma": 48.9,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": 7.696
+        }
+      }
+    }
+  ]
+}

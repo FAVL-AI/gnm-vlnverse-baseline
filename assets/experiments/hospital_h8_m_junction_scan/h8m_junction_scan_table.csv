@@ -1,0 +1,9 @@
+cand_id,kind,classification,within_envelope,expected_action_angle_sep_deg,decision_luma,goalA_luma,goalB_luma,goalA_depth_m,goalB_depth_m,goalA_branch_open,goalB_branch_open,goalA_black,goalB_black,goalA_render_valid,goalB_render_valid,branch_dino_cosine
+jc_corr_wmid_T,corridor T (+/-y),WALL_ONLY,True,180,50.3,33.1,125.9,3.55,,True,False,0.0112,0.0,True,True,
+jc_corr_mid_T,corridor T (+/-y),WALL_ONLY,True,180,44.7,26.8,106.9,3.55,,True,False,0.2663,0.1713,True,True,
+jc_corr_c_T,corridor T (+/-y),WALL_ONLY,True,180,39.6,136.4,94.4,0.435,0.485,False,False,0.0,0.1454,True,True,
+jc_corr_e_T,corridor T (+/-y),WALL_ONLY,True,180,34.9,19.6,126.1,0.331,,False,False,0.0628,0.0,True,True,
+jc_recep_fork,reception fork (+/-45),WALL_ONLY,True,90,45.4,29.6,88.3,1.298,1.908,False,False,0.0251,0.1474,True,True,
+jc_corr_end_e,east corridor-end fan,WALL_ONLY,True,80,34.6,23.7,37.3,1.413,1.965,False,False,0.1976,0.0002,True,True,
+jc_corr_end_w,west corridor-end fan,WALL_ONLY,True,80,23.3,43.5,0.0,1.083,0.239,False,False,0.3797,1.0,True,False,
+jc_recep_cross,reception cross (perp approach),WALL_ONLY,True,120,59.4,37.1,48.9,2.86,7.696,False,True,0.0006,0.0,True,True,
