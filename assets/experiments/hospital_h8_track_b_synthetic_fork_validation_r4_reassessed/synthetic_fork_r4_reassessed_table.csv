@@ -1,0 +1,8 @@
+gate,pass,mode,detail
+1_scene_load,True,hard_gate,"ref_authored=True prims=91 bbox=[-4.0, -4.0, -0.1, 4.0, 4.0, 2.8]"
+2_render_validity,True,hard_gate,"decision + goalA/goalB @ chosen standoff 2.0 m + center N/W all luma>=15.0, black<=0.5, non-empty; depth_present=True"
+3_depth_openness,True,hard_gate,"branch N depth=3.5 m, branch W depth=3.5 m (both >= 3.0)"
+4_open_floor_guard,True,hard_gate,"all-4 >= 4.0 m? False (guard passes when NOT open-floor); depths E/N/W/S=[3.5, 3.5, 3.5, 3.5]"
+5_visual_verification,,hard_gate,MANDATORY human/contact-sheet inspection — recorded separately after this script; automated verdict must be confirmed by eye before RENDER_VALID_JUNCTION stands
+6_embedding_distinctness,,ADVISORY_ONLY,"ADVISORY ONLY (Outcome E) — NOT a synthetic pass/fail gate. DINO goal-image cosine 0.703 (standoff1.5=0.698, standoff2.0=0.703); center N-vs-W 0.696. advisory reference 0.76; former hard 0.6 superseded. A symmetric cross shares the same corridor perspective, so DINO cannot separate same-from-distinct."
+7_action_angle,True,hard_gate,branch A=N (STRAIGHT) vs B=W (TURN_LEFT_90): sep=90.0 deg (>= 30.0); different local actions
