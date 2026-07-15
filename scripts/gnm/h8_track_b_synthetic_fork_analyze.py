@@ -96,9 +96,28 @@ ew_open = branch_open(views.get("E")) and branch_open(views.get("W"))
 gA, gB = "N", "W"
 sep = ang_sep(gA, gB)
 rN, rW = rgb_of(f"{SID}__center__N"), rgb_of(f"{SID}__center__W")
-gAi, gBi = rgb_of(f"{SID}__goalA_img"), rgb_of(f"{SID}__goalB_img")
+gA15, gB15 = rgb_of(f"{SID}__goalA_img"), rgb_of(f"{SID}__goalB_img")            # standoff 1.5 m
+gA20, gB20 = rgb_of(f"{SID}__goalA_img_20"), rgb_of(f"{SID}__goalB_img_20")      # standoff 2.0 m
 dino_center = dino_pair(rN, rW) if (rN is not None and rW is not None) else None
-dino_goalimg = dino_pair(gAi, gBi) if (gAi is not None and gBi is not None) else None
+dino_goalimg_15 = dino_pair(gA15, gB15) if (gA15 is not None and gB15 is not None) else None
+dino_goalimg_20 = dino_pair(gA20, gB20) if (gA20 is not None and gB20 is not None) else None
+# R4: choose the goal-view standoff. Prefer a RENDER-VALID standoff (both goal images luma>=15,
+# low black) so a dark/occluded frame can't produce a false distinctness win; among valid standoffs
+# pick the lower similarity. Keys map to the manifest metric dicts for validity.
+_STANDOFFS = [(1.5, "goalA_img", "goalB_img", dino_goalimg_15, gA15, gB15),
+              (2.0, "goalA_img_20", "goalB_img_20", dino_goalimg_20, gA20, gB20)]
+_cands = []
+for so, ka, kb, dv, ra, rb in _STANDOFFS:
+    if dv is None:
+        continue
+    valid = view_valid(named.get(ka)) and view_valid(named.get(kb))
+    _cands.append((valid, so, ka, kb, dv, ra, rb))
+_cands.sort(key=lambda t: (not t[0], t[4]))   # valid-first, then lowest DINO
+if _cands:
+    chosen_valid, goal_standoff_chosen, _kA, _kB, dino_goalimg, gAi, gBi = _cands[0]
+else:
+    chosen_valid, goal_standoff_chosen, _kA, _kB, dino_goalimg, gAi, gBi = (False, None, "goalA_img", "goalB_img", None, gA15, gB15)
+gAi20, gBi20 = gA20, gB20   # keep names used elsewhere
 dino = dino_goalimg if dino_goalimg is not None else dino_center
 
 # ── gate cascade (same order as the real-asset scans) ─────────────────────────
@@ -123,7 +142,7 @@ else:
     auto_reason = f"branches not distinct (DINO {dino} >= {BRANCH_DISTINCT})"
 
 # ── explicit gate PASS/FAIL table ─────────────────────────────────────────────
-g2_valid = all(view_valid(named.get(k)) for k in ("decision", "goalA_img", "goalB_img")) \
+g2_valid = view_valid(named.get("decision")) and view_valid(named.get(_kA)) and view_valid(named.get(_kB)) \
     and view_valid(views.get("N")) and view_valid(views.get("W"))
 g3_open = branch_open(views.get("N")) and branch_open(views.get("W"))
 depth_exists = all((views.get(d, {}) or {}).get("median_depth_central_m") is not None for d in DIRS)
@@ -131,8 +150,8 @@ gates = [
     ("1_scene_load", bool(sc.get("scene_load_ok")),
      f"ref_authored={sc.get('ref_authored')} prims={sc.get('prim_count')} bbox={sc.get('world_bbox')}"),
     ("2_render_validity", bool(g2_valid),
-     f"decision/goalA/goalB + center N/W all luma>={LUMA_MIN}, black<={BLACK_MAX}, non-empty; "
-     f"depth_present={depth_exists}"),
+     f"decision + goalA/goalB @ chosen standoff {goal_standoff_chosen} m + center N/W all "
+     f"luma>={LUMA_MIN}, black<={BLACK_MAX}, non-empty; depth_present={depth_exists}"),
     ("3_depth_openness", bool(g3_open),
      f"branch N depth={depth.get('N')} m, branch W depth={depth.get('W')} m (both >= {OPEN_MIN_DEPTH})"),
     ("4_open_floor_guard", (not open_floor),
@@ -142,7 +161,8 @@ gates = [
      "MANDATORY human/contact-sheet inspection — recorded separately after this script; "
      "automated verdict must be confirmed by eye before RENDER_VALID_JUNCTION stands"),
     ("6_embedding_distinctness", (dino is not None and dino < BRANCH_DISTINCT),
-     f"DINO cosine(goalA_img,goalB_img)={dino_goalimg}, cosine(centerN,centerW)={dino_center}; "
+     f"DINO goal-image cosine: standoff1.5={dino_goalimg_15}, standoff2.0={dino_goalimg_20}, "
+     f"best={dino_goalimg} @ {goal_standoff_chosen} m; center N-vs-W={dino_center}; "
      f"threshold < {BRANCH_DISTINCT}"),
     ("7_action_angle", (sep >= MIN_SEP),
      f"branch A=N (STRAIGHT) vs B=W (TURN_LEFT_90): sep={sep} deg (>= {MIN_SEP}); different local actions"),
@@ -227,7 +247,9 @@ manifest = {"label": "SYNTHETIC_DIAGNOSTIC_ONLY", "status": "VALIDATION_ONLY_GAT
             "center_depths_m": depth, "center_luma": luma, "center_lower_black_frac": black,
             "opens": opens, "open_floor": open_floor, "ns_open": ns_open, "ew_open": ew_open,
             "designed_branch_pair": {"A": "N", "B": "W", "sep_deg": sep},
-            "dino_goalimg": dino_goalimg, "dino_center": dino_center,
+            "dino_goalimg": dino_goalimg, "dino_goalimg_standoff_1_5": dino_goalimg_15,
+            "dino_goalimg_standoff_2_0": dino_goalimg_20, "goal_standoff_chosen_m": goal_standoff_chosen,
+            "dino_center": dino_center,
             "auto_classification": auto_cls, "auto_reason": auto_reason,
             "gates": [{"gate": g, "pass": p, "detail": d} for g, p, d in gates],
             "gates_1_4_6_7_auto_pass": auto_gates_pass,
@@ -285,7 +307,9 @@ rep = [
       f"| {DIR_COLOR.get(d)} |" for d in DIRS],
     f"| open_floor(all4>=4m) | {open_floor} | | | | ns_open={ns_open} ew_open={ew_open} |", "",
     "## Embedding distinctness",
-    f"- DINO cosine(goalA_img blue, goalB_img green) = **{dino_goalimg}** (threshold < {BRANCH_DISTINCT}).",
+    f"- DINO goal-image cosine (blue vs green): standoff 1.5 m = **{dino_goalimg_15}**, "
+    f"standoff 2.0 m = **{dino_goalimg_20}**; best = **{dino_goalimg}** @ {goal_standoff_chosen} m "
+    f"(threshold < {BRANCH_DISTINCT}).",
     f"- DINO cosine(center N, center W) = **{dino_center}**.", "",
     "## Decision",
     f"**{outcome}.**",

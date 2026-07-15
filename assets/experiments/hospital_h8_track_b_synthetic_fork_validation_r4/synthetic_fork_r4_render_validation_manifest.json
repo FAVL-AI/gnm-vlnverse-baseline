@@ -1,0 +1,225 @@
+{
+  "label": "SYNTHETIC_DIAGNOSTIC_ONLY",
+  "status": "VALIDATION_ONLY_GATES_1_7",
+  "scene": "synthetic_diagnostic_fork",
+  "asset_path": "/home/favl/robotics/gnm-vlnverse-baseline/assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+  "scene_load_ok": true,
+  "prim_count": 91,
+  "world_bbox": [
+    -4.0,
+    -4.0,
+    -0.1,
+    4.0,
+    4.0,
+    2.8
+  ],
+  "thresholds": {
+    "luma_min": 15.0,
+    "lower_black_max": 0.5,
+    "branch_open_min_depth_m": 3.0,
+    "open_floor_reject_min_depth_m": 4.0,
+    "min_branch_sep_deg": 30.0,
+    "branch_distinct_dino": 0.6
+  },
+  "center_depths_m": {
+    "E": 3.5,
+    "N": 3.5,
+    "W": 3.5,
+    "S": 3.5
+  },
+  "center_luma": {
+    "E": 90.4,
+    "N": 74.0,
+    "W": 56.0,
+    "S": 122.8
+  },
+  "center_lower_black_frac": {
+    "E": 0.0024,
+    "N": 0.0044,
+    "W": 0.0019,
+    "S": 0.0079
+  },
+  "opens": [
+    "E",
+    "N",
+    "W",
+    "S"
+  ],
+  "open_floor": false,
+  "ns_open": true,
+  "ew_open": true,
+  "designed_branch_pair": {
+    "A": "N",
+    "B": "W",
+    "sep_deg": 90.0
+  },
+  "dino_goalimg": 0.703,
+  "dino_goalimg_standoff_1_5": 0.698,
+  "dino_goalimg_standoff_2_0": 0.703,
+  "goal_standoff_chosen_m": 2.0,
+  "dino_center": 0.696,
+  "auto_classification": "RENDER_VALID_BUT_VISUALLY_WEAK",
+  "auto_reason": "branches not distinct (DINO 0.703 >= 0.6)",
+  "gates": [
+    {
+      "gate": "1_scene_load",
+      "pass": true,
+      "detail": "ref_authored=True prims=91 bbox=[-4.0, -4.0, -0.1, 4.0, 4.0, 2.8]"
+    },
+    {
+      "gate": "2_render_validity",
+      "pass": true,
+      "detail": "decision + goalA/goalB @ chosen standoff 2.0 m + center N/W all luma>=15.0, black<=0.5, non-empty; depth_present=True"
+    },
+    {
+      "gate": "3_depth_openness",
+      "pass": true,
+      "detail": "branch N depth=3.5 m, branch W depth=3.5 m (both >= 3.0)"
+    },
+    {
+      "gate": "4_open_floor_guard",
+      "pass": true,
+      "detail": "all-4 >= 4.0 m? False (guard passes when NOT open-floor); depths E/N/W/S=[3.5, 3.5, 3.5, 3.5]"
+    },
+    {
+      "gate": "5_visual_verification",
+      "pass": null,
+      "detail": "MANDATORY human/contact-sheet inspection \u2014 recorded separately after this script; automated verdict must be confirmed by eye before RENDER_VALID_JUNCTION stands"
+    },
+    {
+      "gate": "6_embedding_distinctness",
+      "pass": false,
+      "detail": "DINO goal-image cosine: standoff1.5=0.698, standoff2.0=0.703, best=0.703 @ 2.0 m; center N-vs-W=0.696; threshold < 0.6"
+    },
+    {
+      "gate": "7_action_angle",
+      "pass": true,
+      "detail": "branch A=N (STRAIGHT) vs B=W (TURN_LEFT_90): sep=90.0 deg (>= 30.0); different local actions"
+    }
+  ],
+  "gates_1_4_6_7_auto_pass": false,
+  "gate_5_visual_verification": "DONE_CONFIRMS_METRIC_SUITABILITY_ISSUE: corridors dramatically distinct to a human (blue-round/orange-boxy/green-narrowed-pointed/red-columned) but DINO 0.696 center / 0.703 goal-images >= 0.60 and WORSE than R2(0.62)/R3(0.654). Across R1-R4 no appearance/geometry/foreground change reached <0.60; best was R2. Conclusion: DINO<0.60 is an unsuitable/miscalibrated gate for this symmetric-corridor family (metric keys on shared perspective/composition). No metric change made; recommend calibrating the gate under review. No override.",
+  "decision_rule_outcome": "SYNTHETIC_FORK_RENDER_SCAN_FAILED_REVISE_GEOMETRY_OR_MARKERS",
+  "named_frames": {
+    "decision": {
+      "mean_luma": 112.2,
+      "lower_frame_black_frac": 0.0,
+      "median_depth_central_m": 4.64,
+      "eye": [
+        0.0,
+        -1.2,
+        0.47
+      ],
+      "yaw_deg": 90.0
+    },
+    "goalA_img": {
+      "mean_luma": 25.3,
+      "lower_frame_black_frac": 0.0,
+      "median_depth_central_m": 1.5,
+      "eye": [
+        0.0,
+        2.0,
+        0.47
+      ],
+      "yaw_deg": 90.0
+    },
+    "goalB_img": {
+      "mean_luma": 14.1,
+      "lower_frame_black_frac": 0.1618,
+      "median_depth_central_m": 1.5,
+      "eye": [
+        -2.0,
+        0.0,
+        0.47
+      ],
+      "yaw_deg": 180.0
+    },
+    "goalA_img_20": {
+      "mean_luma": 37.8,
+      "lower_frame_black_frac": 0.0201,
+      "median_depth_central_m": 2.0,
+      "eye": [
+        0.0,
+        1.5,
+        0.47
+      ],
+      "yaw_deg": 90.0
+    },
+    "goalB_img_20": {
+      "mean_luma": 20.1,
+      "lower_frame_black_frac": 0.0697,
+      "median_depth_central_m": 2.0,
+      "eye": [
+        -1.5,
+        0.0,
+        0.47
+      ],
+      "yaw_deg": 180.0
+    }
+  },
+  "center_views": {
+    "E": {
+      "mean_luma": 90.4,
+      "lower_frame_black_frac": 0.0024,
+      "median_depth_central_m": 3.5,
+      "eye": [
+        0.0,
+        0.0,
+        0.47
+      ],
+      "yaw_deg": 0.0
+    },
+    "N": {
+      "mean_luma": 74.0,
+      "lower_frame_black_frac": 0.0044,
+      "median_depth_central_m": 3.5,
+      "eye": [
+        0.0,
+        0.0,
+        0.47
+      ],
+      "yaw_deg": 90.0
+    },
+    "W": {
+      "mean_luma": 56.0,
+      "lower_frame_black_frac": 0.0019,
+      "median_depth_central_m": 3.5,
+      "eye": [
+        0.0,
+        0.0,
+        0.47
+      ],
+      "yaw_deg": 180.0
+    },
+    "S": {
+      "mean_luma": 122.8,
+      "lower_frame_black_frac": 0.0079,
+      "median_depth_central_m": 3.5,
+      "eye": [
+        0.0,
+        0.0,
+        0.47
+      ],
+      "yaw_deg": 270.0
+    }
+  },
+  "gates_not_run": [
+    "drive_validation",
+    "recorded_mode",
+    "leakage_audit",
+    "action_probe",
+    "training"
+  ],
+  "claim_boundary": [
+    "SYNTHETIC_DIAGNOSTIC_ONLY",
+    "not hospital evidence",
+    "not real-scene evidence",
+    "not benchmark evidence",
+    "not promotion",
+    "not full ImageNav evidence",
+    "not SOTA",
+    "no autonomy claim",
+    "no training authorization",
+    "CL_BOUND_XY unchanged"
+  ]
+}

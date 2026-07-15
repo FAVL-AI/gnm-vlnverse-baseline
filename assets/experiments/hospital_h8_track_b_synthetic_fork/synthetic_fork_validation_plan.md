@@ -6,12 +6,13 @@ authorised by this document. This is the ordered gate sequence to run *later, on
 > **SYNTHETIC_DIAGNOSTIC_ONLY** — a pass here is diagnostic evidence about the model/objective on an
 > idealised junction, never real-scene, hospital, or benchmark evidence. `CL_BOUND_XY` unchanged.
 
-**Revision status:** R1 (commit `be6ba04`) passed gates 1–4, 7 but **failed gate 6**. R2 (commit
-`6930b65`) added distinct shape families and improved distinctness (0.79 → 0.62, 0.734 → 0.649) but
-**still failed gate 6** — the shared gray corridor shell dominated the embedding. R3 makes the
-corridor shell branch-specific (per-arm tinted side walls + floor strips + shape-family reliefs) and
-pulls the goal cameras back to ~2.3 m; gates 1–7 are re-run under
-`assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r3/`. Drive-validation (gate 8) and
+**Revision status:** R1 (`be6ba04`) failed gate 6. R2 (`6930b65`) added shape families, improved but
+still failed. R3 (`201f91b`) made the corridor shell branch-specific + pulled goal cameras back — gate
+6 **worsened** (0.62 → 0.654, 0.649 → 0.689), isolating the cause as DINO sensitivity to the shared
+corridor **perspective geometry**. R4 changes the geometry itself: large branch-specific high objects
+(N sphere, W cone, E cube, S columns) dominating the upper goal frame + a narrowed West corridor,
+with goal images at 1.5 m and 2.0 m standoff; **no metric/threshold change.** Gates 1–7 re-run under
+`assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/`. Drive-validation (gate 8) and
 everything after remain deferred until gates 1–7 pass and are reviewed.
 
 ## Ordered validation gates (each must pass before the next)

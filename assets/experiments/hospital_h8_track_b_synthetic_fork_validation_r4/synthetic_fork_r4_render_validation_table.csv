@@ -1,0 +1,17 @@
+gate,pass,detail
+1_scene_load,True,"ref_authored=True prims=91 bbox=[-4.0, -4.0, -0.1, 4.0, 4.0, 2.8]"
+2_render_validity,True,"decision + goalA/goalB @ chosen standoff 2.0 m + center N/W all luma>=15.0, black<=0.5, non-empty; depth_present=True"
+3_depth_openness,True,"branch N depth=3.5 m, branch W depth=3.5 m (both >= 3.0)"
+4_open_floor_guard,True,"all-4 >= 4.0 m? False (guard passes when NOT open-floor); depths E/N/W/S=[3.5, 3.5, 3.5, 3.5]"
+5_visual_verification,PENDING,MANDATORY human/contact-sheet inspection — recorded separately after this script; automated verdict must be confirmed by eye before RENDER_VALID_JUNCTION stands
+6_embedding_distinctness,False,"DINO goal-image cosine: standoff1.5=0.698, standoff2.0=0.703, best=0.703 @ 2.0 m; center N-vs-W=0.696; threshold < 0.6"
+7_action_angle,True,branch A=N (STRAIGHT) vs B=W (TURN_LEFT_90): sep=90.0 deg (>= 30.0); different local actions
+
+view,luma,lower_black_frac,median_depth_central_m,open>=3m
+center_E,90.4,0.0024,3.5,True
+center_N,74.0,0.0044,3.5,True
+center_W,56.0,0.0019,3.5,True
+center_S,122.8,0.0079,3.5,True
+decision,112.2,0.0,4.64,
+goalA_img,25.3,0.0,1.5,
+goalB_img,14.1,0.1618,1.5,

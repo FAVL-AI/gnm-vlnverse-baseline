@@ -160,6 +160,28 @@ reliefs are flush on walls / flat on the floor (off the central column), so cent
 stays 3.5 m. Verified by re-running render-scan gates 1–7
 (`assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r3/`).
 
+## 5d. R4 revision — per-branch geometry + dominant foreground (gate-6 fix, round 4)
+
+R3 (commit `201f91b`) proved appearance-only edits cannot beat DINO's sensitivity to the **shared
+corridor perspective geometry** (center 0.62 → 0.654, goal images 0.649 → 0.689 — worsened). R4
+changes what DINO sees **structurally**, without touching the metric or threshold:
+
+- **Large branch-specific dominant object per arm** (distinct silhouette filling the upper goal
+  frame): N = big blue **sphere**, W = big green **cone**, E = big orange **cube**, S = red
+  **columns**. Each sits **high** (bottom `z ≥ ~1.0 m`) so it is above the central depth band from
+  **both** the junction-centre probe and the goal cameras — central depth-openness (3.5 m) is
+  preserved, the navigable branch is not hidden, and there is no near-field occlusion.
+- **Per-branch corridor geometry:** the **West** corridor is narrowed to `±0.78 m` with inner liner
+  walls, so its perspective vanishing lines differ from the native-width (`±1.0 m`) **North**
+  corridor.
+- **Goal-view standoff:** goal images are rendered at **both 1.5 m and 2.0 m**; the analyze stage
+  reports the standoff with the lower embedding similarity and records the choice.
+
+Keeps the valid 4-way cross, 90° N–W separation, depth-openness, open-floor/collinear guards, and
+`CL_BOUND_XY = 6.0`. No DINO threshold change and no metric switch — a pass must come from genuinely
+distinct structure, not a moved goalpost. Verified by re-running render-scan gates 1–7
+(`assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/`).
+
 ## 6. Claim boundary (canonical statements — apply to every artifact in this design set)
 
 1. This is a **SYNTHETIC_DIAGNOSTIC_ONLY** scene.

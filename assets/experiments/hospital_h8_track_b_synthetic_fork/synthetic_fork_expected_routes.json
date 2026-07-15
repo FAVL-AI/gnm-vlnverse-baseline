@@ -1,6 +1,7 @@
 {
   "label": "SYNTHETIC_DIAGNOSTIC_ONLY",
-  "status": "R3_REVISED_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED",
+  "status": "R4_REVISED_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED",
+  "revision_r4_note": "R4 per-branch geometry + dominant foreground: each branch has a LARGE high object dominating the upper goal frame (N=blue sphere, W=green cone, E=orange cube, S=red columns); the west corridor is narrowed to +/-0.78 (native north +/-1.0). Goal images captured at 1.5 m and 2.0 m standoff; the better one is reported. Objects sit high (bottom z>=~1.0 m) so central depth-openness (3.5 m) is preserved and the navigable branch is not hidden.",
   "revision_r2_note": "R2 gate-6 fix: branch goal views are now structurally distinct by SHAPE FAMILY (A/N=ROUND: white disc sign + blue sphere prop + horizontal stripes; B/W=POINTED: yellow cone sign + green cone prop; distractor E=BOXY: square sign + crate; approach S=CYLINDRICAL: vertical bars + cylinder), not just recoloured end walls.",
   "revision_r3_note": "R3 corridor-shell fix: each arm now has branch-tinted side walls + a branch-colour floor strip + a shape-family side-wall relief, and the goal-image cameras are pulled back to ~2.3 m standoff (goalA at (0,1.2), goalB at (-1.2,0)) so the whole corridor shell + signs + props are in-frame.",
   "scene": "synthetic_diagnostic_fork (four_way_cross)",

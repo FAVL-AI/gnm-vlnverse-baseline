@@ -20,9 +20,18 @@ def Xform "World"
     custom string diagnostic_label = "SYNTHETIC_DIAGNOSTIC_ONLY"
 
     # ---- Lighting ----
+    # R4: raised dome + added distant fill so the narrowed West corridor under the big overhead
+    # cone stays render-valid (R4 first pass left the West goal view underlit, luma < 15).
     def DomeLight "Dome"
     {
-        float inputs:intensity = 1000
+        float inputs:intensity = 3500
+    }
+    def DistantLight "SunFill"
+    {
+        float inputs:intensity = 1200
+        float inputs:angle = 3.0
+        double3 xformOp:rotateXYZ = (-42, 0, 28)
+        uniform token[] xformOpOrder = ["xformOp:rotateXYZ"]
     }
 
     # ---- Materials ----
@@ -645,6 +654,83 @@ def Xform "World"
             double3 xformOp:translate = (0.98, -1.9, 1.15)
             double3 xformOp:scale = (0.02, 0.14, 0.7)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # ============================================================================
+        # R4 per-branch GEOMETRY + dominant FOREGROUND (gate-6 fix, round 4).
+        # R3 showed appearance edits cannot beat DINO's sensitivity to the SHARED
+        # corridor perspective geometry. R4 changes what DINO sees structurally:
+        #  - a LARGE branch-specific object (distinct silhouette) that dominates the
+        #    upper frame of the goal view (round sphere / pointed cone / boxy cube /
+        #    columns). Objects sit HIGH (bottom z >= ~1.0 m) so they are above the
+        #    central depth band from BOTH the junction-centre probe and the goal
+        #    cameras -> central depth-openness (3.5 m) is preserved, no near occlusion.
+        #  - the WEST corridor is narrowed with inner liner walls (perspective differs
+        #    from the native-width NORTH corridor) -> different geometry per branch.
+        # ============================================================================
+
+        # -- North (branch A): large ROUND object (dominant sphere overhead-front) --
+        def Sphere "N_big_sphere" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double radius = 0.85
+            rel material:binding = </World/Looks/MatBlue>
+            double3 xformOp:translate = (0, 2.5, 1.95)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        # -- West (branch B): large POINTED object (dominant cone) + inner liner walls
+        #    narrowing the corridor to +/-0.78 (native N corridor is +/-1.0) --
+        def Cone "W_big_cone" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 1.5
+            double radius = 0.85
+            rel material:binding = </World/Looks/MatGreen>
+            double3 xformOp:translate = (-2.5, 0, 2.05)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cube "W_liner_S" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatGreen>
+            double3 xformOp:translate = (-2.2, -0.78, 0.85)
+            double3 xformOp:scale = (1.2, 0.03, 0.85)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "W_liner_N" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatGreen>
+            double3 xformOp:translate = (-2.2, 0.78, 0.85)
+            double3 xformOp:scale = (1.2, 0.03, 0.85)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # -- East (distractor): large BOXY object (dominant cube) --
+        def Cube "E_big_cube" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatOrange>
+            double3 xformOp:translate = (2.5, 0, 1.95)
+            double3 xformOp:scale = (0.6, 0.75, 0.6)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # -- South (approach): CYLINDRICAL columns flanking the corridor --
+        def Cylinder "S_col_1" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 2.4
+            double radius = 0.16
+            rel material:binding = </World/Looks/MatRed>
+            double3 xformOp:translate = (-0.72, -2.5, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cylinder "S_col_2" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 2.4
+            double radius = 0.16
+            rel material:binding = </World/Looks/MatRed>
+            double3 xformOp:translate = (0.72, -2.5, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
         }
     }
 

@@ -3,12 +3,13 @@
 **Status: DESIGN ONLY.** This document governs what may and may **not** be claimed from the synthetic
 fork scene, before it is built or run.
 
-**Revision R2/R3:** the scene was built and render-scanned. R1 (commit `be6ba04`) proved the
-**geometry** is valid but **failed gate 6 (visual distinctness)**. R2 (commit `6930b65`) added distinct
-shape families and improved but **still failed gate 6** (shared gray corridor shell dominated the
-embedding). R3 makes the corridor shell branch-specific and pulls the goal cameras back, re-running
-render-scan gates 1–7. Nothing about goal-conditioning can be claimed yet; even a full gates-1–7 pass
-is only render-validity, not drive-validity, and authorizes no training.
+**Revision R2/R3/R4:** the scene was built and render-scanned across revisions. R1 (`be6ba04`) proved
+the **geometry** is valid but **failed gate 6**. R2 (`6930b65`) added shape families, improved but
+still failed. R3 (`201f91b`) made the shell branch-specific + pulled cameras back — gate 6 **worsened**,
+isolating DINO's sensitivity to the shared corridor perspective geometry. R4 changes the geometry
+itself (large branch-specific high objects + narrowed West corridor), **without** changing the metric
+or threshold. Nothing about goal-conditioning can be claimed yet; even a full gates-1–7 pass is only
+render-validity, not drive-validity, and authorizes no training.
 
 ## Hard label
 
