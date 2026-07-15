@@ -1,0 +1,107 @@
+{
+  "status": "LIMITED_CAUSAL_PILOT",
+  "scene": "hospital.usd",
+  "repository_commit": "99ccbb5706ac2322ba47081f8d2a22d08ae3a2fa",
+  "camera_mount_raise_m": 0.12,
+  "camera_raise_source": "recording used --camera-raise 0.12 (validate/recover campaigns)",
+  "safety": {
+    "CL_BOUND_XY": 6.0,
+    "unchanged": true
+  },
+  "frames": {
+    "h8sl_train_lobby:o_d": {
+      "file": "frames/h8sl_train_lobby__o_d.jpg",
+      "cam_index": 0,
+      "black": 0.0,
+      "source_episode": "h8mx_val_lobby_20260714_223318"
+    },
+    "h8sl_train_lobby:near": {
+      "file": "frames/h8sl_train_lobby__near.jpg",
+      "cam_index": 85,
+      "black": 0.0,
+      "source_episode": "h8mx_val_lobby_20260714_223318"
+    },
+    "h8sl_train_lobby:far": {
+      "file": "frames/h8sl_train_lobby__far.jpg",
+      "cam_index": 225,
+      "black": 0.0,
+      "source_episode": "h8mx_val_lobby_20260714_223318"
+    },
+    "h8sl_val_midwestB:o_d": {
+      "file": "frames/h8sl_val_midwestB__o_d.jpg",
+      "cam_index": 0,
+      "black": 0.0,
+      "source_episode": "h8mx_val_midwest_B_20260714_235324"
+    },
+    "h8sl_val_midwestB:near": {
+      "file": "frames/h8sl_val_midwestB__near.jpg",
+      "cam_index": 58,
+      "black": 0.0,
+      "source_episode": "h8mx_val_midwest_B_20260714_235324"
+    },
+    "h8sl_val_midwestB:far": {
+      "file": "frames/h8sl_val_midwestB__far.jpg",
+      "cam_index": 58,
+      "black": 0.0,
+      "source_episode": "h8mx_val_midwest_A_20260714_234300"
+    },
+    "h8sl_test_eastA:o_d": {
+      "file": "frames/h8sl_test_eastA__o_d.jpg",
+      "cam_index": 0,
+      "black": 0.0,
+      "source_episode": "h8mx_val_east_A_20260714_215023"
+    },
+    "h8sl_test_eastA:near": {
+      "file": "frames/h8sl_test_eastA__near.jpg",
+      "cam_index": 43,
+      "black": 0.0,
+      "source_episode": "h8mx_val_east_A_20260714_215023"
+    },
+    "h8sl_test_eastA:far": {
+      "file": "frames/h8sl_test_eastA__far.jpg",
+      "cam_index": 100,
+      "black": 0.0,
+      "source_episode": "h8mx_val_east_A_20260714_215023"
+    }
+  },
+  "episodes": {
+    "h8mx_val_lobby_*": {
+      "eid": "h8mx_val_lobby_20260714_223318",
+      "coll": 0,
+      "Nc": 1442,
+      "Nt": 4120,
+      "scene_gate_pass": true
+    },
+    "h8mx_val_midwest_B_*": {
+      "eid": "h8mx_val_midwest_B_20260714_235324",
+      "coll": 0,
+      "Nc": 1456,
+      "Nt": 4120,
+      "scene_gate_pass": true
+    },
+    "h8mx_val_midwest_A_*": {
+      "eid": "h8mx_val_midwest_A_20260714_234300",
+      "coll": 0,
+      "Nc": 1456,
+      "Nt": 4120,
+      "scene_gate_pass": true
+    },
+    "h8mx_val_east_A_*": {
+      "eid": "h8mx_val_east_A_20260714_215023",
+      "coll": 0,
+      "Nc": 1451,
+      "Nt": 4120,
+      "scene_gate_pass": true
+    }
+  },
+  "split": {
+    "h8sl_train_lobby": "train",
+    "h8sl_val_midwestB": "val",
+    "h8sl_test_eastA": "test"
+  },
+  "stop_separation_m": {
+    "h8sl_train_lobby": 1.0,
+    "h8sl_val_midwestB": 0.6,
+    "h8sl_test_eastA": 0.4
+  }
+}

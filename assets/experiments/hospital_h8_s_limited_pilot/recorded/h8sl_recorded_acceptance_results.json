@@ -1,0 +1,90 @@
+{
+  "status": "LIMITED_CAUSAL_PILOT",
+  "gate_pass": true,
+  "checks": {
+    "scene_gate_pass_all_episodes": true,
+    "camera_raise_0p12": true,
+    "real_camera_image_raw_frames": true,
+    "no_lower_frame_occlusion": true,
+    "provenance_clean_per_split": true,
+    "no_reused_goal_images_across_splits": true,
+    "visual_distinctness_limited_only": true,
+    "east_A_stop_sep_caveat_preserved": true,
+    "collisions_zero_all_episodes": true,
+    "no_strong_heldout_claim": true
+  },
+  "visual": {
+    "classification": "LIMITED_PILOT_ONLY",
+    "max_cross_split_ahash": 0.887,
+    "cross_pairs": [
+      {
+        "a": "h8sl_train_lobby:near",
+        "b": "h8sl_val_midwestB:near",
+        "ahash": 0.703
+      },
+      {
+        "a": "h8sl_train_lobby:near",
+        "b": "h8sl_val_midwestB:far",
+        "ahash": 0.82
+      },
+      {
+        "a": "h8sl_train_lobby:near",
+        "b": "h8sl_test_eastA:near",
+        "ahash": 0.855
+      },
+      {
+        "a": "h8sl_train_lobby:near",
+        "b": "h8sl_test_eastA:far",
+        "ahash": 0.879
+      },
+      {
+        "a": "h8sl_train_lobby:far",
+        "b": "h8sl_val_midwestB:near",
+        "ahash": 0.633
+      },
+      {
+        "a": "h8sl_train_lobby:far",
+        "b": "h8sl_val_midwestB:far",
+        "ahash": 0.797
+      },
+      {
+        "a": "h8sl_train_lobby:far",
+        "b": "h8sl_test_eastA:near",
+        "ahash": 0.871
+      },
+      {
+        "a": "h8sl_train_lobby:far",
+        "b": "h8sl_test_eastA:far",
+        "ahash": 0.887
+      },
+      {
+        "a": "h8sl_val_midwestB:near",
+        "b": "h8sl_test_eastA:near",
+        "ahash": 0.613
+      },
+      {
+        "a": "h8sl_val_midwestB:near",
+        "b": "h8sl_test_eastA:far",
+        "ahash": 0.629
+      },
+      {
+        "a": "h8sl_val_midwestB:far",
+        "b": "h8sl_test_eastA:near",
+        "ahash": 0.77
+      },
+      {
+        "a": "h8sl_val_midwestB:far",
+        "b": "h8sl_test_eastA:far",
+        "ahash": 0.785
+      }
+    ],
+    "reused": []
+  },
+  "max_lower_frame_black_fraction": 0.0,
+  "stop_separations": {
+    "h8sl_train_lobby": 1.0,
+    "h8sl_val_midwestB": 0.6,
+    "h8sl_test_eastA": 0.4
+  },
+  "east_A_caveat": "test stop separation 0.4 m < preferred 0.6 m; acceptable only for the limited pilot"
+}
