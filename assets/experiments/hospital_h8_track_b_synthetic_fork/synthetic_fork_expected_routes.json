@@ -1,7 +1,8 @@
 {
   "label": "SYNTHETIC_DIAGNOSTIC_ONLY",
-  "status": "R2_REVISED_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED",
+  "status": "R3_REVISED_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED",
   "revision_r2_note": "R2 gate-6 fix: branch goal views are now structurally distinct by SHAPE FAMILY (A/N=ROUND: white disc sign + blue sphere prop + horizontal stripes; B/W=POINTED: yellow cone sign + green cone prop; distractor E=BOXY: square sign + crate; approach S=CYLINDRICAL: vertical bars + cylinder), not just recoloured end walls.",
+  "revision_r3_note": "R3 corridor-shell fix: each arm now has branch-tinted side walls + a branch-colour floor strip + a shape-family side-wall relief, and the goal-image cameras are pulled back to ~2.3 m standoff (goalA at (0,1.2), goalB at (-1.2,0)) so the whole corridor shell + signs + props are in-frame.",
   "scene": "synthetic_diagnostic_fork (four_way_cross)",
   "frame": "ENU, meters, yaw 0=+X east / N=90 / W=180 / S=270",
   "decision_point": [0.0, 0.0],

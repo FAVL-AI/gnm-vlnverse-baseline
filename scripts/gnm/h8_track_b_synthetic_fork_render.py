@@ -42,9 +42,11 @@ W, H = 640, 480
 Z_CAM = 0.47
 AIM = 2.0
 DIRS = [("E", 0.0), ("N", 90.0), ("W", 180.0), ("S", 270.0)]
+GOAL_STANDOFF_M = float(os.environ.get("H8_SFORK_GOAL_STANDOFF", "2.3"))  # dist from end wall (R3: pulled back)
+_gy = round(3.5 - GOAL_STANDOFF_M, 3)   # end wall inner face at 3.5 m -> goal-cam coord
 NAMED = [("decision", (0.0, -1.2, Z_CAM), 90.0),
-         ("goalA_img", (0.0, 2.2, Z_CAM), 90.0),
-         ("goalB_img", (-2.2, 0.0, Z_CAM), 180.0)]
+         ("goalA_img", (0.0, _gy, Z_CAM), 90.0),     # north arm, standoff ~2.3 m from blue wall
+         ("goalB_img", (-_gy, 0.0, Z_CAM), 180.0)]   # west arm, standoff ~2.3 m from green wall
 
 
 def aim_at(cam, tgt):

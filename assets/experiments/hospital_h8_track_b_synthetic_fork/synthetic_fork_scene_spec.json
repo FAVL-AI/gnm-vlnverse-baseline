@@ -1,10 +1,11 @@
 {
   "label": "SYNTHETIC_DIAGNOSTIC_ONLY",
   "not": ["hospital", "real_world", "benchmark", "SOTA", "promotion", "autonomy_claim"],
-  "status": "R2_REVISED_FOR_VISUAL_DISTINCTNESS_RENDER_SCAN_GATES_1_7_ONLY_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED",
+  "status": "R3_REVISED_BRANCH_SPECIFIC_CORRIDOR_SHELL_RENDER_SCAN_GATES_1_7_ONLY_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED",
   "revision_history": {
     "r1": "flat-colour end walls + small centered markers. Render-scan (commit be6ba04): geometry gates 1-4,7 PASS, but GATE 6 (embedding distinctness) FAILED (DINO 0.734 goal images / 0.79 center N-vs-W >= 0.60) — branches structurally identical, differ only in hue + small marker.",
-    "r2": "each branch given a distinct SHAPE FAMILY (round/pointed/boxy/cylindrical) + large sign + floor prop + wall pattern, to make branch goal views structurally/texturally distinct for a structure-focused encoder. Re-run render-scan gates 1-7 only."
+    "r2": "each branch given a distinct SHAPE FAMILY (round/pointed/boxy/cylindrical) + large sign + floor prop + wall pattern. Render-scan (commit 6930b65): geometry still PASS, distinctness improved (center 0.79->0.62, goal images 0.734->0.649) but GATE 6 STILL FAILED (>= 0.60): close goal images were mostly flat wall and all arms shared an identical gray corridor shell that dominated the embedding.",
+    "r3": "branch-specific CORRIDOR SHELL: per-arm tinted side walls (MatWallN/W/E/S), per-arm branch-colour floor strip, per-arm shape-family side-wall relief (N horizontal bands, W cone pylons, E square panels, S vertical bars); goal-image cameras pulled back to ~2.3 m standoff so the distinctive structure is in-frame. Re-run render-scan gates 1-7 only."
   },
   "purpose": "Idealized, authored branch-choice junction to test the H8 goal-conditioned angular branch-selection hypothesis in isolation from scene-sourcing confounds, after five real-world-like Isaac scenes failed the Track-B render-valid-junction gate. A synthetic diagnostic isolates the model/objective question from the (now-exhausted) real-asset geometry question.",
   "provenance": {
@@ -43,6 +44,7 @@
       "W": {"heading_deg": 180, "end_wall_inner_x": -3.5, "role": "branch_B_left",                "color": "green",  "shape_family_r2": "POINTED",     "identity_r2": "big yellow triangular (cone) sign + green cone floor prop + dark chevron cone"}
     },
     "branch_visual_identity_r2_note": "R2 gate-6 fix: each branch has a distinct SHAPE FAMILY (round/pointed/boxy/cylindrical), not just a hue + small centered marker, so a structure-focused, largely colour-invariant encoder (DINO) sees genuinely different scenes. Signs sit high on the end wall and wall patterns are flush (depth kept >= 3.0 m); floor props are offset + low so central depth-openness is preserved.",
+    "branch_visual_identity_r3_note": "R3 corridor-shell fix: the whole field of view now differs per branch, not just the end wall. Per-arm SIDE WALLS are tinted (N blue, W green, E orange, S red via MatWallN/W/E/S), each arm has a branch-colour FLOOR STRIP, and each arm has a shape-family SIDE-WALL RELIEF (N horizontal bands, W yellow cone pylons, E dark square panels, S dark vertical bars). Goal-image cameras pulled back to ~2.3 m standoff so signs/props/shell are in-frame. Reliefs are flush on walls / flat on floor (off the central column) so central depth-openness stays 3.5 m.",
     "safety_envelope": {
       "CL_BOUND_XY": 6.0,
       "CL_BOUND_XY_unchanged": true,

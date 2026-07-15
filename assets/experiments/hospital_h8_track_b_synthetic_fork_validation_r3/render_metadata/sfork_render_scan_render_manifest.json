@@ -1,0 +1,138 @@
+{
+  "label": "SYNTHETIC_DIAGNOSTIC_ONLY",
+  "scene_id": "synthetic_diagnostic_fork",
+  "asset_path": "/home/favl/robotics/gnm-vlnverse-baseline/assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+  "isaac_sim_version": "5.1.0.0",
+  "resolution": [
+    640,
+    480
+  ],
+  "camera_height_m": 0.47,
+  "directions": [
+    "E",
+    "N",
+    "W",
+    "S"
+  ],
+  "free_camera_no_robot_body": true,
+  "cl_bound_xy_touched": false,
+  "scenes": [
+    {
+      "scene_id": "synthetic_diagnostic_fork",
+      "asset_path": "/home/favl/robotics/gnm-vlnverse-baseline/assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+      "ref_authored": true,
+      "prim_count": 83,
+      "world_bbox": [
+        -4.0,
+        -4.0,
+        -0.1,
+        4.0,
+        4.0,
+        2.5
+      ],
+      "scene_load_ok": true,
+      "load_probe": {
+        "mean_luma": 117.8,
+        "lower_frame_black_frac": 0.0028,
+        "median_depth_central_m": 3.5,
+        "eye": [
+          0.0,
+          0.0,
+          0.47
+        ],
+        "yaw_deg": 90.0
+      },
+      "probes": [
+        {
+          "probe_id": "center",
+          "eye": [
+            0.0,
+            0.0,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 123.7,
+              "lower_frame_black_frac": 0.0024,
+              "median_depth_central_m": 3.5,
+              "eye": [
+                0.0,
+                0.0,
+                0.47
+              ],
+              "yaw_deg": 0.0
+            },
+            "N": {
+              "mean_luma": 121.2,
+              "lower_frame_black_frac": 0.0026,
+              "median_depth_central_m": 3.5,
+              "eye": [
+                0.0,
+                0.0,
+                0.47
+              ],
+              "yaw_deg": 90.0
+            },
+            "W": {
+              "mean_luma": 105.7,
+              "lower_frame_black_frac": 0.0009,
+              "median_depth_central_m": 3.5,
+              "eye": [
+                0.0,
+                0.0,
+                0.47
+              ],
+              "yaw_deg": 180.0
+            },
+            "S": {
+              "mean_luma": 95.9,
+              "lower_frame_black_frac": 0.0025,
+              "median_depth_central_m": 3.5,
+              "eye": [
+                0.0,
+                0.0,
+                0.47
+              ],
+              "yaw_deg": 270.0
+            }
+          }
+        }
+      ],
+      "named_frames": {
+        "decision": {
+          "mean_luma": 143.5,
+          "lower_frame_black_frac": 0.0,
+          "median_depth_central_m": 4.64,
+          "eye": [
+            0.0,
+            -1.2,
+            0.47
+          ],
+          "yaw_deg": 90.0
+        },
+        "goalA_img": {
+          "mean_luma": 87.9,
+          "lower_frame_black_frac": 0.0102,
+          "median_depth_central_m": 2.3,
+          "eye": [
+            0.0,
+            1.2,
+            0.47
+          ],
+          "yaw_deg": 90.0
+        },
+        "goalB_img": {
+          "mean_luma": 76.2,
+          "lower_frame_black_frac": 0.0031,
+          "median_depth_central_m": 2.3,
+          "eye": [
+            -1.2,
+            0.0,
+            0.47
+          ],
+          "yaw_deg": 180.0
+        }
+      }
+    }
+  ]
+}

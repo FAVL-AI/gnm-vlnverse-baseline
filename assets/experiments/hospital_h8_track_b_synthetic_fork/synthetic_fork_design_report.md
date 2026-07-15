@@ -137,6 +137,29 @@ is verified by re-running render-scan gates 1–7 (see
 `assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r2/`). No hue-only or small-marker-
 only differences remain.
 
+## 5c. R3 revision — branch-specific corridor shell (gate-6 fix, round 3)
+
+R2 (commit `6930b65`) improved distinctness (center N-vs-W 0.79 → 0.62, goal images 0.734 → 0.649)
+but **still failed gate 6** (≥ 0.60). Contact-sheet analysis isolated two residual causes: (1) the
+close goal images sat 1.3 m from the wall and were dominated by flat colour, and (2) every arm shared
+an **identical gray corridor shell** (side walls, floor, ceiling) that dominated the DINO embedding.
+
+R3 makes the **whole field of view** branch-specific, keeping the valid 4-way cross geometry, 90°
+A–B separation, depth-openness, and `CL_BOUND_XY = 6.0`:
+
+| branch | side walls | floor strip | side-wall relief | end identity (from R2) |
+|---|---|---|---|---|
+| N (A) | blue tint (`MatWallN`) | blue runner | white horizontal bands | disc sign + sphere |
+| W (B) | green tint (`MatWallW`) | green runner | yellow cone pylons | cone sign + cone prop |
+| E (dist.) | orange tint (`MatWallE`) | orange runner | dark square panels | square sign + crate |
+| S (appr.) | red tint (`MatWallS`) | red runner | dark vertical bars | cylinder prop |
+
+Plus the **goal-image cameras are pulled back to ~2.3 m standoff** (goalA at `(0,1.2)`, goalB at
+`(-1.2,0)`) so the signs, props, floor strip, and tinted shell all appear in the goal view. All
+reliefs are flush on walls / flat on the floor (off the central column), so central depth-openness
+stays 3.5 m. Verified by re-running render-scan gates 1–7
+(`assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r3/`).
+
 ## 6. Claim boundary (canonical statements — apply to every artifact in this design set)
 
 1. This is a **SYNTHETIC_DIAGNOSTIC_ONLY** scene.

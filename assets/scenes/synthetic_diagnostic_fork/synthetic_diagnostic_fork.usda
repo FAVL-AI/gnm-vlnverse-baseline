@@ -110,6 +110,50 @@ def Xform "World"
                 token outputs:surface
             }
         }
+        def Material "MatWallN"
+        {
+            token outputs:surface.connect = </World/Looks/MatWallN/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.42, 0.54, 0.86)
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+        def Material "MatWallW"
+        {
+            token outputs:surface.connect = </World/Looks/MatWallW/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.46, 0.74, 0.48)
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+        def Material "MatWallE"
+        {
+            token outputs:surface.connect = </World/Looks/MatWallE/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.90, 0.66, 0.40)
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+        def Material "MatWallS"
+        {
+            token outputs:surface.connect = </World/Looks/MatWallS/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.50, 0.52)
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
     }
 
     # ---- Structure: floor, corridor side walls, coloured end panels, markers ----
@@ -131,7 +175,7 @@ def Xform "World"
         def Cube "N_wall_W" (prepend apiSchemas = ["MaterialBindingAPI"])
         {
             double size = 2
-            rel material:binding = </World/Looks/MatWall>
+            rel material:binding = </World/Looks/MatWallN>
             double3 xformOp:translate = (-1.05, 2.25, 1.25)
             double3 xformOp:scale = (0.05, 1.25, 1.25)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
@@ -139,7 +183,7 @@ def Xform "World"
         def Cube "N_wall_E" (prepend apiSchemas = ["MaterialBindingAPI"])
         {
             double size = 2
-            rel material:binding = </World/Looks/MatWall>
+            rel material:binding = </World/Looks/MatWallN>
             double3 xformOp:translate = (1.05, 2.25, 1.25)
             double3 xformOp:scale = (0.05, 1.25, 1.25)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
@@ -149,7 +193,7 @@ def Xform "World"
         def Cube "S_wall_W" (prepend apiSchemas = ["MaterialBindingAPI"])
         {
             double size = 2
-            rel material:binding = </World/Looks/MatWall>
+            rel material:binding = </World/Looks/MatWallS>
             double3 xformOp:translate = (-1.05, -2.25, 1.25)
             double3 xformOp:scale = (0.05, 1.25, 1.25)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
@@ -157,7 +201,7 @@ def Xform "World"
         def Cube "S_wall_E" (prepend apiSchemas = ["MaterialBindingAPI"])
         {
             double size = 2
-            rel material:binding = </World/Looks/MatWall>
+            rel material:binding = </World/Looks/MatWallS>
             double3 xformOp:translate = (1.05, -2.25, 1.25)
             double3 xformOp:scale = (0.05, 1.25, 1.25)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
@@ -167,7 +211,7 @@ def Xform "World"
         def Cube "E_wall_S" (prepend apiSchemas = ["MaterialBindingAPI"])
         {
             double size = 2
-            rel material:binding = </World/Looks/MatWall>
+            rel material:binding = </World/Looks/MatWallE>
             double3 xformOp:translate = (2.25, -1.05, 1.25)
             double3 xformOp:scale = (1.25, 0.05, 1.25)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
@@ -175,7 +219,7 @@ def Xform "World"
         def Cube "E_wall_N" (prepend apiSchemas = ["MaterialBindingAPI"])
         {
             double size = 2
-            rel material:binding = </World/Looks/MatWall>
+            rel material:binding = </World/Looks/MatWallE>
             double3 xformOp:translate = (2.25, 1.05, 1.25)
             double3 xformOp:scale = (1.25, 0.05, 1.25)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
@@ -185,7 +229,7 @@ def Xform "World"
         def Cube "W_wall_S" (prepend apiSchemas = ["MaterialBindingAPI"])
         {
             double size = 2
-            rel material:binding = </World/Looks/MatWall>
+            rel material:binding = </World/Looks/MatWallW>
             double3 xformOp:translate = (-2.25, -1.05, 1.25)
             double3 xformOp:scale = (1.25, 0.05, 1.25)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
@@ -193,7 +237,7 @@ def Xform "World"
         def Cube "W_wall_N" (prepend apiSchemas = ["MaterialBindingAPI"])
         {
             double size = 2
-            rel material:binding = </World/Looks/MatWall>
+            rel material:binding = </World/Looks/MatWallW>
             double3 xformOp:translate = (-2.25, 1.05, 1.25)
             double3 xformOp:scale = (1.25, 0.05, 1.25)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
@@ -420,6 +464,187 @@ def Xform "World"
             rel material:binding = </World/Looks/MatRed>
             double3 xformOp:translate = (0.68, -2.7, 0.42)
             uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        # ============================================================================
+        # R3 branch-specific CORRIDOR-SHELL distinctness (gate-6 fix, round 3).
+        # R2 left every arm sharing an identical gray shell (side walls/floor/ceiling)
+        # which dominated the DINO embedding (center N-vs-W 0.62). R3 makes the whole
+        # field of view differ per branch: (a) side walls already re-tinted per arm
+        # (MatWallN/W/E/S), (b) a branch-colour FLOOR STRIP down each arm, (c) a
+        # branch shape-family SIDE-WALL RELIEF along each arm. All reliefs are flush on
+        # the walls / flat on the floor (off the central column), so central
+        # depth-openness (3.5 m) is preserved.
+        # ============================================================================
+
+        # -- Floor strips (branch-colour runner down each arm, flush on floor) --
+        def Cube "N_floor_strip" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatBlue>
+            double3 xformOp:translate = (0, 2.25, 0.02)
+            double3 xformOp:scale = (0.4, 1.25, 0.02)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "W_floor_strip" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatGreen>
+            double3 xformOp:translate = (-2.25, 0, 0.02)
+            double3 xformOp:scale = (1.25, 0.4, 0.02)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "E_floor_strip" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatOrange>
+            double3 xformOp:translate = (2.25, 0, 0.02)
+            double3 xformOp:scale = (1.25, 0.4, 0.02)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "S_floor_strip" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatRed>
+            double3 xformOp:translate = (0, -2.25, 0.02)
+            double3 xformOp:scale = (0.4, 1.25, 0.02)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # -- North side-wall relief: horizontal ROUND-branch bands (flush at x = +/-0.98) --
+        def Cube "N_band_W1" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWhite>
+            double3 xformOp:translate = (-0.98, 2.25, 0.7)
+            double3 xformOp:scale = (0.02, 1.2, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "N_band_W2" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWhite>
+            double3 xformOp:translate = (-0.98, 2.25, 1.6)
+            double3 xformOp:scale = (0.02, 1.2, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "N_band_E1" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWhite>
+            double3 xformOp:translate = (0.98, 2.25, 0.7)
+            double3 xformOp:scale = (0.02, 1.2, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "N_band_E2" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWhite>
+            double3 xformOp:translate = (0.98, 2.25, 1.6)
+            double3 xformOp:scale = (0.02, 1.2, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # -- West side-wall relief: POINTED-branch cone pylons lining the corridor base --
+        def Cone "W_pylon_1" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 0.5
+            double radius = 0.14
+            rel material:binding = </World/Looks/MatYellow>
+            double3 xformOp:translate = (-1.9, -0.82, 0.25)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cone "W_pylon_2" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 0.5
+            double radius = 0.14
+            rel material:binding = </World/Looks/MatYellow>
+            double3 xformOp:translate = (-2.7, -0.82, 0.25)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cone "W_pylon_3" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 0.5
+            double radius = 0.14
+            rel material:binding = </World/Looks/MatYellow>
+            double3 xformOp:translate = (-1.9, 0.82, 0.25)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cone "W_pylon_4" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 0.5
+            double radius = 0.14
+            rel material:binding = </World/Looks/MatYellow>
+            double3 xformOp:translate = (-2.7, 0.82, 0.25)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        # -- East side-wall relief: BOXY-branch square panels (flush at y = +/-0.98) --
+        def Cube "E_panel_1" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (1.9, -0.98, 1.0)
+            double3 xformOp:scale = (0.16, 0.02, 0.16)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "E_panel_2" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (2.7, -0.98, 1.0)
+            double3 xformOp:scale = (0.16, 0.02, 0.16)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "E_panel_3" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (1.9, 0.98, 1.0)
+            double3 xformOp:scale = (0.16, 0.02, 0.16)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "E_panel_4" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (2.7, 0.98, 1.0)
+            double3 xformOp:scale = (0.16, 0.02, 0.16)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # -- South side-wall relief: CYLINDRICAL-branch vertical bars (flush at x = +/-0.98) --
+        def Cube "S_vbar_1" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (-0.98, -2.6, 1.15)
+            double3 xformOp:scale = (0.02, 0.14, 0.7)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "S_vbar_2" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (-0.98, -1.9, 1.15)
+            double3 xformOp:scale = (0.02, 0.14, 0.7)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "S_vbar_3" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (0.98, -2.6, 1.15)
+            double3 xformOp:scale = (0.02, 0.14, 0.7)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "S_vbar_4" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatDark>
+            double3 xformOp:translate = (0.98, -1.9, 1.15)
+            double3 xformOp:scale = (0.02, 0.14, 0.7)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
         }
     }
 
