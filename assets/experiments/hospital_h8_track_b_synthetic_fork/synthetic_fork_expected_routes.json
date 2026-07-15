@@ -1,0 +1,59 @@
+{
+  "label": "SYNTHETIC_DIAGNOSTIC_ONLY",
+  "status": "DESIGN_SPEC_ONLY_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED",
+  "scene": "synthetic_diagnostic_fork (four_way_cross)",
+  "frame": "ENU, meters, yaw 0=+X east / N=90 / W=180 / S=270",
+  "decision_point": [0.0, 0.0],
+  "start_pose": {"xy": [0.0, -3.0], "heading_deg": 90},
+  "routes": [
+    {
+      "id": "route_A_straight_north",
+      "goal_xy": [0.0, 3.0],
+      "goal_heading_deg": 90,
+      "goal_view": "blue end wall + white circle",
+      "waypoints": [[0.0, -3.0], [0.0, -1.0], [0.0, 0.0], [0.0, 1.0], [0.0, 3.0]],
+      "decision_local_action": "STRAIGHT",
+      "action_sequence_summary": ["forward", "forward", "(decision) forward", "forward"]
+    },
+    {
+      "id": "route_B_left_west",
+      "goal_xy": [-3.0, 0.0],
+      "goal_heading_deg": 180,
+      "goal_view": "green end wall + white triangle",
+      "waypoints": [[0.0, -3.0], [0.0, -1.0], [0.0, 0.0], [-1.0, 0.0], [-3.0, 0.0]],
+      "decision_local_action": "TURN_LEFT_90",
+      "action_sequence_summary": ["forward", "forward", "(decision) turn_left_90", "forward", "forward"]
+    }
+  ],
+  "shared_approach": {
+    "from": [0.0, -3.0],
+    "to": [0.0, 0.0],
+    "note": "Both routes share the south approach corridor and diverge only at the decision point (0,0). The discriminative content is the decision frame + branch frames, NOT the shared approach."
+  },
+  "divergence": {"deg": 90, "collinear": false, "different_local_actions": true},
+  "distractor": {
+    "id": "route_C_right_east_optional",
+    "goal_xy": [3.0, 0.0],
+    "goal_heading_deg": 0,
+    "goal_view": "orange end wall + white square",
+    "role": "optional third option / distractor; NOT part of the primary A-vs-B branch-choice pair"
+  },
+  "forbidden_goal_pairs": [["route_A_straight_north", "approach_south"], ["route_C_right_east", "branch_B_left_west"]],
+  "forbidden_goal_pairs_note": "Never train a goal pair that is collinear (N vs S, or E vs W). Collinear near/far pairs are the exact trap the Track-B gate rejects (the p13 warehouse_full / p22 multi-shelf failure mode).",
+  "envelope_check": {"all_waypoints_abs_xy_max_m": 3.0, "CL_BOUND_XY": 6.0, "within_envelope": true},
+  "leakage_note": "A single junction has only 2 goal coordinates; to satisfy train>=12 / val>=4 / test>=6 with NO cross-split reuse of goals/coordinates, the dataset must draw from >=6 DISJOINT junction instances (see synthetic_fork_scene_spec.json min_dataset).",
+  "claim_boundary_statements": [
+    "This is a SYNTHETIC_DIAGNOSTIC_ONLY scene.",
+    "It is not hospital evidence.",
+    "It is not real-scene / real-world evidence.",
+    "It is not benchmark evidence.",
+    "It is not promotion (DIAGNOSTIC_ONLY_NOT_PROMOTED; incumbent retained).",
+    "It is not full goal-conditioned ImageNav evidence.",
+    "It is not SOTA.",
+    "It makes no autonomy claim.",
+    "It carries no training authorization (training remains blocked).",
+    "CL_BOUND_XY is unchanged (6.0 m watchdog untouched).",
+    "One cross is not enough for a leakage-safe train/val/test split (a single junction has only two goal coordinates).",
+    "Future training requires a family of at least 6 disjoint junction instances (split by instance; no cross-split reuse of frames/goals/coordinates/instances)."
+  ]
+}

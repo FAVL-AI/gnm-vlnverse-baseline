@@ -1,0 +1,110 @@
+{
+  "label": "SYNTHETIC_DIAGNOSTIC_ONLY",
+  "not": ["hospital", "real_world", "benchmark", "SOTA", "promotion", "autonomy_claim"],
+  "status": "DESIGN_SPEC_ONLY_NOT_BUILT_NOT_RENDERED_NOT_DRIVEN_NOT_RECORDED_NOT_TRAINED_NOT_COMMITTED",
+  "purpose": "Idealized, authored branch-choice junction to test the H8 goal-conditioned angular branch-selection hypothesis in isolation from scene-sourcing confounds, after five real-world-like Isaac scenes failed the Track-B render-valid-junction gate. A synthetic diagnostic isolates the model/objective question from the (now-exhausted) real-asset geometry question.",
+  "provenance": {
+    "authored_by_project": true,
+    "vendored_real_asset": false,
+    "five_failed_real_scenes": ["hospital", "office_isaac", "warehouse_simple", "warehouse_full", "warehouse_multiple_shelves"],
+    "failed_scene_evidence_commits": {"hospital": "ff93e46", "office_isaac_warehouse_simple": "21444e3", "warehouse_full": "4e919ef", "warehouse_multiple_shelves": "4b350c3"},
+    "governing_docs": [
+      "docs/research/H8_TRACK_B_SCENE_SOURCING_REQUIREMENTS.md",
+      "assets/experiments/hospital_h8_track_b_scene_sourcing/track_b_scene_source_shortlist.md",
+      "assets/experiments/hospital_h8_track_b_multi_shelf_scan/multi_shelf_render_scan_report.md"
+    ]
+  },
+  "frame": {
+    "axes": "ENU",
+    "x": "east(+)/west(-)",
+    "y": "north(+)/south(-)",
+    "z": "up",
+    "units": "m",
+    "yaw_convention_deg": "0=+X (east), CCW positive, so N=90, W=180, S=270"
+  },
+  "geometry": {
+    "type": "four_way_cross",
+    "why_cross_not_T": "The Track-B cardinal render-scan classifies a left/right T-junction as COLLINEAR_AISLE_NOT_JUNCTION because its two arms form one straight through-corridor (ns_open XOR ew_open). A 4-way cross makes BOTH axes through-corridors (ns_open==ew_open), so the analyzer treats the center as a junction and the trained branch choice is a genuine PERPENDICULAR pair (90 deg), never a collinear 180 deg pair.",
+    "junction_center": [0.0, 0.0],
+    "decision_point": [0.0, 0.0],
+    "corridor_half_width_m": 1.0,
+    "arm_length_m": 3.5,
+    "wall_thickness_m": 0.1,
+    "wall_height_m": 2.5,
+    "robot_eye_z_m": 0.47,
+    "arms": {
+      "N": {"heading_deg": 90,  "end_wall_inner_y": 3.5,  "role": "branch_A_straight",           "color": "blue",   "marker": "white_circle",   "floor_cue": "forward_arrow"},
+      "S": {"heading_deg": 270, "end_wall_inner_y": -3.5, "role": "approach_decision_corridor",   "color": "red",    "marker": "white_cross",    "floor_cue": "start_pad"},
+      "E": {"heading_deg": 0,   "end_wall_inner_x": 3.5,  "role": "distractor_right_optional",    "color": "orange", "marker": "white_square",   "floor_cue": "right_arrow"},
+      "W": {"heading_deg": 180, "end_wall_inner_x": -3.5, "role": "branch_B_left",                "color": "green",  "marker": "white_triangle", "floor_cue": "left_arrow"}
+    },
+    "safety_envelope": {
+      "CL_BOUND_XY": 6.0,
+      "CL_BOUND_XY_unchanged": true,
+      "max_abs_xy_reachable_m": 3.5,
+      "within_envelope": true,
+      "note": "All navigable points satisfy |x|,|y| <= 3.5 m, comfortably inside the hardcoded 6.0 m safety watchdog. CL_BOUND_XY is NOT modified."
+    }
+  },
+  "render_scan_expectation": {
+    "method": "same corrected cardinal render-scan as Track-B (E/N/W/S RGB + distance_to_image_plane depth, DomeLight 1000, robot-eye z=0.47)",
+    "center_probe": [0.0, 0.0],
+    "cardinal_depth_m": {"N": 3.5, "S": 3.5, "E": 3.5, "W": 3.5},
+    "all_open_ge_3m": true,
+    "open_floor_guard_fires": false,
+    "open_floor_note": "Depths in [3.0,4.0) => open (>=3.0) but below the 4.0 m open-floor threshold => EXPECTED to satisfy the render-valid junction gate, pending render-scan validation (not a result until gates 1-7 run). If arms are lengthened past ~3.9 m the center reads all-4 >= 4.0 => OPEN_FLOOR_NOT_JUNCTION, which then REQUIRES the mandatory gate-5 contact-sheet visual override (a genuine walled cross is verified by eye, not by depth alone).",
+    "ns_open": true,
+    "ew_open": true,
+    "collinear_flag": false,
+    "selected_perp_pair_deg": 90,
+    "expected_class": "RENDER_VALID_JUNCTION",
+    "caveat": "Cardinal sampling resolves orthogonal (90 deg) junctions, not oblique forks. Any 60-70 deg Y-variant is NOT confirmable by this scan and must be drive+visual validated only."
+  },
+  "trained_branches": {
+    "A": {"name": "straight_north", "goal_xy": [0.0, 3.0], "goal_heading_deg": 90,  "goal_view": "blue end wall + white circle",   "local_action": "STRAIGHT"},
+    "B": {"name": "left_west",      "goal_xy": [-3.0, 0.0], "goal_heading_deg": 180, "goal_view": "green end wall + white triangle", "local_action": "TURN_LEFT_90"},
+    "divergence_deg": 90,
+    "different_local_actions": true,
+    "collinear_pair_forbidden": true,
+    "collinear_note": "The N-S and E-W arms are each collinear pairs. The trained goal pair is ALWAYS perpendicular (A=N, B=W). Never pair N with S or E with W as the two goals — that is the collinear near/far trap the Track-B gate rejects."
+  },
+  "start_pose": {"xy": [0.0, -3.0], "heading_deg": 90, "note": "In the south approach corridor, facing north toward the decision point (0,0). The approach corridor is shared by both routes; they diverge only at (0,0)."},
+  "visual_design": {
+    "distinct_end_panels": true,
+    "distinct_markers": true,
+    "branch_specific_floor_cues": true,
+    "no_blank_black_identical_dark_occluded": true,
+    "lighting": {"dome_intensity": 1000, "per_arm_accent": "optional", "target": "luma >= 15, low lower-frame black fraction, unoccluded straight corridors"},
+    "dino_distinctness_target": "cosine(goalA_view, goalB_view) < 0.60 with margin, achieved via distinct hue (blue vs green) AND distinct marker shape (circle vs triangle) AND distinct floor cue (forward vs left arrow)"
+  },
+  "min_dataset": {
+    "train_episodes": 12,
+    "val_episodes": 4,
+    "test_episodes": 6,
+    "instance_family_required": true,
+    "min_instances": 6,
+    "instance_split_disjoint": {
+      "train": ">=3 instances",
+      "val": ">=1 instance",
+      "test": ">=2 instances",
+      "rule": "Junction instances are DISJOINT across splits. Episodes within a split are drawn only from that split's instances via start-pose jitter. This guarantees no goal image, coordinate, or frame crosses splits."
+    },
+    "instance_variation_axes": ["color_assignment_permutation", "marker_shape_set", "arm_length_3.2_to_3.8m", "floor_cue_variant", "cross_orientation"],
+    "no_cross_split_reuse": ["frames", "goal_images", "coordinates", "goal_ids", "junction_instances"],
+    "leakage_rule": "No frame, goal image, coordinate, or junction instance may appear in more than one split. Goal images are hashed and instance ids + coordinates checked disjoint before any training."
+  },
+  "claim_boundary_statements": [
+    "This is a SYNTHETIC_DIAGNOSTIC_ONLY scene.",
+    "It is not hospital evidence.",
+    "It is not real-scene / real-world evidence.",
+    "It is not benchmark evidence.",
+    "It is not promotion (DIAGNOSTIC_ONLY_NOT_PROMOTED; incumbent retained).",
+    "It is not full goal-conditioned ImageNav evidence.",
+    "It is not SOTA.",
+    "It makes no autonomy claim.",
+    "It carries no training authorization (training remains blocked).",
+    "CL_BOUND_XY is unchanged (6.0 m watchdog untouched).",
+    "One cross is not enough for a leakage-safe train/val/test split (a single junction has only two goal coordinates).",
+    "Future training requires a family of at least 6 disjoint junction instances (split by instance; no cross-split reuse of frames/goals/coordinates/instances)."
+  ]
+}

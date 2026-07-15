@@ -1,0 +1,262 @@
+#usda 1.0
+(
+    "SYNTHETIC_DIAGNOSTIC_ONLY — H8-M Track-B authored 4-way cross junction."
+    "UNVALIDATED design artifact: NOT yet render-checked, drive-validated, recorded, trained,"
+    "or committed. NOT the hospital, NOT a real-world scene, NOT benchmark evidence."
+    "Governed by assets/experiments/hospital_h8_track_b_synthetic_fork/ (spec + claim boundary)."
+    defaultPrim = "World"
+    metersPerUnit = 1
+    upAxis = "Z"
+    customLayerData = {
+        string diagnostic_label = "SYNTHETIC_DIAGNOSTIC_ONLY"
+        string junction_type = "four_way_cross"
+        string status = "DESIGN_UNVALIDATED_NOT_RENDERED_NOT_DRIVEN_NOT_TRAINED"
+        string cl_bound_xy = "unchanged (6.0); scene fits within +/-3.5 m"
+    }
+)
+
+def Xform "World"
+{
+    custom string diagnostic_label = "SYNTHETIC_DIAGNOSTIC_ONLY"
+
+    # ---- Lighting ----
+    def DomeLight "Dome"
+    {
+        float inputs:intensity = 1000
+    }
+
+    # ---- Materials ----
+    def Scope "Looks"
+    {
+        def Material "MatWall"
+        {
+            token outputs:surface.connect = </World/Looks/MatWall/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.70, 0.70, 0.72)
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+        def Material "MatBlue"
+        {
+            token outputs:surface.connect = </World/Looks/MatBlue/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.10, 0.20, 0.85)
+                token outputs:surface
+            }
+        }
+        def Material "MatGreen"
+        {
+            token outputs:surface.connect = </World/Looks/MatGreen/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.10, 0.70, 0.20)
+                token outputs:surface
+            }
+        }
+        def Material "MatOrange"
+        {
+            token outputs:surface.connect = </World/Looks/MatOrange/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.50, 0.10)
+                token outputs:surface
+            }
+        }
+        def Material "MatRed"
+        {
+            token outputs:surface.connect = </World/Looks/MatRed/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.15, 0.15)
+                token outputs:surface
+            }
+        }
+        def Material "MatWhite"
+        {
+            token outputs:surface.connect = </World/Looks/MatWhite/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.95, 0.95)
+                token outputs:surface
+            }
+        }
+    }
+
+    # ---- Structure: floor, corridor side walls, coloured end panels, markers ----
+    # Cube "size = 2" => unit half-extents (1,1,1); xformOp:scale sets half-extents in metres.
+    # Navigable + cross: half-width 1.0 m, arm length 3.5 m, wall height 2.5 m, thickness 0.1 m.
+    # Floor-cue arrow decals (forward/left/right/start) are TODO for the build step.
+    def Xform "Structure"
+    {
+        def Cube "Floor" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWall>
+            double3 xformOp:translate = (0, 0, -0.05)
+            double3 xformOp:scale = (4.0, 4.0, 0.05)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # -- North arm side walls (x = +/-1, y in [1, 3.5]) --
+        def Cube "N_wall_W" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWall>
+            double3 xformOp:translate = (-1.05, 2.25, 1.25)
+            double3 xformOp:scale = (0.05, 1.25, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "N_wall_E" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWall>
+            double3 xformOp:translate = (1.05, 2.25, 1.25)
+            double3 xformOp:scale = (0.05, 1.25, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # -- South arm side walls (x = +/-1, y in [-3.5, -1]) --
+        def Cube "S_wall_W" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWall>
+            double3 xformOp:translate = (-1.05, -2.25, 1.25)
+            double3 xformOp:scale = (0.05, 1.25, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "S_wall_E" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWall>
+            double3 xformOp:translate = (1.05, -2.25, 1.25)
+            double3 xformOp:scale = (0.05, 1.25, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # -- East arm side walls (y = +/-1, x in [1, 3.5]) --
+        def Cube "E_wall_S" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWall>
+            double3 xformOp:translate = (2.25, -1.05, 1.25)
+            double3 xformOp:scale = (1.25, 0.05, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "E_wall_N" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWall>
+            double3 xformOp:translate = (2.25, 1.05, 1.25)
+            double3 xformOp:scale = (1.25, 0.05, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # -- West arm side walls (y = +/-1, x in [-3.5, -1]) --
+        def Cube "W_wall_S" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWall>
+            double3 xformOp:translate = (-2.25, -1.05, 1.25)
+            double3 xformOp:scale = (1.25, 0.05, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "W_wall_N" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWall>
+            double3 xformOp:translate = (-2.25, 1.05, 1.25)
+            double3 xformOp:scale = (1.25, 0.05, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # -- Coloured end panels (branch-specific goal cues) --
+        def Cube "End_N_blue" (prepend apiSchemas = ["MaterialBindingAPI"])   # branch A (STRAIGHT)
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatBlue>
+            double3 xformOp:translate = (0, 3.55, 1.25)
+            double3 xformOp:scale = (1.0, 0.05, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "End_W_green" (prepend apiSchemas = ["MaterialBindingAPI"])  # branch B (LEFT)
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatGreen>
+            double3 xformOp:translate = (-3.55, 0, 1.25)
+            double3 xformOp:scale = (0.05, 1.0, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "End_E_orange" (prepend apiSchemas = ["MaterialBindingAPI"]) # distractor (optional route C)
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatOrange>
+            double3 xformOp:translate = (3.55, 0, 1.25)
+            double3 xformOp:scale = (0.05, 1.0, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "End_S_red" (prepend apiSchemas = ["MaterialBindingAPI"])    # approach / behind start
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatRed>
+            double3 xformOp:translate = (0, -3.55, 1.25)
+            double3 xformOp:scale = (1.0, 0.05, 1.25)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # -- White marker prims at eye height (placeholders for circle/triangle/square/cross) --
+        def Sphere "Marker_N_circle" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double radius = 0.18
+            rel material:binding = </World/Looks/MatWhite>
+            double3 xformOp:translate = (0, 3.35, 1.2)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cone "Marker_W_triangle" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 0.4
+            double radius = 0.18
+            rel material:binding = </World/Looks/MatWhite>
+            double3 xformOp:translate = (-3.35, 0, 1.2)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cube "Marker_E_square" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double size = 2
+            rel material:binding = </World/Looks/MatWhite>
+            double3 xformOp:translate = (3.35, 0, 1.2)
+            double3 xformOp:scale = (0.15, 0.15, 0.15)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cylinder "Marker_S_cross" (prepend apiSchemas = ["MaterialBindingAPI"])
+        {
+            double height = 0.36
+            double radius = 0.16
+            rel material:binding = </World/Looks/MatWhite>
+            double3 xformOp:translate = (0, -3.35, 1.2)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    # ---- Reference frame prims (documentation only; not colliders) ----
+    def Xform "StartPose_south_facing_north"
+    {
+        double3 xformOp:translate = (0, -3.0, 0.47)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+        custom string note = "start (0,-3.0) heading N (yaw 90); robot-eye z=0.47"
+    }
+    def Xform "DecisionPoint_center"
+    {
+        double3 xformOp:translate = (0, 0, 0.47)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+        custom string note = "decision point (0,0): choose A=straight/north(blue) vs B=left/west(green), 90 deg apart"
+    }
+}
