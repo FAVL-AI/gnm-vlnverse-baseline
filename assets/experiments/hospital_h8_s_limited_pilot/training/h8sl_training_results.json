@@ -1,0 +1,968 @@
+{
+  "status": "LIMITED_CAUSAL_PILOT",
+  "verdict": "GOAL_CONDITIONING_OBJECTIVE_NOT_READY",
+  "gate_axis": "distance/stop (angular branch-choice N/A: collinear near/far, 0 deg expected)",
+  "seed": 42,
+  "steps": 400,
+  "lr": 0.001,
+  "lambda": {
+    "a": 1.0,
+    "c": 1.0,
+    "b": 0.5,
+    "d": 0.1,
+    "e": 0.5
+  },
+  "init_ckpt_weights_only": "checkpoints/h7r_hospital_pilot_finetune/best.pt",
+  "fresh_optimizer": true,
+  "deterministic_rerun_matches": true,
+  "pass_target_distance_axis": {
+    "branch_choice": 0.75,
+    "S": 0.5
+  },
+  "split": {
+    "train": "lobby",
+    "val": "midwest_B",
+    "test": "east_A"
+  },
+  "train_frames": [
+    "h8sl_train_lobby"
+  ],
+  "heldout_probe_splits": [
+    "val",
+    "test"
+  ],
+  "config": {
+    "image_size": [
+      96,
+      96
+    ],
+    "context_size": 5,
+    "action_std": [
+      0.11552800238132477,
+      0.11552800238132477
+    ],
+    "max_goal_dist": 20.0,
+    "stop_threshold": 0.15
+  },
+  "best_variant": "A+B+C",
+  "any_variant_passes": false,
+  "results": {
+    "baseline": {
+      "frames": {
+        "train": {
+          "frame_id": "h8sl_train_lobby",
+          "split": "train",
+          "zone": "lobby",
+          "exp_mag_near": 0.6,
+          "exp_mag_far": 1.6,
+          "exp_dist_sep_m": 1.0,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.0153,
+                -0.007
+              ],
+              "mag_m": 0.0168,
+              "dist_head": 0.8724,
+              "angle_deg": -24.7,
+              "stop": false
+            },
+            "far": {
+              "act_dx_dy": [
+                0.0147,
+                -0.0073
+              ],
+              "mag_m": 0.0164,
+              "dist_head": 0.9122,
+              "angle_deg": -26.3,
+              "stop": false
+            }
+          },
+          "pred_mag_near_m": 0.0168,
+          "pred_mag_far_m": 0.0164,
+          "pred_mag_change_m": -0.0004,
+          "branch_choice_far_gt_near": false,
+          "goal_sensitivity_S": 0.0,
+          "pred_ang_change_deg": 1.62,
+          "displacement_shift_m": 0.0006,
+          "dist_head_change": 0.0397,
+          "stop_near": false,
+          "stop_far": false
+        },
+        "val": {
+          "frame_id": "h8sl_val_midwestB",
+          "split": "val",
+          "zone": "midwest_B",
+          "exp_mag_near": 0.4,
+          "exp_mag_far": 1.0,
+          "exp_dist_sep_m": 0.6,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.0167,
+                -0.0013
+              ],
+              "mag_m": 0.0168,
+              "dist_head": 0.9105,
+              "angle_deg": -4.3,
+              "stop": false
+            },
+            "far": {
+              "act_dx_dy": [
+                0.0158,
+                -0.0013
+              ],
+              "mag_m": 0.0159,
+              "dist_head": 0.9146,
+              "angle_deg": -4.6,
+              "stop": false
+            }
+          },
+          "pred_mag_near_m": 0.0168,
+          "pred_mag_far_m": 0.0159,
+          "pred_mag_change_m": -0.0009,
+          "branch_choice_far_gt_near": false,
+          "goal_sensitivity_S": 0.002,
+          "pred_ang_change_deg": 0.28,
+          "displacement_shift_m": 0.0009,
+          "dist_head_change": 0.0042,
+          "stop_near": false,
+          "stop_far": false
+        },
+        "test": {
+          "frame_id": "h8sl_test_eastA",
+          "split": "test",
+          "zone": "east_A",
+          "exp_mag_near": 0.3,
+          "exp_mag_far": 0.7,
+          "exp_dist_sep_m": 0.4,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.0125,
+                -0.0064
+              ],
+              "mag_m": 0.0141,
+              "dist_head": 0.9081,
+              "angle_deg": -27.2,
+              "stop": false
+            },
+            "far": {
+              "act_dx_dy": [
+                0.0112,
+                -0.0063
+              ],
+              "mag_m": 0.0128,
+              "dist_head": 0.9252,
+              "angle_deg": -29.3,
+              "stop": false
+            }
+          },
+          "pred_mag_near_m": 0.0141,
+          "pred_mag_far_m": 0.0128,
+          "pred_mag_change_m": -0.0013,
+          "branch_choice_far_gt_near": false,
+          "goal_sensitivity_S": 0.003,
+          "pred_ang_change_deg": 2.08,
+          "displacement_shift_m": 0.0014,
+          "dist_head_change": 0.0171,
+          "stop_near": false,
+          "stop_far": false
+        }
+      },
+      "mismatched_goal_ablation": {
+        "conditions": {
+          "correct_near": {
+            "act_dx_dy": [
+              0.0125,
+              -0.0064
+            ],
+            "mag_m": 0.0141,
+            "dist_head": 0.9081,
+            "angle_deg": -27.2
+          },
+          "correct_far": {
+            "act_dx_dy": [
+              0.0112,
+              -0.0063
+            ],
+            "mag_m": 0.0128,
+            "dist_head": 0.9252,
+            "angle_deg": -29.3
+          },
+          "mismatch_same_family": {
+            "act_dx_dy": [
+              0.0128,
+              -0.0038
+            ],
+            "mag_m": 0.0133,
+            "dist_head": 0.8517,
+            "angle_deg": -16.6
+          },
+          "placeholder_cross_scene": {
+            "act_dx_dy": [
+              0.0089,
+              -0.0055
+            ],
+            "mag_m": 0.0104,
+            "dist_head": 0.8717,
+            "angle_deg": -31.7
+          }
+        },
+        "mag_spread_m": 0.0037,
+        "correct_near_vs_far_delta_m": 0.0013,
+        "correct_vs_placeholder_delta_m": 0.0024,
+        "collapsed": true
+      },
+      "heldout_summary": {
+        "heldout_splits": [
+          "val",
+          "test"
+        ],
+        "branch_choice_accuracy": 0.0,
+        "mean_goal_sensitivity_S": 0.003,
+        "test_branch_choice": false,
+        "test_goal_sensitivity_S": 0.003,
+        "passes_distance_axis_gate": false
+      }
+    },
+    "A": {
+      "frames": {
+        "train": {
+          "frame_id": "h8sl_train_lobby",
+          "split": "train",
+          "zone": "lobby",
+          "exp_mag_near": 0.6,
+          "exp_mag_far": 1.6,
+          "exp_dist_sep_m": 1.0,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.4955,
+                0.0005
+              ],
+              "mag_m": 0.4955,
+              "dist_head": 0.0146,
+              "angle_deg": 0.1,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                1.2005,
+                0.0014
+              ],
+              "mag_m": 1.2005,
+              "dist_head": 0.0488,
+              "angle_deg": 0.1,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.4955,
+          "pred_mag_far_m": 1.2005,
+          "pred_mag_change_m": 0.705,
+          "branch_choice_far_gt_near": true,
+          "goal_sensitivity_S": 0.705,
+          "pred_ang_change_deg": 0.01,
+          "displacement_shift_m": 0.705,
+          "dist_head_change": 0.0342,
+          "stop_near": true,
+          "stop_far": true
+        },
+        "val": {
+          "frame_id": "h8sl_val_midwestB",
+          "split": "val",
+          "zone": "midwest_B",
+          "exp_mag_near": 0.4,
+          "exp_mag_far": 1.0,
+          "exp_dist_sep_m": 0.6,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.4828,
+                0.0016
+              ],
+              "mag_m": 0.4828,
+              "dist_head": 0.0105,
+              "angle_deg": 0.2,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                0.4819,
+                0.0014
+              ],
+              "mag_m": 0.4819,
+              "dist_head": 0.0107,
+              "angle_deg": 0.2,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.4828,
+          "pred_mag_far_m": 0.4819,
+          "pred_mag_change_m": -0.0009,
+          "branch_choice_far_gt_near": false,
+          "goal_sensitivity_S": 0.001,
+          "pred_ang_change_deg": 0.02,
+          "displacement_shift_m": 0.0009,
+          "dist_head_change": 0.0002,
+          "stop_near": true,
+          "stop_far": true
+        },
+        "test": {
+          "frame_id": "h8sl_test_eastA",
+          "split": "test",
+          "zone": "east_A",
+          "exp_mag_near": 0.3,
+          "exp_mag_far": 0.7,
+          "exp_dist_sep_m": 0.4,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.5188,
+                0.0024
+              ],
+              "mag_m": 0.5188,
+              "dist_head": 0.0192,
+              "angle_deg": 0.3,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                0.5049,
+                0.0015
+              ],
+              "mag_m": 0.5049,
+              "dist_head": 0.018,
+              "angle_deg": 0.2,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.5188,
+          "pred_mag_far_m": 0.5049,
+          "pred_mag_change_m": -0.0139,
+          "branch_choice_far_gt_near": false,
+          "goal_sensitivity_S": 0.035,
+          "pred_ang_change_deg": 0.1,
+          "displacement_shift_m": 0.0139,
+          "dist_head_change": 0.0011,
+          "stop_near": true,
+          "stop_far": true
+        }
+      },
+      "mismatched_goal_ablation": {
+        "conditions": {
+          "correct_near": {
+            "act_dx_dy": [
+              0.5188,
+              0.0024
+            ],
+            "mag_m": 0.5188,
+            "dist_head": 0.0192,
+            "angle_deg": 0.3
+          },
+          "correct_far": {
+            "act_dx_dy": [
+              0.5049,
+              0.0015
+            ],
+            "mag_m": 0.5049,
+            "dist_head": 0.018,
+            "angle_deg": 0.2
+          },
+          "mismatch_same_family": {
+            "act_dx_dy": [
+              0.5029,
+              0.0011
+            ],
+            "mag_m": 0.5029,
+            "dist_head": 0.019,
+            "angle_deg": 0.1
+          },
+          "placeholder_cross_scene": {
+            "act_dx_dy": [
+              0.5423,
+              0.0038
+            ],
+            "mag_m": 0.5424,
+            "dist_head": 0.0233,
+            "angle_deg": 0.4
+          }
+        },
+        "mag_spread_m": 0.0394,
+        "correct_near_vs_far_delta_m": 0.0139,
+        "correct_vs_placeholder_delta_m": 0.0375,
+        "collapsed": false
+      },
+      "heldout_summary": {
+        "heldout_splits": [
+          "val",
+          "test"
+        ],
+        "branch_choice_accuracy": 0.0,
+        "mean_goal_sensitivity_S": 0.018,
+        "test_branch_choice": false,
+        "test_goal_sensitivity_S": 0.035,
+        "passes_distance_axis_gate": false
+      }
+    },
+    "A+B": {
+      "frames": {
+        "train": {
+          "frame_id": "h8sl_train_lobby",
+          "split": "train",
+          "zone": "lobby",
+          "exp_mag_near": 0.6,
+          "exp_mag_far": 1.6,
+          "exp_dist_sep_m": 1.0,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.4038,
+                0.0024
+              ],
+              "mag_m": 0.4038,
+              "dist_head": 0.0021,
+              "angle_deg": 0.3,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                1.2085,
+                0.0009
+              ],
+              "mag_m": 1.2085,
+              "dist_head": 0.0458,
+              "angle_deg": 0.0,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.4038,
+          "pred_mag_far_m": 1.2085,
+          "pred_mag_change_m": 0.8047,
+          "branch_choice_far_gt_near": true,
+          "goal_sensitivity_S": 0.805,
+          "pred_ang_change_deg": 0.3,
+          "displacement_shift_m": 0.8047,
+          "dist_head_change": 0.0437,
+          "stop_near": true,
+          "stop_far": true
+        },
+        "val": {
+          "frame_id": "h8sl_val_midwestB",
+          "split": "val",
+          "zone": "midwest_B",
+          "exp_mag_near": 0.4,
+          "exp_mag_far": 1.0,
+          "exp_dist_sep_m": 0.6,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.5313,
+                0.0016
+              ],
+              "mag_m": 0.5313,
+              "dist_head": 0.0172,
+              "angle_deg": 0.2,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                0.5314,
+                0.0016
+              ],
+              "mag_m": 0.5314,
+              "dist_head": 0.0169,
+              "angle_deg": 0.2,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.5313,
+          "pred_mag_far_m": 0.5314,
+          "pred_mag_change_m": 0.0001,
+          "branch_choice_far_gt_near": true,
+          "goal_sensitivity_S": 0.0,
+          "pred_ang_change_deg": 0.01,
+          "displacement_shift_m": 0.0001,
+          "dist_head_change": 0.0003,
+          "stop_near": true,
+          "stop_far": true
+        },
+        "test": {
+          "frame_id": "h8sl_test_eastA",
+          "split": "test",
+          "zone": "east_A",
+          "exp_mag_near": 0.3,
+          "exp_mag_far": 0.7,
+          "exp_dist_sep_m": 0.4,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.4755,
+                0.0032
+              ],
+              "mag_m": 0.4755,
+              "dist_head": 0.0089,
+              "angle_deg": 0.4,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                0.5226,
+                0.0049
+              ],
+              "mag_m": 0.5227,
+              "dist_head": 0.0072,
+              "angle_deg": 0.5,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.4755,
+          "pred_mag_far_m": 0.5227,
+          "pred_mag_change_m": 0.0472,
+          "branch_choice_far_gt_near": true,
+          "goal_sensitivity_S": 0.118,
+          "pred_ang_change_deg": 0.15,
+          "displacement_shift_m": 0.0472,
+          "dist_head_change": 0.0017,
+          "stop_near": true,
+          "stop_far": true
+        }
+      },
+      "mismatched_goal_ablation": {
+        "conditions": {
+          "correct_near": {
+            "act_dx_dy": [
+              0.4755,
+              0.0032
+            ],
+            "mag_m": 0.4755,
+            "dist_head": 0.0089,
+            "angle_deg": 0.4
+          },
+          "correct_far": {
+            "act_dx_dy": [
+              0.5226,
+              0.0049
+            ],
+            "mag_m": 0.5227,
+            "dist_head": 0.0072,
+            "angle_deg": 0.5
+          },
+          "mismatch_same_family": {
+            "act_dx_dy": [
+              0.433,
+              0.0014
+            ],
+            "mag_m": 0.433,
+            "dist_head": 0.0075,
+            "angle_deg": 0.2
+          },
+          "placeholder_cross_scene": {
+            "act_dx_dy": [
+              0.655,
+              0.0074
+            ],
+            "mag_m": 0.655,
+            "dist_head": 0.0036,
+            "angle_deg": 0.6
+          }
+        },
+        "mag_spread_m": 0.2221,
+        "correct_near_vs_far_delta_m": 0.0472,
+        "correct_vs_placeholder_delta_m": 0.1324,
+        "collapsed": false
+      },
+      "heldout_summary": {
+        "heldout_splits": [
+          "val",
+          "test"
+        ],
+        "branch_choice_accuracy": 1.0,
+        "mean_goal_sensitivity_S": 0.059,
+        "test_branch_choice": true,
+        "test_goal_sensitivity_S": 0.118,
+        "passes_distance_axis_gate": false
+      }
+    },
+    "A+B+C": {
+      "frames": {
+        "train": {
+          "frame_id": "h8sl_train_lobby",
+          "split": "train",
+          "zone": "lobby",
+          "exp_mag_near": 0.6,
+          "exp_mag_far": 1.6,
+          "exp_dist_sep_m": 1.0,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.3571,
+                0.0013
+              ],
+              "mag_m": 0.3571,
+              "dist_head": 0.0014,
+              "angle_deg": 0.2,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                1.1933,
+                -0.0005
+              ],
+              "mag_m": 1.1933,
+              "dist_head": 0.0568,
+              "angle_deg": -0.0,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.3571,
+          "pred_mag_far_m": 1.1933,
+          "pred_mag_change_m": 0.8362,
+          "branch_choice_far_gt_near": true,
+          "goal_sensitivity_S": 0.836,
+          "pred_ang_change_deg": 0.24,
+          "displacement_shift_m": 0.8362,
+          "dist_head_change": 0.0554,
+          "stop_near": true,
+          "stop_far": true
+        },
+        "val": {
+          "frame_id": "h8sl_val_midwestB",
+          "split": "val",
+          "zone": "midwest_B",
+          "exp_mag_near": 0.4,
+          "exp_mag_far": 1.0,
+          "exp_dist_sep_m": 0.6,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.4217,
+                0.0011
+              ],
+              "mag_m": 0.4217,
+              "dist_head": 0.009,
+              "angle_deg": 0.1,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                0.4219,
+                0.0011
+              ],
+              "mag_m": 0.4219,
+              "dist_head": 0.009,
+              "angle_deg": 0.1,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.4217,
+          "pred_mag_far_m": 0.4219,
+          "pred_mag_change_m": 0.0003,
+          "branch_choice_far_gt_near": true,
+          "goal_sensitivity_S": 0.0,
+          "pred_ang_change_deg": 0.0,
+          "displacement_shift_m": 0.0003,
+          "dist_head_change": 0.0001,
+          "stop_near": true,
+          "stop_far": true
+        },
+        "test": {
+          "frame_id": "h8sl_test_eastA",
+          "split": "test",
+          "zone": "east_A",
+          "exp_mag_near": 0.3,
+          "exp_mag_far": 0.7,
+          "exp_dist_sep_m": 0.4,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.6407,
+                0.0037
+              ],
+              "mag_m": 0.6407,
+              "dist_head": 0.0089,
+              "angle_deg": 0.3,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                0.7612,
+                0.003
+              ],
+              "mag_m": 0.7612,
+              "dist_head": 0.0183,
+              "angle_deg": 0.2,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.6407,
+          "pred_mag_far_m": 0.7612,
+          "pred_mag_change_m": 0.1205,
+          "branch_choice_far_gt_near": true,
+          "goal_sensitivity_S": 0.301,
+          "pred_ang_change_deg": 0.1,
+          "displacement_shift_m": 0.1205,
+          "dist_head_change": 0.0094,
+          "stop_near": true,
+          "stop_far": true
+        }
+      },
+      "mismatched_goal_ablation": {
+        "conditions": {
+          "correct_near": {
+            "act_dx_dy": [
+              0.6407,
+              0.0037
+            ],
+            "mag_m": 0.6407,
+            "dist_head": 0.0089,
+            "angle_deg": 0.3
+          },
+          "correct_far": {
+            "act_dx_dy": [
+              0.7612,
+              0.003
+            ],
+            "mag_m": 0.7612,
+            "dist_head": 0.0183,
+            "angle_deg": 0.2
+          },
+          "mismatch_same_family": {
+            "act_dx_dy": [
+              0.3502,
+              0.001
+            ],
+            "mag_m": 0.3502,
+            "dist_head": 0.0007,
+            "angle_deg": 0.2
+          },
+          "placeholder_cross_scene": {
+            "act_dx_dy": [
+              0.954,
+              0.0012
+            ],
+            "mag_m": 0.954,
+            "dist_head": 0.0325,
+            "angle_deg": 0.1
+          }
+        },
+        "mag_spread_m": 0.6037,
+        "correct_near_vs_far_delta_m": 0.1205,
+        "correct_vs_placeholder_delta_m": 0.1927,
+        "collapsed": false
+      },
+      "heldout_summary": {
+        "heldout_splits": [
+          "val",
+          "test"
+        ],
+        "branch_choice_accuracy": 1.0,
+        "mean_goal_sensitivity_S": 0.15,
+        "test_branch_choice": true,
+        "test_goal_sensitivity_S": 0.301,
+        "passes_distance_axis_gate": false
+      }
+    },
+    "A+B+C+E": {
+      "frames": {
+        "train": {
+          "frame_id": "h8sl_train_lobby",
+          "split": "train",
+          "zone": "lobby",
+          "exp_mag_near": 0.6,
+          "exp_mag_far": 1.6,
+          "exp_dist_sep_m": 1.0,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.6262,
+                0.0004
+              ],
+              "mag_m": 0.6262,
+              "dist_head": 0.0248,
+              "angle_deg": 0.0,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                0.7496,
+                0.0005
+              ],
+              "mag_m": 0.7496,
+              "dist_head": 0.0369,
+              "angle_deg": 0.0,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.6262,
+          "pred_mag_far_m": 0.7496,
+          "pred_mag_change_m": 0.1234,
+          "branch_choice_far_gt_near": true,
+          "goal_sensitivity_S": 0.123,
+          "pred_ang_change_deg": 0.0,
+          "displacement_shift_m": 0.1234,
+          "dist_head_change": 0.0121,
+          "stop_near": true,
+          "stop_far": true
+        },
+        "val": {
+          "frame_id": "h8sl_val_midwestB",
+          "split": "val",
+          "zone": "midwest_B",
+          "exp_mag_near": 0.4,
+          "exp_mag_far": 1.0,
+          "exp_dist_sep_m": 0.6,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.6315,
+                0.0002
+              ],
+              "mag_m": 0.6315,
+              "dist_head": 0.0278,
+              "angle_deg": 0.0,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                0.6732,
+                0.0004
+              ],
+              "mag_m": 0.6732,
+              "dist_head": 0.0299,
+              "angle_deg": 0.0,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.6315,
+          "pred_mag_far_m": 0.6732,
+          "pred_mag_change_m": 0.0417,
+          "branch_choice_far_gt_near": true,
+          "goal_sensitivity_S": 0.069,
+          "pred_ang_change_deg": 0.01,
+          "displacement_shift_m": 0.0417,
+          "dist_head_change": 0.0021,
+          "stop_near": true,
+          "stop_far": true
+        },
+        "test": {
+          "frame_id": "h8sl_test_eastA",
+          "split": "test",
+          "zone": "east_A",
+          "exp_mag_near": 0.3,
+          "exp_mag_far": 0.7,
+          "exp_dist_sep_m": 0.4,
+          "exp_ang_sep_deg": 0.0,
+          "pred": {
+            "near": {
+              "act_dx_dy": [
+                0.8062,
+                0.0012
+              ],
+              "mag_m": 0.8062,
+              "dist_head": 0.0401,
+              "angle_deg": 0.1,
+              "stop": true
+            },
+            "far": {
+              "act_dx_dy": [
+                0.846,
+                0.0014
+              ],
+              "mag_m": 0.846,
+              "dist_head": 0.0416,
+              "angle_deg": 0.1,
+              "stop": true
+            }
+          },
+          "pred_mag_near_m": 0.8062,
+          "pred_mag_far_m": 0.846,
+          "pred_mag_change_m": 0.0398,
+          "branch_choice_far_gt_near": true,
+          "goal_sensitivity_S": 0.1,
+          "pred_ang_change_deg": 0.01,
+          "displacement_shift_m": 0.0398,
+          "dist_head_change": 0.0015,
+          "stop_near": true,
+          "stop_far": true
+        }
+      },
+      "mismatched_goal_ablation": {
+        "conditions": {
+          "correct_near": {
+            "act_dx_dy": [
+              0.8062,
+              0.0012
+            ],
+            "mag_m": 0.8062,
+            "dist_head": 0.0401,
+            "angle_deg": 0.1
+          },
+          "correct_far": {
+            "act_dx_dy": [
+              0.846,
+              0.0014
+            ],
+            "mag_m": 0.846,
+            "dist_head": 0.0416,
+            "angle_deg": 0.1
+          },
+          "mismatch_same_family": {
+            "act_dx_dy": [
+              0.6095,
+              0.0006
+            ],
+            "mag_m": 0.6095,
+            "dist_head": 0.0215,
+            "angle_deg": 0.1
+          },
+          "placeholder_cross_scene": {
+            "act_dx_dy": [
+              0.748,
+              0.0005
+            ],
+            "mag_m": 0.748,
+            "dist_head": 0.0351,
+            "angle_deg": 0.0
+          }
+        },
+        "mag_spread_m": 0.2366,
+        "correct_near_vs_far_delta_m": 0.0398,
+        "correct_vs_placeholder_delta_m": 0.0981,
+        "collapsed": false
+      },
+      "heldout_summary": {
+        "heldout_splits": [
+          "val",
+          "test"
+        ],
+        "branch_choice_accuracy": 1.0,
+        "mean_goal_sensitivity_S": 0.085,
+        "test_branch_choice": true,
+        "test_goal_sensitivity_S": 0.1,
+        "passes_distance_axis_gate": false
+      }
+    }
+  },
+  "caveats": [
+    "ONE training decision frame (lobby, 2 samples): a pass shows the objective can make the predicted action magnitude goal-sensitive and that it transfers ordering to held-out frames of the SAME alcove \u2014 NOT generalizable goal-conditioned navigation.",
+    "Angular branch-choice is N/A: all goals collinear (0 deg expected separation).",
+    "Temporal dist head is a weak secondary signal here (all goals 0.3-1.6 m -> normalized targets <0.08, below stop_threshold 0.15).",
+    "Standard nav metrics (TL/NE/SR/OSR/SPL/nDTW/CR) are NOT computable offline on 3 decision frames (no rollout); reported N/A, deferred to a simulator rollout.",
+    "No promotion, no push, no tag, no 20/5/10, no closed-loop, no H8-M validation; incumbent retained; no checkpoint written."
+  ]
+}
