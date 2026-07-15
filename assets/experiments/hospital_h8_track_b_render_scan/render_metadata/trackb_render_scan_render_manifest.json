@@ -1,0 +1,1052 @@
+{
+  "asset_root": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments",
+  "isaac_sim_version": "5.1.0.0",
+  "resolution": [
+    640,
+    480
+  ],
+  "camera_height_m": 0.47,
+  "grid": [
+    4,
+    4
+  ],
+  "margin_frac": 0.16,
+  "directions": [
+    "E",
+    "N",
+    "W",
+    "S"
+  ],
+  "branch_open_depth_note": ">=3 m tested in analyze",
+  "free_camera_no_robot_body": true,
+  "scenes": [
+    {
+      "scene_id": "office_isaac",
+      "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Office/office.usd",
+      "ref_authored": true,
+      "prim_count": 4652,
+      "world_bbox": [
+        -528.0750086234725,
+        -294.67334933727943,
+        -86.20000134856275,
+        535.4750030628525,
+        382.47334933727944,
+        53.49999834665434
+      ],
+      "interior_footprint": [
+        -21.0,
+        -11.67,
+        4.098,
+        48.33
+      ],
+      "grid_region": [
+        -21.0,
+        -11.67,
+        4.098,
+        48.33
+      ],
+      "scene_load_ok": true,
+      "load_probe": {
+        "mean_luma": 0.0,
+        "lower_frame_black_frac": 1.0,
+        "median_depth_central_m": 0.783
+      },
+      "probes": [
+        {
+          "probe_id": "p00",
+          "eye": [
+            -14.851,
+            3.03,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 9.5,
+              "lower_frame_black_frac": 0.9505,
+              "median_depth_central_m": 7.194
+            },
+            "N": {
+              "mean_luma": 0.6,
+              "lower_frame_black_frac": 0.9984,
+              "median_depth_central_m": 2.835
+            },
+            "W": {
+              "mean_luma": 0.1,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": null
+            },
+            "S": {
+              "mean_luma": 1.2,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 3.094
+            }
+          }
+        },
+        {
+          "probe_id": "p10",
+          "eye": [
+            -10.584,
+            3.03,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 11.1,
+              "lower_frame_black_frac": 0.9203,
+              "median_depth_central_m": 3.006
+            },
+            "N": {
+              "mean_luma": 6.3,
+              "lower_frame_black_frac": 0.6874,
+              "median_depth_central_m": 8.472
+            },
+            "W": {
+              "mean_luma": 1.6,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 4.316
+            },
+            "S": {
+              "mean_luma": 5.4,
+              "lower_frame_black_frac": 0.971,
+              "median_depth_central_m": 14.929
+            }
+          }
+        },
+        {
+          "probe_id": "p20",
+          "eye": [
+            -6.318,
+            3.03,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 12.6,
+              "lower_frame_black_frac": 0.9564,
+              "median_depth_central_m": 4.043
+            },
+            "N": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 1.134
+            },
+            "W": {
+              "mean_luma": 0.6,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 1.226
+            },
+            "S": {
+              "mean_luma": 4.8,
+              "lower_frame_black_frac": 0.9809,
+              "median_depth_central_m": 5.22
+            }
+          }
+        },
+        {
+          "probe_id": "p30",
+          "eye": [
+            -2.051,
+            3.03,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": null
+            },
+            "N": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.103
+            },
+            "W": {
+              "mean_luma": 1.5,
+              "lower_frame_black_frac": 0.9816,
+              "median_depth_central_m": 5.012
+            },
+            "S": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.747
+            }
+          }
+        },
+        {
+          "probe_id": "p01",
+          "eye": [
+            -14.851,
+            13.23,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.751
+            },
+            "N": {
+              "mean_luma": 4.9,
+              "lower_frame_black_frac": 0.9653,
+              "median_depth_central_m": 7.079
+            },
+            "W": {
+              "mean_luma": 1.6,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 2.049
+            },
+            "S": {
+              "mean_luma": 7.0,
+              "lower_frame_black_frac": 0.7321,
+              "median_depth_central_m": 7.13
+            }
+          }
+        },
+        {
+          "probe_id": "p11",
+          "eye": [
+            -10.584,
+            13.23,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 36.7,
+              "lower_frame_black_frac": 0.3841,
+              "median_depth_central_m": 5.683
+            },
+            "N": {
+              "mean_luma": 78.0,
+              "lower_frame_black_frac": 0.0006,
+              "median_depth_central_m": 4.871
+            },
+            "W": {
+              "mean_luma": 10.5,
+              "lower_frame_black_frac": 0.5904,
+              "median_depth_central_m": 3.516
+            },
+            "S": {
+              "mean_luma": 2.0,
+              "lower_frame_black_frac": 0.9535,
+              "median_depth_central_m": 1.502
+            }
+          }
+        },
+        {
+          "probe_id": "p21",
+          "eye": [
+            -6.318,
+            13.23,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 8.8,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 1.417
+            },
+            "N": {
+              "mean_luma": 66.9,
+              "lower_frame_black_frac": 0.031,
+              "median_depth_central_m": 4.87
+            },
+            "W": {
+              "mean_luma": 29.8,
+              "lower_frame_black_frac": 0.0771,
+              "median_depth_central_m": 7.782
+            },
+            "S": {
+              "mean_luma": 8.2,
+              "lower_frame_black_frac": 0.8695,
+              "median_depth_central_m": 1.302
+            }
+          }
+        },
+        {
+          "probe_id": "p31",
+          "eye": [
+            -2.051,
+            13.23,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 1.6,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.951
+            },
+            "N": {
+              "mean_luma": 7.5,
+              "lower_frame_black_frac": 0.853,
+              "median_depth_central_m": 9.938
+            },
+            "W": {
+              "mean_luma": 5.1,
+              "lower_frame_black_frac": 0.9061,
+              "median_depth_central_m": 2.85
+            },
+            "S": {
+              "mean_luma": 5.9,
+              "lower_frame_black_frac": 0.7754,
+              "median_depth_central_m": 9.328
+            }
+          }
+        },
+        {
+          "probe_id": "p02",
+          "eye": [
+            -14.851,
+            23.43,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 0.1,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.271
+            },
+            "N": {
+              "mean_luma": 18.6,
+              "lower_frame_black_frac": 0.357,
+              "median_depth_central_m": 15.201
+            },
+            "W": {
+              "mean_luma": 3.6,
+              "lower_frame_black_frac": 0.9454,
+              "median_depth_central_m": 1.67
+            },
+            "S": {
+              "mean_luma": 9.0,
+              "lower_frame_black_frac": 0.5149,
+              "median_depth_central_m": 7.079
+            }
+          }
+        },
+        {
+          "probe_id": "p12",
+          "eye": [
+            -10.584,
+            23.43,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 1.815
+            },
+            "N": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.47
+            },
+            "W": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.539
+            },
+            "S": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.476
+            }
+          }
+        },
+        {
+          "probe_id": "p22",
+          "eye": [
+            -6.318,
+            23.43,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 1.218
+            },
+            "N": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.652
+            },
+            "W": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 2.064
+            },
+            "S": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 4.751
+            }
+          }
+        },
+        {
+          "probe_id": "p32",
+          "eye": [
+            -2.051,
+            23.43,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 0.5,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.951
+            },
+            "N": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.174
+            },
+            "W": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": null
+            },
+            "S": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.174
+            }
+          }
+        },
+        {
+          "probe_id": "p03",
+          "eye": [
+            -14.851,
+            33.63,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 7.5,
+              "lower_frame_black_frac": 0.5286,
+              "median_depth_central_m": 3.874
+            },
+            "N": {
+              "mean_luma": 17.5,
+              "lower_frame_black_frac": 0.1624,
+              "median_depth_central_m": 13.967
+            },
+            "W": {
+              "mean_luma": 56.4,
+              "lower_frame_black_frac": 0.0025,
+              "median_depth_central_m": 8.149
+            },
+            "S": {
+              "mean_luma": 18.9,
+              "lower_frame_black_frac": 0.0219,
+              "median_depth_central_m": 9.13
+            }
+          }
+        },
+        {
+          "probe_id": "p13",
+          "eye": [
+            -10.584,
+            33.63,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 3.5,
+              "lower_frame_black_frac": 0.9951,
+              "median_depth_central_m": 4.43
+            },
+            "N": {
+              "mean_luma": 5.5,
+              "lower_frame_black_frac": 0.9999,
+              "median_depth_central_m": 0.37
+            },
+            "W": {
+              "mean_luma": 26.1,
+              "lower_frame_black_frac": 0.4547,
+              "median_depth_central_m": 12.416
+            },
+            "S": {
+              "mean_luma": 11.5,
+              "lower_frame_black_frac": 0.0547,
+              "median_depth_central_m": 5.576
+            }
+          }
+        },
+        {
+          "probe_id": "p23",
+          "eye": [
+            -6.318,
+            33.63,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 3.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 1.218
+            },
+            "N": {
+              "mean_luma": 2.6,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.254
+            },
+            "W": {
+              "mean_luma": 22.5,
+              "lower_frame_black_frac": 0.6357,
+              "median_depth_central_m": 4.343
+            },
+            "S": {
+              "mean_luma": 4.7,
+              "lower_frame_black_frac": 0.608,
+              "median_depth_central_m": 6.08
+            }
+          }
+        },
+        {
+          "probe_id": "p33",
+          "eye": [
+            -2.051,
+            33.63,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 60.5,
+              "lower_frame_black_frac": 0.0244,
+              "median_depth_central_m": 7.991
+            },
+            "N": {
+              "mean_luma": 7.8,
+              "lower_frame_black_frac": 0.6901,
+              "median_depth_central_m": 1.848
+            },
+            "W": {
+              "mean_luma": 17.0,
+              "lower_frame_black_frac": 0.6771,
+              "median_depth_central_m": 2.849
+            },
+            "S": {
+              "mean_luma": 18.8,
+              "lower_frame_black_frac": 0.4896,
+              "median_depth_central_m": 9.13
+            }
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "warehouse_simple",
+      "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Simple_Warehouse/warehouse.usd",
+      "ref_authored": true,
+      "prim_count": 3416,
+      "world_bbox": [
+        -11.99999912142755,
+        -17.999999902844422,
+        -6.869831537606653e-05,
+        12.000000342130647,
+        20.818081582505194,
+        9.300010941024185
+      ],
+      "interior_footprint": [
+        -9.875,
+        -9.0,
+        8.912,
+        16.5
+      ],
+      "grid_region": [
+        -9.875,
+        -9.0,
+        8.912,
+        16.5
+      ],
+      "scene_load_ok": true,
+      "load_probe": {
+        "mean_luma": 158.1,
+        "lower_frame_black_frac": 0.0,
+        "median_depth_central_m": 9.893
+      },
+      "probes": [
+        {
+          "probe_id": "p00",
+          "eye": [
+            -5.272,
+            -2.752,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 149.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 14.684
+            },
+            "N": {
+              "mean_luma": 106.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 20.719
+            },
+            "W": {
+              "mean_luma": 105.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.798
+            },
+            "S": {
+              "mean_luma": 120.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 9.448
+            }
+          }
+        },
+        {
+          "probe_id": "p10",
+          "eye": [
+            -2.078,
+            -2.752,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 150.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 11.49
+            },
+            "N": {
+              "mean_luma": 118.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 20.724
+            },
+            "W": {
+              "mean_luma": 110.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 7.537
+            },
+            "S": {
+              "mean_luma": 133.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 9.448
+            }
+          }
+        },
+        {
+          "probe_id": "p20",
+          "eye": [
+            1.115,
+            -2.752,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 155.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 8.297
+            },
+            "N": {
+              "mean_luma": 125.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 20.752
+            },
+            "W": {
+              "mean_luma": 109.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 11.145
+            },
+            "S": {
+              "mean_luma": 137.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 9.448
+            }
+          }
+        },
+        {
+          "probe_id": "p30",
+          "eye": [
+            4.309,
+            -2.752,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 163.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 5.103
+            },
+            "N": {
+              "mean_luma": 129.5,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 20.752
+            },
+            "W": {
+              "mean_luma": 107.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 13.751
+            },
+            "S": {
+              "mean_luma": 128.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 9.448
+            }
+          }
+        },
+        {
+          "probe_id": "p01",
+          "eye": [
+            -5.272,
+            1.582,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 163.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 14.684
+            },
+            "N": {
+              "mean_luma": 117.7,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 16.218
+            },
+            "W": {
+              "mean_luma": 84.7,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 5.058
+            },
+            "S": {
+              "mean_luma": 113.5,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 13.782
+            }
+          }
+        },
+        {
+          "probe_id": "p11",
+          "eye": [
+            -2.078,
+            1.582,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 159.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 11.49
+            },
+            "N": {
+              "mean_luma": 130.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 16.418
+            },
+            "W": {
+              "mean_luma": 95.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.78
+            },
+            "S": {
+              "mean_luma": 121.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 13.782
+            }
+          }
+        },
+        {
+          "probe_id": "p21",
+          "eye": [
+            1.115,
+            1.582,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 160.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 8.297
+            },
+            "N": {
+              "mean_luma": 134.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 16.418
+            },
+            "W": {
+              "mean_luma": 104.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 10.329
+            },
+            "S": {
+              "mean_luma": 124.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 13.782
+            }
+          }
+        },
+        {
+          "probe_id": "p31",
+          "eye": [
+            4.309,
+            1.582,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 169.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 5.103
+            },
+            "N": {
+              "mean_luma": 135.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 16.418
+            },
+            "W": {
+              "mean_luma": 107.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 13.129
+            },
+            "S": {
+              "mean_luma": 121.7,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 13.782
+            }
+          }
+        },
+        {
+          "probe_id": "p02",
+          "eye": [
+            -5.272,
+            5.918,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 163.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 14.578
+            },
+            "N": {
+              "mean_luma": 131.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 11.795
+            },
+            "W": {
+              "mean_luma": 91.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 5.058
+            },
+            "S": {
+              "mean_luma": 108.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 18.118
+            }
+          }
+        },
+        {
+          "probe_id": "p12",
+          "eye": [
+            -2.078,
+            5.918,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 160.5,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 11.49
+            },
+            "N": {
+              "mean_luma": 146.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 12.082
+            },
+            "W": {
+              "mean_luma": 96.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 7.658
+            },
+            "S": {
+              "mean_luma": 115.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 18.118
+            }
+          }
+        },
+        {
+          "probe_id": "p22",
+          "eye": [
+            1.115,
+            5.918,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 160.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 8.297
+            },
+            "N": {
+              "mean_luma": 152.0,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 12.082
+            },
+            "W": {
+              "mean_luma": 103.7,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 10.769
+            },
+            "S": {
+              "mean_luma": 118.0,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 18.118
+            }
+          }
+        },
+        {
+          "probe_id": "p32",
+          "eye": [
+            4.309,
+            5.918,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 169.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 5.103
+            },
+            "N": {
+              "mean_luma": 144.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 12.082
+            },
+            "W": {
+              "mean_luma": 107.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 13.129
+            },
+            "S": {
+              "mean_luma": 121.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 18.118
+            }
+          }
+        },
+        {
+          "probe_id": "p03",
+          "eye": [
+            -5.272,
+            10.252,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 155.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 14.684
+            },
+            "N": {
+              "mean_luma": 134.4,
+              "lower_frame_black_frac": 0.0003,
+              "median_depth_central_m": 4.83
+            },
+            "W": {
+              "mean_luma": 98.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 3.773
+            },
+            "S": {
+              "mean_luma": 103.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 22.452
+            }
+          }
+        },
+        {
+          "probe_id": "p13",
+          "eye": [
+            -2.078,
+            10.252,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 153.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 11.49
+            },
+            "N": {
+              "mean_luma": 155.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 7.748
+            },
+            "W": {
+              "mean_luma": 105.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.96
+            },
+            "S": {
+              "mean_luma": 112.0,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 22.452
+            }
+          }
+        },
+        {
+          "probe_id": "p23",
+          "eye": [
+            1.115,
+            10.252,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 155.7,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 8.297
+            },
+            "N": {
+              "mean_luma": 159.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 7.748
+            },
+            "W": {
+              "mean_luma": 108.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 9.999
+            },
+            "S": {
+              "mean_luma": 117.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 22.452
+            }
+          }
+        },
+        {
+          "probe_id": "p33",
+          "eye": [
+            4.309,
+            10.252,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 163.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 5.103
+            },
+            "N": {
+              "mean_luma": 152.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 7.748
+            },
+            "W": {
+              "mean_luma": 106.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 13.129
+            },
+            "S": {
+              "mean_luma": 122.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 22.452
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

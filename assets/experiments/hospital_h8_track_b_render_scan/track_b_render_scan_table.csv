@@ -1,0 +1,33 @@
+scene_id,probe_id,classification,reason,n_open,open_dirs,decision_dir,goalA_dir,goalB_dir,branch_sep_deg,goalA_depth_m,goalB_depth_m,branch_dino_cosine,eye_x,eye_y,depth_E,depth_N,depth_W,depth_S
+office_isaac,p00,WALL_ONLY,"boxed/dead-end (0 open, walls <3.0m)",0,,,,,,,,,-14.851,3.03,7.194,2.835,,3.094
+office_isaac,p10,WALL_ONLY,"boxed/dead-end (0 open, walls <3.0m)",0,,,,,,,,,-10.584,3.03,3.006,8.472,4.316,14.929
+office_isaac,p20,WALL_ONLY,"boxed/dead-end (0 open, walls <3.0m)",0,,,,,,,,,-6.318,3.03,4.043,1.134,1.226,5.22
+office_isaac,p30,WALL_ONLY,"boxed/dead-end (0 open, walls <3.0m)",0,,,,,,,,,-2.051,3.03,,0.103,5.012,0.747
+office_isaac,p01,WALL_ONLY,"boxed/dead-end (0 open, walls <3.0m)",0,,,,,,,,,-14.851,13.23,0.751,7.079,2.049,7.13
+office_isaac,p11,WALL_ONLY,"L-corner (2 perpendicular open, single forced turn)",2,E|N,,,,,,,,-10.584,13.23,5.683,4.871,3.516,1.502
+office_isaac,p21,WALL_ONLY,"L-corner (2 perpendicular open, single forced turn)",2,N|W,,,,,,,,-6.318,13.23,1.417,4.87,7.782,1.302
+office_isaac,p31,WALL_ONLY,"boxed/dead-end (0 open, walls <3.0m)",0,,,,,,,,,-2.051,13.23,0.951,9.938,2.85,9.328
+office_isaac,p02,WALL_ONLY,"boxed/dead-end (1 open, walls <3.0m)",1,N,,,,,,,,-14.851,23.43,0.271,15.201,1.67,7.079
+office_isaac,p12,WALL_ONLY,"boxed/dead-end (0 open, walls <3.0m)",0,,,,,,,,,-10.584,23.43,1.815,0.47,0.539,0.476
+office_isaac,p22,WALL_ONLY,"boxed/dead-end (0 open, walls <3.0m)",0,,,,,,,,,-6.318,23.43,1.218,0.652,2.064,4.751
+office_isaac,p32,WALL_ONLY,"boxed/dead-end (0 open, walls <3.0m)",0,,,,,,,,,-2.051,23.43,0.951,0.174,,0.174
+office_isaac,p03,RENDER_VALID_BUT_VISUALLY_WEAK,branches not distinct (DINO 0.674),3,N|W|S,W,N,S,180.0,13.967,9.13,0.674,-14.851,33.63,3.874,13.967,8.149,9.13
+office_isaac,p13,WALL_ONLY,"boxed/dead-end (1 open, walls <3.0m)",1,W,,,,,,,,-10.584,33.63,4.43,0.37,12.416,5.576
+office_isaac,p23,WALL_ONLY,"boxed/dead-end (0 open, walls <3.0m)",0,,,,,,,,,-6.318,33.63,1.218,0.254,4.343,6.08
+office_isaac,p33,WALL_ONLY,"L-corner (2 perpendicular open, single forced turn)",2,E|S,,,,,,,,-2.051,33.63,7.991,1.848,2.849,9.13
+warehouse_simple,p00,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,S,N,E,90.0,20.719,14.684,0.695,-5.272,-2.752,14.684,20.719,4.798,9.448
+warehouse_simple,p10,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,S,N,E,90.0,20.724,11.49,0.777,-2.078,-2.752,11.49,20.724,7.537,9.448
+warehouse_simple,p20,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,S,N,W,90.0,20.752,11.145,0.704,1.115,-2.752,8.297,20.752,11.145,9.448
+warehouse_simple,p30,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,S,N,W,90.0,20.752,13.751,0.707,4.309,-2.752,5.103,20.752,13.751,9.448
+warehouse_simple,p01,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,S,N,E,90.0,16.218,14.684,0.65,-5.272,1.582,14.684,16.218,5.058,13.782
+warehouse_simple,p11,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,E,N,S,180.0,16.418,13.782,0.849,-2.078,1.582,11.49,16.418,6.78,13.782
+warehouse_simple,p21,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,W,N,S,180.0,16.418,13.782,0.842,1.115,1.582,8.297,16.418,10.329,13.782
+warehouse_simple,p31,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,W,N,S,180.0,16.418,13.782,0.922,4.309,1.582,5.103,16.418,13.129,13.782
+warehouse_simple,p02,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,N,S,E,90.0,18.118,14.578,0.72,-5.272,5.918,14.578,11.795,5.058,18.118
+warehouse_simple,p12,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,E,S,N,180.0,18.118,12.082,0.766,-2.078,5.918,11.49,12.082,7.658,18.118
+warehouse_simple,p22,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,W,S,N,180.0,18.118,12.082,0.84,1.115,5.918,8.297,12.082,10.769,18.118
+warehouse_simple,p32,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,N,S,W,90.0,18.118,13.129,0.584,4.309,5.918,5.103,12.082,13.129,18.118
+warehouse_simple,p03,RENDER_VALID_BUT_VISUALLY_WEAK,branches not distinct (DINO 0.694),4,E|N|W|S,N,S,E,90.0,22.452,14.684,0.694,-5.272,10.252,14.684,4.83,3.773,22.452
+warehouse_simple,p13,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,N,S,E,90.0,22.452,11.49,0.77,-2.078,10.252,11.49,7.748,6.96,22.452
+warehouse_simple,p23,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,E,S,W,90.0,22.452,9.999,0.606,1.115,10.252,8.297,7.748,9.999,22.452
+warehouse_simple,p33,RENDER_VALID_BUT_VISUALLY_WEAK,"OPEN FLOOR: all 4 cardinal dirs depth >= 4.0 m (no bounding corridor walls) — open hall, not a branch-choice junction",4,E|N|W|S,N,S,W,90.0,22.452,13.129,0.693,4.309,10.252,5.103,7.748,13.129,22.452
