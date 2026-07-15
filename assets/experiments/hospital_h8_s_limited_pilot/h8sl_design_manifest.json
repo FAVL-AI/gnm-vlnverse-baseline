@@ -1,0 +1,320 @@
+{
+  "collection": "H8-S LIMITED_CAUSAL_PILOT decision-frame design",
+  "status": "LIMITED_CAUSAL_PILOT",
+  "scope": "DESIGN GATE ONLY \u2014 no recording, no training. Re-scoped after map-extension + drive + visual-gap evidence (584e19e).",
+  "not_claimed": [
+    "strong held-out visual benchmark",
+    "multi-room/cross-location generalization",
+    "full goal-conditioned ImageNav"
+  ],
+  "scene": "hospital.usd",
+  "camera_mount_raise_m": 0.12,
+  "coordinate_note": "isaac-world (=bringup) coords; spawn directly, NO navmap offset. navmap read-offset (2.956,-6.240) is for reading the navmap only.",
+  "safety": {
+    "CL_BOUND_XY": 6.0,
+    "unchanged": true
+  },
+  "stop_min_m": 0.6,
+  "visual_distinctness": {
+    "basis": "aHash (crude); embedding gate deferred to H8-M",
+    "note": "all goal images are the same vending alcove at different scales/positions; cross-split aHash ~0.55-0.86. Acceptable for a LIMITED pilot, NOT a strong held-out visual split."
+  },
+  "dropped_or_deferred": {
+    "east_B": "duplicate of east_A (aHash 0.93)",
+    "lookalike_test": "duplicate of east_B (0.96) + confuser west_B safety-deferred",
+    "seating_west_facing": "supplemental within-alcove analysis only, not held-out proof",
+    "far_west(west_A,west_B,hardneg)": "DEFERRED_SAFETY_ENVELOPE_LIMITED (|x|>6)",
+    "val_A": "REJECTED_COLLISION (25 contacts x2)",
+    "west_C": "REJECTED_COLLISION (7678)"
+  },
+  "decision_frames": [
+    {
+      "frame_id": "h8sl_train_lobby",
+      "split": "train",
+      "family": "near_far_same_approach",
+      "zone": "lobby",
+      "o_d": [
+        -1.0,
+        -0.2
+      ],
+      "approach_yaw_rad": 0.0,
+      "goalA": {
+        "coord": [
+          -0.4,
+          -0.2
+        ],
+        "branch": "near_stop"
+      },
+      "goalB": {
+        "coord": [
+          0.6,
+          -0.2
+        ],
+        "branch": "far_continue"
+      },
+      "drive_confirmed_range": [
+        -1.0,
+        0.7
+      ],
+      "proven_episode": "h8mx_val_lobby (0 collisions)"
+    },
+    {
+      "frame_id": "h8sl_val_midwestB",
+      "split": "val",
+      "family": "near_far_same_approach",
+      "zone": "midwest_B",
+      "o_d": [
+        -3.4,
+        -0.2
+      ],
+      "approach_yaw_rad": 0.0,
+      "goalA": {
+        "coord": [
+          -3.0,
+          -0.2
+        ],
+        "branch": "near_stop"
+      },
+      "goalB": {
+        "coord": [
+          -2.4,
+          -0.2
+        ],
+        "branch": "far_continue"
+      },
+      "drive_confirmed_range": [
+        -3.4,
+        -2.3
+      ],
+      "proven_episode": "h8mx_val_midwest_B + midwest_A (0 collisions)"
+    },
+    {
+      "frame_id": "h8sl_test_eastA",
+      "split": "test",
+      "family": "near_far_same_approach",
+      "zone": "east_A",
+      "o_d": [
+        1.4,
+        0.1
+      ],
+      "approach_yaw_rad": 0.0,
+      "goalA": {
+        "coord": [
+          1.7,
+          0.1
+        ],
+        "branch": "near_stop"
+      },
+      "goalB": {
+        "coord": [
+          2.1,
+          0.1
+        ],
+        "branch": "far_continue"
+      },
+      "drive_confirmed_range": [
+        1.4,
+        2.11
+      ],
+      "proven_episode": "h8mx_val_east_A (0 collisions)"
+    }
+  ],
+  "planned_metrics": [
+    "TL",
+    "NE",
+    "SR",
+    "OSR",
+    "SPL",
+    "nDTW",
+    "CR"
+  ],
+  "planned_diagnostics": [
+    "offline action-probe",
+    "goal-sensitivity score S",
+    "mismatched-goal ablation",
+    "visual distinctness audit (aHash now, embedding at H8-M)",
+    "route+decision-frame+goal-image leakage audit"
+  ],
+  "computed": {
+    "status": "LIMITED_CAUSAL_PILOT",
+    "gate_pass": true,
+    "checks": {
+      "coordinate_split_clean": true,
+      "no_reused_goal_coordinates": true,
+      "x_bands_disjoint": true,
+      "visual_distinctness_ok_for_limited_pilot": true,
+      "labelled_LIMITED_CAUSAL_PILOT": true,
+      "no_strong_heldout_or_multiroom_or_full_imagenav_claim": true,
+      "standard_metrics_planned": true,
+      "diagnostics_planned": true,
+      "CL_BOUND_XY_unchanged": true
+    },
+    "visual": {
+      "classification": "LIMITED_PILOT_ONLY",
+      "max_cross_split_ahash": 0.863,
+      "cross_pairs": [
+        {
+          "splits": [
+            "train",
+            "val"
+          ],
+          "zones": [
+            "lobby",
+            "midwest_B"
+          ],
+          "ahash": 0.641
+        },
+        {
+          "splits": [
+            "train",
+            "test"
+          ],
+          "zones": [
+            "lobby",
+            "east_A"
+          ],
+          "ahash": 0.863
+        },
+        {
+          "splits": [
+            "val",
+            "test"
+          ],
+          "zones": [
+            "midwest_B",
+            "east_A"
+          ],
+          "ahash": 0.566
+        }
+      ],
+      "strong_heldout_threshold": 0.6,
+      "note": "aHash is crude; a STRONG held-out claim needs an embedding gate at H8-M."
+    },
+    "coordinate_bands": {
+      "train": [
+        -1.0,
+        0.6
+      ],
+      "val": [
+        -3.4,
+        -2.4
+      ],
+      "test": [
+        1.4,
+        2.1
+      ]
+    },
+    "reused_coordinates": [],
+    "x_band_overlaps": [],
+    "decision_frames": [
+      {
+        "frame_id": "h8sl_train_lobby",
+        "split": "train",
+        "family": "near_far_same_approach",
+        "zone": "lobby",
+        "o_d": [
+          -1.0,
+          -0.2
+        ],
+        "approach_yaw_rad": 0.0,
+        "goalA": {
+          "coord": [
+            -0.4,
+            -0.2
+          ],
+          "branch": "near_stop"
+        },
+        "goalB": {
+          "coord": [
+            0.6,
+            -0.2
+          ],
+          "branch": "far_continue"
+        },
+        "drive_confirmed_range": [
+          -1.0,
+          0.7
+        ],
+        "proven_episode": "h8mx_val_lobby (0 collisions)",
+        "goal_dist_A_m": 0.6,
+        "goal_dist_B_m": 1.6,
+        "stop_separation_m": 1.0,
+        "meets_stop_min": true,
+        "coords_in_confirmed_range": true
+      },
+      {
+        "frame_id": "h8sl_val_midwestB",
+        "split": "val",
+        "family": "near_far_same_approach",
+        "zone": "midwest_B",
+        "o_d": [
+          -3.4,
+          -0.2
+        ],
+        "approach_yaw_rad": 0.0,
+        "goalA": {
+          "coord": [
+            -3.0,
+            -0.2
+          ],
+          "branch": "near_stop"
+        },
+        "goalB": {
+          "coord": [
+            -2.4,
+            -0.2
+          ],
+          "branch": "far_continue"
+        },
+        "drive_confirmed_range": [
+          -3.4,
+          -2.3
+        ],
+        "proven_episode": "h8mx_val_midwest_B + midwest_A (0 collisions)",
+        "goal_dist_A_m": 0.4,
+        "goal_dist_B_m": 1.0,
+        "stop_separation_m": 0.6,
+        "meets_stop_min": true,
+        "coords_in_confirmed_range": true
+      },
+      {
+        "frame_id": "h8sl_test_eastA",
+        "split": "test",
+        "family": "near_far_same_approach",
+        "zone": "east_A",
+        "o_d": [
+          1.4,
+          0.1
+        ],
+        "approach_yaw_rad": 0.0,
+        "goalA": {
+          "coord": [
+            1.7,
+            0.1
+          ],
+          "branch": "near_stop"
+        },
+        "goalB": {
+          "coord": [
+            2.1,
+            0.1
+          ],
+          "branch": "far_continue"
+        },
+        "drive_confirmed_range": [
+          1.4,
+          2.11
+        ],
+        "proven_episode": "h8mx_val_east_A (0 collisions)",
+        "goal_dist_A_m": 0.3,
+        "goal_dist_B_m": 0.7,
+        "stop_separation_m": 0.4,
+        "meets_stop_min": false,
+        "coords_in_confirmed_range": true
+      }
+    ],
+    "frames_below_stop_min": [
+      "h8sl_test_eastA"
+    ]
+  }
+}
