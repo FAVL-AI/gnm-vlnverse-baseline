@@ -1,0 +1,267 @@
+{
+  "per_label_distributions": {
+    "dino_cos": {
+      "SAME": {
+        "n": 9,
+        "mean": 0.7938,
+        "median": 0.808,
+        "min": 0.5878,
+        "max": 1.0,
+        "std": 0.1331
+      },
+      "DISTINCT": {
+        "n": 10,
+        "mean": 0.5748,
+        "median": 0.6426,
+        "min": 0.2552,
+        "max": 0.7956,
+        "std": 0.1706
+      },
+      "HARD_NEGATIVE": {
+        "n": 6,
+        "mean": 0.5916,
+        "median": 0.6256,
+        "min": 0.3719,
+        "max": 0.6786,
+        "std": 0.1056
+      }
+    },
+    "clip_cos": {
+      "SAME": {
+        "n": 9,
+        "mean": 0.8058,
+        "median": 0.7774,
+        "min": 0.5779,
+        "max": 1.0,
+        "std": 0.1269
+      },
+      "DISTINCT": {
+        "n": 10,
+        "mean": 0.6431,
+        "median": 0.7082,
+        "min": 0.2619,
+        "max": 0.9341,
+        "std": 0.195
+      },
+      "HARD_NEGATIVE": {
+        "n": 6,
+        "mean": 0.7956,
+        "median": 0.856,
+        "min": 0.5245,
+        "max": 0.8843,
+        "std": 0.1263
+      }
+    },
+    "ahash_sim": {
+      "SAME": {
+        "n": 9,
+        "mean": 0.7674,
+        "median": 0.7344,
+        "min": 0.5156,
+        "max": 1.0,
+        "std": 0.156
+      },
+      "DISTINCT": {
+        "n": 10,
+        "mean": 0.8125,
+        "median": 0.8672,
+        "min": 0.625,
+        "max": 0.9688,
+        "std": 0.1196
+      },
+      "HARD_NEGATIVE": {
+        "n": 6,
+        "mean": 0.5156,
+        "median": 0.4688,
+        "min": 0.375,
+        "max": 0.7656,
+        "std": 0.1338
+      }
+    },
+    "ssim": {
+      "SAME": {
+        "n": 9,
+        "mean": 0.689,
+        "median": 0.6954,
+        "min": 0.4585,
+        "max": 1.0,
+        "std": 0.1736
+      },
+      "DISTINCT": {
+        "n": 10,
+        "mean": 0.601,
+        "median": 0.6665,
+        "min": 0.1059,
+        "max": 0.9481,
+        "std": 0.2505
+      },
+      "HARD_NEGATIVE": {
+        "n": 6,
+        "mean": 0.3522,
+        "median": 0.3718,
+        "min": 0.2197,
+        "max": 0.4638,
+        "std": 0.1045
+      }
+    }
+  },
+  "separation_analysis": {
+    "dino_cos": {
+      "metric": "dino_cos",
+      "computable": true,
+      "same_mean": 0.7938,
+      "distinct_mean": 0.5748,
+      "gap_same_minus_distinct": 0.219,
+      "ranges_overlap": true,
+      "clean_separating_threshold": null,
+      "hard_negative_mean": 0.5916,
+      "hard_negative_note": "HARD_NEG scores toward DISTINCT (metric treats look-alikes as different) - good"
+    },
+    "clip_cos": {
+      "metric": "clip_cos",
+      "computable": true,
+      "same_mean": 0.8058,
+      "distinct_mean": 0.6431,
+      "gap_same_minus_distinct": 0.1627,
+      "ranges_overlap": true,
+      "clean_separating_threshold": null,
+      "hard_negative_mean": 0.7956,
+      "hard_negative_note": "HARD_NEG merges with SAME (metric over-similar on look-alikes)"
+    },
+    "ahash_sim": {
+      "metric": "ahash_sim",
+      "computable": true,
+      "same_mean": 0.7674,
+      "distinct_mean": 0.8125,
+      "gap_same_minus_distinct": -0.0451,
+      "ranges_overlap": true,
+      "clean_separating_threshold": null,
+      "hard_negative_mean": 0.5156,
+      "hard_negative_note": "HARD_NEG scores toward DISTINCT (metric treats look-alikes as different) - good"
+    },
+    "ssim": {
+      "metric": "ssim",
+      "computable": true,
+      "same_mean": 0.689,
+      "distinct_mean": 0.601,
+      "gap_same_minus_distinct": 0.088,
+      "ranges_overlap": true,
+      "clean_separating_threshold": null,
+      "hard_negative_mean": 0.3522,
+      "hard_negative_note": "HARD_NEG scores toward DISTINCT (metric treats look-alikes as different) - good"
+    }
+  },
+  "separation_by_source_family": {
+    "dino_cos": {
+      "synthetic": {
+        "computable": true,
+        "same": {
+          "n": 7,
+          "mean": 0.7706,
+          "median": 0.7566,
+          "min": 0.5878,
+          "max": 1.0,
+          "std": 0.1408
+        },
+        "distinct": {
+          "n": 6,
+          "mean": 0.6765,
+          "median": 0.6622,
+          "min": 0.6163,
+          "max": 0.7956,
+          "std": 0.0586
+        },
+        "gap_same_minus_distinct": 0.0941,
+        "ranges_overlap": true,
+        "clean_separating_threshold": null
+      },
+      "real": {
+        "computable": true,
+        "same": {
+          "n": 2,
+          "mean": 0.8751,
+          "median": 0.8751,
+          "min": 0.8327,
+          "max": 0.9175,
+          "std": 0.0424
+        },
+        "distinct": {
+          "n": 4,
+          "mean": 0.4223,
+          "median": 0.3749,
+          "min": 0.2552,
+          "max": 0.6841,
+          "std": 0.1699
+        },
+        "gap_same_minus_distinct": 0.4528,
+        "ranges_overlap": false,
+        "clean_separating_threshold": 0.7584
+      }
+    },
+    "clip_cos": {
+      "synthetic": {
+        "computable": true,
+        "same": {
+          "n": 7,
+          "mean": 0.777,
+          "median": 0.7524,
+          "min": 0.5779,
+          "max": 1.0,
+          "std": 0.1302
+        },
+        "distinct": {
+          "n": 6,
+          "mean": 0.703,
+          "median": 0.7129,
+          "min": 0.5891,
+          "max": 0.7737,
+          "std": 0.0558
+        },
+        "gap_same_minus_distinct": 0.074,
+        "ranges_overlap": true,
+        "clean_separating_threshold": null
+      },
+      "real": {
+        "computable": true,
+        "same": {
+          "n": 2,
+          "mean": 0.9065,
+          "median": 0.9065,
+          "min": 0.8948,
+          "max": 0.9182,
+          "std": 0.0117
+        },
+        "distinct": {
+          "n": 4,
+          "mean": 0.5533,
+          "median": 0.5086,
+          "min": 0.2619,
+          "max": 0.9341,
+          "std": 0.2773
+        },
+        "gap_same_minus_distinct": 0.3532,
+        "ranges_overlap": true,
+        "clean_separating_threshold": null
+      }
+    }
+  },
+  "dino_gate": 0.6,
+  "dino_false_positive_same_flagged_distinct": [
+    "syn_R2_northSame"
+  ],
+  "dino_false_negative_distinct_missed": [
+    "syn_R1_NvsW",
+    "syn_R2_NvsW",
+    "syn_R3_NvsW",
+    "syn_R4_NvsW",
+    "syn_R4_NvsE",
+    "syn_R4_WvsS",
+    "hosp_fork_vs_sidecorr"
+  ],
+  "dino_hard_negative_not_flagged": [
+    "mshelf_p00_openfloor",
+    "whsimple_p00_perp",
+    "office_p03_perp"
+  ],
+  "recommended_outcome": "A+E"
+}

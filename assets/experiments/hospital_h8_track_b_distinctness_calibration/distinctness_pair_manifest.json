@@ -1,0 +1,260 @@
+{
+  "label": "SYNTHETIC_DIAGNOSTIC_AND_REAL_RENDER_CALIBRATION_METHODOLOGY_ONLY",
+  "governing_plan": "docs/research/H8_TRACK_B_DISTINCTNESS_METRIC_CALIBRATION_PLAN.md",
+  "dino_gate_under_test": 0.6,
+  "n_pairs": 25,
+  "n_skipped": 0,
+  "pairs": [
+    {
+      "pair_id": "syn_R4_identity_N",
+      "source": "synthetic",
+      "revision": "R4",
+      "label": "SAME",
+      "reason": "identical frame (sanity anchor): center N == goalA(N) thumbnail",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__center_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__goalA_N.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R1_northSame",
+      "source": "synthetic",
+      "revision": "R1",
+      "label": "SAME",
+      "reason": "north branch: junction-centre view vs close goal view (same goal, diff distance)",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation/render_metadata/synthetic_diagnostic_fork__center_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation/render_metadata/synthetic_diagnostic_fork__goalA_img.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R2_northSame",
+      "source": "synthetic",
+      "revision": "R2",
+      "label": "SAME",
+      "reason": "north branch: junction-centre vs close goal view",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r2/render_metadata/synthetic_diagnostic_fork__center_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r2/render_metadata/synthetic_diagnostic_fork__goalA_img.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R3_northSame",
+      "source": "synthetic",
+      "revision": "R3",
+      "label": "SAME",
+      "reason": "north branch: junction-centre vs close goal view",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r3/render_metadata/synthetic_diagnostic_fork__center_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r3/render_metadata/synthetic_diagnostic_fork__goalA_img.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R4_northSame",
+      "source": "synthetic",
+      "revision": "R4",
+      "label": "SAME",
+      "reason": "north branch: junction-centre vs close goal view",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__center_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__goalA_img.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R1_westSame",
+      "source": "synthetic",
+      "revision": "R1",
+      "label": "SAME",
+      "reason": "west branch: junction-centre vs close goal view",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation/render_metadata/synthetic_diagnostic_fork__center_W.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation/render_metadata/synthetic_diagnostic_fork__goalB_img.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R4_westSame",
+      "source": "synthetic",
+      "revision": "R4",
+      "label": "SAME",
+      "reason": "west branch: junction-centre vs close goal view",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__center_W.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__goalB_img.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "hosp_eastVend_nearfar",
+      "source": "hospital",
+      "revision": null,
+      "label": "SAME",
+      "reason": "near vs far view of the SAME east vending area (same goal object, diff distance)",
+      "imageA": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_east_vending_nearfar__goalA.png",
+      "imageB": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_east_vending_nearfar__goalB.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "hosp_lobbyVend_nearfar",
+      "source": "hospital",
+      "revision": null,
+      "label": "SAME",
+      "reason": "near vs far view of the SAME lobby vending area",
+      "imageA": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_lobby_vending_nearfar__goalA.png",
+      "imageB": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_lobby_vending_nearfar__goalB.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R1_NvsW",
+      "source": "synthetic",
+      "revision": "R1",
+      "label": "DISTINCT",
+      "reason": "R1 gate pair: north (blue) vs west (green) branches, 90 deg apart",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation/render_metadata/synthetic_diagnostic_fork__center_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation/render_metadata/synthetic_diagnostic_fork__center_W.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R2_NvsW",
+      "source": "synthetic",
+      "revision": "R2",
+      "label": "DISTINCT",
+      "reason": "R2 gate pair: north vs west branches",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r2/render_metadata/synthetic_diagnostic_fork__center_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r2/render_metadata/synthetic_diagnostic_fork__center_W.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R3_NvsW",
+      "source": "synthetic",
+      "revision": "R3",
+      "label": "DISTINCT",
+      "reason": "R3 gate pair: north vs west branches",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r3/render_metadata/synthetic_diagnostic_fork__center_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r3/render_metadata/synthetic_diagnostic_fork__center_W.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R4_NvsW",
+      "source": "synthetic",
+      "revision": "R4",
+      "label": "DISTINCT",
+      "reason": "R4 gate pair: north vs west branches",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__center_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__center_W.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R4_NvsE",
+      "source": "synthetic",
+      "revision": "R4",
+      "label": "DISTINCT",
+      "reason": "north (blue,round) vs east (orange,boxy) branches",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__center_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__center_E.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "syn_R4_WvsS",
+      "source": "synthetic",
+      "revision": "R4",
+      "label": "DISTINCT",
+      "reason": "west (green,pointed) vs south (red,columned) branches",
+      "imageA": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__center_W.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_synthetic_fork_validation_r4/render_metadata/synthetic_diagnostic_fork__center_S.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "hosp_eastVend_vs_waiting",
+      "source": "hospital",
+      "revision": null,
+      "label": "DISTINCT",
+      "reason": "different rooms: east vending vs waiting seating",
+      "imageA": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_east_vending_nearfar__goalA.png",
+      "imageB": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_waiting_seating__goalA.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "hosp_fork_vs_sidecorr",
+      "source": "hospital",
+      "revision": null,
+      "label": "DISTINCT",
+      "reason": "different zones: reception fork vs side corridor",
+      "imageA": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_recep_fork__goalA.png",
+      "imageB": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_side_corridor__goalA.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "hosp_recepJunction_AB",
+      "source": "hospital",
+      "revision": null,
+      "label": "DISTINCT",
+      "reason": "reception junction two intended branches",
+      "imageA": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_recep_junction__goalA.png",
+      "imageB": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_recep_junction__goalB.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "hosp_waiting_vs_desk",
+      "source": "hospital",
+      "revision": null,
+      "label": "DISTINCT",
+      "reason": "waiting seating vs reception desk",
+      "imageA": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_waiting_seating__goalA.png",
+      "imageB": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_recep_desk_multiobj__goalA.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "whfull_p13_aisle_ends",
+      "source": "warehouse_full",
+      "revision": null,
+      "label": "HARD_NEGATIVE",
+      "reason": "two ENDS of the same straight aisle (look alike, different locations) - the p13 collinear case",
+      "imageA": "assets/experiments/hospital_h8_track_b_warehouse_full_scan/render_metadata/warehouse_full__p13__goalA_S.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_warehouse_full_scan/render_metadata/warehouse_full__p13__goalB_N.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "mshelf_p00_openfloor",
+      "source": "multi_shelf",
+      "revision": null,
+      "label": "HARD_NEGATIVE",
+      "reason": "open-hall probe: two perpendicular views of the same open floor look alike",
+      "imageA": "assets/experiments/hospital_h8_track_b_multi_shelf_scan/render_metadata/warehouse_multiple_shelves__p00__goalA_E.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_multi_shelf_scan/render_metadata/warehouse_multiple_shelves__p00__goalB_N.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "hosp_lookalike_AB",
+      "source": "hospital",
+      "revision": null,
+      "label": "HARD_NEGATIVE",
+      "reason": "designed look-alike confuser: visually similar, semantically different goals",
+      "imageA": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_lookalike_confuser__goalA.png",
+      "imageB": "assets/experiments/hospital_h8_m_embedding_search/render_metadata/h8m_lookalike_confuser__goalB.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "mshelf_p00_vs_p32",
+      "source": "multi_shelf",
+      "revision": null,
+      "label": "HARD_NEGATIVE",
+      "reason": "two DIFFERENT open-floor probes (different location) that look alike",
+      "imageA": "assets/experiments/hospital_h8_track_b_multi_shelf_scan/render_metadata/warehouse_multiple_shelves__p00__goalA_E.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_multi_shelf_scan/render_metadata/warehouse_multiple_shelves__p32__goalA_N.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "whsimple_p00_perp",
+      "source": "warehouse_simple",
+      "revision": null,
+      "label": "HARD_NEGATIVE",
+      "reason": "open warehouse hall: two perpendicular views look alike (open-floor false-fork risk)",
+      "imageA": "assets/experiments/hospital_h8_track_b_render_scan/render_metadata/warehouse_simple__p00__goalA_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_render_scan/render_metadata/warehouse_simple__p00__goalB_E.png",
+      "contact_sheet_supported": true
+    },
+    {
+      "pair_id": "office_p03_perp",
+      "source": "office_isaac",
+      "revision": null,
+      "label": "HARD_NEGATIVE",
+      "reason": "open office bullpen: two views look alike",
+      "imageA": "assets/experiments/hospital_h8_track_b_render_scan/render_metadata/office_isaac__p03__goalA_N.png",
+      "imageB": "assets/experiments/hospital_h8_track_b_render_scan/render_metadata/office_isaac__p03__goalB_S.png",
+      "contact_sheet_supported": true
+    }
+  ],
+  "skipped": []
+}

@@ -1,0 +1,26 @@
+pair_id,source,revision,label,dino_cos,clip_cos,ahash_sim,ssim,policy_encoder_cos,reason
+syn_R4_identity_N,synthetic,R4,SAME,1.0,1.0,1.0,1.0,,identical frame (sanity anchor): center N == goalA(N) thumbnail
+syn_R1_northSame,synthetic,R1,SAME,0.6858,0.7041,0.7031,0.6954,,"north branch: junction-centre view vs close goal view (same goal, diff distance)"
+syn_R2_northSame,synthetic,R2,SAME,0.5878,0.5779,0.5938,0.4917,,north branch: junction-centre vs close goal view
+syn_R3_northSame,synthetic,R3,SAME,0.9259,0.9154,0.75,0.6505,,north branch: junction-centre vs close goal view
+syn_R4_northSame,synthetic,R4,SAME,0.7566,0.7774,0.7188,0.4585,,north branch: junction-centre vs close goal view
+syn_R1_westSame,synthetic,R1,SAME,0.6298,0.712,0.7344,0.8117,,west branch: junction-centre vs close goal view
+syn_R4_westSame,synthetic,R4,SAME,0.808,0.7524,0.5156,0.4892,,west branch: junction-centre vs close goal view
+hosp_eastVend_nearfar,hospital,,SAME,0.9175,0.9182,0.9531,0.8132,,"near vs far view of the SAME east vending area (same goal object, diff distance)"
+hosp_lobbyVend_nearfar,hospital,,SAME,0.8327,0.8948,0.9375,0.7909,,near vs far view of the SAME lobby vending area
+syn_R1_NvsW,synthetic,R1,DISTINCT,0.7956,0.7737,0.9062,0.9481,,"R1 gate pair: north (blue) vs west (green) branches, 90 deg apart"
+syn_R2_NvsW,synthetic,R2,DISTINCT,0.6163,0.7134,0.9375,0.8403,,R2 gate pair: north vs west branches
+syn_R3_NvsW,synthetic,R3,DISTINCT,0.6535,0.7257,0.8594,0.7272,,R3 gate pair: north vs west branches
+syn_R4_NvsW,synthetic,R4,DISTINCT,0.6912,0.7125,0.9688,0.7187,,R4 gate pair: north vs west branches
+syn_R4_NvsE,synthetic,R4,DISTINCT,0.6708,0.7038,0.875,0.6143,,"north (blue,round) vs east (orange,boxy) branches"
+syn_R4_WvsS,synthetic,R4,DISTINCT,0.6318,0.5891,0.6406,0.413,,"west (green,pointed) vs south (red,columned) branches"
+hosp_eastVend_vs_waiting,hospital,,DISTINCT,0.46,0.7005,0.875,0.5477,,different rooms: east vending vs waiting seating
+hosp_fork_vs_sidecorr,hospital,,DISTINCT,0.6841,0.9341,0.625,0.8031,,different zones: reception fork vs side corridor
+hosp_recepJunction_AB,hospital,,DISTINCT,0.2898,0.2619,0.6875,0.1059,,reception junction two intended branches
+hosp_waiting_vs_desk,hospital,,DISTINCT,0.2552,0.3166,0.75,0.2914,,waiting seating vs reception desk
+whfull_p13_aisle_ends,warehouse_full,,HARD_NEGATIVE,0.5864,0.8843,0.6094,0.2197,,"two ENDS of the same straight aisle (look alike, different locations) - the p13 collinear case"
+mshelf_p00_openfloor,multi_shelf,,HARD_NEGATIVE,0.6664,0.8437,0.7656,0.3009,,open-hall probe: two perpendicular views of the same open floor look alike
+hosp_lookalike_AB,hospital,,HARD_NEGATIVE,0.3719,0.5245,0.375,0.4638,,"designed look-alike confuser: visually similar, semantically different goals"
+mshelf_p00_vs_p32,multi_shelf,,HARD_NEGATIVE,0.5816,0.7772,0.4062,0.2322,,two DIFFERENT open-floor probes (different location) that look alike
+whsimple_p00_perp,warehouse_simple,,HARD_NEGATIVE,0.6786,0.8684,0.4688,0.4537,,open warehouse hall: two perpendicular views look alike (open-floor false-fork risk)
+office_p03_perp,office_isaac,,HARD_NEGATIVE,0.6648,0.8757,0.4688,0.4426,,open office bullpen: two views look alike
