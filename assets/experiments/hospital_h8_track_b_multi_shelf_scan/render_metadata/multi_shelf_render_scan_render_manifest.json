@@ -1,0 +1,808 @@
+{
+  "asset_root": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments",
+  "isaac_sim_version": "5.1.0.0",
+  "resolution": [
+    640,
+    480
+  ],
+  "camera_height_m": 0.47,
+  "grid": [
+    5,
+    5
+  ],
+  "margin_frac": 0.16,
+  "directions": [
+    "E",
+    "N",
+    "W",
+    "S"
+  ],
+  "branch_open_depth_note": ">=3 m tested in analyze",
+  "free_camera_no_robot_body": true,
+  "scenes": [
+    {
+      "scene_id": "warehouse_multiple_shelves",
+      "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Simple_Warehouse/warehouse_multiple_shelves.usd",
+      "ref_authored": true,
+      "prim_count": 8126,
+      "world_bbox": [
+        -11.99999912142755,
+        -17.999999902844422,
+        -6.869831537606658e-05,
+        12.000000342130647,
+        20.818081582505194,
+        9.300010941024185
+      ],
+      "interior_footprint": [
+        -9.63,
+        -3.7,
+        8.952,
+        14.007
+      ],
+      "grid_region": [
+        -9.63,
+        -3.7,
+        8.952,
+        14.007
+      ],
+      "scene_load_ok": true,
+      "load_probe": {
+        "mean_luma": 67.4,
+        "lower_frame_black_frac": 0.0,
+        "median_depth_central_m": 8.669
+      },
+      "probes": [
+        {
+          "probe_id": "p00",
+          "eye": [
+            -5.393,
+            0.337,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 110.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 7.079
+            },
+            "N": {
+              "mean_luma": 64.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 17.463
+            },
+            "W": {
+              "mean_luma": 72.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.937
+            },
+            "S": {
+              "mean_luma": 99.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 12.537
+            }
+          }
+        },
+        {
+          "probe_id": "p10",
+          "eye": [
+            -2.866,
+            0.337,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 91.5,
+              "lower_frame_black_frac": 0.0006,
+              "median_depth_central_m": 11.046
+            },
+            "N": {
+              "mean_luma": 67.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 17.463
+            },
+            "W": {
+              "mean_luma": 85.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.87
+            },
+            "S": {
+              "mean_luma": 102.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 12.537
+            }
+          }
+        },
+        {
+          "probe_id": "p20",
+          "eye": [
+            -0.339,
+            0.337,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 74.3,
+              "lower_frame_black_frac": 0.0686,
+              "median_depth_central_m": 0.503
+            },
+            "N": {
+              "mean_luma": 60.8,
+              "lower_frame_black_frac": 0.013,
+              "median_depth_central_m": 6.038
+            },
+            "W": {
+              "mean_luma": 70.4,
+              "lower_frame_black_frac": 0.121,
+              "median_depth_central_m": 0.396
+            },
+            "S": {
+              "mean_luma": 93.9,
+              "lower_frame_black_frac": 0.0071,
+              "median_depth_central_m": 12.508
+            }
+          }
+        },
+        {
+          "probe_id": "p30",
+          "eye": [
+            2.188,
+            0.337,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 81.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 7.077
+            },
+            "N": {
+              "mean_luma": 67.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 13.393
+            },
+            "W": {
+              "mean_luma": 88.9,
+              "lower_frame_black_frac": 0.0002,
+              "median_depth_central_m": 11.008
+            },
+            "S": {
+              "mean_luma": 99.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 12.537
+            }
+          }
+        },
+        {
+          "probe_id": "p40",
+          "eye": [
+            4.715,
+            0.337,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 71.7,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.697
+            },
+            "N": {
+              "mean_luma": 64.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 17.471
+            },
+            "W": {
+              "mean_luma": 94.7,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 7.278
+            },
+            "S": {
+              "mean_luma": 98.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 12.537
+            }
+          }
+        },
+        {
+          "probe_id": "p01",
+          "eye": [
+            -5.393,
+            2.745,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 103.7,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 7.489
+            },
+            "N": {
+              "mean_luma": 58.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 15.055
+            },
+            "W": {
+              "mean_luma": 69.5,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.741
+            },
+            "S": {
+              "mean_luma": 104.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 14.945
+            }
+          }
+        },
+        {
+          "probe_id": "p11",
+          "eye": [
+            -2.866,
+            2.745,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 80.1,
+              "lower_frame_black_frac": 0.0105,
+              "median_depth_central_m": 11.196
+            },
+            "N": {
+              "mean_luma": 58.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 15.226
+            },
+            "W": {
+              "mean_luma": 84.5,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.277
+            },
+            "S": {
+              "mean_luma": 100.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 14.945
+            }
+          }
+        },
+        {
+          "probe_id": "p21",
+          "eye": [
+            -0.339,
+            2.745,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 86.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 9.107
+            },
+            "N": {
+              "mean_luma": 58.9,
+              "lower_frame_black_frac": 0.0365,
+              "median_depth_central_m": 4.834
+            },
+            "W": {
+              "mean_luma": 85.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 8.726
+            },
+            "S": {
+              "mean_luma": 100.9,
+              "lower_frame_black_frac": 0.0059,
+              "median_depth_central_m": 5.281
+            }
+          }
+        },
+        {
+          "probe_id": "p31",
+          "eye": [
+            2.188,
+            2.745,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 81.0,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.798
+            },
+            "N": {
+              "mean_luma": 57.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 15.055
+            },
+            "W": {
+              "mean_luma": 77.0,
+              "lower_frame_black_frac": 0.0093,
+              "median_depth_central_m": 11.063
+            },
+            "S": {
+              "mean_luma": 97.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 14.945
+            }
+          }
+        },
+        {
+          "probe_id": "p41",
+          "eye": [
+            4.715,
+            2.745,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 66.0,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.668
+            },
+            "N": {
+              "mean_luma": 56.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 15.055
+            },
+            "W": {
+              "mean_luma": 92.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 7.95
+            },
+            "S": {
+              "mean_luma": 102.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 14.945
+            }
+          }
+        },
+        {
+          "probe_id": "p02",
+          "eye": [
+            -5.393,
+            5.154,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 79.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 5.489
+            },
+            "N": {
+              "mean_luma": 53.5,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 12.559
+            },
+            "W": {
+              "mean_luma": 62.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.937
+            },
+            "S": {
+              "mean_luma": 103.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 17.354
+            }
+          }
+        },
+        {
+          "probe_id": "p12",
+          "eye": [
+            -2.866,
+            5.154,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 70.1,
+              "lower_frame_black_frac": 0.0347,
+              "median_depth_central_m": 11.196
+            },
+            "N": {
+              "mean_luma": 52.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 12.846
+            },
+            "W": {
+              "mean_luma": 70.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.104
+            },
+            "S": {
+              "mean_luma": 98.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 17.354
+            }
+          }
+        },
+        {
+          "probe_id": "p22",
+          "eye": [
+            -0.339,
+            5.154,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 70.5,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 8.669
+            },
+            "N": {
+              "mean_luma": 59.4,
+              "lower_frame_black_frac": 0.118,
+              "median_depth_central_m": 1.225
+            },
+            "W": {
+              "mean_luma": 70.7,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 8.631
+            },
+            "S": {
+              "mean_luma": 68.0,
+              "lower_frame_black_frac": 0.2283,
+              "median_depth_central_m": 7.713
+            }
+          }
+        },
+        {
+          "probe_id": "p32",
+          "eye": [
+            2.188,
+            5.154,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 66.5,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.142
+            },
+            "N": {
+              "mean_luma": 54.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 12.846
+            },
+            "W": {
+              "mean_luma": 69.4,
+              "lower_frame_black_frac": 0.0345,
+              "median_depth_central_m": 11.158
+            },
+            "S": {
+              "mean_luma": 97.5,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 17.354
+            }
+          }
+        },
+        {
+          "probe_id": "p42",
+          "eye": [
+            4.715,
+            5.154,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 63.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.697
+            },
+            "N": {
+              "mean_luma": 49.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 12.817
+            },
+            "W": {
+              "mean_luma": 75.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 5.451
+            },
+            "S": {
+              "mean_luma": 100.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 17.354
+            }
+          }
+        },
+        {
+          "probe_id": "p03",
+          "eye": [
+            -5.393,
+            7.562,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 71.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 5.054
+            },
+            "N": {
+              "mean_luma": 52.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.89
+            },
+            "W": {
+              "mean_luma": 49.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.937
+            },
+            "S": {
+              "mean_luma": 100.9,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 19.762
+            }
+          }
+        },
+        {
+          "probe_id": "p13",
+          "eye": [
+            -2.866,
+            7.562,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 49.5,
+              "lower_frame_black_frac": 0.0637,
+              "median_depth_central_m": 10.133
+            },
+            "N": {
+              "mean_luma": 54.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 10.438
+            },
+            "W": {
+              "mean_luma": 57.7,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.172
+            },
+            "S": {
+              "mean_luma": 96.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 19.733
+            }
+          }
+        },
+        {
+          "probe_id": "p23",
+          "eye": [
+            -0.339,
+            7.562,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 49.7,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 8.626
+            },
+            "N": {
+              "mean_luma": 49.2,
+              "lower_frame_black_frac": 0.1372,
+              "median_depth_central_m": 1.186
+            },
+            "W": {
+              "mean_luma": 52.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 8.631
+            },
+            "S": {
+              "mean_luma": 8.9,
+              "lower_frame_black_frac": 0.6741,
+              "median_depth_central_m": 0.614
+            }
+          }
+        },
+        {
+          "probe_id": "p33",
+          "eye": [
+            2.188,
+            7.562,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 49.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.1
+            },
+            "N": {
+              "mean_luma": 52.5,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 10.438
+            },
+            "W": {
+              "mean_luma": 53.2,
+              "lower_frame_black_frac": 0.0655,
+              "median_depth_central_m": 10.931
+            },
+            "S": {
+              "mean_luma": 95.1,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 19.733
+            }
+          }
+        },
+        {
+          "probe_id": "p43",
+          "eye": [
+            4.715,
+            7.562,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 49.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.381
+            },
+            "N": {
+              "mean_luma": 48.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.541
+            },
+            "W": {
+              "mean_luma": 62.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.76
+            },
+            "S": {
+              "mean_luma": 100.2,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 19.762
+            }
+          }
+        },
+        {
+          "probe_id": "p04",
+          "eye": [
+            -5.393,
+            9.97,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 44.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.678
+            },
+            "N": {
+              "mean_luma": 58.5,
+              "lower_frame_black_frac": 0.0001,
+              "median_depth_central_m": 4.168
+            },
+            "W": {
+              "mean_luma": 35.9,
+              "lower_frame_black_frac": 0.0003,
+              "median_depth_central_m": 3.652
+            },
+            "S": {
+              "mean_luma": 93.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 22.17
+            }
+          }
+        },
+        {
+          "probe_id": "p14",
+          "eye": [
+            -2.866,
+            9.97,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 34.5,
+              "lower_frame_black_frac": 0.113,
+              "median_depth_central_m": 2.636
+            },
+            "N": {
+              "mean_luma": 59.6,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 8.03
+            },
+            "W": {
+              "mean_luma": 39.5,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.175
+            },
+            "S": {
+              "mean_luma": 92.3,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 21.97
+            }
+          }
+        },
+        {
+          "probe_id": "p24",
+          "eye": [
+            -0.339,
+            9.97,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.054
+            },
+            "N": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.187
+            },
+            "W": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.126
+            },
+            "S": {
+              "mean_luma": 0.0,
+              "lower_frame_black_frac": 1.0,
+              "median_depth_central_m": 0.075
+            }
+          }
+        },
+        {
+          "probe_id": "p34",
+          "eye": [
+            2.188,
+            9.97,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 32.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 6.097
+            },
+            "N": {
+              "mean_luma": 55.9,
+              "lower_frame_black_frac": 0.0021,
+              "median_depth_central_m": 8.03
+            },
+            "W": {
+              "mean_luma": 41.3,
+              "lower_frame_black_frac": 0.1314,
+              "median_depth_central_m": 2.233
+            },
+            "S": {
+              "mean_luma": 93.4,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 21.97
+            }
+          }
+        },
+        {
+          "probe_id": "p44",
+          "eye": [
+            4.715,
+            9.97,
+            0.47
+          ],
+          "views": {
+            "E": {
+              "mean_luma": 32.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.055
+            },
+            "N": {
+              "mean_luma": 50.2,
+              "lower_frame_black_frac": 0.0045,
+              "median_depth_central_m": 3.494
+            },
+            "W": {
+              "mean_luma": 47.0,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 4.758
+            },
+            "S": {
+              "mean_luma": 91.8,
+              "lower_frame_black_frac": 0.0,
+              "median_depth_central_m": 22.141
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
