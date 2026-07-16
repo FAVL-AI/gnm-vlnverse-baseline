@@ -228,6 +228,169 @@ def test_cl_bound_xy_is_readonly_mirror_of_six():
     assert rm.CL_BOUND_XY == dv.CL_BOUND_XY
 
 
+# ── pilot capture path: config load / fail-closed validate / plan / verdict ───
+import copy  # noqa: E402
+
+PILOT_CFG_PATH = REPO / "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml"
+
+
+def _pilot_cfg():
+    return rm.load_pilot_config(PILOT_CFG_PATH)
+
+
+def test_config_flag_parses_pilot_config():
+    cfg = _pilot_cfg()
+    ok, issues = rm.validate_pilot_config(cfg)
+    assert ok, f"committed pilot config must validate: {issues}"
+
+
+def test_invalid_config_path_fails():
+    import pytest
+    with pytest.raises(FileNotFoundError):
+        rm.load_pilot_config(REPO / "configs/gnm/does_not_exist.yaml")
+    # via CLI validate-config: a bad --config path fails closed (nonzero)
+    assert rm.main(["--mode", "validate-config", "--config",
+                    str(REPO / "configs/gnm/does_not_exist.yaml")]) != 0
+
+
+def test_wrong_claim_boundary_fails():
+    cfg = _pilot_cfg(); cfg["claim_boundary"] = "SOMETHING_ELSE"
+    ok, issues = rm.validate_pilot_config(cfg)
+    assert not ok and any("claim_boundary" in i for i in issues)
+
+
+def test_authorizes_training_true_fails():
+    cfg = _pilot_cfg(); cfg["authorizes_training"] = True
+    ok, issues = rm.validate_pilot_config(cfg)
+    assert not ok and any("authorizes_training" in i for i in issues)
+
+
+def test_authorizes_capture_true_fails():
+    cfg = _pilot_cfg(); cfg["authorizes_capture"] = True
+    ok, issues = rm.validate_pilot_config(cfg)
+    assert not ok and any("authorizes_capture" in i for i in issues)
+
+
+def test_full_dataset_output_path_fails():
+    cfg = _pilot_cfg()
+    cfg["output_dir"] = "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode/"
+    ok, issues = rm.validate_pilot_config(cfg)
+    assert not ok and any("output_dir" in i for i in issues)
+
+
+def test_full_train_val_test_dataset_authorization_fails():
+    cfg = _pilot_cfg(); cfg["pilot_scope"]["full_train_val_test_dataset"] = True
+    ok, issues = rm.validate_pilot_config(cfg)
+    assert not ok and any("full train/val/test" in i for i in issues)
+
+
+def test_rollout_metric_field_fails():
+    cfg = _pilot_cfg(); cfg["SR"] = 0.9   # a rollout metric key must not appear
+    ok, issues = rm.validate_pilot_config(cfg)
+    assert not ok and any("rollout metric" in i for i in issues)
+
+
+def test_policy_model_action_probe_training_authorization_fails():
+    for k in ("policy_inference", "model_inference", "closed_loop_policy_execution", "action_probe",
+              "training"):
+        cfg = _pilot_cfg(); cfg["capture_controls"][k] = True
+        ok, issues = rm.validate_pilot_config(cfg)
+        assert not ok and any(k in i for i in issues), f"{k}=true must fail validation"
+
+
+def test_cl_bound_xy_mismatch_in_config_fails():
+    cfg = _pilot_cfg(); cfg["cl_bound_xy"] = 7.0
+    ok, issues = rm.validate_pilot_config(cfg)
+    assert not ok and any("cl_bound_xy" in i for i in issues)
+
+
+def test_capture_plan_is_tiny_and_config_driven():
+    plan = rm.pilot_capture_plan(_pilot_cfg())
+    assert len(plan) > 0
+    assert len({u["instance_id"] for u in plan}) <= 2      # tiny: <= 2 instances
+    # every unit carries a scripted (policy-free) action + unique goal-image id
+    assert all(u["action_class"] in ("STRAIGHT", "TURN_LEFT_90", "TURN_RIGHT_90", "TURN_AROUND_180")
+               for u in plan)
+    gids = [u["goal_image_id"] for u in plan]
+    assert len(set(gids)) == len(gids), "goal-image ids must be unique across the plan"
+    # primary N-vs-W must be present
+    assert "N_vs_W_90" in {u["route_family"] for u in plan}
+
+
+def test_allowed_pilot_artifacts_are_the_seven_and_forbidden_listed():
+    art = rm.allowed_pilot_artifacts()
+    assert art["allowed"] == ["pilot_manifest", "pilot_image_index", "pilot_action_label_table",
+                              "pilot_contact_log", "pilot_provenance_table", "pilot_leakage_audit_report",
+                              "pilot_recording_report"]
+    for forbidden in ("checkpoints", "weights", "wandb", "rollout_metrics", "benchmark_tables",
+                      "model_outputs", "action_probe_outputs", "train_val_test_dataset_files"):
+        assert forbidden in art["forbidden"]
+
+
+def test_output_path_is_pilot_only():
+    out = _pilot_cfg()["output_dir"].rstrip("/")
+    assert out.endswith("_recorded_mode_pilot")
+    assert out != "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode"
+    assert out != "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_dryrun"
+
+
+# ── pilot verdict fail-closed ─────────────────────────────────────────────────
+def _good_record():
+    return {"decision_rgb_nonempty": True, "goal_rgb_nonempty": True, "action_class": "STRAIGHT",
+            "branch": "N", "provenance": {"scene": "x"}, "goal_image_id": "g1",
+            "contact_status": {"obstacle_contacts_count": 0, "ambiguous": False}}
+
+
+def test_pilot_verdict_passes_on_clean_records():
+    recs = [_good_record()]
+    passed, reasons = rm.pilot_verdict(recs, [{"pose": "decision"}], rm.audit_examples(recs))
+    assert passed is True and reasons == []
+
+
+def test_pilot_verdict_fails_closed():
+    base = _good_record()
+    # obstacle contact
+    r = copy.deepcopy(base); r["contact_status"]["obstacle_contacts_count"] = 1
+    assert rm.pilot_verdict([r], [{}], rm.audit_examples([r]))[0] is False
+    # ambiguous contact
+    r = copy.deepcopy(base); r["contact_status"]["ambiguous"] = True
+    assert "ambiguous_contact" in rm.pilot_verdict([r], [{}], rm.audit_examples([r]))[1]
+    # empty image
+    r = copy.deepcopy(base); r["goal_rgb_nonempty"] = False
+    assert "empty_or_invalid_image" in rm.pilot_verdict([r], [{}], rm.audit_examples([r]))[1]
+    # missing provenance
+    r = copy.deepcopy(base); r["provenance"] = None
+    assert "missing_provenance" in rm.pilot_verdict([r], [{}], rm.audit_examples([r]))[1]
+    # duplicate goal-image id
+    r2 = copy.deepcopy(base)
+    assert "duplicate_goal_image_id" in rm.pilot_verdict([base, r2], [{}], rm.audit_examples([base, r2]))[1]
+    # missing contact log
+    assert "contact_log_missing" in rm.pilot_verdict([base], [], rm.audit_examples([base]))[1]
+    # no examples
+    assert rm.pilot_verdict([], [], rm.audit_examples([]))[0] is False
+
+
+def test_finalize_pilot_writes_only_allowed_artifacts(tmp_path):
+    recs = [_good_record()]
+    recs[0].update({"instance_id": "i0", "decision_frame_id": "df0", "decision_xy": [0, 0],
+                    "goal_xy": [0, 3], "route_family": "N_vs_W_90"})
+    audit = rm.audit_examples(recs)
+    rm.finalize_pilot(recs, [{"pose": "decision"}], audit, True, [], tmp_path)
+    names = sorted(p.name for p in tmp_path.iterdir())
+    assert names == ["pilot_action_label_table.json", "pilot_contact_log.json",
+                     "pilot_image_index.json", "pilot_leakage_audit_report.json", "pilot_manifest.json",
+                     "pilot_provenance_table.json", "pilot_recording_report.md"]
+    # no forbidden artifacts
+    for p in tmp_path.iterdir():
+        assert p.suffix not in (".pt", ".ckpt", ".pth", ".bin")
+        assert "checkpoint" not in p.name and "wandb" not in p.name
+
+
+def test_run_capture_requires_config():
+    # capture without --config must refuse (nonzero) WITHOUT launching Isaac
+    assert rm.main(["--mode", "capture"]) != 0
+
+
 if __name__ == "__main__":
     import pytest as _pt
     raise SystemExit(_pt.main([__file__, "-q"]))

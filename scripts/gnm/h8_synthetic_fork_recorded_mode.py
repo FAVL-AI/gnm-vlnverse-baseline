@@ -41,6 +41,7 @@ try:  # pragma: no cover - import shim
     from scripts.gnm.h8_synthetic_fork_drive_validate import (
         CL_BOUND_XY as _DV_CL_BOUND_XY, SCENE_BOUND_ABS, Z_CAM, ROBOT_Z,
         SPAWN_XY, SPAWN_HEADING_DEG, DECISION_XY, USDA, ROBOT_USD, EXPECTED_MIN_PRIMS,
+        GPRIM_COLLIDER_TYPES,
         is_support_contact, classify_contacts, safe_halt_command, validate_config as _dv_validate_config,
         SUPPORT_CONTACT_ALLOWED, CONTACT_CLASSIFICATION_RULE,
     )
@@ -49,6 +50,7 @@ except ImportError:  # pragma: no cover - import shim
     from h8_synthetic_fork_drive_validate import (  # type: ignore
         CL_BOUND_XY as _DV_CL_BOUND_XY, SCENE_BOUND_ABS, Z_CAM, ROBOT_Z,
         SPAWN_XY, SPAWN_HEADING_DEG, DECISION_XY, USDA, ROBOT_USD, EXPECTED_MIN_PRIMS,
+        GPRIM_COLLIDER_TYPES,
         is_support_contact, classify_contacts, safe_halt_command, validate_config as _dv_validate_config,
         SUPPORT_CONTACT_ALLOWED, CONTACT_CLASSIFICATION_RULE,
     )
@@ -58,6 +60,15 @@ CL_BOUND_XY = _DV_CL_BOUND_XY   # 6.0 m absolute watchdog — READ-ONLY MIRROR, 
 CLAIM_BOUNDARY = "SYNTHETIC_DIAGNOSTIC_ONLY"
 
 OUT_DIR = REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode"
+DRYRUN_DIR = REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_dryrun"
+PILOT_DIR = REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot"
+
+# the ONLY artifacts a pilot capture may emit, and the outputs it must never emit
+ALLOWED_PILOT_ARTIFACTS = ("pilot_manifest", "pilot_image_index", "pilot_action_label_table",
+                           "pilot_contact_log", "pilot_provenance_table", "pilot_leakage_audit_report",
+                           "pilot_recording_report")
+FORBIDDEN_PILOT_OUTPUTS = ("checkpoints", "weights", "wandb", "rollout_metrics", "benchmark_tables",
+                           "model_outputs", "action_probe_outputs", "train_val_test_dataset_files")
 
 # ── leakage-safe dataset targets (from the reviewed recorded-mode plan §4) ────
 MIN_TRAIN_FRAMES = 12
@@ -429,6 +440,113 @@ def write_dry_run_artifacts(out_dir: Path) -> list:
     return paths
 
 
+# ── pilot capture config: load + fail-closed validate + capture plan (no Isaac) ──
+def _all_config_keys(obj):
+    """Recursively yield every mapping KEY in a parsed config (for metric-key scanning)."""
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            yield k
+            yield from _all_config_keys(v)
+    elif isinstance(obj, list):
+        for v in obj:
+            yield from _all_config_keys(v)
+
+
+def load_pilot_config(path) -> dict:
+    """Load a pilot capture config (YAML). yaml is imported lazily so the module has no yaml dependency
+    for its other modes. Raises FileNotFoundError on a missing path and ValueError on a non-mapping."""
+    import yaml  # lazy — keeps module-level imports free of extra deps
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"pilot config not found: {path}")
+    cfg = yaml.safe_load(p.read_text())
+    if not isinstance(cfg, dict):
+        raise ValueError(f"pilot config is not a mapping: {path}")
+    return cfg
+
+
+def validate_pilot_config(cfg: dict) -> tuple:
+    """Fail-closed validation of a pilot capture config. Returns (ok, issues). It enforces the static
+    safety declaration (`authorizes_capture: false`, `authorizes_training: false`), the tiny scope, the
+    pilot-only output path, `cl_bound_xy == 6.0`, and that no policy/model/action-probe/training/rollout
+    field is authorized. NOTE: `authorizes_capture: false` is a STATIC declaration — the actual capture
+    run is authorized only by explicit external approval, never by the config itself."""
+    issues = []
+    if cfg.get("claim_boundary") != CLAIM_BOUNDARY:
+        issues.append("claim_boundary != SYNTHETIC_DIAGNOSTIC_ONLY")
+    if cfg.get("mode") != "pilot_capture_config_only":
+        issues.append("mode != pilot_capture_config_only")
+    if cfg.get("authorizes_capture") is not False:
+        issues.append("authorizes_capture must be false")
+    if cfg.get("authorizes_training") is not False:
+        issues.append("authorizes_training must be false")
+    scene = cfg.get("scene")
+    if not scene or not (REPO / scene).exists():
+        issues.append(f"scene path missing: {scene}")
+    out = str(cfg.get("output_dir", "")).rstrip("/")
+    if not out.endswith("_recorded_mode_pilot"):
+        issues.append(f"output_dir not pilot-only: {out}")
+    if out in (str(OUT_DIR.relative_to(REPO)), str(DRYRUN_DIR.relative_to(REPO))):
+        issues.append("output_dir collides with the full-dataset or dry-run directory")
+    if cfg.get("cl_bound_xy") != CL_BOUND_XY:
+        issues.append(f"cl_bound_xy != {CL_BOUND_XY}")
+    sc = cfg.get("pilot_scope", {}) or {}
+    if int(sc.get("max_instances", 99)) > 2 or int(sc.get("max_decision_frames", 99)) > 2:
+        issues.append("pilot scope is not tiny (max_instances/max_decision_frames must be <= 2)")
+    if sc.get("full_train_val_test_dataset") is not False:
+        issues.append("full train/val/test dataset must not be authorized")
+    if sc.get("benchmark_claim") is not False:
+        issues.append("benchmark_claim must be false")
+    cc = cfg.get("capture_controls", {}) or {}
+    if cc.get("scripted_poses_only") is not True:
+        issues.append("capture_controls.scripted_poses_only must be true")
+    for k in ("policy_inference", "model_inference", "closed_loop_policy_execution", "action_probe",
+              "training"):
+        if cc.get(k) is not False:
+            issues.append(f"capture_controls.{k} must be false")
+    for key in _all_config_keys(cfg):
+        if key in FORBIDDEN_METRIC_KEYS:
+            issues.append(f"rollout metric key {key} present in config")
+    return (len(issues) == 0, issues)
+
+
+def pilot_capture_plan(cfg: dict) -> list:
+    """Turn a validated pilot config into the tiny list of planned capture UNITS (config-driven, pure,
+    no Isaac). Each unit = one instance + one decision frame + one branch goal of a route family. Only
+    the base scene is used (no variant geometry is defined), so instance count is 1 regardless of the
+    config's upper bound; the leakage audit will honestly report that (below-scale / not disjoint)."""
+    sc = cfg.get("pilot_scope", {}) or {}
+    n_frames = max(1, min(int(sc.get("max_decision_frames", 1)), 2))
+    variants = sc.get("instances") or [{"id": "pilot_inst0"}]      # base-only until variants are authored
+    n_inst = max(1, min(int(sc.get("max_instances", 1)), len(variants)))
+    families = [sc.get("primary_route_family", "N_vs_W_90")]
+    sec = sc.get("optional_secondary_route_family")
+    if sc.get("optional_secondary_only_if_supported") and sec in ROUTE_FAMILIES:
+        families.append(sec)
+    units = []
+    for i in range(n_inst):
+        inst = variants[i].get("id", f"pilot_inst{i}")
+        for f in range(n_frames):
+            df_id = f"{inst}_df{f}"
+            for fam in families:
+                for br in ROUTE_FAMILIES[fam]["branches"]:
+                    units.append({
+                        "instance_id": inst, "decision_frame_id": df_id,
+                        "goal_image_id": f"{df_id}_{fam}_{br}",
+                        "route_family": fam, "branch": br,
+                        "action_class": scripted_action_for_branch(br),
+                        "decision_xy": list(DECISION_XY), "goal_xy": list(BRANCH_GOAL_XY[br]),
+                        "decision_heading_deg": SPAWN_HEADING_DEG,
+                        "goal_heading_deg": BRANCH_HEADING_DEG[br]})
+    return units
+
+
+def allowed_pilot_artifacts() -> dict:
+    """The pilot artifact contract: exactly the allowed artifacts, and the outputs that are forbidden."""
+    return {"claim_boundary": CLAIM_BOUNDARY, "allowed": list(ALLOWED_PILOT_ARTIFACTS),
+            "forbidden": list(FORBIDDEN_PILOT_OUTPUTS)}
+
+
 # ── refusal of forbidden modes ────────────────────────────────────────────────
 def refuse_forbidden_modes(args) -> None:
     """Hard-refuse forbidden flags: recorded-mode is data-capture design only. Exits nonzero."""
@@ -442,19 +560,71 @@ def refuse_forbidden_modes(args) -> None:
         raise SystemExit(2)
 
 
-# ── the gated Isaac capture (DEFERRED imports; NOT run here) ───────────────────
-def run_capture(out_dir: Path, args) -> int:  # pragma: no cover - requires Isaac + explicit approval
-    """Bounded, scripted, POLICY-FREE recorded-mode capture. Isaac imports are deferred to here so the
-    rest of the module works without Isaac. Capture is SEPARATELY GATED and is not executed by tests or
-    by validate-config/dry-run. Every captured frame is contact-checked (support allowed / obstacle
-    rejected) via the reviewed classifier; a safe-halt + timeout guard bound the motion. Writes the
-    recorded-mode artifacts (manifest, image index, action-label table, split manifest, leakage audit,
-    contact log, report). No policy/model inference; no training; no rollout metrics."""
+# ── pilot verdict (pure, fail-closed; testable without Isaac) ─────────────────
+def pilot_verdict(records, contact_log, audit) -> tuple:
+    """Fail-closed pilot verdict from captured records. Pass requires: examples present, every RGB
+    non-empty, labels populated, a contact log present, ZERO obstacle contacts, no ambiguous contact
+    classification, unique goal-image IDs, and a leakage audit that ran. A tiny pilot's leakage audit
+    is EXPECTED to report below-min-scale — that is a reported limitation, NOT a pilot failure. Returns
+    (passed, fail_reasons)."""
+    reasons = []
+    if not records:
+        reasons.append("no_examples")
+    if any((not r.get("decision_rgb_nonempty")) or (not r.get("goal_rgb_nonempty")) for r in records):
+        reasons.append("empty_or_invalid_image")
+    if any((not r.get("action_class")) or (not r.get("branch")) for r in records):
+        reasons.append("label_not_populated")
+    if any(r.get("provenance") in (None, {}, "") for r in records):
+        reasons.append("missing_provenance")
+    if not contact_log:
+        reasons.append("contact_log_missing")
+    if any(int((r.get("contact_status") or {}).get("obstacle_contacts_count", 0)) > 0 for r in records):
+        reasons.append("obstacle_contact")
+    if any((r.get("contact_status") or {}).get("ambiguous") for r in records):
+        reasons.append("ambiguous_contact")
+    gids = [r.get("goal_image_id") for r in records]
+    if len(set(gids)) != len(gids):
+        reasons.append("duplicate_goal_image_id")
+    if (not isinstance(audit, dict)) or audit.get("n_examples") is None:
+        reasons.append("leakage_audit_missing")
+    return (len(reasons) == 0, sorted(set(reasons)))
+
+
+# ── the gated Isaac capture: REAL, config-driven (DEFERRED imports; NOT run here) ──
+def run_capture(args) -> int:  # pragma: no cover - requires Isaac + explicit approval
+    """REAL, config-driven tiny pilot capture. Loads + fail-closed validates the pilot config (no Isaac
+    yet), builds the config-driven capture plan, then — behind the explicit `capture` mode — launches
+    Isaac, loads the synthetic fork scene, applies/counts colliders (fail-closed if zero), sets up a
+    robot-eye RGB camera, and for each planned unit captures the decision-frame + branch-goal RGB
+    images (validating each is non-empty before saving), computes the scripted (policy-free) action +
+    branch-choice labels, runs a footprint overlap contact check classified via the reviewed
+    is_support_contact/classify_contacts (support allowed, obstacle/ambiguous fail-closed), and records
+    unique IDs + coordinates + provenance. Runs the leakage audit on the real records, writes ONLY the
+    allowed pilot artifacts, safe-halts on normal exit and exception, and enforces a timeout guard.
+    NEVER touches any model/policy path; no training; no rollout metrics; `CL_BOUND_XY` is read-only."""
     import time
     import numpy as np
+
+    # 1) load + fail-closed validate the pilot config (NO Isaac yet)
+    cfg = load_pilot_config(args.config)
+    ok, issues = validate_pilot_config(cfg)
+    out_dir = REPO / str(cfg.get("output_dir", str(PILOT_DIR.relative_to(REPO)))).rstrip("/")
+    if not ok:
+        print(json.dumps({"pilot_config_valid": False, "issues": issues}, indent=2), file=sys.stderr)
+        return 2   # fail closed WITHOUT launching Isaac or writing capture data
+    plan = pilot_capture_plan(cfg)
+    scene_path = REPO / cfg["scene"]
+    img_dir = out_dir / "images"
+    provenance = {"scene": cfg["scene"], "config": str(args.config),
+                  "gate_history": cfg.get("gate_history"),
+                  "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"}
+
+    # 2) launch Isaac (deferred imports)
     from isaacsim.simulation_app import SimulationApp
     app = SimulationApp({"headless": True})
     records, contact_log = [], []
+    passed, fail_reasons = False, ["capture_incomplete"]
+    t_start = time.monotonic()
     try:
         from isaacsim.core.api import World
         from isaacsim.core.utils.stage import add_reference_to_stage
@@ -462,63 +632,197 @@ def run_capture(out_dir: Path, args) -> int:  # pragma: no cover - requires Isaa
         import omni.usd
         from pxr import Gf, UsdGeom, UsdLux, UsdPhysics
         import omni.replicator.core as rep
+        try:
+            from PIL import Image
+        except Exception:
+            Image = None
 
-        # NOTE: instance variants (translations/rotations/colour/marker permutations) are enumerated
-        # from args and each re-passes render+drive validity before contributing frames. For each
-        # instance: capture the decision-frame RGB and each branch goal RGB, compute the scripted
-        # (policy-free) action + branch-choice label, run a footprint overlap contact check, classify
-        # support-vs-obstacle, and record provenance. Obstacle contact aborts that frame (fail-closed).
-        # A zero-velocity safe-halt runs on normal completion and on exception; each instance runs under
-        # a CAPTURE_TIMEOUT_S wall-clock guard. Split assignment is taken from args BEFORE any training.
-        # (Full capture body is intentionally reached only under --mode capture, which is not run here.)
-        raise RuntimeError("recorded-mode capture body is gated; run only under explicit approval")
+        def _yaw_quat(deg):
+            h = math.radians(deg) * 0.5
+            return np.array([math.cos(h), 0.0, 0.0, math.sin(h)])
+
+        def _in_bounds(x, y):
+            return abs(x) < CL_BOUND_XY and abs(y) < CL_BOUND_XY
+
+        def _overlap(query, half, pos, quat):
+            """Footprint box overlap → (obstacle_n, support_n, obstacle_paths, ambiguous)."""
+            raw = {"paths": [], "ambiguous": False}
+
+            def _report(hit):
+                path = ""
+                for attr in ("rigid_body", "collision", "prim_path"):
+                    try:
+                        path = str(getattr(hit, attr))
+                        if path:
+                            break
+                    except Exception:
+                        continue
+                if path:
+                    raw["paths"].append(path)
+                else:
+                    raw["ambiguous"] = True   # an unresolvable hit prim → ambiguous, fail-closed
+                return True
+            try:
+                query.overlap_box(np.asarray(half, dtype=float),
+                                  np.asarray([pos[0], pos[1], pos[2]], dtype=float),
+                                  np.asarray([quat[1], quat[2], quat[3], quat[0]], dtype=float),
+                                  _report, False)
+            except Exception:
+                raw["ambiguous"] = True
+            support, obstacle = classify_contacts(raw["paths"], "/World/pilot_cam")
+            return len(obstacle), len(support), obstacle, support, raw["ambiguous"]
+
+        # scene load
+        ctx = omni.usd.get_context(); ctx.new_stage(); app.update()
+        stage = ctx.get_stage()
+        wx = UsdGeom.Xform.Define(stage, "/World"); stage.SetDefaultPrim(wx.GetPrim())
+        UsdGeom.SetStageUpAxis(stage, UsdGeom.Tokens.z); UsdGeom.SetStageMetersPerUnit(stage, 1.0)
+        UsdLux.DomeLight.Define(stage, "/World/DomeLight").CreateIntensityAttr(1500.0)
+        scene_root = "/World/Scene"
+        add_reference_to_stage(usd_path=str(scene_path), prim_path=scene_root)
+        for _ in range(120):
+            app.update()
+
+        # apply/count colliders across the authored Gprim types (fail-closed if zero)
+        collider_n = 0
+        for prim in stage.Traverse():
+            if not str(prim.GetPath()).startswith(scene_root + "/"):
+                continue
+            if prim.IsA(UsdGeom.Gprim) and str(prim.GetTypeName()) in GPRIM_COLLIDER_TYPES:
+                if not prim.HasAPI(UsdPhysics.CollisionAPI):
+                    UsdPhysics.CollisionAPI.Apply(prim)
+                collider_n += 1
+        if collider_n == 0:
+            raise RuntimeError("no colliders applied (scene has no solid Gprim geometry)")
+
+        world = World(stage_units_in_meters=1.0)
+        world.reset()
+        query = get_physx_scene_query_interface()
+
+        # robot-eye RGB camera
+        cam_path = "/World/pilot_cam"
+        cam = UsdGeom.Camera.Define(stage, cam_path)
+        cam.CreateClippingRangeAttr(Gf.Vec2f(0.02, 1000.0))
+        rp = rep.create.render_product(cam_path, (640, 480))
+        annot = rep.AnnotatorRegistry.get_annotator("rgb")
+        try:
+            annot.attach([rp])
+        except Exception:
+            annot.attach(rp)
+        img_dir.mkdir(parents=True, exist_ok=True)
+        half = [0.16, 0.16, 0.12]
+
+        def _capture(xy, heading, img_id):
+            """Place the camera at (xy, Z_CAM) facing `heading`, render, validate non-empty, save PNG,
+            and run a footprint overlap contact check. Returns (rel_path, nonempty, contact_status)."""
+            UsdGeom.XformCommonAPI(stage.GetPrimAtPath(cam_path)).SetTranslate(Gf.Vec3d(xy[0], xy[1], Z_CAM))
+            UsdGeom.XformCommonAPI(stage.GetPrimAtPath(cam_path)).SetRotate(Gf.Vec3f(90.0, 0.0, heading - 90.0))
+            luma, nonempty, arr = 0.0, False, None
+            for _ in range(12):
+                try:
+                    rep.orchestrator.step(rt_subframes=8)
+                except Exception:
+                    for _ in range(20):
+                        app.update()
+                arr = np.asarray(annot.get_data())
+                if arr.size and arr.ndim >= 2:
+                    luma = float(arr[..., :3].mean()); nonempty = luma > 1.0
+                    break
+            rel = None
+            if nonempty and arr is not None and Image is not None:
+                rgb = arr[..., :3].astype("uint8")
+                p = img_dir / f"{img_id}.png"
+                Image.fromarray(rgb).save(str(p))
+                rel = str(p.relative_to(REPO))
+            on, sn, opaths, spaths, ambiguous = _overlap(query, half, [xy[0], xy[1], ROBOT_Z], _yaw_quat(heading))
+            cs = {"obstacle_contacts_count": on, "support_contacts_count": sn,
+                  "support_contact_allowed": SUPPORT_CONTACT_ALLOWED, "obstacle_contact_failure": on > 0,
+                  "ambiguous": bool(ambiguous), "hit_prims": opaths, "support_prims": spaths,
+                  "in_bounds": _in_bounds(xy[0], xy[1]), "mean_luma": round(luma, 2)}
+            return rel, nonempty, cs
+
+        # capture each planned unit (decision frame + branch goal)
+        for unit in plan:
+            if time.monotonic() - t_start > CAPTURE_TIMEOUT_S * max(1, len(plan)):
+                fail_reasons = ["timeout"]; break
+            d_rel, d_ne, d_cs = _capture(unit["decision_xy"], unit["decision_heading_deg"],
+                                         unit["decision_frame_id"])
+            g_rel, g_ne, g_cs = _capture(unit["goal_xy"], unit["goal_heading_deg"], unit["goal_image_id"])
+            contact_log.append({"decision_frame_id": unit["decision_frame_id"], "pose": "decision", **d_cs})
+            contact_log.append({"goal_image_id": unit["goal_image_id"], "pose": "goal", **g_cs})
+            merged = {"obstacle_contacts_count": d_cs["obstacle_contacts_count"] + g_cs["obstacle_contacts_count"],
+                      "support_contacts_count": d_cs["support_contacts_count"] + g_cs["support_contacts_count"],
+                      "ambiguous": d_cs["ambiguous"] or g_cs["ambiguous"]}
+            rec = example_record_schema()
+            rec.update({
+                "instance_id": unit["instance_id"], "decision_frame_id": unit["decision_frame_id"],
+                "goal_image_id": unit["goal_image_id"], "route_family": unit["route_family"],
+                "branch": unit["branch"], "action_class": unit["action_class"],
+                "branch_choice": branch_choice_label(unit["branch"]),
+                "decision_xy": unit["decision_xy"], "goal_xy": unit["goal_xy"],
+                "decision_heading_deg": unit["decision_heading_deg"],
+                "decision_rgb_path": d_rel, "goal_rgb_path": g_rel,
+                "decision_rgb_nonempty": bool(d_ne), "goal_rgb_nonempty": bool(g_ne),
+                "contact_status": merged, "provenance": dict(provenance)})
+            records.append(rec)
+    except Exception as e:
+        contact_log.append({"error": str(e)})
     finally:
-        sh = safe_halt_command()
-        sh["executed"] = True
+        sh = safe_halt_command(); sh["executed"] = True     # safe-halt on normal exit AND exception
         audit = audit_examples(records)
-        finalize(records, contact_log, audit, out_dir)
+        passed, fail_reasons = pilot_verdict(records, contact_log, audit)
+        finalize_pilot(records, contact_log, audit, passed, fail_reasons, out_dir)
         try:
             sys.stdout.flush(); sys.stderr.flush()
         except Exception:
             pass
-        # exit code follows the audit (fail-closed); os._exit before any Isaac shutdown so app.close()
-        # cannot mask it (same lesson as the drive-validation harness).
-        os._exit(0 if audit.get("audit_pass") is True else 1)
+        # force the exit code BEFORE any Isaac shutdown so app.close() cannot mask a failing verdict
+        os._exit(0 if passed else 1)
     return 1
 
 
-def finalize(records, contact_log, audit, out_dir: Path) -> int:  # pragma: no cover - capture output
-    """Write recorded-mode artifacts (validation/capture outputs only; no training data labels beyond
-    scripted action classes)."""
+def finalize_pilot(records, contact_log, audit, passed, fail_reasons, out_dir: Path) -> int:  # pragma: no cover - capture output
+    """Write the seven ALLOWED pilot artifacts (pilot_ prefix). No checkpoints/weights/wandb/rollout
+    metrics/benchmark tables/model outputs/action-probe outputs/dataset files — capture outputs only."""
     out_dir.mkdir(parents=True, exist_ok=True)
     manifest = recorded_mode_manifest_schema()
+    manifest["mode"] = "pilot_capture"
     manifest["examples"] = records
     manifest["leakage_audit"] = audit
     manifest["instances"] = sorted({r.get("instance_id") for r in records if r.get("instance_id")})
-    (out_dir / "recorded_mode_manifest.json").write_text(json.dumps(manifest, indent=2))
-    (out_dir / "image_index.json").write_text(json.dumps(
+    manifest["pilot_pass"] = passed
+    manifest["pilot_fail_reasons"] = fail_reasons
+    manifest["allowed_pilot_artifacts"] = list(ALLOWED_PILOT_ARTIFACTS)
+    manifest["forbidden_pilot_outputs"] = list(FORBIDDEN_PILOT_OUTPUTS)
+    (out_dir / "pilot_manifest.json").write_text(json.dumps(manifest, indent=2))
+    (out_dir / "pilot_image_index.json").write_text(json.dumps(
         [{"decision_frame_id": r.get("decision_frame_id"), "goal_image_id": r.get("goal_image_id"),
-          "decision_rgb_path": r.get("decision_rgb_path"), "goal_rgb_path": r.get("goal_rgb_path")}
-         for r in records], indent=2))
-    (out_dir / "action_label_table.json").write_text(json.dumps(
+          "decision_rgb_path": r.get("decision_rgb_path"), "goal_rgb_path": r.get("goal_rgb_path"),
+          "decision_rgb_nonempty": r.get("decision_rgb_nonempty"),
+          "goal_rgb_nonempty": r.get("goal_rgb_nonempty")} for r in records], indent=2))
+    (out_dir / "pilot_action_label_table.json").write_text(json.dumps(
         [{"decision_frame_id": r.get("decision_frame_id"), "branch": r.get("branch"),
-          "action_class": r.get("action_class"), "route_family": r.get("route_family")}
-         for r in records], indent=2))
-    (out_dir / "split_manifest.json").write_text(json.dumps(
-        {s: sorted(r.get("decision_frame_id") for r in records if r.get("split") == s) for s in SPLITS},
-        indent=2))
-    (out_dir / "leakage_audit_report.json").write_text(json.dumps(audit, indent=2))
-    (out_dir / "contact_collision_log.json").write_text(json.dumps(contact_log, indent=2))
-    (out_dir / "recording_report.md").write_text(
-        f"# H8 Synthetic Fork — Recorded-Mode Report\n\n"
-        f"**Status: RECORDED-MODE (capture) — `{CLAIM_BOUNDARY}`.** No policy/model inference, no "
-        f"training, no rollout metrics. `CL_BOUND_XY` unchanged ({CL_BOUND_XY}).\n\n"
-        f"- examples: {audit.get('n_examples')}  per-split: {audit.get('per_split_counts')}\n"
-        f"- leakage_safe: {audit.get('leakage_safe')}  meets_min_scale: {audit.get('meets_min_scale')}  "
-        f"audit_pass: {audit.get('audit_pass')}\n"
-        f"- reasons: {audit.get('reasons')}\n\n"
-        f"Claim boundary: {CLAIM_BOUNDARY}; not hospital/real-scene/benchmark/full-ImageNav evidence; "
-        f"no SOTA; no promotion; no autonomy; not training authorization; CL_BOUND_XY unchanged.\n")
+          "action_class": r.get("action_class"), "route_family": r.get("route_family"),
+          "policy_driven": False} for r in records], indent=2))
+    (out_dir / "pilot_contact_log.json").write_text(json.dumps(contact_log, indent=2))
+    (out_dir / "pilot_provenance_table.json").write_text(json.dumps(
+        [{"instance_id": r.get("instance_id"), "decision_frame_id": r.get("decision_frame_id"),
+          "goal_image_id": r.get("goal_image_id"), "decision_xy": r.get("decision_xy"),
+          "goal_xy": r.get("goal_xy"), "provenance": r.get("provenance")} for r in records], indent=2))
+    (out_dir / "pilot_leakage_audit_report.json").write_text(json.dumps(audit, indent=2))
+    (out_dir / "pilot_recording_report.md").write_text(
+        f"# H8 Synthetic Fork — Tiny Pilot Recording Report\n\n"
+        f"**Status: PILOT CAPTURE — `{CLAIM_BOUNDARY}`.** Scripted, policy-free capture; no policy/model "
+        f"inference, no training, no rollout metrics, no action-probe. `CL_BOUND_XY` unchanged "
+        f"({CL_BOUND_XY}).\n\n"
+        f"- **PILOT: {'PASS' if passed else 'FAIL/DEFER'}**  fail_reasons: {fail_reasons}\n"
+        f"- examples: {audit.get('n_examples')}  instances: {audit.get('n_instances')}\n"
+        f"- leakage_safe: {audit.get('leakage_safe')}  meets_min_scale: {audit.get('meets_min_scale')} "
+        f"(a tiny pilot is EXPECTED below min scale — reported limitation, not a certified dataset)\n"
+        f"- leakage-audit reasons/limitations: {audit.get('reasons')}\n\n"
+        f"Claim boundary: {CLAIM_BOUNDARY}; harness/schema validation pilot only; not a dataset; not "
+        f"hospital/real-scene/benchmark/full-ImageNav evidence; no SOTA; no promotion; no autonomy; not "
+        f"training authorization; CL_BOUND_XY unchanged.\n")
     return 0
 
 
@@ -530,6 +834,9 @@ def build_parser() -> argparse.ArgumentParser:
                     help="validate-config (default, no Isaac) | dry-run (schema only) | capture "
                          "(the gated recorded-mode capture — separate approval)")
     ap.add_argument("--out-dir", default=str(OUT_DIR))
+    ap.add_argument("--config", default=None,
+                    help="pilot capture config (YAML); required for --mode capture, optional to "
+                         "validate under --mode validate-config")
     ap.add_argument("--emit-schema", action="store_true",
                     help="dry-run only: write a schema-only manifest documenting the output shape")
     # forbidden flags — present ONLY so they can be explicitly refused
@@ -549,8 +856,20 @@ def main(argv=None) -> int:
     out_dir = Path(args.out_dir)
 
     ok, issues, summary = validate_config()
+    # if a pilot config is supplied, load + fail-closed validate it too (no Isaac)
+    pilot = {}
+    if args.config:
+        try:
+            cfg = load_pilot_config(args.config)
+            p_ok, p_issues = validate_pilot_config(cfg)
+        except Exception as e:
+            p_ok, p_issues = False, [f"pilot config load error: {e}"]
+        pilot = {"pilot_config": str(args.config), "pilot_config_valid": p_ok,
+                 "pilot_config_issues": p_issues}
+        ok = ok and p_ok
+        issues = issues + p_issues
     print(json.dumps({"mode": args.mode, "claim_boundary": CLAIM_BOUNDARY, "config_valid": ok,
-                      "issues": issues, **summary}, indent=2))
+                      "issues": issues, **summary, **pilot}, indent=2))
     if not ok:
         print("config invalid — refusing to proceed.", file=sys.stderr)
         return 1
@@ -565,7 +884,10 @@ def main(argv=None) -> int:
             print("dry-run OK (no files written; pass --emit-schema to write the dry-run artifacts)")
         return 0
     if args.mode == "capture":
-        return run_capture(out_dir, args)
+        if not args.config:
+            print("capture requires --config <pilot yaml>; refusing.", file=sys.stderr)
+            return 2
+        return run_capture(args)
     return 1
 
 
