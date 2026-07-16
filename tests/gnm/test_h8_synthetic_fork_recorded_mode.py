@@ -125,6 +125,48 @@ def test_dry_run_without_emit_writes_nothing(tmp_path):
     assert list(tmp_path.iterdir()) == []
 
 
+def test_dry_run_emit_writes_the_four_named_artifacts(tmp_path):
+    import json
+    rc = rm.main(["--mode", "dry-run", "--emit-schema", "--out-dir", str(tmp_path)])
+    assert rc == 0
+    names = sorted(p.name for p in tmp_path.iterdir())
+    assert names == ["recorded_mode_dryrun_manifest.json", "recorded_mode_dryrun_report.md",
+                     "recorded_mode_leakage_audit_dryrun.json", "recorded_mode_schema.json"]
+    # no real capture artifacts of any kind
+    assert not any(p.suffix in (".png", ".jpg", ".npy", ".bag", ".pt", ".ckpt", ".pkl")
+                   for p in tmp_path.iterdir())
+
+    # leakage-audit dry-run must carry the dummy cases and all must behave as expected
+    audit = json.loads((tmp_path / "recorded_mode_leakage_audit_dryrun.json").read_text())
+    case_names = {c["case"] for c in audit["cases"]}
+    for required in ("one_instance_dataset_fails", "reused_decision_frame_id_fails",
+                     "reused_goal_image_id_fails", "reused_coordinate_fails",
+                     "insufficient_scale_fails", "valid_multi_instance_plan_passes"):
+        assert required in case_names, f"missing dry-run audit case {required}"
+    assert audit["all_cases_pass"] is True
+    assert all(c["case_pass"] for c in audit["cases"])
+
+    # schema file carries the three committed schemas; no rollout metric / real-capture data fields
+    schema = json.loads((tmp_path / "recorded_mode_schema.json").read_text())
+    for key in ("manifest_schema", "example_record_schema", "leakage_audit_schema"):
+        assert key in schema
+    blob = (tmp_path / "recorded_mode_schema.json").read_text() + \
+        (tmp_path / "recorded_mode_dryrun_manifest.json").read_text()
+    for metric in rm.FORBIDDEN_METRIC_KEYS:
+        assert f'"{metric}"' not in blob, f"rollout metric {metric} must not appear in dry-run output"
+    # example rgb-path templates must be null (no real image was captured)
+    ex = rm.example_record_schema()
+    assert ex["decision_rgb_path"] is None and ex["goal_rgb_path"] is None
+
+
+def test_dry_run_audit_cases_helper_matches_required_set():
+    cases = rm.dry_run_audit_cases()
+    assert {c["case"] for c in cases} == {
+        "one_instance_dataset_fails", "reused_decision_frame_id_fails", "reused_goal_image_id_fails",
+        "reused_coordinate_fails", "insufficient_scale_fails", "valid_multi_instance_plan_passes"}
+    assert all(c["case_pass"] for c in cases)
+
+
 # ── no policy/model imports; no training/checkpoint/rollout fields ────────────
 def test_no_policy_or_model_import_at_module_level():
     import ast

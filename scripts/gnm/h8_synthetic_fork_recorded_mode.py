@@ -310,20 +310,123 @@ def validate_config() -> tuple:
     return (len(issues) == 0, issues, summary)
 
 
-# ── dry-run schema manifest (documents shape; writes NO capture data) ─────────
-def write_dry_run_schema(out_dir: Path) -> Path:
-    """Write a SCHEMA-ONLY manifest documenting the recorded-mode output shape. Contains no captured
-    images and no examples — every data field is a null template. This is not capture."""
+# ── dry-run: dummy leakage-audit cases + four named artifacts (NO capture) ────
+def _dry_run_example(instance, dframe, goal, split, dxy, gxy, branch="N") -> dict:
+    """Build one DUMMY example record (schema template + a few fields) for dry-run audit cases. No
+    image is captured; rgb-path fields stay null."""
+    r = example_record_schema()
+    r.update({"instance_id": instance, "decision_frame_id": dframe, "goal_image_id": goal,
+              "split": split, "decision_xy": list(dxy), "goal_xy": list(gxy), "branch": branch,
+              "action_class": scripted_action_for_branch(branch), "route_family": "N_vs_W_90"})
+    return r
+
+
+def _dry_run_valid_plan() -> list:
+    """A leakage-safe DUMMY plan (6+ disjoint instances, disjoint ids/coords, meets 12/4/6 targets)."""
+    recs, n = [], 0
+    for split, n_inst in (("train", 6), ("val", 2), ("test", 3)):
+        for _ in range(n_inst):
+            for _k in range(2):
+                n += 1
+                recs.append(_dry_run_example(f"inst{n}", f"df{n}", f"gi{n}", split,
+                                             (n * 1.0, 0.0), (n * 1.0, 3.0)))
+    return recs
+
+
+def dry_run_audit_cases() -> list:
+    """Synthetic/DUMMY leakage-audit cases exercised in dry-run (no real data). Each records the case
+    name, the `audit_examples()` result summary, the expected outcome, and whether the audit behaved as
+    expected. Proves the fail-closed leakage logic before any real capture."""
+    specs = [
+        ("one_instance_dataset_fails",
+         [_dry_run_example("only", f"df{i}", f"gi{i}", "train", (i, 0), (i, 3)) for i in range(3)],
+         {"leakage_safe": False, "audit_pass": False}),
+        ("reused_decision_frame_id_fails",
+         [_dry_run_example("i1", "SHARED_DF", "gi1", "train", (1, 0), (1, 3)),
+          _dry_run_example("i2", "SHARED_DF", "gi2", "test", (2, 0), (2, 3))],
+         {"leakage_safe": False, "audit_pass": False}),
+        ("reused_goal_image_id_fails",
+         [_dry_run_example("i1", "df1", "SHARED_GOAL", "train", (1, 0), (1, 3)),
+          _dry_run_example("i2", "df2", "SHARED_GOAL", "val", (2, 0), (2, 3))],
+         {"leakage_safe": False, "audit_pass": False}),
+        ("reused_coordinate_fails",
+         [_dry_run_example("i1", "df1", "gi1", "train", (0.0, 0.0), (0.0, 3.0)),
+          _dry_run_example("i2", "df2", "gi2", "test", (0.0, 0.0), (5.0, 3.0))],
+         {"leakage_safe": False, "audit_pass": False}),
+        ("insufficient_scale_fails",
+         [_dry_run_example("i1", "df1", "gi1", "train", (1, 0), (1, 3)),
+          _dry_run_example("i2", "df2", "gi2", "test", (2, 0), (2, 3))],
+         {"meets_min_scale": False, "audit_pass": False}),
+        ("valid_multi_instance_plan_passes", _dry_run_valid_plan(),
+         {"leakage_safe": True, "meets_min_scale": True, "audit_pass": True}),
+    ]
+    cases = []
+    for name, records, expect in specs:
+        a = audit_examples(records)
+        obs = {"leakage_safe": a["leakage_safe"], "meets_min_scale": a["meets_min_scale"],
+               "audit_pass": a["audit_pass"]}
+        cases.append({"case": name, "expected": expect, "observed": obs, "reasons": a["reasons"],
+                      "n_instances": a["n_instances"], "per_split_counts": a["per_split_counts"],
+                      "case_pass": all(obs[k] == v for k, v in expect.items())})
+    return cases
+
+
+def write_dry_run_artifacts(out_dir: Path) -> list:
+    """Emit the four named dry-run artifacts from the committed schema + audit functions. SCHEMA/AUDIT
+    ONLY — no Isaac, no capture, no images, no datasets. Returns the list of written paths."""
     out_dir.mkdir(parents=True, exist_ok=True)
-    doc = {
-        "note": "SCHEMA ONLY — no capture was run; all data fields are null templates.",
+    ok, issues, summary = validate_config()
+    cases = dry_run_audit_cases()
+    all_cases_pass = all(c["case_pass"] for c in cases)
+    dryrun_pass = bool(ok and all_cases_pass)
+
+    manifest = {
+        "note": "DRY-RUN — schema/logic only. No Isaac, no capture, no images, no datasets.",
+        "mode": "dry-run", "claim_boundary": CLAIM_BOUNDARY,
+        "config_valid": ok, "config_issues": issues, "config_summary": summary,
+        "manifest_schema": recorded_mode_manifest_schema(),
+        "cl_bound_xy_readonly": CL_BOUND_XY,
+    }
+    schema = {
+        "note": "SCHEMA ONLY — every data field is a null template; no capture was run.",
         "manifest_schema": recorded_mode_manifest_schema(),
         "example_record_schema": example_record_schema(),
         "leakage_audit_schema": leakage_audit_schema(),
     }
-    p = out_dir / "recorded_mode_schema_dryrun.json"
-    p.write_text(json.dumps(doc, indent=2))
-    return p
+    audit_doc = {
+        "note": "DRY-RUN synthetic/dummy audit cases only — no real data.",
+        "targets": {"min_train": MIN_TRAIN_FRAMES, "min_val": MIN_VAL_FRAMES,
+                    "min_test": MIN_TEST_FRAMES, "min_disjoint_instances": MIN_DISJOINT_INSTANCES},
+        "all_cases_pass": all_cases_pass, "cases": cases,
+    }
+    report_lines = [f"  - {c['case']}: {'PASS' if c['case_pass'] else 'FAIL'} "
+                    f"(observed={c['observed']}, reasons={c['reasons']})" for c in cases]
+    report = (
+        "# H8 Synthetic Fork — Recorded-Mode DRY-RUN Report\n\n"
+        "**Status: DRY-RUN (schema/logic only) — `SYNTHETIC_DIAGNOSTIC_ONLY`.** No Isaac launched, no "
+        "capture, no camera images, no datasets, no policy/model inference, no rollout metrics. "
+        f"`CL_BOUND_XY` unchanged (read-only mirror = {CL_BOUND_XY}).\n\n"
+        f"- **DRY-RUN: {'PASS' if dryrun_pass else 'FAIL'}**\n"
+        f"- config_valid: {ok}  issues: {issues}\n"
+        f"- claim_boundary: {CLAIM_BOUNDARY}\n"
+        "- schemas validated: manifest, example-record, action-label (via example/action fields), "
+        "split-manifest (via split field), leakage-audit\n"
+        f"- leakage-audit dry-run cases ({sum(c['case_pass'] for c in cases)}/{len(cases)} as expected):\n"
+        + "\n".join(report_lines) + "\n\n"
+        "Claim boundary: SYNTHETIC_DIAGNOSTIC_ONLY; schema/logic dry-run only; no capture; no images; "
+        "no datasets; no policy/model inference; no training; no rollout metrics (TL/NE/SR/OSR/SPL/nDTW/"
+        "CR); no action-probe; no promotion; no autonomy; not training authorization; CL_BOUND_XY "
+        "unchanged.\n")
+
+    paths = []
+    for fname, content in (("recorded_mode_dryrun_manifest.json", json.dumps(manifest, indent=2)),
+                           ("recorded_mode_schema.json", json.dumps(schema, indent=2)),
+                           ("recorded_mode_leakage_audit_dryrun.json", json.dumps(audit_doc, indent=2)),
+                           ("recorded_mode_dryrun_report.md", report)):
+        p = out_dir / fname
+        p.write_text(content)
+        paths.append(p)
+    return paths
 
 
 # ── refusal of forbidden modes ────────────────────────────────────────────────
@@ -456,9 +559,10 @@ def main(argv=None) -> int:
         return 0
     if args.mode == "dry-run":
         if args.emit_schema:
-            print(f"dry-run schema written: {write_dry_run_schema(out_dir)}")
+            paths = write_dry_run_artifacts(out_dir)
+            print(f"dry-run artifacts written to {out_dir}: {[p.name for p in paths]}")
         else:
-            print("dry-run OK (no files written; pass --emit-schema to write the schema manifest)")
+            print("dry-run OK (no files written; pass --emit-schema to write the dry-run artifacts)")
         return 0
     if args.mode == "capture":
         return run_capture(out_dir, args)
