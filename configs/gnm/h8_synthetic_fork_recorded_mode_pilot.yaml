@@ -1,0 +1,99 @@
+# H8 Synthetic Fork — Tiny Recorded-Mode Pilot CAPTURE CONFIG (config only).
+#
+# This file DEFINES what a tiny recorded-mode pilot would capture. It does NOT authorize or run
+# capture: `authorizes_capture: false`. It is consumed later, under a SEPARATE approval, by the
+# committed recorded-mode harness (scripts/gnm/h8_synthetic_fork_recorded_mode.py). No capture, no
+# Isaac, no images, no datasets, no policy/model inference, no training. `CL_BOUND_XY` is a read-only
+# reference (6.0) mirrored from the drive-validation watchdog — this config never modifies it.
+#
+# Gate history (all committed on h23-execfix): drive-validation PASS 935ed85, recorded-mode plan
+# 905ea50, recorded-mode harness 6ad131e, dry-run emitter 6123ba6, CLI dry-run evidence 03ed7f4,
+# tiny pilot plan aa7de13. Claim boundary: SYNTHETIC_DIAGNOSTIC_ONLY.
+
+claim_boundary: SYNTHETIC_DIAGNOSTIC_ONLY
+mode: pilot_capture_config_only
+authorizes_capture: false
+authorizes_training: false
+
+scene: assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda
+harness: scripts/gnm/h8_synthetic_fork_recorded_mode.py
+# planned pilot output directory ONLY (pilot-specific; NOT the full-dataset dir, NOT the dry-run dir)
+output_dir: assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/
+
+cl_bound_xy: 6.0            # read-only reference mirrored from the drive-validation watchdog
+cl_bound_xy_readonly: true
+
+gate_history:
+  drive_validation_pass: 935ed85
+  recorded_mode_plan: 905ea50
+  recorded_mode_harness: 6ad131e
+  dry_run_emitter: 6123ba6
+  cli_dry_run_evidence: 03ed7f4
+  tiny_pilot_plan: aa7de13
+
+# 8. pilot scope — deliberately tiny (harness/schema validation, NOT a dataset)
+pilot_scope:
+  min_instances: 1
+  max_instances: 2                         # 1–2 disjoint instances only
+  min_decision_frames: 1
+  max_decision_frames: 2                   # 1–2 decision frames only
+  primary_route_family: N_vs_W_90          # N-vs-W primary
+  optional_secondary_route_family: N_vs_E_90   # N-vs-E optional, secondary
+  optional_secondary_only_if_supported: true
+  full_train_val_test_dataset: false       # no full dataset
+  benchmark_claim: false                   # no benchmark claim
+
+# 9. capture controls — scripted only, no policy/model/closed-loop/action-probe/training
+capture_controls:
+  scripted_poses_only: true
+  policy_inference: false
+  model_inference: false
+  closed_loop_policy_execution: false
+  action_probe: false
+  training: false
+
+# 10. required future pilot artifacts (produced only when capture is later approved)
+required_future_pilot_artifacts:
+  - pilot_manifest
+  - pilot_image_index
+  - pilot_action_label_table
+  - pilot_contact_log
+  - pilot_provenance_table
+  - pilot_leakage_audit_report
+  - pilot_recording_report
+
+# 11. forbidden outputs (never produced by the pilot)
+forbidden_outputs:
+  - checkpoints
+  - weights
+  - wandb
+  - rollout_metrics
+  - benchmark_tables
+  - model_outputs
+  - action_probe_outputs
+  - train_val_test_dataset_files
+
+# 12. pass/fail checks (evaluated later on real pilot records; listed here as the acceptance contract)
+pass_fail_checks:
+  - images_non_empty
+  - labels_populated
+  - contact_logs_present
+  - obstacle_contacts_zero
+  - metadata_ids_unique
+  - leakage_audit_runs
+  - no_policy_model_path_touched
+  - no_training_fields
+
+# leakage boundary reminder — the tiny pilot does NOT meet the full-dataset target; the full dataset
+# still requires train >= 12, val >= 4, test >= 6, ideally >= 6 disjoint instances, with no decision
+# frame / goal image / coordinate reused across splits. Leakage audit is required before action-probe
+# readiness or training.
+full_dataset_target:
+  min_train: 12
+  min_val: 4
+  min_test: 6
+  min_disjoint_instances: 6
+  no_decision_frame_reuse_across_splits: true
+  no_goal_image_reuse_across_splits: true
+  no_coordinate_reuse_across_splits: true
+  leakage_audit_required_before_action_probe_or_training: true
