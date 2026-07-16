@@ -155,6 +155,7 @@ Status legend: **Open / Mitigated / Accepted / Closed.**
 | Available verification | `python -m py_compile` passed on both changed files. |
 | Status | **Open verification limitation (accepted for this gate)** |
 | Next mitigation | Run Ruff in the canonical project environment before any later promotion or capture approval. |
+| Remediation-gate re-check (2026-07-16) | Ruff is **declared** in `pyproject.toml` (`[tool.ruff]`: `line-length=100`, `select=["E","F","I","W"]`, `ignore=["E501"]`; dev-dep `ruff>=0.4`) but is **not installed** in the base or `.venv` environments, and the `Makefile` has **no lint target**. Per the narrow-gate rule, no uncontrolled install was performed. **Status stays Open** (`OPEN — RUFF UNAVAILABLE`). Canonical `ruff check` (from a `pip install -e '.[dev]'` environment) is required before capture promotion — see `H8-DCP-016`. `py_compile` passed and is recorded separately; it is **not** a lint substitute. |
 
 > "Ruff unavailable" is explicitly **not** converted into "lint passed."
 

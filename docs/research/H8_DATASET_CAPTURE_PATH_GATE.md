@@ -136,11 +136,13 @@ claims; benchmark claims; push, tag, release, or promotion.
 - A new **explicit router** `run_capture(args, evidence_provider=None, capture_backend=None)` dispatches
   by `select_capture_mode(cfg)` → `pilot` / `dataset` / `unknown`. No implicit default; unknown/absent
   mode returns 2.
-- `validate_dataset_capture_config(cfg)` — fail-closed dataset validator that reuses the canonical
-  25-check `dataset_dry_run_checks` as the **single source of plan validity** and adds capture-gate
-  safety declarations (mode, `authorizes_capture`/`authorizes_training` false, `scene_base`,
-  dataset-only output dir, `cl_bound_xy == 6.0`, capture-control falses, forbidden outputs, per-instance
-  render/drive-valid required, no rollout-metric key).
+- `validate_dataset_capture_config(cfg)` — fail-closed dataset validator that is a **strict superset** of
+  the canonical 25-check `dataset_dry_run_checks` (H8-REV-F-002 clarification): it reuses all 25 as the
+  shared plan-validity core **and adds** capture-gate safety declarations (mode,
+  `authorizes_capture`/`authorizes_training` false, `scene_base`, dataset-only output dir,
+  `cl_bound_xy == 6.0`, capture-control falses, forbidden outputs, per-instance render/drive-valid
+  required, **stray-rollout-metric-key scan**). It is never more permissive than the dry-run
+  (`H8-DCP-014`).
 - `plan_dataset_capture(cfg, evidence_provider)` — pure, no-Isaac planning + gating: validate → build
   plan via `build_dataset_plan(cfg)` + `cfg["scene_base"]` → per-instance validity gate. Returns a
   structured readiness dict; creates nothing.

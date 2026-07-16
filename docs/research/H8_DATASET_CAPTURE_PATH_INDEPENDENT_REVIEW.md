@@ -178,6 +178,27 @@ kept outside the repository. Zero boundary violations.
 *(No finding required an implementation change to make a committed claim true; per the review rules,
 implementation was not modified.)*
 
+### Remediation dispositions (appended 2026-07-16 — original findings above preserved)
+
+Remediation gate report: [`H8_DATASET_CAPTURE_PATH_REMEDIATION.md`](H8_DATASET_CAPTURE_PATH_REMEDIATION.md).
+
+- **H8-REV-F-001 → `MITIGATED WITH DOCUMENTED LIMITATION`.** The strict-superset asymmetry is now
+  declared **intentional** (`H8-DCP-014`) and locked by `test_capture_validator_never_weaker_than_dry_run`
+  and `test_stray_rollout_key_is_capture_specific_H8_REV_F_001`. No 26th dry-run check was added (it
+  would break the byte-identical `25/25` evidence). Residual limitation: the dry-run diagnostic alone
+  still does not flag a stray rollout key — the enforcing capture gate does.
+- **H8-REV-F-002 → `CLOSED`.** `H8-DCP-002` now states explicitly that the capture validator is a strict
+  **superset** of the 25 dry-run checks; the gate record's implementation summary carries the same
+  clarification.
+- **H8-REV-F-003 (NEW, discovered during remediation) → `OPEN — DEFERRED`.** `dataset_dry_run_checks`
+  raises `IndexError` when called **directly** on a malformed config with **no instances** (empty plan →
+  `dataset_injected_leakage_cases([])` → `_cross_split_pair([])`). **Not a safety hole:** at both real
+  boundaries it fails **closed** — the CLI `dataset-dry-run` branch returns `2` (verified:
+  `{"dataset_dry_run": false, "error": "list index out of range"}`, no files written) and
+  `validate_dataset_capture_config` catches it → `ok=False`. Severity Low. Recommended future mitigation:
+  a graceful empty-plan guard so the direct call returns `all_pass=False` instead of raising. Deferred to
+  a future hardening gate to keep this gate narrow; owner = evidence-schema/hardening gate.
+
 ## KPI results
 
 | KPI | Target | Result |

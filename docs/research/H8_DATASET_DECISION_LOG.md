@@ -37,6 +37,7 @@ Status legend: **Proposed / Accepted / Superseded / Rejected.**
 | Reversibility | Reversible. |
 | Remaining risk | The capture validator adds extra checks beyond the 25; those extras are capture-gate declarations, not plan-validity changes. |
 | Status | **Accepted** |
+| Clarification (H8-REV-F-002, 2026-07-16) | The capture validator is a **strict SUPERSET** of the 25 dry-run checks: it reuses all 25 as the shared plan-validity core **and adds** capture-gate declarations (mode, `scene_base`, output-collision, capture-control detail, forbidden-output list, per-instance render/drive-required, **stray-rollout-metric-key scan**). "Single source of plan validity" refers to the shared 25-check core, not to identical acceptance. The relationship is one-directional: the capture validator is never more permissive than the dry-run (see `H8-DCP-014`). |
 
 ### H8-DCP-003 — Explicit mode selection
 
@@ -200,4 +201,49 @@ Status legend: **Proposed / Accepted / Superseded / Rejected.**
 | Safety effect | Strengthens reproducibility; a reviewer inspects the correct repository state. |
 | Reversibility | Reversible (documentation only). |
 | Remaining risk | None identified. |
+| Status | **Accepted** |
+
+### H8-DCP-014 — Intentional dry-run / capture validation asymmetry (fail-safe direction)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | `H8-REV-F-001`: the dry-run's 25 plan-invariant checks do not scan for a stray rollout-metric key, while the enforcing capture validator does. A 26th numbered check would change the committed `25/25` evidence, which must stay byte-identical (`H8_DATASET_CAPTURE_PATH_GATE.md` §11 / evidence-preservation). |
+| Decision | Treat the asymmetry as **intentional**: the dry-run is a plan-invariant diagnostic; the capture validator is the **enforcing strict superset**. The one-directional invariant "the capture validator is never more permissive than the dry-run" is locked by regression tests rather than by adding a 26th check. |
+| Alternatives considered | (a) Add a 26th dry-run check — changes committed 25/25 evidence, disallowed; (b) fold the scan into an existing check — muddies its semantics and risks evidence drift; (c) leave undocumented — permits the ambiguity `H8-REV-F-001` raised. |
+| Reason | Preserves byte-identical Level-1 evidence while making the relationship explicit and test-enforced; the finding is Low-severity and the direction is fail-safe (capture stricter, never weaker). |
+| Evidence | `test_capture_validator_never_weaker_than_dry_run`; `test_stray_rollout_key_is_capture_specific_H8_REV_F_001`; `test_G` already locks capture-side rejection. |
+| Safety effect | Guarantees the enforcing gate can never be weaker than the diagnostic; any accidental future weakening is caught by tests. |
+| Reversibility | Reversible. |
+| Remaining risk | The dry-run diagnostic alone still does not flag a stray rollout key (documented limitation; `H8-REV-F-001` = MITIGATED). |
+| Status | **Accepted** |
+
+### H8-DCP-015 — Stale-marker rejection is separate from production expiry semantics
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | The independent review found "stale" is a boolean marker in a test/injected evidence convention, not real runtime freshness. |
+| Decision | The gate rejects evidence **explicitly marked** `stale: True` and makes **no** production-grade freshness claim: no timestamp parsing, no age policy, no clock source, no revocation, no replay-resistance. Age-like fields (`timestamp`, `age_s`) are **not** consulted. |
+| Alternatives considered | Implement a speculative expiry/clock policy now. |
+| Reason | A real freshness/expiry/revocation policy belongs to the future evidence-schema gate, not to capture-path wiring; inventing it now would overclaim. |
+| Evidence | `_validity_record_status` (only the `stale` boolean is honoured); `test_stale_marker_rejection_does_not_claim_runtime_expiry_semantics`. |
+| Safety effect | Keeps the claim boundary explicit; prevents mistaking marker-rejection for runtime freshness. |
+| Reversibility | Reversible. |
+| Remaining risk | Real freshness semantics remain unimplemented — an open blocker owned by the evidence-schema gate. |
+| Status | **Accepted** |
+
+### H8-DCP-016 — Require canonical Ruff verification before capture promotion
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | `H8-C-006`: Ruff is declared in `pyproject.toml` (`[tool.ruff]` — `line-length=100`, `select=["E","F","I","W"]`, `ignore=["E501"]`; dev-dep `ruff>=0.4`) but is **not installed** in any available environment, and the `Makefile` has no lint target. |
+| Decision | Do **not** perform an uncontrolled install during a narrow gate. Keep `H8-C-006` **Open**. Require a canonical `ruff check` (from a `pip install -e '.[dev]'`-provisioned environment) to run and pass **before** any real dataset capture promotion. `py_compile` (passing) is recorded separately and is **not** a lint substitute. |
+| Alternatives considered | (a) Global `pip install ruff` now — an uncontrolled env mutation affecting reproducibility; (b) claim lint passed from `py_compile` — false. |
+| Reason | Preserves environment reproducibility and honesty; lint remains a genuine open verification item, not a hidden pass. |
+| Evidence | `pyproject.toml` `[tool.ruff]`; `python -m ruff` unavailable in base and `.venv`; `H8-C-006` remains Open. |
+| Safety effect | Prevents an unverified-lint state from being promoted silently. |
+| Reversibility | N/A (process rule). |
+| Remaining risk | Lint diagnostics unknown until the canonical env runs Ruff. |
 | Status | **Accepted** |

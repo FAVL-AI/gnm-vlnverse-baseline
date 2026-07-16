@@ -678,6 +678,76 @@ def test_L_dataset_wiring_creates_no_artifacts_and_no_isaac():
     assert not (REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_dataset").exists()
 
 
+# ── remediation regression tests (H8-REV-F-001, H8-DCP-015 stale boundary) ────────
+def _dataset_mutations():
+    """Config mutations that are genuinely invalid; used to lock the fail-safe parity direction."""
+    return [
+        ("cl_bound",        lambda c: c.__setitem__("cl_bound_xy", 7.0)),
+        ("capture_auth",    lambda c: c.__setitem__("authorizes_capture", True)),
+        ("training_auth",   lambda c: c.__setitem__("authorizes_training", True)),
+        ("policy_infer",    lambda c: c["capture_controls"].__setitem__("policy_inference", True)),
+        ("action_probe",    lambda c: c["capture_controls"].__setitem__("action_probe", True)),
+        ("missing_render",  lambda c: c["instance_plan"]["instances"][0].__setitem__("render_valid_required", False)),
+        ("missing_drive",   lambda c: c["instance_plan"]["instances"][0].__setitem__("drive_valid_required", False)),
+        ("dup_coordinate",  lambda c: c["instance_plan"]["instances"][4].__setitem__(
+            "coord_offset", c["instance_plan"]["instances"][0]["coord_offset"])),
+        ("split_collapse",  lambda c: [i.__setitem__("split", "train") for i in c["instance_plan"]["instances"]]),
+        ("no_instance_plan", lambda c: c.pop("instance_plan")),
+        ("no_minimum_scale", lambda c: c.pop("minimum_scale")),
+    ]
+
+
+def _dry_run_rejects(cfg):
+    """Boundary-accurate dry-run rejection: `all_pass is False` OR a raised check. A raised check is
+    fail-closed at the real CLI boundary (`main` dataset-dry-run wraps it in `except: return 2`); see
+    H8-REV-F-003 for the direct-call empty-plan IndexError observation."""
+    try:
+        return rm.dataset_dry_run_checks(cfg)["all_pass"] is False
+    except Exception:
+        return True
+
+
+def test_capture_validator_never_weaker_than_dry_run():
+    """Fail-safe parity invariant (locks H8-REV-F-001's safe direction): the capture validator must
+    reject every config the dry-run rejects — it is a strict SUPERSET, never weaker."""
+    base = rm.load_dataset_config(DATASET_CFG_PATH)
+    for name, fn in _dataset_mutations():
+        c = copy.deepcopy(base); fn(c)
+        dry_rejects = _dry_run_rejects(c)
+        cap_rejects = rm.validate_dataset_capture_config(c)[0] is False
+        # never dry-run-rejects-but-capture-accepts (that would be the dangerous direction)
+        assert not (dry_rejects and not cap_rejects), f"{name}: capture weaker than dry-run"
+        assert cap_rejects, f"{name}: capture validator must reject this invalid config"
+
+
+def test_stray_rollout_key_is_capture_specific_H8_REV_F_001():
+    """H8-REV-F-001 (INTENTIONAL, documented asymmetry): a stray rollout-metric key is rejected by the
+    enforcing capture validator but NOT by the dry-run's 25 plan-invariant checks. The capture validator
+    is a documented strict SUPERSET; the direction is fail-safe (capture stricter, never weaker). Pinned
+    so an accidental future change to either path is caught."""
+    c = copy.deepcopy(rm.load_dataset_config(DATASET_CFG_PATH)); c["SR"] = 0.9
+    # dry-run 25 plan-invariant checks do not scan for stray rollout keys -> still all_pass (25/25)
+    assert rm.dataset_dry_run_checks(c)["all_pass"] is True
+    # capture gate rejects it via the stray-rollout-metric-key scan
+    ok, issues = rm.validate_dataset_capture_config(c)
+    assert ok is False and any("rollout metric" in i for i in issues)
+
+
+def test_stale_marker_rejection_does_not_claim_runtime_expiry_semantics():
+    """H8-DCP-015 / H8-C-004 claim boundary: the gate rejects evidence EXPLICITLY marked stale, but does
+    NOT implement production freshness/expiry — no timestamp parsing, no age policy, no clock source, no
+    revocation. Evidence without a stale marker is accepted regardless of any age-like field, proving
+    rejection is marker-based, not runtime-expiry-based."""
+    base = rm.load_dataset_config(DATASET_CFG_PATH); sc = base["scene_base"]
+    stale = {"passed": True, "instance_id": "sfork_00", "scene": sc, "stale": True}
+    assert rm._validity_record_status(stale, "sfork_00", sc) == "stale"          # explicit marker -> reject
+    no_marker = {"passed": True, "instance_id": "sfork_00", "scene": sc}         # no marker -> accepted
+    assert rm._validity_record_status(no_marker, "sfork_00", sc) == "ok"
+    old = {"passed": True, "instance_id": "sfork_00", "scene": sc,               # age-like fields IGNORED
+           "timestamp": "1970-01-01T00:00:00Z", "age_s": 10**9}
+    assert rm._validity_record_status(old, "sfork_00", sc) == "ok"
+
+
 if __name__ == "__main__":
     import pytest as _pt
     raise SystemExit(_pt.main([__file__, "-q"]))
