@@ -367,6 +367,7 @@ zero backend/output on blocked cases. Residual challenges (documented, not overc
 | `H8-C-039` | In-process report authenticity is not cryptographic — code with module access can copy the marker constant; the durable control is that protected callers use the trusted factory and never accept a caller report. Full authentication → G2 | G1R (F-001) |
 | `H8-C-040` | Git-config neutralisation covers the ENUMERATED surfaces (fileMode/symlinks/ignorecase/autocrlf/replace-objects/alternates); it is not an exhaustive proof that no Git configuration or filter can influence any observation | G1R (F-003) |
 | `H8-C-041` | Copied-history spoofing (identical root commit + history in a physical copy) is NOT closed by Git inspection and MUST NOT be closed via remote-URL comparison; cryptographic origin attestation → G2 | G1R (F-004) |
+| `H8-C-042` | G1R2 closed `H8-G1RREV-F-001` (exact `required is True` for mandatory ids), duplicate ids (`MANIFEST_DUPLICATE_DEPENDENCY`) and the `GIT_*` env vector (scrub + `GIT_ENV_UNSUPPORTED`). Residuals kept: local **committed** `.gitattributes`/clean-smudge filters (`H8-C-040`, only system/global neutralised) and semantic per-dependency content identity (`H8-G1RREV-F-002`, path-substitution accepted) → both deferred to G2 | G1R2 |
 
 Verdict: **`PASS WITH DOCUMENTED LIMITATIONS`**. Establishes resolver + closure + repository-identity
 binding + fail-closed provider preflight integration + deterministic closure digest. Does NOT establish

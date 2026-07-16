@@ -840,3 +840,39 @@ Non-Isaac, non-capturing; implements the concrete resolver specified by `H8-DCP-
 | Decision | Repository identity binds `(canonical_name + root_commit + history)`; an exact copy of the Git object history reproduces that identity. This is NOT closed by ordinary Git inspection and is explicitly NOT closed via remote-URL comparison (a remote URL is caller-mutable and proves nothing). Cryptographic origin attestation is deferred to G2 or a later provenance-infrastructure gate. |
 | Reason | Honest scoping: physical-origin attestation requires signatures/attestation infrastructure out of scope for G1R. |
 | Status | **Open — deferred to G2** |
+
+### H8-DCP-063 — Exact Boolean `required` for mandatory dependencies (G1R2, closes H8-G1RREV-F-001)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | `resolve_canonical` enforces that every `REQUIRED_DEPENDENCY_IDS` entry is present AND has `required is True` (identity check, no truthiness coercion). `false`, missing, `null`, `0`, `1`, `"true"`, `"false"` all reject with `MANDATORY_DEPENDENCY_NOT_REQUIRED`. A mandatory dependency can no longer be silently downgraded to optional to hide a dirty/omitted artefact. Non-mandatory dependencies may still be `required:false`. |
+| Reason | Presence alone was insufficient; the mandatory-set control must resist weakening, not only removal. |
+| Status | **Accepted** |
+
+### H8-DCP-064 — Duplicate mandatory dependency fails closed with a specific code (G1R2)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | `load_dependency_manifest` separates empty-id (`DEPENDENCY_MANIFEST_INVALID`) from duplicate-id and accepts a `duplicate_code`; the canonical path passes `MANIFEST_DUPLICATE_DEPENDENCY` so duplicate ids fail closed rather than collapsing under last-write-wins in the `{id: dep}` map. The generic path keeps `DEPENDENCY_MANIFEST_INVALID`. |
+| Reason | A duplicate mandatory id must never be resolved ambiguously. |
+| Status | **Accepted** |
+
+### H8-DCP-065 — Explicit Git subprocess-environment policy (G1R2, closes H8-G1RREV-F-003 env vector)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | The git runner constructs the child environment explicitly (`_build_git_env`): Class A forced-safe (`LC_ALL/LANG=C`, `GIT_CONFIG_NOSYSTEM=1`, `GIT_CONFIG_GLOBAL=os.devnull`, `GIT_ATTR_NOSYSTEM=1`, `GIT_OPTIONAL_LOCKS=0`, `GIT_TERMINAL_PROMPT=0`); Class B removed (`GIT_DIR/WORK_TREE/COMMON_DIR/OBJECT_DIRECTORY/ALTERNATE_OBJECT_DIRECTORIES/INDEX_FILE/REPLACE_REF_BASE/NAMESPACE`, `GIT_CONFIG[_GLOBAL/_SYSTEM/_COUNT]`, `GIT_CONFIG_KEY_*/VALUE_*`, ceiling/discovery/attr-system/pathspec vars); Class C — `resolve_canonical` additionally fails closed (`GIT_ENV_UNSUPPORTED`) if any prohibited redirection/override var is present in the parent env. Repository identity is carried by `-C`, never inherited. Ordinary vars (PATH, HOME) are preserved. |
+| Reason | Security-relevant Git environment must not redirect trust decisions; ambiguous env fails closed. |
+| Status | **Accepted** |
+
+### H8-DCP-066 — Known mandatory coverage ≠ semantic completeness; content identity deferred (G1R2)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | The mandatory-set control enforces presence + exact-required + known categories for a fixed id set; it does NOT prove the set captures every future semantic dependency, nor bind each entry's content identity (path-substitution to another expected-type tracked file is still accepted — `H8-G1RREV-F-002`). A dedicated test keeps this residual visible. Per-dependency expected-digest binding and semantic discovery are deferred to G2. Documentation (G1R remediation report clarification) states the caller-manifest boundary precisely (closes `H8-G1RREV-F-004`). |
+| Reason | Honest scoping: do not disguise semantic-identity as solved through category presence. |
+| Status | **Accepted — with documented limitation** |

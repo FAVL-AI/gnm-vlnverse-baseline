@@ -165,3 +165,24 @@ induced to honour a caller-supplied resolution; (b) the canonical-manifest contr
 and admit a legitimate clean resolution; (c) the Git-config pinning is behavioural, not merely declared;
 (d) the F-001/F-004 residuals are honestly bounded — before opening **G2** (cryptographic report signing,
 revocation, trusted timestamps, physical-origin attestation).
+
+---
+
+## G1R2 clarification (appended 2026-07-16 — closes `H8-G1RREV-F-004`)
+
+The independent G1R re-review (`H8_GIT_DEPENDENCY_RESOLVER_TRUST_BOUNDARY_REREVIEW.md`) noted that §3's
+phrase "a caller can no longer silently drop a known decision-critical dependency" is accurate for a
+**dropped** id but did not, on its own, describe two further gaps it found. Those gaps are now closed or
+explicitly bounded by the follow-up gate **G1R2** (`H8_GIT_DEPENDENCY_RESOLVER_REMEDIATION_ROUND2.md`,
+commit *"Complete H8 Git resolver boundary hardening"*). The precise, current boundary is:
+
+> Protected provider operations cannot select an arbitrary manifest. They use one policy-bound canonical
+> manifest whose schema, cleanliness, **required IDs, exact `required: true` flags, duplicate-freedom** and
+> known mandatory categories are verified before dependency resolution. This control prevents caller-driven
+> **weakening** of the known manifest (drop, rename **or** downgrade-to-optional). It does **not** prove that
+> the known mandatory set captures every future semantic dependency, nor does it bind each mandatory entry's
+> **content identity** (`H8-G1RREV-F-002`, deferred to G2).
+
+For report trust: G1R prevents ordinary in-process resolver and report injection; persisted or cross-process
+reports are **not** cryptographically authenticated until G2. For repository origin: identical Git history
+proves content/history equivalence, **not** authorised physical or organisational origin.

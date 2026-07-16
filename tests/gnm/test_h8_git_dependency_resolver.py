@@ -560,10 +560,16 @@ _CANON_PATHS = {
 }
 
 
-def _canonical_repo(tmp_path, *, drop=None, self_path=None):
+_UNSET = object()
+
+
+def _canonical_repo(tmp_path, *, drop=None, self_path=None, required_overrides=None, dup_id=None):
     """Build a temp repo whose canonical manifest self-lists at CANONICAL_MANIFEST_REL and covers every
-    mandatory id. `drop` removes one dependency id from the manifest (to exercise MANIFEST_INCOMPLETE);
-    `self_path` overrides the manifest-self dependency path (to exercise MANIFEST_NOT_CANONICAL)."""
+    mandatory id. `drop` removes one dependency id (MANIFEST_INCOMPLETE); `self_path` overrides the
+    manifest-self dependency path (MANIFEST_NOT_CANONICAL); `required_overrides` maps id → replacement value
+    for `required` (use `_UNSET` to omit the key entirely — G1R2 required-flag tests); `dup_id` appends a
+    duplicate entry for that id (G1R2 duplicate test)."""
+    required_overrides = required_overrides or {}
     repo = tmp_path / "repo"
     repo.mkdir()
     _git(repo, "init", "-q")
@@ -582,7 +588,15 @@ def _canonical_repo(tmp_path, *, drop=None, self_path=None):
         else:
             p.write_text("x = 1\n")
         path = self_path if (id_ == "h8-dependency-manifest" and self_path) else rel
-        deps.append({"id": id_, "path": path, "type": "file", "required": True})
+        entry = {"id": id_, "path": path, "type": "file", "required": True}
+        if id_ in required_overrides:
+            if required_overrides[id_] is _UNSET:
+                entry.pop("required")
+            else:
+                entry["required"] = required_overrides[id_]
+        deps.append(entry)
+        if dup_id and id_ == dup_id:
+            deps.append(dict(entry))
     canon = repo / R.CANONICAL_MANIFEST_REL
 
     def _write_manifest(root):
@@ -775,3 +789,161 @@ def test_g1r_canonical_constants_bind_shipped_manifest():
     # the shipped manifest self-lists at the canonical path
     self_dep = next(d for d in man["dependencies"] if d["id"] == "h8-dependency-manifest")
     assert self_dep["path"] == R.CANONICAL_MANIFEST_REL
+
+
+# =====================================================================================
+# G1R2 REMEDIATION (H8-G1RREV-F-001 / -F-003) — required-flag + Git-environment hardening
+# =====================================================================================
+def _rc(repo):
+    return R.GitDependencyResolver(str(repo)).resolve_canonical()
+
+
+# ── F-001: exact `required is True` for mandatory ids (no truthiness coercion) ───────
+def test_g1r2_mandatory_required_true_accepted(tmp_path):
+    repo, _r, _h = _canonical_repo(tmp_path)                    # baseline: all required True, clean
+    assert _rc(repo)["overall_accepted"] is True
+
+
+@pytest.mark.parametrize("val", [False, _UNSET, None, 0, 1, "true", "false"])
+def test_g1r2_mandatory_required_weakened_rejected(tmp_path, val):
+    # a mandatory id whose `required` is anything other than exactly True is rejected, even if the file is
+    # clean — presence + weakening must never count toward mandatory coverage.
+    repo, _r, _h = _canonical_repo(tmp_path, required_overrides={"h8-evidence-provider": val})
+    rep = _rc(repo)
+    assert rep["overall_accepted"] is False
+    assert rep["reason_code"] == R.MANDATORY_DEPENDENCY_NOT_REQUIRED
+
+
+def test_g1r2_mandatory_required_false_plus_dirty_rejected(tmp_path):
+    # the original F-001 exploit: weaken to false AND dirty the file → must now fail closed
+    repo, _r, _h = _canonical_repo(tmp_path, required_overrides={"h8-resolver": False})
+    (repo / "scripts/gnm/resolver.py").write_text("x = 2  # tamper\n")
+    rep = _rc(repo)
+    assert rep["overall_accepted"] is False and rep["reason_code"] == R.MANDATORY_DEPENDENCY_NOT_REQUIRED
+
+
+def test_g1r2_non_mandatory_optional_still_allowed(tmp_path):
+    # a NON-mandatory dependency may legitimately be required=false (control is scoped to the mandatory set)
+    repo, root, _h = _canonical_repo(tmp_path)
+    man = _json.loads((repo / R.CANONICAL_MANIFEST_REL).read_text())
+    man["dependencies"].append({"id": "h8-optional-extra", "path": "scripts/gnm/schema.py",
+                                "type": "file", "required": False})
+    (repo / R.CANONICAL_MANIFEST_REL).write_text(_json.dumps(man, indent=2) + "\n")
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "add optional")
+    assert _rc(repo)["overall_accepted"] is True
+
+
+# ── duplicate dependency id ──────────────────────────────────────────────────────────
+def test_g1r2_duplicate_mandatory_id_rejected(tmp_path):
+    repo, _r, _h = _canonical_repo(tmp_path, dup_id="h8-resolver")
+    rep = _rc(repo)
+    assert rep["overall_accepted"] is False and rep["reason_code"] == R.MANIFEST_DUPLICATE_DEPENDENCY
+
+
+def test_g1r2_generic_duplicate_still_manifest_invalid():
+    # the generic build_resolution_report path keeps DEPENDENCY_MANIFEST_INVALID for duplicates
+    res = R.GitDependencyResolver(str(REPO))
+    rep = res.build_resolution_report({"manifest_version": MV, "dependencies": [{"id": "x"}, {"id": "x"}]})
+    assert rep["reason_code"] == R.DEPENDENCY_MANIFEST_INVALID
+
+
+# ── F-003: prohibited GIT_* environment fails closed + is scrubbed from the child ────
+_PROHIBITED_ENV = [
+    ("GIT_DIR", "/tmp/evil.git"), ("GIT_WORK_TREE", "/tmp/evil-wt"),
+    ("GIT_COMMON_DIR", "/tmp/evil-common"), ("GIT_INDEX_FILE", "/tmp/evil-index"),
+    ("GIT_OBJECT_DIRECTORY", "/tmp/evil-obj"), ("GIT_ALTERNATE_OBJECT_DIRECTORIES", "/tmp/evil-alt"),
+    ("GIT_REPLACE_REF_BASE", "refs/evil"), ("GIT_NAMESPACE", "evil"),
+    ("GIT_CONFIG_GLOBAL", "/tmp/evil-cfg"), ("GIT_CONFIG_SYSTEM", "/tmp/evil-sys"),
+    ("GIT_CONFIG_COUNT", "1"),
+]
+
+
+@pytest.mark.parametrize("var,val", _PROHIBITED_ENV)
+def test_g1r2_prohibited_git_env_fails_closed(tmp_path, monkeypatch, var, val):
+    repo, _r, _h = _canonical_repo(tmp_path)
+    assert _rc(repo)["overall_accepted"] is True               # clean baseline first
+    monkeypatch.setenv(var, val)
+    rep = _rc(repo)
+    assert rep["overall_accepted"] is False and rep["reason_code"] == R.GIT_ENV_UNSUPPORTED
+
+
+def test_g1r2_git_config_key_value_injection_rejected(tmp_path, monkeypatch):
+    repo, _r, _h = _canonical_repo(tmp_path)
+    monkeypatch.setenv("GIT_CONFIG_COUNT", "1")
+    monkeypatch.setenv("GIT_CONFIG_KEY_0", "core.fileMode")
+    monkeypatch.setenv("GIT_CONFIG_VALUE_0", "false")
+    rep = _rc(repo)
+    assert rep["overall_accepted"] is False and rep["reason_code"] == R.GIT_ENV_UNSUPPORTED
+
+
+def test_g1r2_combined_config_and_env_attack_rejected(tmp_path, monkeypatch):
+    repo, _r, _h = _canonical_repo(tmp_path)
+    _git(repo, "config", "core.fileMode", "false")             # hostile local config
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", "/tmp/evil-cfg")   # + hostile global via env
+    rep = _rc(repo)
+    assert rep["overall_accepted"] is False and rep["reason_code"] == R.GIT_ENV_UNSUPPORTED
+
+
+def test_g1r2_child_env_scrubbed_behaviourally(tmp_path, monkeypatch):
+    # even bypassing the reject, the runner must not let GIT_DIR redirect git to a decoy repository
+    real = tmp_path / "real"
+    real.mkdir(); _git(real, "init", "-q"); (real / "a.txt").write_text("a\n")
+    _git(real, "add", "-A"); _git(real, "commit", "-q", "-m", "i")
+    decoy = tmp_path / "decoy"
+    decoy.mkdir(); _git(decoy, "init", "-q"); (decoy / "b.txt").write_text("b\n")
+    _git(decoy, "add", "-A"); _git(decoy, "commit", "-q", "-m", "i")
+    monkeypatch.setenv("GIT_DIR", str(decoy / ".git"))
+    out = R.SubprocessGitRunner().run(str(real), ["rev-parse", "--absolute-git-dir"])["out"].decode().strip()
+    assert os.path.realpath(out) == os.path.realpath(str(real / ".git"))
+
+
+def test_g1r2_build_git_env_scrubs_and_forces(monkeypatch):
+    monkeypatch.setenv("GIT_DIR", "/x")
+    monkeypatch.setenv("GIT_CONFIG_KEY_3", "k")
+    env = R._build_git_env()
+    assert "GIT_DIR" not in env and "GIT_CONFIG_KEY_3" not in env
+    assert env["GIT_CONFIG_NOSYSTEM"] == "1" and env["LC_ALL"] == "C"
+    assert env["GIT_CONFIG_GLOBAL"] == os.devnull
+    assert "PATH" in env                                       # ordinary vars preserved
+
+
+def test_g1r2_benign_env_preserves_closure_digest(tmp_path, monkeypatch):
+    repo, _r, _h = _canonical_repo(tmp_path)
+    d1 = _rc(repo)["closure_digest"]
+    monkeypatch.setenv("SOME_BENIGN_VAR", "hello")
+    assert _rc(repo)["closure_digest"] == d1                   # benign var neither rejects nor changes state
+
+
+def test_g1r2_clean_positive_path_still_works(tmp_path):
+    # not reject-all: a fully clean canonical repo with a safe environment still ACCEPTS
+    repo, _r, head = _canonical_repo(tmp_path)
+    ts = R.trusted_provider_tree_state(str(repo))()
+    assert ts["dependency_dirty"] is False and ts["resolution_reason"] == R.ACCEPTED and ts["commit"] == head
+
+
+def test_g1r2_new_reason_codes_registered():
+    for c in (R.MANDATORY_DEPENDENCY_NOT_REQUIRED, R.MANIFEST_DUPLICATE_DEPENDENCY, R.GIT_ENV_UNSUPPORTED):
+        assert c in R.REASON_CODES and c in R.ACTIVE_CODES
+
+
+def test_g1r2_env_policy_shape():
+    # forced-safe + removed sets are disjoint in intent; prohibited redirection vars are removed too
+    assert "GIT_CONFIG_NOSYSTEM" in R._GIT_ENV_FORCE and "LC_ALL" in R._GIT_ENV_FORCE
+    for v in ("GIT_DIR", "GIT_INDEX_FILE", "GIT_OBJECT_DIRECTORY", "GIT_ALTERNATE_OBJECT_DIRECTORIES"):
+        assert v in R._GIT_ENV_REMOVE and v in R._GIT_ENV_PROHIBITED
+
+
+# ── F-002 remains a DOCUMENTED LIMITATION (not silently closed) ──────────────────────
+def test_g1r2_path_substitution_remains_documented_limitation(tmp_path):
+    # re-pointing a mandatory id's path at another tracked/clean file is still accepted: the resolver binds
+    # path+tracked+clean+HEAD, not semantic content identity. Kept explicit so it is not disguised as solved.
+    repo, root, _h = _canonical_repo(tmp_path)
+    man = _json.loads((repo / R.CANONICAL_MANIFEST_REL).read_text())
+    for d in man["dependencies"]:
+        if d["id"] == "h8-resolver":
+            d["path"] = "scripts/gnm/schema.py"
+    (repo / R.CANONICAL_MANIFEST_REL).write_text(_json.dumps(man, indent=2) + "\n")
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "substitute path")
+    assert _rc(repo)["overall_accepted"] is True               # documented F-002 residual, deferred to G2

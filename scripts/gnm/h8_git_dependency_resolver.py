@@ -79,6 +79,10 @@ MANIFEST_INCOMPLETE = "MANIFEST_INCOMPLETE"              # a machine-enforced ma
 GIT_CONFIG_UNSUPPORTED = "GIT_CONFIG_UNSUPPORTED"        # security-relevant config in an unsupported state
 GIT_REPLACE_OBJECTS = "GIT_REPLACE_OBJECTS"             # refs/replace present — object identity can be forged
 GIT_ALTERNATE_OBJECTS = "GIT_ALTERNATE_OBJECTS"        # unapproved alternate object database present
+# G1R2 remediation (H8-G1RREV-F-001/-F-003)
+MANDATORY_DEPENDENCY_NOT_REQUIRED = "MANDATORY_DEPENDENCY_NOT_REQUIRED"  # mandatory id not explicitly required=true
+MANIFEST_DUPLICATE_DEPENDENCY = "MANIFEST_DUPLICATE_DEPENDENCY"          # duplicate dependency id in the manifest
+GIT_ENV_UNSUPPORTED = "GIT_ENV_UNSUPPORTED"                              # prohibited GIT_* redirection env present
 
 REASON_CODES = frozenset({
     ACCEPTED, GIT_REPOSITORY_NOT_FOUND, GIT_REPOSITORY_MISMATCH, GIT_COMMAND_FAILED, GIT_COMMAND_TIMEOUT,
@@ -92,6 +96,7 @@ REASON_CODES = frozenset({
     REPORT_REPO_MISMATCH, REPORT_HEAD_MISMATCH, REPORT_CLOSURE_DIGEST_MISMATCH, REPORT_STALE,
     REPORT_UNAUTHENTIC, MANIFEST_NOT_CANONICAL, MANIFEST_INCOMPLETE, GIT_CONFIG_UNSUPPORTED,
     GIT_REPLACE_OBJECTS, GIT_ALTERNATE_OBJECTS,
+    MANDATORY_DEPENDENCY_NOT_REQUIRED, MANIFEST_DUPLICATE_DEPENDENCY, GIT_ENV_UNSUPPORTED,
 })
 
 # ── G1R: canonical manifest + mandatory dependency set + authenticity marker ────────
@@ -113,6 +118,54 @@ REQUIRED_DEPENDENCY_IDS = frozenset({
 # object identity. `--no-replace-objects` neutralises refs/replace substitution at read time.
 _GIT_SAFE_OVERRIDES = ("-c", "core.fileMode=true", "-c", "core.symlinks=true", "-c",
                        "core.ignorecase=false", "-c", "core.autocrlf=false", "--no-replace-objects")
+
+# ── G1R2: explicit Git subprocess-environment policy (H8-G1RREV-F-003) ──────────────
+# Class B — REMOVED from the child environment: variables that can redirect the git dir, worktree, index,
+# object store, replacement namespace, or inject configuration. Repository identity is passed via `-C`
+# arguments, never inherited from the environment. GIT_CONFIG_KEY_*/GIT_CONFIG_VALUE_* are stripped by
+# prefix (they are the `-c`-via-environment injection vector, active even with GIT_CONFIG_NOSYSTEM).
+_GIT_ENV_REMOVE = frozenset({
+    "GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR", "GIT_OBJECT_DIRECTORY",
+    "GIT_ALTERNATE_OBJECT_DIRECTORIES", "GIT_INDEX_FILE", "GIT_REPLACE_REF_BASE", "GIT_NAMESPACE",
+    "GIT_CONFIG", "GIT_CONFIG_GLOBAL", "GIT_CONFIG_SYSTEM", "GIT_CONFIG_COUNT",
+    "GIT_CEILING_DIRECTORIES", "GIT_DISCOVERY_ACROSS_FILESYSTEM", "GIT_ATTR_SYSTEM",
+    "GIT_LITERAL_PATHSPECS", "GIT_GLOB_PATHSPECS", "GIT_NOGLOB_PATHSPECS", "GIT_ICASE_PATHSPECS",
+})
+_GIT_ENV_REMOVE_PREFIXES = ("GIT_CONFIG_KEY_", "GIT_CONFIG_VALUE_")
+# Class A — FORCED-SAFE deterministic values on every invocation. GIT_CONFIG_NOSYSTEM ignores /etc/gitconfig;
+# GIT_CONFIG_GLOBAL=os.devnull neutralises a hostile ~/.gitconfig; GIT_ATTR_NOSYSTEM ignores system
+# gitattributes (textconv/filters); locks and prompts are disabled for determinism.
+_GIT_ENV_FORCE = {
+    "LC_ALL": "C", "LANG": "C",
+    "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull, "GIT_ATTR_NOSYSTEM": "1",
+    "GIT_OPTIONAL_LOCKS": "0", "GIT_TERMINAL_PROMPT": "0",
+}
+# Class C — the subset whose PRESENCE in the parent environment causes resolve_canonical to fail closed
+# (GIT_ENV_UNSUPPORTED). These redirect object/index/config resolution and must not be silently tolerated
+# even though the child environment also scrubs them (defence in depth). Benign vars (PATH, HOME, …) are
+# never rejected; forced-safe controls (Class A) are never rejected.
+_GIT_ENV_PROHIBITED = frozenset({
+    "GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR", "GIT_OBJECT_DIRECTORY",
+    "GIT_ALTERNATE_OBJECT_DIRECTORIES", "GIT_INDEX_FILE", "GIT_REPLACE_REF_BASE", "GIT_NAMESPACE",
+    "GIT_CONFIG", "GIT_CONFIG_GLOBAL", "GIT_CONFIG_SYSTEM", "GIT_CONFIG_COUNT",
+})
+
+
+def _build_git_env():
+    """Construct the git subprocess environment explicitly (H8-G1RREV-F-003): scrub redirection/override
+    GIT_* variables from a copy of the parent environment, then apply forced-safe deterministic controls.
+    Ordinary variables (PATH, HOME, …) are preserved so git can execute normally."""
+    env = {k: v for k, v in os.environ.items()
+           if k not in _GIT_ENV_REMOVE and not k.startswith(_GIT_ENV_REMOVE_PREFIXES)}
+    env.update(_GIT_ENV_FORCE)
+    return env
+
+
+def _prohibited_git_env():
+    """Return the sorted list of prohibited GIT_* redirection variables present in the parent environment
+    (including any GIT_CONFIG_KEY_*/GIT_CONFIG_VALUE_* injection vector). Empty when the environment is safe."""
+    hits = [k for k in os.environ if k in _GIT_ENV_PROHIBITED or k.startswith(_GIT_ENV_REMOVE_PREFIXES)]
+    return sorted(hits)
 
 # In-process authenticity marker (H8-G1REV-F-001). The genuine resolver stamps this on every report it
 # produces; `report_binding_ok` requires it, so an ORDINARY caller-forged dict (no marker) is rejected.
@@ -150,10 +203,10 @@ class SubprocessGitRunner:
         # refs/replace so repository-local settings cannot mask mode/symlink/case/EOL differences or
         # redirect object identity. Overrides precede the subcommand as required by git's option grammar.
         cmd = [self.git_bin, "-C", str(repo_root), *_GIT_SAFE_OVERRIDES, *args]
-        # Force a deterministic C locale so porcelain/plumbing text is machine-stable across hosts.
-        env = dict(os.environ)
-        env["LC_ALL"] = "C"
-        env["LANG"] = "C"
+        # G1R2 (H8-G1RREV-F-003): construct the child environment explicitly — scrub GIT_* redirection/
+        # override variables and force deterministic locale + config controls. Repository identity is
+        # carried by the `-C` argument, never inherited from GIT_DIR/GIT_WORK_TREE/GIT_INDEX_FILE/etc.
+        env = _build_git_env()
         try:
             p = subprocess.run(cmd, capture_output=True, timeout=self.timeout_s, check=False,  # noqa: S603
                                env=env)
@@ -501,7 +554,7 @@ class GitDependencyResolver:
         return False, "LFS materialised object required but git-lfs unavailable — failing closed"
 
     # -- manifest + aggregate (§5,§18,§19) ------------------------------------------
-    def load_dependency_manifest(self, manifest):
+    def load_dependency_manifest(self, manifest, *, duplicate_code=DEPENDENCY_MANIFEST_INVALID):
         if isinstance(manifest, (str, os.PathLike)):
             try:
                 with open(manifest, "rb") as fh:
@@ -517,8 +570,11 @@ class GitDependencyResolver:
         if not isinstance(deps, list) or not deps:
             raise GitError(DEPENDENCY_MANIFEST_INVALID, "manifest has no dependencies")
         ids = [d.get("id") for d in deps]
-        if len(ids) != len(set(ids)) or any(not i for i in ids):
-            raise GitError(DEPENDENCY_MANIFEST_INVALID, "duplicate/empty dependency id")
+        if any(not i for i in ids):
+            raise GitError(DEPENDENCY_MANIFEST_INVALID, "empty dependency id")
+        if len(ids) != len(set(ids)):
+            # duplicate ids collapse under last-write-wins in any {id: dep} map → fail closed (G1R2)
+            raise GitError(duplicate_code, "duplicate dependency id")
         return manifest
 
     def _closure_digest(self, per_dep):
@@ -683,12 +739,20 @@ class GitDependencyResolver:
         canonical path; the mandatory dependency-id set is present (a caller cannot silently drop a known
         decision-critical dependency); then delegates to build_resolution_report so the canonical manifest
         FILE itself is resolved (tracked + unmodified + bound to HEAD). Any violation fails closed."""
+        # G1R2 (H8-G1RREV-F-003): a prohibited GIT_* redirection variable in the environment could otherwise
+        # steer git's dir/index/object/config resolution. The child environment scrubs them (defence in
+        # depth); here we ALSO fail closed if any is present in the parent — ambiguous env is never clean.
+        env_hits = _prohibited_git_env()
+        if env_hits:
+            return self._canonical_reject(
+                GIT_ENV_UNSUPPORTED, f"prohibited GIT_* redirection environment present: {env_hits}")
         cfg_ok, cfg_code, cfg_why = self.inspect_git_config()
         if not cfg_ok:
             return self._canonical_reject(cfg_code, f"git state rejected: {cfg_why}")
         canonical_path = os.path.join(self.repo_root, CANONICAL_MANIFEST_REL)
         try:
-            manifest = self.load_dependency_manifest(canonical_path)
+            manifest = self.load_dependency_manifest(
+                canonical_path, duplicate_code=MANIFEST_DUPLICATE_DEPENDENCY)
         except GitError as e:
             return self._canonical_reject(e.code, f"canonical manifest: {e.detail}")
         by_id = {d.get("id"): d for d in manifest.get("dependencies", [])}
@@ -703,6 +767,14 @@ class GitDependencyResolver:
         if missing:
             return self._canonical_reject(
                 MANIFEST_INCOMPLETE, f"canonical manifest missing mandatory ids: {missing}", manifest)
+        # G1R2 (H8-G1RREV-F-001): every mandatory id must be EXPLICITLY `required` is exactly True — presence
+        # alone is insufficient. No truthiness coercion: false/null/0/1/"true"/"false"/missing all reject, so
+        # a mandatory dependency cannot be silently weakened to optional to hide a dirty/omitted artefact.
+        not_required = sorted(i for i in REQUIRED_DEPENDENCY_IDS if by_id[i].get("required") is not True)
+        if not_required:
+            return self._canonical_reject(
+                MANDATORY_DEPENDENCY_NOT_REQUIRED,
+                f"mandatory dependencies not explicitly required=true: {not_required}", manifest)
         # delegate: resolves the canonical manifest FILE + the whole closure, bound to HEAD
         report = self.build_resolution_report(canonical_path, expected_repository=expected_repository)
         report["canonical_manifest"] = CANONICAL_MANIFEST_REL
