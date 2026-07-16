@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "h8-trust-envelope/1.0.0",
+  "title": "H8 Trust Envelope (G2A canonical dependency-evidence envelope)",
+  "description": "Reference JSON Schema for the h8-trust-envelope/1.0.0 envelope, implementing docs/research/H8_G2A_CANONICAL_ENVELOPE_SPEC.md (committed 23d95c8). The authoritative implementation is scripts/gnm/h8_trust_envelope.py: constraints JSON Schema cannot express (duplicate-key rejection before parse collapse, floats prohibited, NFC normalisation, JCS canonical ordering, absent/null/UNAVAILABLE tri-state, validity-interval ordering, non-waivable verification_requirements, CR rejection, critical-extension fail-closed) are enforced there. Schema conformance is NOT trust acceptance: a conformant envelope is signature-UNVERIFIED, freshness-UNVERIFIED, revocation-UNVERIFIED, runtime/capture-INELIGIBLE. The envelope has exactly two members: payload (signed) and signature_block (detached, NOT signed).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["payload", "signature_block"],
+  "properties": {
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "envelope_version", "envelope_type", "report_schema_version", "resolver_id", "resolver_version",
+        "resolver_trust_policy_version", "repository_policy_id", "repository_identity", "head_commit",
+        "head_tree_oid", "reference_resolution", "canonical_manifest_path", "canonical_manifest_digest",
+        "manifest_schema_version", "manifest_schema_digest", "closure_digest", "attributes_closure_digest",
+        "git_env_policy_version", "git_version", "mandatory_dependency_count", "accepted_count",
+        "rejected_count", "unresolved_count", "per_dependency_identity_commitments", "digest_algorithm",
+        "signature_algorithm", "signing_key_id", "observation_time", "issue_time", "validity_start",
+        "expiry", "report_id", "nonce", "intended_use", "assurance_claims", "verification_requirements",
+        "critical_extensions"
+      ],
+      "properties": {
+        "envelope_version": {"const": "h8-trust-envelope/1.0.0"},
+        "envelope_type": {"const": "resolver-report"},
+        "report_schema_version": {"type": "string"},
+        "resolver_id": {"type": "string"},
+        "resolver_version": {"type": "string"},
+        "resolver_trust_policy_version": {"type": "string"},
+        "repository_policy_id": {"type": "string"},
+        "repository_identity": {
+          "type": "object", "additionalProperties": false,
+          "required": ["canonical_name", "root_commit"],
+          "properties": {
+            "canonical_name": {"type": "string"},
+            "root_commit": {"type": "string", "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$"}
+          }
+        },
+        "observed_remote_origins": {"description": "UNAVAILABLE at G2A (G2E); absent or the 'UNAVAILABLE' sentinel."},
+        "head_commit": {"type": "string", "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$"},
+        "head_tree_oid": {"type": "string", "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$"},
+        "reference_input": {"type": ["string", "null"], "description": "Optional + nullable (absent != null, spec §5)."},
+        "reference_resolution": {"enum": ["commit", "annotated_tag", "lightweight_tag", "none"]},
+        "canonical_manifest_path": {"type": "string", "description": "POSIX repo-relative; no leading '/', no '.'/'..'."},
+        "canonical_manifest_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "manifest_schema_version": {"type": "string"},
+        "manifest_schema_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "closure_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "attributes_closure_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$", "description": "Effective .gitattributes closure (design §19; verifier = G2G)."},
+        "git_env_policy_version": {"type": "string"},
+        "git_version": {"type": "string"},
+        "mandatory_dependency_count": {"type": "integer", "minimum": 0},
+        "accepted_count": {"type": "integer", "minimum": 0},
+        "rejected_count": {"type": "integer", "minimum": 0},
+        "unresolved_count": {"type": "integer", "minimum": 0},
+        "per_dependency_identity_commitments": {
+          "type": "array", "maxItems": 4096,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["dependency_id", "dependency_class", "path", "git_blob_oid", "git_content_digest",
+                         "semantic_identity_profile", "required"],
+            "properties": {
+              "dependency_id": {"type": "string"},
+              "dependency_class": {"enum": ["dataset-config", "dependency-manifest", "manifest-schema",
+                "evidence-schema", "trust-policy", "module", "expected-routes", "scene",
+                "level1-drive-manifest", "cl-bound", "canonicalisation-impl", "capture-validator"]},
+              "path": {"type": "string"},
+              "git_blob_oid": {"type": "string", "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$"},
+              "git_content_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$", "description": "Raw Git blob bytes (design §19)."},
+              "semantic_identity_profile": {
+                "type": "object", "additionalProperties": false,
+                "required": ["scheme", "id", "version", "digest"],
+                "properties": {"scheme": {"type": "string"}, "id": {"type": "string"},
+                               "version": {"type": "string"}, "digest": {"type": "string"}},
+                "description": "Curated semantic identity (design §18; verifier = G2F)."
+              },
+              "required": {"type": "boolean"}
+            }
+          }
+        },
+        "digest_algorithm": {"const": "sha-256"},
+        "signature_algorithm": {"enum": ["ed25519"], "description": "Declared allow-list; downgrade/unknown -> reject. Verification = G2B."},
+        "signing_key_id": {"const": "UNAVAILABLE", "description": "UNAVAILABLE at G2A (chosen by policy at G2B, never by caller)."},
+        "observation_time": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$", "description": "Local observation time (UNTRUSTED; freshness NOT claimed)."},
+        "issue_time": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},
+        "validity_start": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},
+        "expiry": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$", "description": "Validity window (UNTRUSTED clock until G2C): validity_start <= issue_time <= expiry, start < expiry."},
+        "trusted_timestamp_reference": {"description": "UNAVAILABLE at G2A (G2C); absent or 'UNAVAILABLE'."},
+        "revocation_snapshot_reference": {"description": "UNAVAILABLE at G2A (G2D); absent or 'UNAVAILABLE'."},
+        "origin_attestation_reference": {"description": "UNAVAILABLE at G2A (G2E); absent or 'UNAVAILABLE'."},
+        "report_id": {"type": "string"},
+        "nonce": {"type": "string", "description": "Anti-replay nonce (registry = G2D)."},
+        "intended_use": {"const": "preflight-document", "description": "Const at G2A; never runtime/capture."},
+        "assurance_claims": {"type": "array", "items": {"enum": ["content-equivalent"]}, "description": "Exactly ['content-equivalent'] at G2A; stronger claims are escalation."},
+        "verification_requirements": {
+          "type": "object", "additionalProperties": false,
+          "required": ["require_signature", "require_authorised_signer", "require_trusted_timestamp",
+                       "require_not_revoked", "require_repository_attestation", "require_semantic_identity",
+                       "require_attributes_binding", "require_intended_use_match"],
+          "properties": {
+            "require_signature": {"const": true}, "require_authorised_signer": {"const": true},
+            "require_trusted_timestamp": {"const": true}, "require_not_revoked": {"const": true},
+            "require_repository_attestation": {"const": true}, "require_semantic_identity": {"const": true},
+            "require_attributes_binding": {"const": true}, "require_intended_use_match": {"const": true}
+          },
+          "description": "Non-waivable: a report may not set any to false (spec §3.4). The consuming verifier is G2H."
+        },
+        "critical_extensions": {"type": "array", "items": {"type": "string"}, "description": "Extension keys a verifier MUST understand or fail closed; [] at G2A (none understood)."},
+        "extensions": {"type": "object", "description": "Optional non-critical forward-growth; fully covered by canonical bytes."}
+      }
+    },
+    "signature_block": {
+      "type": "object", "additionalProperties": false,
+      "required": ["signing_key_id", "signature_algorithm", "signature", "timestamp_proof"],
+      "description": "DETACHED, NOT signed. At G2A every member is the explicit 'UNAVAILABLE' sentinel; no signature is fabricated (real signature/timestamp = G2B/G2C).",
+      "properties": {
+        "signing_key_id": {"const": "UNAVAILABLE"},
+        "signature_algorithm": {"const": "UNAVAILABLE"},
+        "signature": {"const": "UNAVAILABLE"},
+        "timestamp_proof": {"const": "UNAVAILABLE"}
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "scheme": "JCS/RFC8785",
+  "note": "floats prohibited; NFC-normalised; UTF-16 key sort; CR rejected in string values",
+  "vectors": [
+    {
+      "id": "empty_object",
+      "input_json": "{}",
+      "canonical_utf8_hex": "7b7d",
+      "canonical_sha256": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "id": "key_sort",
+      "input_json": "{\"b\": 1, \"a\": 2, \"Z\": 3}",
+      "canonical_utf8_hex": "7b225a223a332c2261223a322c2262223a317d",
+      "canonical_sha256": "sha256:650a3b536297e0b4ac62e336aec378c3fc157952dd5b1e05100ccd81a9c8f5d0"
+    },
+    {
+      "id": "nested_sort",
+      "input_json": "{\"z\": {\"y\": 2, \"x\": 1}, \"a\": [3, 2, 1]}",
+      "canonical_utf8_hex": "7b2261223a5b332c322c315d2c227a223a7b2278223a312c2279223a327d7d",
+      "canonical_sha256": "sha256:5ab032a6e12d488e242d5ee616bdc3345c2a212c8e530c113e783ee95e0e2d93"
+    },
+    {
+      "id": "scalars",
+      "input_json": "{\"t\": true, \"f\": false, \"n\": null, \"zero\": 0, \"neg\": -7, \"big\": 10000000000000000000000000}",
+      "canonical_utf8_hex": "7b22626967223a31303030303030303030303030303030303030303030303030302c2266223a66616c73652c226e223a6e756c6c2c226e6567223a2d372c2274223a747275652c227a65726f223a307d",
+      "canonical_sha256": "sha256:21b606c8d7619bff766261a46e183696589d793cefe2920c93a095c7b690a9fd"
+    },
+    {
+      "id": "string_escapes",
+      "input_json": "{\"s\": \"tab\\tquote\\\"back\\\\slash/none\"}",
+      "canonical_utf8_hex": "7b2273223a227461625c7471756f74655c226261636b5c5c736c6173682f6e6f6e65227d",
+      "canonical_sha256": "sha256:9ff17dda622903071725b224761d25c236629ab6e68c805b5f176d10faad597c"
+    },
+    {
+      "id": "control_chars",
+      "input_json": "{\"s\": \"\\u0000\\u0001\\u001f\\b\\f\"}",
+      "canonical_utf8_hex": "7b2273223a225c75303030305c75303030315c75303031665c625c66227d",
+      "canonical_sha256": "sha256:5f23d56934c08bc975296c93851d79966ca798ec69a413d3563d3de7c23d27d7"
+    },
+    {
+      "id": "unicode_nfc_nfd_equal_a",
+      "input_json": "{\"s\": \"café\"}",
+      "canonical_utf8_hex": "7b2273223a22636166c3a9227d",
+      "canonical_sha256": "sha256:298ebe9dfd0022919780451da01d6ff22cd701ae9f614b77522b751906ac2784"
+    },
+    {
+      "id": "unicode_nfc_nfd_equal_b",
+      "input_json": "{\"s\": \"café\"}",
+      "canonical_utf8_hex": "7b2273223a22636166c3a9227d",
+      "canonical_sha256": "sha256:298ebe9dfd0022919780451da01d6ff22cd701ae9f614b77522b751906ac2784"
+    },
+    {
+      "id": "empty_containers",
+      "input_json": "{\"arr\": [], \"obj\": {}}",
+      "canonical_utf8_hex": "7b22617272223a5b5d2c226f626a223a7b7d7d",
+      "canonical_sha256": "sha256:7c557880ceed861401b04be6735c9708e326427e072562fd259da6f6a2612b96"
+    }
+  ]
+}

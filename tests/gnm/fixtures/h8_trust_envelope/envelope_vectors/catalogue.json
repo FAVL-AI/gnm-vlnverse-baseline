@@ -1,0 +1,292 @@
+{
+  "positive": [
+    {
+      "id": "valid_minimal",
+      "purpose": "spec vector 1 — required fields only, optionals absent",
+      "file": "envelope_vectors/positive/valid_minimal.json",
+      "expected_document_conformant": true,
+      "expected_reason_code": "TRUST_OK",
+      "expected_canonical_digest": "sha256:9e30266771d579f0de3f03ffc307c51b2ef167f36747fa16429761248774f092"
+    },
+    {
+      "id": "valid_full",
+      "purpose": "spec vector 2 — every member populated/UNAVAILABLE incl extensions",
+      "file": "envelope_vectors/positive/valid_full.json",
+      "expected_document_conformant": true,
+      "expected_reason_code": "TRUST_OK",
+      "expected_canonical_digest": "sha256:d7d6041d554f904b757ca2d242f1afb4be5406ddf0ddbb436600aa7ddcf5ab50"
+    },
+    {
+      "id": "reordered_full",
+      "purpose": "spec vector 3 — reordered members, identical canonical bytes",
+      "file": "envelope_vectors/positive/reordered_full.json",
+      "expected_document_conformant": true,
+      "expected_reason_code": "TRUST_OK",
+      "expected_canonical_digest": "sha256:d7d6041d554f904b757ca2d242f1afb4be5406ddf0ddbb436600aa7ddcf5ab50"
+    },
+    {
+      "id": "unicode_nfc",
+      "purpose": "spec vector 4a — NFC reference_input",
+      "file": "envelope_vectors/positive/unicode_nfc.json",
+      "expected_document_conformant": true,
+      "expected_reason_code": "TRUST_OK",
+      "expected_canonical_digest": "sha256:ee2351e4d4c5e429161781cd08b809c7bfa83a909ebeb1ad8c080594014d9a2e"
+    },
+    {
+      "id": "unicode_nfd",
+      "purpose": "spec vector 4b — NFD reference_input canonicalises to the NFC digest",
+      "file": "envelope_vectors/positive/unicode_nfd.json",
+      "expected_document_conformant": true,
+      "expected_reason_code": "TRUST_OK",
+      "expected_canonical_digest": "sha256:ee2351e4d4c5e429161781cd08b809c7bfa83a909ebeb1ad8c080594014d9a2e"
+    },
+    {
+      "id": "reference_input_null",
+      "purpose": "spec vector 8a — reference_input present-as-null",
+      "file": "envelope_vectors/positive/reference_input_null.json",
+      "expected_document_conformant": true,
+      "expected_reason_code": "TRUST_OK",
+      "expected_canonical_digest": "sha256:49476910eb12d29ae43351dd29d914a9b7fdf020929aab6e6eaccfbfde177bd2"
+    }
+  ],
+  "negative": [
+    {
+      "id": "dup_top_key",
+      "purpose": "spec vector 6 — duplicate top-level key",
+      "file": "envelope_vectors/negative/dup_top_key.raw",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "dup_payload_key",
+      "purpose": "duplicate nested payload key",
+      "file": "envelope_vectors/negative/dup_payload_key.raw",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "float_value",
+      "purpose": "spec vector 9 — float where integer required",
+      "file": "envelope_vectors/negative/float_value.raw",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "nan_value",
+      "purpose": "NaN rejected",
+      "file": "envelope_vectors/negative/nan_value.raw",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "infinity_value",
+      "purpose": "Infinity rejected",
+      "file": "envelope_vectors/negative/infinity_value.raw",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "utf8_bom",
+      "purpose": "UTF-8 BOM rejected",
+      "file": "envelope_vectors/negative/utf8_bom.raw",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "non_object_root",
+      "purpose": "non-object root rejected",
+      "file": "envelope_vectors/negative/non_object_root.raw",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "carriage_return",
+      "purpose": "spec vector 5 — CR in string value rejected",
+      "file": "envelope_vectors/negative/carriage_return.raw",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "unknown_top_field",
+      "purpose": "spec vector 7 — unknown top-level member",
+      "file": "envelope_vectors/negative/unknown_top_field.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "unknown_payload_field",
+      "purpose": "unknown payload member",
+      "file": "envelope_vectors/negative/unknown_payload_field.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "critical_extension",
+      "purpose": "spec vector 7 — critical extension not understood",
+      "file": "envelope_vectors/negative/critical_extension.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "oversized_nonce",
+      "purpose": "spec vector 10 — oversized string",
+      "file": "envelope_vectors/negative/oversized_nonce.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "unsupported_version",
+      "purpose": "spec vector 11 — unknown envelope_version (no accept-unknown)",
+      "file": "envelope_vectors/negative/unsupported_version.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "missing_field",
+      "purpose": "missing mandatory payload field",
+      "file": "envelope_vectors/negative/missing_field.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "bad_envelope_type",
+      "purpose": "bad envelope_type",
+      "file": "envelope_vectors/negative/bad_envelope_type.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "bad_reference_resolution",
+      "purpose": "bad reference_resolution enum",
+      "file": "envelope_vectors/negative/bad_reference_resolution.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "bad_digest_algorithm",
+      "purpose": "bad digest_algorithm",
+      "file": "envelope_vectors/negative/bad_digest_algorithm.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "bad_signature_algorithm",
+      "purpose": "signature_algorithm downgrade rejected",
+      "file": "envelope_vectors/negative/bad_signature_algorithm.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "bad_dep_class",
+      "purpose": "invalid dependency_class",
+      "file": "envelope_vectors/negative/bad_dep_class.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "bad_oid",
+      "purpose": "malformed git_blob_oid",
+      "file": "envelope_vectors/negative/bad_oid.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "signing_key_populated",
+      "purpose": "payload.signing_key_id must be UNAVAILABLE at G2A",
+      "file": "envelope_vectors/negative/signing_key_populated.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "signature_block_populated",
+      "purpose": "signature_block must be all UNAVAILABLE (no fabricated signature)",
+      "file": "envelope_vectors/negative/signature_block_populated.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "waived_requirement",
+      "purpose": "verification_requirements may not be waived",
+      "file": "envelope_vectors/negative/waived_requirement.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "assurance_escalation",
+      "purpose": "assurance beyond content-equivalent rejected",
+      "file": "envelope_vectors/negative/assurance_escalation.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "intended_use_capture",
+      "purpose": "intended_use must be preflight-document (never capture)",
+      "file": "envelope_vectors/negative/intended_use_capture.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "bad_timestamp",
+      "purpose": "malformed timestamp",
+      "file": "envelope_vectors/negative/bad_timestamp.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "subsecond_timestamp",
+      "purpose": "sub-second timestamp rejected (no sub-second)",
+      "file": "envelope_vectors/negative/subsecond_timestamp.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "bad_interval",
+      "purpose": "validity_start after expiry",
+      "file": "envelope_vectors/negative/bad_interval.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "absolute_path",
+      "purpose": "absolute dependency path",
+      "file": "envelope_vectors/negative/absolute_path.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "traversal_path",
+      "purpose": "path traversal",
+      "file": "envelope_vectors/negative/traversal_path.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "dup_dependency_id",
+      "purpose": "duplicate dependency id",
+      "file": "envelope_vectors/negative/dup_dependency_id.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "optional_ref_bad",
+      "purpose": "optional deferred ref must be absent or UNAVAILABLE",
+      "file": "envelope_vectors/negative/optional_ref_bad.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "bool_coercion",
+      "purpose": "boolean field given a string",
+      "file": "envelope_vectors/negative/bool_coercion.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    },
+    {
+      "id": "missing_signature_block",
+      "purpose": "missing signature_block",
+      "file": "envelope_vectors/negative/missing_signature_block.json",
+      "expected_document_conformant": false,
+      "expected_reason_code": "TRUST_ENVELOPE_SCHEMA_INVALID"
+    }
+  ]
+}

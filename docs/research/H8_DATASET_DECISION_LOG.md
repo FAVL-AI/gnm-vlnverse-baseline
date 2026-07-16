@@ -1036,3 +1036,102 @@ Primary document: `docs/research/H8_G2_CRYPTOGRAPHIC_TRUST_ARCHITECTURE.md`.
 | Decision | Signed/shared reports exclude absolute paths, usernames, hostnames, internal addresses, secret ids, private URLs and raw environment variables; use stable pseudonymous policy ids. Signing does not make unnecessary personal/infrastructure data safe to disclose. Consistent with the deterministic `closure_digest` already excluding host paths. |
 | Reason | Signing must not become a channel for leaking infrastructure/personal data. |
 | Status | **Design-only** |
+
+## G2A — Canonical Trust-Envelope Schema & Fixture-Only Test-Vector Gate — decisions (2026-07-17)
+
+**Schema + canonicalisation + fixture-test gate**, implementing the committed governing spec
+`docs/research/H8_G2A_CANONICAL_ENVELOPE_SPEC.md` (`23d95c8`). No production key/certificate/signature/token/
+trusted timestamp/revocation record; no signing/verification/KMS/TSA/CA/transparency/revocation service; no
+observer/Isaac/ROS 2/capture. `scripts/gnm/h8_trust_envelope.py` (+ `configs/gnm/h8_trust_envelope_
+schema.json`), tests `tests/gnm/test_h8_trust_envelope.py` (146 pass). Schema conformance is NOT trust
+acceptance. Implementation report: `docs/research/H8_G2A_CANONICAL_TRUST_ENVELOPE.md`.
+
+### H8-DCP-084 — Implement the committed spec's `payload`+`signature_block` envelope
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-17 |
+| Decision | The envelope has exactly two top-level members: `payload` (the signed content) and `signature_block` (detached, NOT signed). Canonical bytes cover `payload` only. Implemented exactly to `H8_G2A_CANONICAL_ENVELOPE_SPEC.md` §3 (committed `23d95c8`); the spec is authoritative and this module conforms. |
+| Reason | Single source of truth: an implementation must match its governing committed spec. |
+| Status | **Implemented (schema-only)** |
+
+### H8-DCP-085 — Unicode NFC by NORMALISATION during canonicalisation (spec §4.3)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-17 |
+| Decision | The canonicaliser NFC-normalises every object key and string value, so an NFD input yields the same canonical bytes/digest as its NFC twin (spec §7 vector 4). This realises the spec's "NFC normalisation" wording and supersedes an earlier implementation draft that rejected non-NFC input. |
+| Reason | Conform to the committed spec's determinism requirement (NFD ≡ NFC digest). |
+| Status | **Implemented (schema-only)** |
+
+### H8-DCP-086 — JCS (RFC 8785) with the standard library only; floats prohibited
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-17 |
+| Decision | Canonicalisation is pure Python standard library (no third-party canonicaliser): UTF-8, UTF-16-code-unit key sort, minimal escaping, `/` unescaped, integers shortest-decimal. Floats/`NaN`/`±Infinity` are rejected at parse (`TRUST_ENVELOPE_SCHEMA_INVALID`) and in canonicalisation (`TRUST_CANONICALISATION_FAILED`). Realises architecture `H8-DCP-067`. |
+| Reason | Minimise dependency/trust surface; remove float canonicalisation ambiguity. |
+| Status | **Implemented (schema-only)** |
+
+### H8-DCP-087 — Line-ending rule = reject carriage return in string values (spec §7 v5)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-17 |
+| Decision | The fixed line-ending rule is REJECT: any string value containing `\r` (CR/CRLF) → `TRUST_ENVELOPE_SCHEMA_INVALID`; LF-only in canonical strings. |
+| Reason | A single deterministic, testable rule for the spec's line-ending edge case. |
+| Status | **Implemented (schema-only)** |
+
+### H8-DCP-088 — Timestamps: RFC 3339 UTC 'Z', no sub-second, interval-ordered, never freshness
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-17 |
+| Decision | One representation only: `YYYY-MM-DDThh:mm:ssZ` (no offset, **no sub-second**), calendar-range checked, with `validity_start <= issue_time <= expiry` and `validity_start < expiry`. `observation_time`/`issue_time`/`validity_start`/`expiry` are syntax-validated but never consulted for freshness (trusted time = G2C); the spec marks the clock UNTRUSTED. |
+| Reason | Deterministic time syntax without over-claiming trusted freshness (spec §6). |
+| Status | **Implemented (schema-only)** |
+
+### H8-DCP-089 — Absent / null / UNAVAILABLE tri-state; signature_block all-UNAVAILABLE, no fabricated signature
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-17 |
+| Decision | Three distinct states (spec §5): optional members absent (not in canonical bytes); `reference_input` may be `null` (present, digest differs from absent); deferred fields (`signing_key_id`, `observed_remote_origins`, `trusted_timestamp_reference`, `revocation_snapshot_reference`, `origin_attestation_reference`) use the explicit `"UNAVAILABLE"` sentinel. `signature_block` has every member = `"UNAVAILABLE"`; `signature_algorithm` is DECLARED (`ed25519`, allow-list; downgrade → reject) but NO signature exists. Deferred values are never fabricated. |
+| Reason | Carry the signed-envelope SHAPE with zero capability to sign, and keep absent/null/UNAVAILABLE unambiguous. |
+| Status | **Implemented (schema-only)** |
+
+### H8-DCP-090 — `verification_requirements` are non-waivable
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-17 |
+| Decision | The 8 `verification_requirements` booleans (`require_signature`, `require_authorised_signer`, `require_trusted_timestamp`, `require_not_revoked`, `require_repository_attestation`, `require_semantic_identity`, `require_attributes_binding`, `require_intended_use_match`) must all be present and `true`; any `false` (or unknown key) → `TRUST_ENVELOPE_SCHEMA_INVALID`. A report cannot waive its own future checks (spec §3.4). |
+| Reason | Prevent a forged report from disabling the checks a future verifier (G2H) must run. |
+| Status | **Implemented (schema-only)** |
+
+### H8-DCP-091 — `intended_use` const `preflight-document`; assurance exactly `["content-equivalent"]`
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-17 |
+| Decision | `intended_use` must equal `preflight-document` (never runtime/capture); `assurance_claims` must equal exactly `["content-equivalent"]`. Anything else → `TRUST_ENVELOPE_SCHEMA_INVALID`. |
+| Reason | An envelope cannot self-escalate its use or assurance beyond what G2A establishes (spec §3.1). |
+| Status | **Implemented (schema-only)** |
+
+### H8-DCP-092 — Two owned failure codes; taxonomy isolated; non-authenticating digest; non-authorising result
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-17 |
+| Decision | G2A owns/emits exactly `TRUST_ENVELOPE_SCHEMA_INVALID` (all structural/schema failures) and `TRUST_CANONICALISATION_FAILED` (canonicalisation-stage failures) (spec §8). These live in `h8_trust_envelope.py` and are **disjoint** from the resolver's `REASON_CODES` (unchanged at **41**). `compute_digest` is a NON-AUTHENTICATING `sha256:<hex>`. `evaluate_envelope` always reports `signature_verified/signer_authorised/timestamp_verified/fresh/repository_attested/release_approved/semantic_identity_verified/attributes_binding_verified/preflight_eligible/runtime_eligible/capture_eligible` at their fail-closed values; the module exposes no `sign`/`verify_signature`/`authorise`. |
+| Reason | Schema validity must never read as trust acceptance; the resolver's active taxonomy must not grow. |
+| Status | **Implemented (schema-only)** |
+
+### H8-DCP-093 — Exact-version binding, unknown-field rejection, critical-extension fail-closed, bounds
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-17 |
+| Decision | `envelope_version` must exactly match `h8-trust-envelope/1.0.0` (no accept-unknown-version); unknown top-level or `payload` members are rejected; any `critical_extensions` entry (absent from `extensions`, or present but not understood — none are understood at G2A) fails closed; string length (≤512) and array size (≤4096) bounds enforced. |
+| Reason | Controlled, signed-over extensibility with no silent acceptance of unknown formats or critical semantics. |
+| Status | **Implemented (schema-only)** |

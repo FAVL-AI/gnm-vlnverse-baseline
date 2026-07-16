@@ -411,3 +411,37 @@ explicit signer/verifier separation, key/time/revocation/attestation/semantic-id
 designs and a full G2A–G2H implementation decomposition; **no cryptographic or runtime operation performed.**
 Recommended first implementation gate = **G2A** (canonical signed-envelope schema + fixture-only cross-
 language test vectors; no real key, no signing, no external service).
+
+## G2A — Canonical Trust-Envelope Schema & Fixture-Only Test-Vector Gate — challenges (2026-07-17)
+
+**Schema + canonicalisation + fixture-test gate only**, implementing the committed spec
+`docs/research/H8_G2A_CANONICAL_ENVELOPE_SPEC.md` (`23d95c8`). No production key/signature/certificate/token/
+trusted timestamp/revocation record was created; no signing/verification/KMS/TSA/CA/transparency/revocation
+service; no observer/Isaac/ROS 2/render/drive/capture. `scripts/gnm/h8_trust_envelope.py` establishes schema
+validity + JCS canonical-byte determinism + fixture reproducibility ONLY; it establishes NO signature/
+freshness/revocation/origin/runtime/capture fact. Tests: 146 pass; resolver `REASON_CODES` unchanged (41).
+
+| ID | Challenge | Owner |
+|---|---|---|
+| `H8-C-058` | No production signing — `signature_block` is all-`UNAVAILABLE`; `signature_algorithm` is a declared allow-list value only (`H8-DCP-089`) | G2B |
+| `H8-C-059` | No signature verifier / signer-authorisation — schema validity is not signature validity | G2B/G2H |
+| `H8-C-060` | No trusted time — `observation/issue/validity/expiry` are syntax-only, clock UNTRUSTED; freshness cannot be claimed (`H8-DCP-088`, extends `H8-C-026`/`H8-C-034`/`H8-C-048`) | G2C |
+| `H8-C-061` | No revocation — `revocation_snapshot_reference` is a placeholder sentinel (extends `H8-C-028`/`H8-C-049`) | G2D |
+| `H8-C-062` | No repository/release/origin attestation — those fields are `UNAVAILABLE` placeholders (extends `H8-C-050`/`H8-C-051`) | G2E |
+| `H8-C-063` | No second-language canonicaliser executed here — cross-language interop is asserted only via committed `canonical_utf8_hex`/`sha256` vectors; independent reproduction is a review activity (spec §7 v12) | independent G2A review |
+| `H8-C-064` | Duplicate-key rejection depends on a parser `object_pairs_hook` (reject-before-collapse); other languages/parsers must replicate this to match — an interop requirement, not a universal guarantee | independent G2A review |
+| `H8-C-065` | NFC handled by **normalisation** (`H8-DCP-085`); a reviewer must re-affirm the NFD≡NFC digest behaviour against the spec | independent G2A review |
+| `H8-C-066` | Schema evolution — only `h8-trust-envelope/1.0.0` is supported; migration/dual-version acceptance is unimplemented (extends `H8-DCP-082`/`H8-C-057`) | G2H |
+| `H8-C-067` | Ruff remains unavailable in this environment (`H8-C-006`/`H8-C-013`); style linting is Open | env |
+| `H8-C-068` | No Level-3 runtime evidence — a schema-valid or (future) signed envelope remains preflight-only; `runtime_eligible`/`capture_eligible` fixed False (`H8-DCP-092`) | G3+/G9+ |
+
+**Invariant unchanged:** schema conformance is not trust acceptance; a valid or eventually-signed resolver
+envelope reaches at most assurance level 3 (resolver-authenticated) and remains **preflight-only**. Real
+capture remains **blocked**; Levels 3–5 unproven; Ruff Open.
+
+Gate verdict: **`PASS`** — strict schema, duplicate-key rejection before parse collapse, deterministic
+canonical bytes/digest, NFC determinism, fixture-only vectors (`signature_block` all-`UNAVAILABLE`),
+cross-language-consumable expected bytes, declared-only `signature_algorithm`, no production signing
+capability, schema-valid envelopes remain non-authorising. Recommended next = **independent G2A
+canonicalisation & fixture-vector review** (reproduce the `canonical_utf8_hex` vectors in a second language)
+before G2B fixture-key and verifier-stub work.

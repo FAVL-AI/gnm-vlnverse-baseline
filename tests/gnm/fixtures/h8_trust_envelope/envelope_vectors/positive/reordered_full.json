@@ -1,0 +1,100 @@
+{
+  "signature_block": {
+    "signing_key_id": "UNAVAILABLE",
+    "signature_algorithm": "UNAVAILABLE",
+    "signature": "UNAVAILABLE",
+    "timestamp_proof": "UNAVAILABLE"
+  },
+  "payload": {
+    "extensions": {
+      "x-note": {
+        "note": "non-critical forward growth"
+      }
+    },
+    "origin_attestation_reference": "UNAVAILABLE",
+    "revocation_snapshot_reference": "UNAVAILABLE",
+    "trusted_timestamp_reference": "UNAVAILABLE",
+    "reference_input": "refs/tags/pilot",
+    "observed_remote_origins": "UNAVAILABLE",
+    "critical_extensions": [],
+    "verification_requirements": {
+      "require_signature": true,
+      "require_authorised_signer": true,
+      "require_trusted_timestamp": true,
+      "require_not_revoked": true,
+      "require_repository_attestation": true,
+      "require_semantic_identity": true,
+      "require_attributes_binding": true,
+      "require_intended_use_match": true
+    },
+    "assurance_claims": [
+      "content-equivalent"
+    ],
+    "intended_use": "preflight-document",
+    "nonce": "u4gLptR0Rj2b8xq1nX3zAA",
+    "report_id": "h8-report:fixture:0001",
+    "expiry": "2026-07-16T01:00:00Z",
+    "validity_start": "2026-07-16T00:00:00Z",
+    "issue_time": "2026-07-16T00:00:00Z",
+    "observation_time": "2026-07-16T00:00:00Z",
+    "signing_key_id": "UNAVAILABLE",
+    "signature_algorithm": "ed25519",
+    "digest_algorithm": "sha-256",
+    "per_dependency_identity_commitments": [
+      {
+        "dependency_id": "h8-resolver",
+        "dependency_class": "module",
+        "path": "scripts/gnm/h8_git_dependency_resolver.py",
+        "git_blob_oid": "1111111111111111111111111111111111111111",
+        "git_content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "semantic_identity_profile": {
+          "scheme": "mod",
+          "id": "h8-resolver",
+          "version": "1.0.0",
+          "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "required": true
+      },
+      {
+        "dependency_id": "h8-dependency-manifest",
+        "dependency_class": "dependency-manifest",
+        "path": "configs/gnm/h8_dependency_manifest.json",
+        "git_blob_oid": "1111111111111111111111111111111111111111",
+        "git_content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "semantic_identity_profile": {
+          "scheme": "man",
+          "id": "h8-dependency-manifest",
+          "version": "1.0.0",
+          "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "required": true
+      }
+    ],
+    "unresolved_count": 0,
+    "rejected_count": 0,
+    "accepted_count": 2,
+    "mandatory_dependency_count": 2,
+    "git_version": "2.34.1",
+    "git_env_policy_version": "h8-git-env-policy/1.0.0",
+    "attributes_closure_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "closure_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "manifest_schema_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "manifest_schema_version": "h8-dependency-manifest/1.0.0",
+    "canonical_manifest_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "canonical_manifest_path": "configs/gnm/h8_dependency_manifest.json",
+    "reference_resolution": "commit",
+    "head_tree_oid": "2222222222222222222222222222222222222222",
+    "head_commit": "efa671abc18bde1e6c1f942360cb8d957db60729",
+    "repository_identity": {
+      "canonical_name": "gnm-vlnverse-baseline",
+      "root_commit": "67b038385629658096ed5f656cd1a29d1592f165"
+    },
+    "repository_policy_id": "h8-repo-policy/1.0.0",
+    "resolver_trust_policy_version": "h8-dependency-policy/1.0.0",
+    "resolver_version": "h8-git-dependency-resolver/1.0.0",
+    "resolver_id": "h8-git-dependency-resolver",
+    "report_schema_version": "h8-resolver-report/1.0.0",
+    "envelope_type": "resolver-report",
+    "envelope_version": "h8-trust-envelope/1.0.0"
+  }
+}
