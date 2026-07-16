@@ -795,3 +795,48 @@ Non-Isaac, non-capturing; implements the concrete resolver specified by `H8-DCP-
 | Decision | The only provider change is additive: `build_provenance` records an optional `dependency_resolution_digest` (None when absent). No trust-boundary guarantee, schema version, `document_only` semantics, dual render/drive prerequisite or `CL_BOUND_XY` is altered; all prior 223 H8 tests still pass. |
 | Reason | Bind evidence to the resolved closure without weakening any existing control. |
 | Status | **Accepted** |
+
+### H8-DCP-058 — In-process report authenticity marker (F-001 partial)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | The genuine resolver stamps `authenticity = "h8-resolver-authentic/1.0.0"` on every report; `report_binding_ok` rejects any report lacking it (`REPORT_UNAUTHENTIC`) before honouring `overall_accepted`. This defeats an ordinary caller-forged dict presenting the approved `resolver_id`. It is explicitly NOT cryptographic — code with module access can copy the constant; that residual is documented and deferred to G2. |
+| Reason | Close the plain-dict forgery path (`H8-G1REV-F-001`) in-process now; cryptographic authentication belongs to G2. |
+| Status | **Accepted — PARTIAL (residual to G2)** |
+
+### H8-DCP-059 — Trusted construction path for protected provider modes (F-001 primary control)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Protected provider modes obtain their `tree_state` via `trusted_provider_tree_state(repo_root)`, which constructs the genuine resolver in-process and re-resolves current state on every call. It exposes NO parameter for a caller-supplied resolver, report, manifest object/path, or assume-clean flag (`git`/`fs` are a documented test-only fixture seam with no acceptance authority). A fabricated resolution cannot be substituted structurally, not merely by string check. |
+| Reason | The durable control against forged resolutions is that protected callers never accept a caller report at all. |
+| Status | **Accepted** |
+
+### H8-DCP-060 — One canonical repository-tracked manifest (F-002)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | `resolve_canonical` loads ONLY `configs/gnm/h8_dependency_manifest.json` (`CANONICAL_MANIFEST_REL`); it never accepts a caller-selected path or in-memory dict. It requires the manifest to self-list at the canonical path (`MANIFEST_NOT_CANONICAL`), enforces a machine-checked mandatory id set `REQUIRED_DEPENDENCY_IDS` (`MANIFEST_INCOMPLETE`), and then resolves the manifest FILE itself (tracked + unmodified + bound to HEAD). A reduced or substituted manifest can no longer hide a dirty or omitted decision-critical dependency. |
+| Reason | Close the caller-selected-manifest bypass (`H8-G1REV-F-002`); the tracked manifest is the single source of truth. |
+| Status | **Accepted** |
+
+### H8-DCP-061 — Security-relevant Git state pinned and inspected (F-003)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Every protected git invocation prepends `-c core.fileMode=true -c core.symlinks=true -c core.ignorecase=false -c core.autocrlf=false --no-replace-objects` and runs under `LC_ALL=C`/`LANG=C`. `inspect_git_config` additionally REJECTS a repository carrying replace refs (`GIT_REPLACE_OBJECTS`) or an alternate object database (`GIT_ALTERNATE_OBJECTS`). A test proves a locally-set `core.fileMode=false` no longer masks a chmod. This is MITIGATED-WITH-LIMITATIONS: it neutralises the enumerated config surfaces, not an exhaustive proof that no Git configuration can influence any observation. |
+| Reason | Close the enumerated config-masking surfaces (`H8-G1REV-F-003`) without over-claiming completeness. |
+| Status | **Accepted — MITIGATED WITH DOCUMENTED LIMITATIONS** |
+
+### H8-DCP-062 — Copied-history origin remains unresolved (F-004 deferred)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Repository identity binds `(canonical_name + root_commit + history)`; an exact copy of the Git object history reproduces that identity. This is NOT closed by ordinary Git inspection and is explicitly NOT closed via remote-URL comparison (a remote URL is caller-mutable and proves nothing). Cryptographic origin attestation is deferred to G2 or a later provenance-infrastructure gate. |
+| Reason | Honest scoping: physical-origin attestation requires signatures/attestation infrastructure out of scope for G1R. |
+| Status | **Open — deferred to G2** |

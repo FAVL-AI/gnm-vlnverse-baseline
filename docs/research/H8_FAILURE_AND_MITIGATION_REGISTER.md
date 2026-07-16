@@ -364,6 +364,9 @@ zero backend/output on blocked cases. Residual challenges (documented, not overc
 | `H8-C-036` | git-lfs is not installed here — LFS materialisation is unverifiable, so it fails closed | G2/env |
 | `H8-C-037` | git-version behaviour variance (rename detection, porcelain nuances) — bounded by tests on git 2.34.1 | G1-review |
 | `H8-C-038` | Detached-HEAD/linked-worktree acceptance policy is minimal; hardened rules deferred | G1-review |
+| `H8-C-039` | In-process report authenticity is not cryptographic — code with module access can copy the marker constant; the durable control is that protected callers use the trusted factory and never accept a caller report. Full authentication → G2 | G1R (F-001) |
+| `H8-C-040` | Git-config neutralisation covers the ENUMERATED surfaces (fileMode/symlinks/ignorecase/autocrlf/replace-objects/alternates); it is not an exhaustive proof that no Git configuration or filter can influence any observation | G1R (F-003) |
+| `H8-C-041` | Copied-history spoofing (identical root commit + history in a physical copy) is NOT closed by Git inspection and MUST NOT be closed via remote-URL comparison; cryptographic origin attestation → G2 | G1R (F-004) |
 
 Verdict: **`PASS WITH DOCUMENTED LIMITATIONS`**. Establishes resolver + closure + repository-identity
 binding + fail-closed provider preflight integration + deterministic closure digest. Does NOT establish

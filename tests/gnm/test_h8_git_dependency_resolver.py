@@ -536,3 +536,242 @@ def test_real_manifest_file_is_valid_schema_shape():
     assert len(ids) == len(set(ids)) and all(d["path"] for d in man["dependencies"])
     # the resolver can LOAD the shipped manifest without error
     R.GitDependencyResolver(str(REPO)).load_dependency_manifest(man)
+
+
+# =====================================================================================
+# G1R REMEDIATION (H8-G1REV-F-001 / -F-002 / -F-003) — trust-boundary hardening
+# A canonical fixture repo self-lists its manifest at CANONICAL_MANIFEST_REL and carries every
+# mandatory dependency id, so resolve_canonical / trusted_provider_tree_state can be exercised end to end.
+# =====================================================================================
+import json as _json  # noqa: E402
+
+# id -> repo-relative path for a self-consistent canonical fixture (manifest self-lists at the canonical rel)
+_CANON_PATHS = {
+    "h8-dataset-config": "configs/gnm/dataset.json",
+    "h8-evidence-schema": "scripts/gnm/schema.py",
+    "h8-evidence-provider": "scripts/gnm/provider.py",
+    "h8-recorded-mode": "scripts/gnm/recorded.py",
+    "h8-drive-validate": "scripts/gnm/drive.py",
+    "h8-scene-usda": "assets/scene.usda",
+    "h8-evidence-schema-json": "docs/schema.json",
+    "h8-resolver": "scripts/gnm/resolver.py",
+    "h8-manifest-schema": "docs/manifest.schema.json",
+    "h8-dependency-manifest": R.CANONICAL_MANIFEST_REL,
+}
+
+
+def _canonical_repo(tmp_path, *, drop=None, self_path=None):
+    """Build a temp repo whose canonical manifest self-lists at CANONICAL_MANIFEST_REL and covers every
+    mandatory id. `drop` removes one dependency id from the manifest (to exercise MANIFEST_INCOMPLETE);
+    `self_path` overrides the manifest-self dependency path (to exercise MANIFEST_NOT_CANONICAL)."""
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _git(repo, "init", "-q")
+    _git(repo, "config", "user.email", "frankleroyvan@gmail.com")
+    _git(repo, "config", "user.name", "Frank Asante Van Laarhoven")
+    deps = []
+    for id_, rel in _CANON_PATHS.items():
+        if drop and id_ == drop:
+            continue
+        p = repo / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        if rel.endswith(".json"):
+            p.write_text("{}\n")
+        elif rel.endswith(".usda"):
+            p.write_text("#usda 1.0\n")
+        else:
+            p.write_text("x = 1\n")
+        path = self_path if (id_ == "h8-dependency-manifest" and self_path) else rel
+        deps.append({"id": id_, "path": path, "type": "file", "required": True})
+    canon = repo / R.CANONICAL_MANIFEST_REL
+
+    def _write_manifest(root):
+        man = {"manifest_version": MV,
+               "expected_repository": {"canonical_name": repo.name, "root_commit": root,
+                                       "identity_policy": "root_commit_and_name"},
+               "dependencies": deps}
+        canon.write_text(_json.dumps(man, indent=2) + "\n")
+
+    _write_manifest(None)
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "init")
+    root = subprocess.run(["git", "-C", str(repo), "rev-list", "--max-parents=0", "HEAD"],
+                          capture_output=True, text=True).stdout.strip()
+    _write_manifest(root)
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "pin root")
+    head = subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"],
+                          capture_output=True, text=True).stdout.strip()
+    return repo, root, head
+
+
+# ── F-001: report authentication + trusted construction ─────────────────────────────
+def test_g1r_forged_report_without_marker_rejected():
+    # An ordinary caller-forged dict with the APPROVED resolver id + overall_accepted True but NO
+    # in-process authenticity marker is now rejected (this was the F-001 bypass).
+    forged = {"resolver_id": R.RESOLVER_ID, "overall_accepted": True, "closure_digest": "sha256:" + "0" * 64}
+    ok, code = R.report_binding_ok(forged)
+    assert ok is False and code == R.REPORT_UNAUTHENTIC
+
+
+def test_g1r_genuine_report_carries_authenticity_marker(tmp_path):
+    repo, root, _ = _init_repo(tmp_path, {"a.txt": "a\n"})
+    rep = _resolve(repo, root, [_dep("a", "a.txt")])
+    assert rep["authenticity"] == R._REPORT_AUTHENTICITY
+    ok, code = R.report_binding_ok(rep)
+    assert ok is True and code == R.ACCEPTED           # genuine report still accepted — not reject-all
+
+
+def test_g1r_module_access_forgery_is_documented_residual():
+    # HONEST residual: code WITH module access can copy the marker constant; in-process authentication is
+    # NOT cryptographic. Full authentication is deferred to G2. The primary control is that protected
+    # callers use trusted_provider_tree_state (which never accepts a caller report at all).
+    forged = {"resolver_id": R.RESOLVER_ID, "overall_accepted": True,
+              "authenticity": R._REPORT_AUTHENTICITY}
+    ok, _code = R.report_binding_ok(forged)
+    assert ok is True                                  # documents the residual, does not hide it
+
+
+def test_g1r_trusted_factory_has_no_report_or_manifest_injection():
+    import inspect
+    params = set(inspect.signature(R.trusted_provider_tree_state).parameters)
+    # structurally NO way to inject a fabricated resolution, report, manifest, or assume-clean flag
+    for forbidden in ("resolver", "report", "manifest", "assume_clean", "tree_state"):
+        assert forbidden not in params
+
+
+def test_g1r_trusted_factory_clean_canonical_accepts(tmp_path):
+    repo, _root, head = _canonical_repo(tmp_path)
+    ts = R.trusted_provider_tree_state(str(repo))()
+    assert ts["dependency_dirty"] is False and ts["resolution_reason"] == R.ACCEPTED
+    assert ts["commit"] == head
+    assert ts["resolution"]["canonical_manifest"] == R.CANONICAL_MANIFEST_REL
+
+
+def test_g1r_trusted_factory_dirty_canonical_blocks(tmp_path):
+    repo, _root, _ = _canonical_repo(tmp_path)
+    (repo / "scripts/gnm/resolver.py").write_text("x = 2  # tamper\n")   # worktree modification
+    ts = R.trusted_provider_tree_state(str(repo))()
+    assert ts["dependency_dirty"] is True
+    assert R.DEPENDENCY_WORKTREE_MODIFICATION in (ts["resolution"]["failures"] or [])
+
+
+# ── F-002: canonical-manifest enforcement ───────────────────────────────────────────
+def test_g1r_canonical_missing_mandatory_id_incomplete(tmp_path):
+    repo, _root, _ = _canonical_repo(tmp_path, drop="h8-resolver")
+    rep = R.GitDependencyResolver(str(repo)).resolve_canonical()
+    assert rep["overall_accepted"] is False and rep["reason_code"] == R.MANIFEST_INCOMPLETE
+
+
+def test_g1r_canonical_manifest_must_self_list_at_canonical_path(tmp_path):
+    # manifest-self dependency points somewhere other than the canonical rel → rejected
+    repo, _root, _ = _canonical_repo(tmp_path, self_path="configs/gnm/other_manifest.json")
+    rep = R.GitDependencyResolver(str(repo)).resolve_canonical()
+    assert rep["overall_accepted"] is False and rep["reason_code"] == R.MANIFEST_NOT_CANONICAL
+
+
+def test_g1r_canonical_tampered_manifest_file_blocks(tmp_path):
+    # editing the canonical manifest file in the worktree makes the manifest-self dependency dirty
+    repo, _root, _ = _canonical_repo(tmp_path)
+    man = _json.loads((repo / R.CANONICAL_MANIFEST_REL).read_text())
+    man["dependencies"].append({"id": "h8-extra", "path": "scripts/gnm/schema.py", "type": "file",
+                                "required": True})
+    (repo / R.CANONICAL_MANIFEST_REL).write_text(_json.dumps(man, indent=2) + "\n")
+    rep = R.GitDependencyResolver(str(repo)).resolve_canonical()
+    assert rep["overall_accepted"] is False
+    self_res = next(r for r in rep["results"] if r["dependency_id"] == "h8-dependency-manifest")
+    assert self_res["accepted"] is False
+
+
+def test_g1r_canonical_missing_file_fails_closed(tmp_path):
+    repo, _root, _ = _canonical_repo(tmp_path)
+    # canonical manifest present, but a required tracked dependency file removed from the worktree
+    (repo / "assets/scene.usda").unlink()
+    rep = R.GitDependencyResolver(str(repo)).resolve_canonical()
+    assert rep["overall_accepted"] is False
+
+
+def test_g1r_provider_uses_trusted_factory_clean_permits_preflight(tmp_path):
+    repo, _root, _ = _canonical_repo(tmp_path)
+    ts = R.trusted_provider_tree_state(str(repo))
+    p = prov.H8EvidenceProvider(mode="preflight", clock=lambda: CLK, tree_state=ts)
+    r = p.emit_evidence("sfork_00", kind="both")
+    assert r["provider_code"] == prov.PROVIDER_OK_PREFLIGHT and r["ok"] is True
+    env = r["evidence"]["render_valid"]
+    assert env["provenance"]["dependency_resolution_digest"].startswith("sha256:")
+
+
+def test_g1r_provider_uses_trusted_factory_dirty_blocks(tmp_path):
+    repo, _root, _ = _canonical_repo(tmp_path)
+    (repo / "scripts/gnm/provider.py").write_text("x = 2  # tamper\n")
+    sink = prov.InMemorySink()
+    p = prov.H8EvidenceProvider(mode="preflight", clock=lambda: CLK,
+                                tree_state=R.trusted_provider_tree_state(str(repo)), sink=sink)
+    r = p.emit_evidence("sfork_00")
+    assert r["provider_code"] == prov.PROVIDER_DIRTY_TREE and sink.atomic_ops == 0
+
+
+# ── F-003: git-config neutralisation + object-identity substitution ─────────────────
+def test_g1r_safe_overrides_are_pinned():
+    ov = R._GIT_SAFE_OVERRIDES
+    for pair in ("core.fileMode=true", "core.symlinks=true", "core.ignorecase=false",
+                 "core.autocrlf=false"):
+        assert pair in ov
+    assert "--no-replace-objects" in ov
+
+
+def test_g1r_local_filemode_false_does_not_mask_mode_change(tmp_path):
+    # repo sets core.fileMode=false locally; a chmod +x on a tracked file would normally be hidden.
+    # The pinned override forces detection → the dependency is NOT accepted.
+    repo, root, _ = _init_repo(tmp_path, {"s.sh": "echo hi\n"})
+    _git(repo, "config", "core.fileMode", "false")
+    os.chmod(repo / "s.sh", 0o755)
+    rep = _resolve(repo, root, [_dep("s", "s.sh")])
+    res = rep["results"][0]
+    assert res["accepted"] is False
+    assert res["reason_code"] in (R.DEPENDENCY_MODE_CHANGED, R.DEPENDENCY_WORKTREE_MODIFICATION)
+
+
+def test_g1r_replace_objects_rejected(tmp_path):
+    repo, _root, head = _init_repo(tmp_path, {"a.txt": "a\n"})
+    _git(repo, "update-ref", f"refs/replace/{head}", head)   # a replace ref exists
+    ok, code, _why = R.GitDependencyResolver(str(repo)).inspect_git_config()
+    assert ok is False and code == R.GIT_REPLACE_OBJECTS
+    rep = R.GitDependencyResolver(str(repo)).resolve_canonical()
+    assert rep["overall_accepted"] is False and rep["reason_code"] == R.GIT_REPLACE_OBJECTS
+
+
+def test_g1r_alternate_object_db_rejected(tmp_path):
+    repo, _root, _ = _init_repo(tmp_path, {"a.txt": "a\n"})
+    gdir = subprocess.run(["git", "-C", str(repo), "rev-parse", "--git-dir"],
+                          capture_output=True, text=True).stdout.strip()
+    gdir = gdir if os.path.isabs(gdir) else os.path.join(str(repo), gdir)
+    info = Path(gdir) / "objects" / "info"
+    info.mkdir(parents=True, exist_ok=True)
+    (info / "alternates").write_text("/some/other/objects\n")
+    ok, code, _why = R.GitDependencyResolver(str(repo)).inspect_git_config()
+    assert ok is False and code == R.GIT_ALTERNATE_OBJECTS
+
+
+def test_g1r_clean_repo_passes_git_config_inspection(tmp_path):
+    repo, _root, _ = _init_repo(tmp_path, {"a.txt": "a\n"})
+    ok, code, _why = R.GitDependencyResolver(str(repo)).inspect_git_config()
+    assert ok is True and code == R.ACCEPTED           # inspection is not reject-all
+
+
+# ── taxonomy / constants ─────────────────────────────────────────────────────────────
+def test_g1r_new_reason_codes_registered():
+    for c in (R.REPORT_UNAUTHENTIC, R.MANIFEST_NOT_CANONICAL, R.MANIFEST_INCOMPLETE,
+              R.GIT_CONFIG_UNSUPPORTED, R.GIT_REPLACE_OBJECTS, R.GIT_ALTERNATE_OBJECTS):
+        assert c in R.REASON_CODES and c in R.ACTIVE_CODES
+
+
+def test_g1r_canonical_constants_bind_shipped_manifest():
+    assert R.CANONICAL_MANIFEST_REL == "configs/gnm/h8_dependency_manifest.json"
+    man = _json.loads((REPO / R.CANONICAL_MANIFEST_REL).read_text())
+    ids = {d["id"] for d in man["dependencies"]}
+    # every machine-enforced mandatory id is present in the SHIPPED canonical manifest
+    assert R.REQUIRED_DEPENDENCY_IDS.issubset(ids)
+    # the shipped manifest self-lists at the canonical path
+    self_dep = next(d for d in man["dependencies"] if d["id"] == "h8-dependency-manifest")
+    assert self_dep["path"] == R.CANONICAL_MANIFEST_REL

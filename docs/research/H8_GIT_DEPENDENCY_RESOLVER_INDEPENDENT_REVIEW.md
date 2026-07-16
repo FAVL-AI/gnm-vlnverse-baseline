@@ -284,3 +284,23 @@ fail-closed detection, deterministic digest and (path-based) provider integratio
 Level-3 runtime validity, trusted time, signatures, revocation, dataset/model validity, or capture
 authorisation. **This is not Level 3.** Levels 3–5 unproven; real hospital footage & trajectory collection
 remains blocked.
+
+---
+
+## G1R Remediation Disposition (appended 2026-07-16)
+
+The original review above is preserved unchanged. The bounded remediation gate **G1R — Harden H8 Git
+resolver trust boundary** dispositions the four findings as follows (full detail in
+`H8_GIT_DEPENDENCY_RESOLVER_REMEDIATION.md`). This disposition is the implementer's account and is
+subject to a **focused independent G1R re-review** before G2.
+
+| Finding | Severity | Disposition | Control |
+| --- | --- | --- | --- |
+| `H8-G1REV-F-001` | Medium | **PARTIALLY CLOSED — TRUSTED IN-PROCESS CONSTRUCTION** | In-process authenticity marker (`REPORT_UNAUTHENTIC`) rejects plain caller-forged dicts; primary control is `trusted_provider_tree_state`, which never accepts a caller report. Cryptographic authentication → G2 (`H8-C-039`). |
+| `H8-G1REV-F-002` | Medium | **CLOSED** | `resolve_canonical` enforces the ONE canonical tracked manifest, self-listing, mandatory-id set, and resolves the manifest file itself. No caller-selected manifest is honoured. |
+| `H8-G1REV-F-003` | Low | **MITIGATED WITH DOCUMENTED LIMITATIONS** | Config pinned on every invocation + replace-refs/alternates rejection; a test proves `core.fileMode=false` no longer masks a chmod. Not an exhaustive proof of no config influence (`H8-C-040`). |
+| `H8-G1REV-F-004` | Low | **OPEN — DEFERRED TO G2 CRYPTOGRAPHIC ORIGIN ATTESTATION** | Not closable by ordinary Git inspection; explicitly NOT closed via remote-URL comparison (`H8-C-041`). |
+
+**Still true after G1R:** this is not Level 3; trusted time, signatures, revocation, dataset/model
+validity and capture authorisation remain out of scope. Levels 3–5 unproven; real hospital footage &
+trajectory collection remains blocked.

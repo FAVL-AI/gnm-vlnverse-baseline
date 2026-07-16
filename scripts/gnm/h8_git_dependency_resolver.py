@@ -72,6 +72,13 @@ REPORT_REPO_MISMATCH = "REPORT_REPO_MISMATCH"
 REPORT_HEAD_MISMATCH = "REPORT_HEAD_MISMATCH"
 REPORT_CLOSURE_DIGEST_MISMATCH = "REPORT_CLOSURE_DIGEST_MISMATCH"
 REPORT_STALE = "REPORT_STALE"
+# G1R remediation (H8-G1REV-F-001/-F-002/-F-003)
+REPORT_UNAUTHENTIC = "REPORT_UNAUTHENTIC"                 # ordinary caller-forged report (no authenticity marker)
+MANIFEST_NOT_CANONICAL = "MANIFEST_NOT_CANONICAL"        # protected mode selected a non-canonical manifest
+MANIFEST_INCOMPLETE = "MANIFEST_INCOMPLETE"              # a machine-enforced mandatory dependency id is absent
+GIT_CONFIG_UNSUPPORTED = "GIT_CONFIG_UNSUPPORTED"        # security-relevant config in an unsupported state
+GIT_REPLACE_OBJECTS = "GIT_REPLACE_OBJECTS"             # refs/replace present — object identity can be forged
+GIT_ALTERNATE_OBJECTS = "GIT_ALTERNATE_OBJECTS"        # unapproved alternate object database present
 
 REASON_CODES = frozenset({
     ACCEPTED, GIT_REPOSITORY_NOT_FOUND, GIT_REPOSITORY_MISMATCH, GIT_COMMAND_FAILED, GIT_COMMAND_TIMEOUT,
@@ -83,7 +90,36 @@ REASON_CODES = frozenset({
     DEPENDENCY_SKIP_WORKTREE, DEPENDENCY_ASSUME_UNCHANGED, DEPENDENCY_DIGEST_FAILED,
     DEPENDENCY_REQUIRED_UNRESOLVED, RESOLVER_UNAVAILABLE, RESOLVER_FIXTURE_IN_PROTECTED,
     REPORT_REPO_MISMATCH, REPORT_HEAD_MISMATCH, REPORT_CLOSURE_DIGEST_MISMATCH, REPORT_STALE,
+    REPORT_UNAUTHENTIC, MANIFEST_NOT_CANONICAL, MANIFEST_INCOMPLETE, GIT_CONFIG_UNSUPPORTED,
+    GIT_REPLACE_OBJECTS, GIT_ALTERNATE_OBJECTS,
 })
+
+# ── G1R: canonical manifest + mandatory dependency set + authenticity marker ────────
+# The ONE repository-tracked manifest that protected provider modes may use (H8-G1REV-F-002). Protected
+# modes never accept a caller-selected manifest path or an in-memory manifest dict.
+CANONICAL_MANIFEST_REL = "configs/gnm/h8_dependency_manifest.json"
+
+# Machine-enforced mandatory dependency IDs (H8-G1REV-F-002). A canonical manifest that omits any of these
+# is rejected MANIFEST_INCOMPLETE — a caller cannot silently drop a known decision-critical dependency.
+# NOTE: future decision-critical dependencies must be added here when introduced.
+REQUIRED_DEPENDENCY_IDS = frozenset({
+    "h8-dataset-config", "h8-evidence-schema", "h8-evidence-provider", "h8-recorded-mode",
+    "h8-drive-validate", "h8-scene-usda", "h8-evidence-schema-json", "h8-resolver",
+    "h8-dependency-manifest", "h8-manifest-schema",
+})
+
+# Deterministic security-relevant Git config overrides applied to EVERY protected git invocation so that
+# repository-local configuration (H8-G1REV-F-003) cannot mask mode/symlink/case/EOL differences or redirect
+# object identity. `--no-replace-objects` neutralises refs/replace substitution at read time.
+_GIT_SAFE_OVERRIDES = ("-c", "core.fileMode=true", "-c", "core.symlinks=true", "-c",
+                       "core.ignorecase=false", "-c", "core.autocrlf=false", "--no-replace-objects")
+
+# In-process authenticity marker (H8-G1REV-F-001). The genuine resolver stamps this on every report it
+# produces; `report_binding_ok` requires it, so an ORDINARY caller-forged dict (no marker) is rejected.
+# This is NOT cryptographic: code with module access could copy the constant — cross-process/persisted
+# authentication is deferred to G2 signing. The primary control is `trusted_provider_tree_state`, which
+# NEVER accepts a caller report and re-resolves current state in-process.
+_REPORT_AUTHENTICITY = "h8-resolver-authentic/1.0.0"
 # Reserved: `REPORT_STALE` is reserved for a future dedicated time-based staleness path that requires the
 # (not-yet-built) trusted clock; stale reports are currently rejected via REPORT_CLOSURE_DIGEST_MISMATCH
 # (a content-bound staleness check). Reserved codes are excluded from active-coverage accounting.
@@ -110,9 +146,17 @@ class SubprocessGitRunner:
     def run(self, repo_root, args, *, check=True):
         if not isinstance(args, (list, tuple)) or any(not isinstance(a, str) for a in args):
             raise GitError(GIT_COMMAND_FAILED, "git args must be a list of strings (no shell)")
-        cmd = [self.git_bin, "-C", str(repo_root), *args]
+        # G1R (H8-G1REV-F-003): pin security-relevant config on every invocation and neutralise
+        # refs/replace so repository-local settings cannot mask mode/symlink/case/EOL differences or
+        # redirect object identity. Overrides precede the subcommand as required by git's option grammar.
+        cmd = [self.git_bin, "-C", str(repo_root), *_GIT_SAFE_OVERRIDES, *args]
+        # Force a deterministic C locale so porcelain/plumbing text is machine-stable across hosts.
+        env = dict(os.environ)
+        env["LC_ALL"] = "C"
+        env["LANG"] = "C"
         try:
-            p = subprocess.run(cmd, capture_output=True, timeout=self.timeout_s, check=False)  # noqa: S603
+            p = subprocess.run(cmd, capture_output=True, timeout=self.timeout_s, check=False,  # noqa: S603
+                               env=env)
         except subprocess.TimeoutExpired as e:
             raise GitError(GIT_COMMAND_TIMEOUT, f"git timed out after {self.timeout_s}s: {args}") from e
         except (OSError, ValueError) as e:
@@ -502,6 +546,10 @@ class GitDependencyResolver:
             "resolver_id": self.resolver_id, "resolver_version": RESOLVER_VERSION,
             "dependency_policy_version": DEPENDENCY_POLICY_VERSION,
             "generated_at": gen_at, "clock_trust": clock_trust,
+            # G1R (H8-G1REV-F-001): in-process authenticity marker stamped by the genuine resolver. Every
+            # return path spreads **base, so both accepted and rejected reports carry it; report_binding_ok
+            # requires it, so an ordinary caller-forged dict (approved id, no marker) is rejected.
+            "authenticity": _REPORT_AUTHENTICITY,
         }
         try:
             manifest = self.load_dependency_manifest(manifest)
@@ -581,6 +629,93 @@ class GitDependencyResolver:
             "failures": sorted({r["reason_code"] for r in mandatory_failures}),
         }
 
+    # -- G1R: security-relevant Git state inspection (H8-G1REV-F-003) ----------------
+    def inspect_git_config(self):
+        """Explicitly inspect security-relevant Git state that could redirect object identity. The config
+        values fileMode/symlinks/ignorecase/autocrlf are PINNED on EVERY invocation via _GIT_SAFE_OVERRIDES;
+        here we additionally REJECT a repository that carries replace refs or an alternate object database,
+        because their mere presence is an object-identity substitution surface even when
+        `--no-replace-objects` bypasses replacement at read time. Returns (ok, code, detail)."""
+        # (1) replace refs (refs/replace/*) — object substitution surface
+        try:
+            r = self.git.run(self.repo_root,
+                             ["for-each-ref", "--format=%(refname)", "refs/replace/"], check=False)
+        except GitError as e:
+            return (False, GIT_COMMAND_TIMEOUT if e.code == GIT_COMMAND_TIMEOUT else GIT_COMMAND_FAILED,
+                    e.detail)
+        if r["out"].strip():
+            return False, GIT_REPLACE_OBJECTS, "refs/replace present (object substitution surface)"
+        # (2) alternate object databases — object source outside this repository
+        try:
+            gp = self.git.run(self.repo_root, ["rev-parse", "--git-path", "objects/info/alternates"])
+        except GitError as e:
+            return (False, GIT_COMMAND_TIMEOUT if e.code == GIT_COMMAND_TIMEOUT else GIT_COMMAND_FAILED,
+                    e.detail)
+        alt_rel = gp["out"].decode("utf-8", "replace").strip()
+        alt_path = alt_rel if os.path.isabs(alt_rel) else os.path.join(self.repo_root, alt_rel)
+        try:
+            if self.fs.lexists(alt_path):
+                content = self.fs.read_bytes(alt_path)
+                if content.strip():
+                    return False, GIT_ALTERNATE_OBJECTS, "alternate object database configured"
+        except OSError as e:
+            return False, GIT_ALTERNATE_OBJECTS, f"alternates unreadable — failing closed: {e}"
+        return True, ACCEPTED, "no replace refs or alternate object DBs"
+
+    # -- G1R: canonical-manifest enforcement (H8-G1REV-F-002) -----------------------
+    def _canonical_reject(self, code, detail, manifest=None):
+        n = len(manifest.get("dependencies", [])) if isinstance(manifest, dict) else 0
+        return {
+            "resolver_id": self.resolver_id, "resolver_version": RESOLVER_VERSION,
+            "dependency_policy_version": DEPENDENCY_POLICY_VERSION,
+            "generated_at": None, "clock_trust": "untrusted", "authenticity": _REPORT_AUTHENTICITY,
+            "overall_accepted": False, "reason_code": code, "explanation": detail,
+            "repository": None, "head_commit": None, "manifest_digest": None,
+            "dependency_count": n, "accepted_count": 0, "rejected_count": 0, "unresolved_count": n,
+            "results": [], "closure_digest": None, "failures": [code],
+            "canonical_manifest": CANONICAL_MANIFEST_REL,
+        }
+
+    def resolve_canonical(self, *, expected_repository=None):
+        """Resolve the ONE repository-tracked canonical manifest. Protected callers use THIS — never a
+        caller-selected manifest path or an in-memory manifest dict. Enforces, in order: security-relevant
+        Git state clean; the canonical path is the only manifest source; the manifest self-lists AT the
+        canonical path; the mandatory dependency-id set is present (a caller cannot silently drop a known
+        decision-critical dependency); then delegates to build_resolution_report so the canonical manifest
+        FILE itself is resolved (tracked + unmodified + bound to HEAD). Any violation fails closed."""
+        cfg_ok, cfg_code, cfg_why = self.inspect_git_config()
+        if not cfg_ok:
+            return self._canonical_reject(cfg_code, f"git state rejected: {cfg_why}")
+        canonical_path = os.path.join(self.repo_root, CANONICAL_MANIFEST_REL)
+        try:
+            manifest = self.load_dependency_manifest(canonical_path)
+        except GitError as e:
+            return self._canonical_reject(e.code, f"canonical manifest: {e.detail}")
+        by_id = {d.get("id"): d for d in manifest.get("dependencies", [])}
+        # the manifest must describe ITSELF at the canonical path (defeats a substituted manifest body)
+        self_dep = by_id.get("h8-dependency-manifest")
+        if not self_dep or self_dep.get("path") != CANONICAL_MANIFEST_REL:
+            return self._canonical_reject(
+                MANIFEST_NOT_CANONICAL,
+                f"manifest does not self-list at {CANONICAL_MANIFEST_REL!r}", manifest)
+        # mandatory dependency-id set present
+        missing = sorted(REQUIRED_DEPENDENCY_IDS - set(by_id))
+        if missing:
+            return self._canonical_reject(
+                MANIFEST_INCOMPLETE, f"canonical manifest missing mandatory ids: {missing}", manifest)
+        # delegate: resolves the canonical manifest FILE + the whole closure, bound to HEAD
+        report = self.build_resolution_report(canonical_path, expected_repository=expected_repository)
+        report["canonical_manifest"] = CANONICAL_MANIFEST_REL
+        # defence in depth: the manifest-self dependency must itself have RESOLVED clean
+        self_res = next((r for r in report.get("results", [])
+                         if r.get("dependency_id") == "h8-dependency-manifest"), None)
+        if report.get("overall_accepted") and (not self_res or not self_res.get("accepted")):
+            report["overall_accepted"] = False
+            report["reason_code"] = MANIFEST_NOT_CANONICAL
+            report["explanation"] = "canonical manifest file did not self-verify"
+            report["failures"] = sorted({*report.get("failures", []), MANIFEST_NOT_CANONICAL})
+        return report
+
 
 # ── provider integration boundary (§21) ─────────────────────────────────────────────
 def report_binding_ok(report, *, expected_repo=None, expected_head=None, expected_closure_digest=None):
@@ -589,6 +724,11 @@ def report_binding_ok(report, *, expected_repo=None, expected_head=None, expecte
     protected use; stale/mismatched reports fail closed."""
     if not isinstance(report, dict):
         return False, RESOLVER_UNAVAILABLE
+    # G1R (H8-G1REV-F-001): an ordinary caller-forged dict presenting an approved resolver_id but lacking
+    # the in-process authenticity marker is rejected before any acceptance is honoured. This is an
+    # in-process control (module-access forgery remains a documented residual → G2 cryptographic signing).
+    if report.get("authenticity") != _REPORT_AUTHENTICITY:
+        return False, REPORT_UNAUTHENTIC
     if report.get("resolver_id") not in APPROVED_RESOLVER_IDS:
         return False, RESOLVER_FIXTURE_IN_PROTECTED
     if not report.get("overall_accepted"):
@@ -630,5 +770,46 @@ def provider_tree_state(resolver, manifest, *, mode="preflight", expected_head=N
             "resolution": {"reason_code": report.get("reason_code"),
                            "closure_digest": report.get("closure_digest"),
                            "failures": report.get("failures")},
+        }
+    return _ts
+
+
+def trusted_provider_tree_state(repo_root, *, mode="preflight", expected_head=None,
+                                expected_closure_digest=None, git=None, fs=None):
+    """TRUSTED construction path for protected provider modes (H8-G1REV-F-001/-F-002).
+
+    Constructs the genuine resolver IN-PROCESS and resolves the ONE canonical repository-tracked manifest
+    on every call. There is deliberately NO injection surface for a caller-supplied resolver, resolution
+    report, manifest object/path, or assume-clean flag — a caller cannot substitute a fabricated
+    resolution or select a reduced manifest. Fail closed (`dependency_dirty=True`) on any
+    non-clean/unavailable/mismatch condition. Cannot authorise capture; a clean result permits ONLY
+    non-authorising preflight document generation.
+
+    `git`/`fs` are a DOCUMENTED, TEST-ONLY seam so fixture tests can drive this path against a temporary
+    repository. They carry no acceptance authority (the resolver still fails closed on any dirty/missing/
+    substituted dependency) and are never supplied by the real provider construction path, which calls
+    `trusted_provider_tree_state(repo_root)` with defaults. Cross-process authentication of a low-level
+    Git runner is out of scope here and is a documented residual (→ G2)."""
+    if mode not in ("preflight", "production"):
+        raise ValueError(f"unsupported protected mode {mode!r}")
+
+    def _ts():
+        try:
+            resolver = GitDependencyResolver(repo_root, git=git, fs=fs)
+            report = resolver.resolve_canonical()
+        except Exception as e:  # noqa: BLE001 - any resolver crash fails closed
+            return {"commit": "unknown", "dependency_dirty": True, "resolution_digest": None,
+                    "resolution": {"reason_code": RESOLVER_UNAVAILABLE, "detail": str(e)}}
+        ok, code = report_binding_ok(report, expected_head=expected_head,
+                                     expected_closure_digest=expected_closure_digest)
+        return {
+            "commit": report.get("head_commit") or "unknown",
+            "dependency_dirty": not ok,
+            "resolution_digest": report.get("closure_digest"),
+            "resolution_reason": code,
+            "resolution": {"reason_code": report.get("reason_code"),
+                           "closure_digest": report.get("closure_digest"),
+                           "failures": report.get("failures"),
+                           "canonical_manifest": report.get("canonical_manifest")},
         }
     return _ts
