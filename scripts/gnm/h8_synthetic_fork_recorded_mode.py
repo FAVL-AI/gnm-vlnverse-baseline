@@ -557,6 +557,17 @@ def dataset_dry_run_checks(cfg: dict) -> dict:
     No Isaac, no capture, no images."""
     instances, by_split, frames = _dataset_split_layout(cfg)
     valid_plan = build_dataset_plan(cfg)
+    # H8-REV-F-003: an empty plan (no instances) has no cross-split pair to audit. Reject it
+    # deterministically and gracefully here — never raise across this public validator boundary — so
+    # the direct call agrees with validate_dataset_capture_config, which already fails an empty plan
+    # closed. This guard only fires for an empty plan; a well-formed plan is unaffected.
+    if not valid_plan:
+        empty_check = [{"n": 0, "name": "non_empty_plan", "pass": False,
+                        "detail": "no planned instances — an empty plan cannot be validated"}]
+        return {"checks": empty_check, "n_pass": 0, "n_total": len(empty_check), "all_pass": False,
+                "empty_plan": True, "valid_audit": None, "injected_leakage": [],
+                "requirement_injection": [], "instances": instances,
+                "by_split": {k: len(v) for k, v in by_split.items()}, "frames_per_split": frames}
     valid_audit = audit_examples(valid_plan)
     injected = dataset_injected_leakage_cases(valid_plan)
     req_inject = dataset_requirement_injection_cases(cfg)
@@ -660,6 +671,10 @@ def write_dataset_dry_run_artifacts(cfg_path, out_dir) -> tuple:
     CONFIG/SCHEMA/AUDIT ONLY — no Isaac, no capture, no images, no datasets. Returns (all_pass, paths)."""
     cfg = load_dataset_config(cfg_path)
     res = dataset_dry_run_checks(cfg)
+    if res.get("empty_plan"):
+        # H8-REV-F-003: refuse to emit ANY artifact for an empty plan (fail closed, create nothing).
+        # The CLI wraps this in a try/except that returns 2, preserving the prior no-output behaviour.
+        raise ValueError("empty plan — refusing to emit dataset dry-run artifacts")
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     overall = "PASS" if res["all_pass"] else "FAIL"

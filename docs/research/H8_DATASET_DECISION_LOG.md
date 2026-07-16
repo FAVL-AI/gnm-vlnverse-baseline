@@ -247,3 +247,93 @@ Status legend: **Proposed / Accepted / Superseded / Rejected.**
 | Reversibility | N/A (process rule). |
 | Remaining risk | Lint diagnostics unknown until the canonical env runs Ruff. |
 | Status | **Accepted** |
+
+### H8-DCP-017 — Versioned fail-closed evidence envelope (unknown-field + downgrade protection)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | The capture-path gate consumed a provisional 4-field evidence record (`passed`/`instance_id`/`scene`/`stale`). The schema-design gate needs a production-shaped contract that cannot be silently reused across instances, scenes, routes, configs or time windows. |
+| Decision | Define `EvidenceEnvelope` v`h8-evidence/1.0.0` with 14 required top-level sections (`schema_version`, `evidence_id`, `evidence_type`, `status`, `subject`, `context`, `producer`, `observation_time`, `issue_time`, `validity_window`, `integrity`, `provenance`, `revocation`, `payload`). The validator **rejects unknown top-level fields** (strict) and **rejects any `schema_version` not in the supported set** (no downgrade). Unsupported/malformed → fail closed. |
+| Alternatives considered | (a) Extend the 4-field record — insufficient for identity/freshness/revocation/integrity; (b) permissive unknown-field handling — enables silent contract drift and downgrade attacks. |
+| Reason | A strict, versioned envelope makes contract drift and version downgrade detectable and deterministic. |
+| Evidence | `scripts/gnm/h8_evidence_schema.py` (`_ENVELOPE_KEYS`, `SUPPORTED_SCHEMA_VERSIONS`); `docs/research/schemas/h8_evidence_envelope.schema.json` (`additionalProperties:false`); tests 11, 22, `test_extra_schema_file_matches_validator_contract`. |
+| Safety effect | Unknown/extra fields and unsupported versions cannot pass; the schema file and the validator are asserted mutually consistent. |
+| Reversibility | Reversible (design only; no provider). |
+| Remaining risk | A real signed-envelope format is deferred (`H8-C-005`); this is schema-level only. |
+| Status | **Accepted** |
+
+### H8-DCP-018 — Identity binding to one instance, with the CL_BOUND_XY watchdog bound in-subject
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Evidence for one instance/scene/route/config must not authorise another (cross-substitution threat). |
+| Decision | `subject` binds `dataset_plan_id`, `instance_id`, `split`, `scene_id`, `scene_digest`, `route_id`, `route_plan_digest`, `config_digest`, `coordinate_frame`, and `cl_bound_xy` (plus optional `start_pose`/`goal_ref`/`sim_context`). The validator compares each against a caller-supplied `expected` binding; a mismatch fails closed with a specific code (`INSTANCE_/SCENE_/ROUTE_/CONFIG_/FRAME_/BOUND_MISMATCH`). `subject.cl_bound_xy` **must equal 6.0** (the read-only watchdog) independently of `expected`. |
+| Alternatives considered | A single broad scene-level record authorising many instances — explicitly disallowed unless a reuse policy is separately reviewed. |
+| Reason | Per-instance binding is the core defence against silent reuse; binding the watchdog value inside the evidence ties safety scope to the evidence itself. |
+| Evidence | `_SUBJECT_COMMON`, `_BINDING_REASON`, step-7 bound check; tests 13–18. |
+| Safety effect | Cross-instance/scene/route/config substitution and a wrong spatial bound all fail closed. |
+| Reversibility | Reversible. |
+| Remaining risk | Digests are trusted as supplied; a real producer must compute them truthfully (`H8-C-005`). |
+| Status | **Accepted** |
+
+### H8-DCP-019 — Explicit validity-window freshness + revocation (supersedes the stale marker)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | `H8-DCP-015` deferred real freshness to this gate; the `stale:true` marker is not a production policy. |
+| Decision | Define freshness by `observation_time`, `issue_time` and a `validity_window` (`not_before`, `not_after`, `max_age_seconds`, `clock_source:"utc"`, `clock_skew_seconds`), all RFC 3339 **UTC, timezone-required**. Time is checked against an **injected `review_time`** (deterministic; no wall-clock). The validator rejects: naive/malformed timestamps, `not_after <= not_before`, `issue_time > not_after`, `observation_time > issue_time`, `review_time` outside the window (±skew), and observation older than `max_age_seconds`. Revocation is an explicit block (`revocation.revoked` or `status=="revoked"` → `EVIDENCE_REVOKED`), with `revoked_at`/`reason`/`authority`/`replacement`/`supersedes` fields. |
+| Alternatives considered | Keep the boolean stale marker (overclaims); read the system clock in the validator (non-deterministic, breaks reproducible tests). |
+| Reason | Explicit windows + injected review time give a deterministic, testable freshness policy without pretending a trusted clock exists yet. |
+| Evidence | `_parse_ts`, step-9 window checks, `revocation` handling; tests 8–10, 12, 20. |
+| Safety effect | Stale, replayed, future-dated, revoked and clock-ambiguous evidence all fail closed. |
+| Reversibility | Reversible. |
+| Remaining risk | A **trusted clock** and a **live revocation distribution** are not established (design only) — deferred to the provider/runtime gates. |
+| Status | **Accepted** |
+
+### H8-DCP-020 — Canonical-JSON digests + integrity/signature/fixture separation
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Tamper/forgery threats need deterministic content binding; unsigned test fixtures must never be mistaken for authenticated evidence. |
+| Decision | Canonicalisation `h8-canonical-json/1.0` = `json.dumps(sort_keys, separators=(",",":"), UTF-8, no-NaN)`. Bind three SHA-256 digests: `subject_digest`, `payload_digest`, `content_digest` (content computed with all derived integrity fields blanked). The validator recomputes and compares all three (`DIGEST_MISMATCH`). Signatures are **optional at schema level**: `verification_status ∈ {unsigned, unverified, verified}`; a caller may `require_signature`, then only `verified` passes (`SIGNATURE_UNVERIFIED`). Synthetic fixtures carry the `synthetic-test-fixture` producer sentinel and are rejected in `production_mode` (`FIXTURE_IN_PRODUCTION`). |
+| Alternatives considered | Describe unsigned fixtures as authenticated (false); embed raw images for integrity (bloats schema — replaced by `diagnostic_ref`). |
+| Reason | Deterministic digests detect tampering now; signature support is declared but honestly deferred; the fixture sentinel blocks accidental promotion. |
+| Evidence | `canonical_bytes`, `compute_digests`, `_digest_view`, step-8; tests 19, 30, `test_extra_signature_required_but_unverified_rejected`, `test_extra_fixture_rejected_in_production`. |
+| Safety effect | Payload/subject/content tampering, unverified signatures, and test-fixtures-in-production all fail closed. |
+| Reversibility | Reversible. |
+| Remaining risk | Real key management / signature verification is not implemented (`H8-C-005`); schema-level digest only. |
+| Status | **Accepted** |
+
+### H8-DCP-021 — Render+drive pairing must agree on all shared bindings
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | A capture instance needs BOTH render-valid and drive-valid evidence; a mismatched or half-present pair must not authorise capture. |
+| Decision | `validate_pair` requires both sides to individually pass, to share every identity binding (`dataset_plan_id`, `instance_id`, `scene_digest`, `route_plan_digest`, `config_digest`, `coordinate_frame`, `cl_bound_xy`), and to have **overlapping** validity windows; otherwise `PAIR_INCOMPLETE` / `PAIR_BINDING_MISMATCH` / `PAIR_WINDOW_DISJOINT`. No broad scene-level record may authorise unrelated instances. |
+| Alternatives considered | Accept a render record alone, or allow scene-level reuse without review. |
+| Reason | Capture prerequisites are jointly render+drive for the same instance; the pair check enforces that jointly. |
+| Evidence | `validate_pair`, `_PAIR_SHARED`; tests 3, 4, 5, `test_extra_pair_binding_mismatch_rejected`. |
+| Safety effect | Partial pairs and cross-bound pairs fail closed. |
+| Reversibility | Reversible. |
+| Remaining risk | Reuse policy for legitimately shared scene evidence is intentionally NOT designed here (future reviewed extension). |
+| Status | **Accepted** |
+
+### H8-DCP-022 — H8-REV-F-003 resolved by a graceful empty-plan guard
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | `H8-REV-F-003`: a direct `dataset_dry_run_checks` call on a no-instance config raised `IndexError` (empty plan → `_cross_split_pair([])`), even though both real boundaries already failed closed. |
+| Decision | Add a narrow early guard in `dataset_dry_run_checks` that returns `all_pass=False` + `empty_plan=True` (a `non_empty_plan` failed check) instead of raising, and a matching guard in `write_dataset_dry_run_artifacts` that refuses to emit for an empty plan. The guard fires **only** for an empty plan; a well-formed plan is unaffected. |
+| Alternatives considered | Defer again (leave the direct-call raise); guard inside `_cross_split_pair` (produces degenerate leakage cases, less clear). |
+| Reason | Cleanly separable, fires only on the empty-plan path, and makes the direct validator agree with `validate_dataset_capture_config`; no runtime scope added. |
+| Evidence | `dataset_dry_run_checks` guard + emitter guard; `test_29_empty_plan_graceful_and_fail_closed`; CLI empty-plan run returns 2 and creates nothing; recorded-mode suite 58/58; Level-1 evidence byte-identical. |
+| Safety effect | No uncaught exception escapes the public validator; empty plan rejected deterministically at every boundary with no output created. |
+| Reversibility | Reversible. |
+| Remaining risk | None identified; `H8-REV-F-003` moves to **Resolved**. |
+| Status | **Accepted** |

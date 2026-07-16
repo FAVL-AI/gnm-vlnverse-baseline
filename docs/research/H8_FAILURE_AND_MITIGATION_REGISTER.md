@@ -174,3 +174,62 @@ Status legend: **Open / Mitigated / Accepted / Closed.**
 | Regression protection | Canonical provenance table with full hashes in the gate record; `H8-DCP-013` mandates distinct baseline/emitter/evidence hashes. |
 | Residual risk | None for this attribution. Verdict: **A — `66fd81e` is correct.** |
 | Status | **Closed** (Verdict A; documentation hardened; no hash correction was required) |
+
+### H8-REV-F-003 — Empty-plan direct-call `IndexError` (raised in remediation, RESOLVED in the schema gate)
+
+| Field | Content |
+| --- | --- |
+| Stage | Schema-design gate (§21 optional hardening) |
+| Expected | A direct `dataset_dry_run_checks` call on a no-instance config rejects gracefully, matching `validate_dataset_capture_config`. |
+| Observed (before) | It raised `IndexError` (empty plan → `_cross_split_pair([])` → `recs[0]`); both real boundaries already failed closed (CLI rc 2, validator `ok=False`), so it was a robustness/consistency gap, not a safety hole. |
+| Root cause | No empty-plan guard before the leakage-injection cases. |
+| Corrective action | Narrow guards in `dataset_dry_run_checks` (return `all_pass=False` + `empty_plan=True`, no raise) and `write_dataset_dry_run_artifacts` (refuse to emit) — see `H8-DCP-022`. Fires only on the empty-plan path. |
+| Verification | `test_29_empty_plan_graceful_and_fail_closed`; CLI empty-plan run returns 2 and creates nothing; recorded-mode suite 58/58; Level-1 evidence byte-identical; valid-config dry-run still 25/25. |
+| Residual risk | None identified. |
+| Status | **Resolved** |
+
+## Schema-design-gate challenges (H8 Render/Drive Evidence Schema, 2026-07-16)
+
+### H8-C-008 — Freshness cannot be *proven* without a trusted clock
+
+- Risk: the schema defines validity windows and `max_age_seconds`, but a real deployment needs a trusted time source; a schema-valid fixture does not prove real freshness.
+- Mitigation: time is checked against an **injected** `review_time` (deterministic, test-scoped); `clock_source`/`clock_skew_seconds` are declared; the boundary statement records that a trusted clock is NOT established.
+- Verification: `_parse_ts` + step-9 checks; tests 9, 10, 12, 20; `H8-DCP-019`.
+- Status: **Open / Accepted for this gate** (trusted clock deferred to provider/runtime gates).
+
+### H8-C-009 — Signature and key management are deferred
+
+- Risk: integrity digests detect tampering but not forgery of producer identity without signatures.
+- Mitigation: schema carries `signature`/`signature_algorithm`/`key_id`/`verification_status`; a caller may `require_signature`; unsigned fixtures are clearly `unsigned` and rejected in production mode. No real signing/verification is implemented.
+- Verification: step-8 + `require_signature`; `test_extra_signature_required_but_unverified_rejected`; `H8-DCP-020`.
+- Status: **Open blocker** (real key management owned by the provider gate; overlaps `H8-C-005`).
+
+### H8-C-010 — Legitimate scene-evidence reuse is intentionally undesigned
+
+- Risk: some render evidence may legitimately apply to several instances of the same scene; the current pairing policy forbids cross-instance reuse entirely, which may be stricter than necessary.
+- Mitigation: default to the safe direction (no reuse) and flag any reuse policy as requiring a separate independent review.
+- Verification: `validate_pair` shared-binding equality; `H8-DCP-021`.
+- Status: **Open / Accepted** (deliberately conservative; reuse policy is future reviewed work).
+
+### H8-C-011 — Digest truthfulness depends on a real producer
+
+- Risk: the validator trusts the `scene_digest`/`route_plan_digest`/`config_digest` values as supplied; it verifies internal consistency, not that they reflect the real scene/route/config.
+- Mitigation: documented as a schema-level limitation; a real provider must compute digests over real artefacts (runtime/provider gate).
+- Verification: boundary statement; `H8-DCP-018`; `H8-C-005`.
+- Status: **Open blocker** (provider gate).
+
+### H8-C-012 — Schema-version compatibility / migration is unspecified
+
+- Risk: only `h8-evidence/1.0.0` is supported; a future revision needs an explicit migration/compat policy to avoid silent downgrade.
+- Mitigation: strict supported-set membership (`SUPPORTED_SCHEMA_VERSIONS`) fails closed on any other version now; a migration policy is a named future item.
+- Verification: test 11; `H8-DCP-017`.
+- Status: **Open / Accepted** (single-version by design this gate).
+
+### H8-C-013 — Ruff re-check for the schema gate
+
+| Field | Content |
+| --- | --- |
+| Expected | Run the canonical Ruff lint on the changed Python files (`h8_evidence_schema.py`, harness edit, tests). |
+| Observed | `python -m ruff` remains unavailable in base and `.venv`; the `Makefile` still has no lint target (unchanged from `H8-C-006`). |
+| Containment | No uncontrolled install performed; **no claim of Ruff success**. `python -m py_compile` passed on all three changed Python files (recorded separately; not a lint substitute). |
+| Status | **Open — Ruff unavailable** (see `H8-C-006`, `H8-DCP-016`; canonical `ruff check` required before capture promotion). |
