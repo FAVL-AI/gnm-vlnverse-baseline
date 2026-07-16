@@ -337,3 +337,93 @@ Status legend: **Proposed / Accepted / Superseded / Rejected.**
 | Reversibility | Reversible. |
 | Remaining risk | None identified; `H8-REV-F-003` moves to **Resolved**. |
 | Status | **Accepted** |
+
+### H8-DCP-023 — Document validity vs capture-gate satisfaction (`document_only`)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Preflight evidence is a well-formed evidence *document* that must NOT authorise capture. The schema status enum is `{valid, invalid, indeterminate, revoked}`; misusing `valid` for preflight would overclaim. |
+| Decision | Extend the schema validator with a versioned, tested `document_only` mode (envelope format unchanged, `schema_version` stays `h8-evidence/1.0.0`). `document_only=True` validates structure/binding/integrity/freshness/revocation but does NOT require `status=="valid"`; the default (`document_only=False`) is the capture gate and still requires `valid`. Revoked/unknown-status are rejected in both modes. |
+| Alternatives considered | (a) Set preflight `status=valid` — dishonest; (b) add a 5th status — a format change/version bump; (c) duplicate structural validation in the provider — DRY/divergence risk (`H8-C-002`). |
+| Reason | Cleanly separates "is this a well-formed evidence document" from "does it authorise capture" without altering truth semantics or the envelope format. |
+| Evidence | `validate_envelope(..., document_only=...)`; `preflight_satisfies_capture_gate`; provider tests 25, 26, `test_extra_document_only_extension`. |
+| Safety effect | Preflight documents can be validated and stored without ever satisfying the capture gate. |
+| Reversibility | Reversible. |
+| Remaining risk | None; the gate check remains the default, so no caller accidentally treats a document as capture authorisation. |
+| Status | **Accepted** |
+
+### H8-DCP-024 — Preflight uses `indeterminate`; a runtime observer is mandatory for `valid`
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | The provider must never fabricate runtime render/drive validity. |
+| Decision | Preflight evidence carries `status="indeterminate"`, `runtime_observed=false`, and an explicit `unobserved_runtime_checks` list. Producing `valid` render/drive status requires an authorised runtime observer; with none injected (this gate), the provider **blocks** (`PROVIDER_BLOCKED_RUNTIME_OBSERVER_MISSING`) and never falls back. |
+| Alternatives considered | Emit optimistic `valid` from structural checks — overclaims runtime facts. |
+| Reason | Runtime validity is a distinct, unobserved fact; the provider records only what it observed. |
+| Evidence | `emit_evidence` observer gate; tests 20, 21, 22, 23, 24. |
+| Safety effect | No runtime overclaim can leave the provider. |
+| Reversibility | Reversible. |
+| Remaining risk | A real runtime observer + review is required before any `valid` runtime evidence exists. |
+| Status | **Accepted** |
+
+### H8-DCP-025 — Real artefact digests; scene-file ≠ runtime-loaded-scene
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Evidence must bind to real committed artefacts, but a path/filename is not proof of loaded scene content. |
+| Decision | Compute real SHA-256 digests over the committed config bytes, the derived canonical plan, the committed scene `.usda` bytes (a **scene-file** digest), and a config-derived route representation. Do NOT claim Isaac loaded the scene, that the loaded scene matched the file, that assets resolved, or that rendering was correct. |
+| Alternatives considered | Treat the scene path as content proof — false. |
+| Reason | Distinguishes scene-reference/file identity (establishable now) from runtime-loaded-scene identity (future). |
+| Evidence | `default_digest`, `build_subject_binding`; tests 01–06; `H8-C-014`. |
+| Safety effect | No runtime scene claim is made from a file digest. |
+| Reversibility | Reversible. |
+| Remaining risk | Runtime-loaded-scene digest deferred to the runtime provider. |
+| Status | **Accepted** |
+
+### H8-DCP-026 — Dependency-scoped dirty-tree policy, dedicated namespace, atomic writes
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Evidence generation from a mutated dependency, into a shared location, or with partial writes, is unsafe. |
+| Decision | (a) A modified evidence-**dependency** artefact (config/scene/schema/provider) fails closed (`PROVIDER_DIRTY_TREE`); unrelated untracked files do not block. (b) Output goes only to the dedicated `assets/evidence/h8/preflight/` namespace, distinct from dry-run/dataset/model/benchmark outputs. (c) Writes are fully validated in memory, then temp-file + fsync + atomic rename; failed validation creates nothing. |
+| Alternatives considered | Global dirty check (too strict given many pre-existing untracked files); non-atomic write (risks partial evidence). |
+| Reason | Ties evidence to a clean dependency snapshot and guarantees no partial/ambiguous artefacts. |
+| Evidence | `_preflight_prechecks`, `AtomicFileSink`, `InMemorySink`; tests 16, 32, 33, 39. |
+| Safety effect | No evidence from a mutated dependency; no partial output; no collision with other output classes. |
+| Reversibility | Reversible. |
+| Remaining risk | Full atomic snapshotting across all artefacts deferred. |
+| Status | **Accepted** |
+
+### H8-DCP-027 — Deterministic evidence IDs + process-local replay/conflict control
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Evidence needs stable identity, idempotent regeneration, and conflict detection — without overclaiming distributed guarantees. |
+| Decision | Evidence id = `h8ev-<render|drive>-<slug>-<seq>` (`seq` from a digest of `kind:instance`). Regeneration from identical inputs is idempotent; the same id with **changed** content conflicts (`PROVIDER_OUTPUT_CONFLICT`); duplicate id in a bundle is rejected. Replay/conflict control is **process/sink-local**; no distributed replay protection is claimed. |
+| Alternatives considered | Random ids (non-idempotent); claim distributed protection (false without a shared ledger). |
+| Reason | Deterministic ids give idempotency + conflict detection now; the distributed claim is honestly deferred. |
+| Evidence | `_evidence_id`, sink conflict check; tests 30, 31; `H8-C-018`. |
+| Safety effect | Same-id-different-content and duplicate bundles fail closed. |
+| Reversibility | Reversible. |
+| Remaining risk | Distributed replay protection needs a shared registry (future). |
+| Status | **Accepted** |
+
+### H8-DCP-028 — Provider/backend separation; fixtures, clock and signatures bounded
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | The provider must not become a capture backend or overclaim authenticity/time. |
+| Decision | Production mode rejects fixture sentinels/producers and never falls back; the runtime observer, Isaac backend and capture are entirely separate future gates. The clock is injected and recorded as **untrusted/observational**; signatures are digest-only with `verification_status=unsigned`, and a required-but-absent signature fails closed (`PROVIDER_SIGNATURE_REQUIRED`). No production keys or secrets are committed. |
+| Alternatives considered | Bundle a runtime observer or signer now — out of scope and unreviewed. |
+| Reason | Keeps trust boundaries explicit and each future capability behind its own reviewed gate. |
+| Evidence | mode handling, `require_signature`, fixture-namespace guard; tests 17, 18, 19, 22, 34. |
+| Safety effect | No fixture-in-production, no trusted-clock/signature overclaim, no capture path. |
+| Reversibility | Reversible. |
+| Remaining risk | Trusted clock, key management, runtime observer and backend remain open, each owned by a later gate. |
+| Status | **Accepted** |

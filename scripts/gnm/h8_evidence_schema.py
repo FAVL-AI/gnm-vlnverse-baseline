@@ -195,11 +195,19 @@ def _ok(env):
 
 # ── the conformance validator (§18) ───────────────────────────────────────────────
 def validate_envelope(envelope, *, review_time, expected=None, seen_ids=None,
-                      require_signature=False, production_mode=False) -> dict:
+                      require_signature=False, production_mode=False, document_only=False) -> dict:
     """Pure, side-effect-free conformance check for ONE evidence envelope. Returns a structured result
     (§19). Fails closed: any structural, identity, freshness, revocation or integrity defect → accepted
     False with a stable reason code. `review_time` (RFC 3339) is INJECTED — no wall-clock is read.
-    `expected` is the caller's required identity binding; `seen_ids` detects duplicate evidence ids."""
+    `expected` is the caller's required identity binding; `seen_ids` detects duplicate evidence ids.
+
+    `document_only` separates two distinct questions (see H8-DCP-023):
+      * document_only=False (default, the CAPTURE GATE): the envelope must additionally carry
+        `status == "valid"` and, for drive evidence, a non-degraded result — i.e. it authorises capture.
+      * document_only=True (the DOCUMENT check): validate structure, identity binding, integrity,
+        freshness and revocation, but DO NOT require `status == "valid"`. A preflight `indeterminate`
+        envelope is a well-formed evidence *document* yet never satisfies the capture gate. Revoked and
+        unknown-status envelopes are still rejected in both modes."""
     # 0. presence
     if envelope is None:
         return _result(False, EVIDENCE_MISSING, "no evidence supplied", None, "envelope")
@@ -259,8 +267,8 @@ def validate_envelope(envelope, *, review_time, expected=None, seen_ids=None,
     if status == "revoked" or rev.get("revoked") is True:
         return _result(False, EVIDENCE_REVOKED, "evidence is revoked/superseded", envelope,
                        "revocation.revoked", "not revoked", "revoked")
-    if status != "valid":
-        return _result(False, STATUS_NOT_VALID, f"status {status!r} does not satisfy the gate",
+    if not document_only and status != "valid":
+        return _result(False, STATUS_NOT_VALID, f"status {status!r} does not satisfy the capture gate",
                        envelope, "status", "valid", status)
 
     # 6. subject identity binding present + typed
@@ -342,7 +350,7 @@ def validate_envelope(envelope, *, review_time, expected=None, seen_ids=None,
         if f not in payload:
             return _result(False, SCHEMA_MALFORMED, f"payload.{f} missing for {et}", envelope,
                            f"payload.{f}", "present", "absent")
-    if et == "drive_valid" and payload.get("degraded") is True:
+    if not document_only and et == "drive_valid" and payload.get("degraded") is True:
         return _result(False, STATUS_NOT_VALID, "drive payload degraded result is not valid", envelope,
                        "payload.degraded", False, True)
 
@@ -360,9 +368,11 @@ _PAIR_SHARED = ("dataset_plan_id", "instance_id", "scene_digest", "route_plan_di
 
 
 def validate_pair(render_env, drive_env, *, review_time, expected=None, seen_ids=None,
-                  require_signature=False, production_mode=False) -> dict:
+                  require_signature=False, production_mode=False, document_only=False) -> dict:
     """Validate a render+drive evidence PAIR (§14). Both must individually pass, share all identity
-    bindings, and have sufficiently overlapping validity windows. Fails closed on a missing side."""
+    bindings, and have sufficiently overlapping validity windows. Fails closed on a missing side.
+    `document_only` (H8-DCP-023) validates a preflight pair as a well-formed document pair WITHOUT
+    treating it as capture authorisation."""
     if render_env is None or drive_env is None:
         return _result(False, PAIR_INCOMPLETE, "render+drive pair incomplete", render_env or drive_env,
                        "pair", "both present", "one missing")
@@ -374,12 +384,14 @@ def validate_pair(render_env, drive_env, *, review_time, expected=None, seen_ids
                        (render_env.get("evidence_type"), drive_env.get("evidence_type")))
     ids = set(seen_ids or ())
     r = validate_envelope(render_env, review_time=review_time, expected=expected, seen_ids=ids,
-                          require_signature=require_signature, production_mode=production_mode)
+                          require_signature=require_signature, production_mode=production_mode,
+                          document_only=document_only)
     if not r["accepted"]:
         return r
     ids.add(render_env.get("evidence_id"))
     d = validate_envelope(drive_env, review_time=review_time, expected=expected, seen_ids=ids,
-                          require_signature=require_signature, production_mode=production_mode)
+                          require_signature=require_signature, production_mode=production_mode,
+                          document_only=document_only)
     if not d["accepted"]:
         return d
     rs, ds = render_env.get("subject", {}), drive_env.get("subject", {})

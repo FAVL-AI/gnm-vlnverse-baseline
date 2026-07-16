@@ -233,3 +233,59 @@ Status legend: **Open / Mitigated / Accepted / Closed.**
 | Observed | `python -m ruff` remains unavailable in base and `.venv`; the `Makefile` still has no lint target (unchanged from `H8-C-006`). |
 | Containment | No uncontrolled install performed; **no claim of Ruff success**. `python -m py_compile` passed on all three changed Python files (recorded separately; not a lint substitute). |
 | Status | **Open — Ruff unavailable** (see `H8-C-006`, `H8-DCP-016`; canonical `ruff check` required before capture promotion). |
+| Provider-gate re-check (2026-07-16) | Ruff re-checked again during the evidence-provider gate: `python -m ruff` still absent in base and `.venv`; `Makefile` still has no lint target. `H8-C-013` **continues** `H8-C-006` (same underlying limitation, re-observed per gate) — it does **not** replace it. Chain preserved: `H8-C-006 → H8-C-013 → provider-gate re-check`. `py_compile` passed on the provider, schema and test files (recorded separately; not a lint substitute). Status stays **Open**. |
+
+## Evidence-provider-gate challenges (H8 Non-Capturing Evidence Provider, 2026-07-16)
+
+### H8-C-014 — A scene-file digest is not a runtime-loaded-scene digest
+
+- Risk: binding to the committed `.usda` file digest could be mistaken for proof that Isaac loaded that scene correctly.
+- Mitigation: the provider computes only a **scene-file** digest and records `scene_loaded=false`, `runtime_observed=false`; the design doc lists loaded-scene identity as unobserved.
+- Verification: preflight payload; tests 04, 23; `H8-DCP-025`.
+- Status: **Open / Accepted** (runtime-loaded-scene digest owned by the runtime gate).
+
+### H8-C-015 — `coordinate_frame` is provider-declared, not read from config
+
+- Risk: the config declares no coordinate frame; the provider declares `synthetic_fork_world`, which is an assumption rather than an observed artefact fact.
+- Mitigation: documented explicitly; the same declared frame is bound consistently into subject + route and checked on validation.
+- Verification: `COORDINATE_FRAME`; design doc §6.
+- Status: **Open / Accepted** (a config-declared frame would remove the assumption in a future revision).
+
+### H8-C-016 — The route representation is config-derived structure, not a runtime-executed route
+
+- Risk: the route-plan digest binds a structural representation (start/goal/waypoints from `coord_offset`), not a driven route; drive feasibility/clearance are unobserved.
+- Mitigation: `degraded=true`, `runtime_observed=false`, `unobserved_runtime_checks` list; design doc §8.
+- Verification: preflight drive payload; tests 03, 24; `H8-DCP-025`.
+- Status: **Open / Accepted** (runtime drive validity owned by the runtime gate).
+
+### H8-C-017 — Local clock is untrusted (observational only)
+
+- Risk: preflight timestamps come from an injected/local clock with no trusted time source.
+- Mitigation: clock is injected; time recorded as observational; no trusted-clock guarantee claimed; a `PROVIDER_CLOCK_UNTRUSTED` code is reserved.
+- Verification: `H8-DCP-028`; design doc §9; overlaps `H8-C-008`.
+- Status: **Open blocker** (trusted clock owned by the runtime/provider-review gates).
+
+### H8-C-018 — Replay/conflict protection is process/sink-local
+
+- Risk: duplicate/replayed evidence is detected only within one process/sink, not across distributed producers.
+- Mitigation: deterministic ids + sink conflict map + `seen_ids`; no distributed guarantee is claimed.
+- Verification: tests 29, 30, 31; `H8-DCP-027`.
+- Status: **Open / Accepted** (distributed replay protection needs a shared registry).
+
+### H8-C-019 — Camera resolution/encoding are declared intent, not observed
+
+- Risk: the render payload carries `resolution`/`encoding` that are provider-declared, not read from a verified camera configuration.
+- Mitigation: marked `resolution_encoding_declared_not_observed=true` and `camera_config_declared_not_verified=true` in `preflight_observations`; `runtime_observed=false`.
+- Verification: render preflight payload; test 23.
+- Status: **Open / Accepted** (verified camera config owned by the runtime gate).
+
+### H8-P-001 — Evidence-ID regex mismatch (implementation refinement, resolved)
+
+| Field | Content |
+| --- | --- |
+| Stage | Provider implementation |
+| Observed | The first `emit_evidence` returned `PROVIDER_SCHEMA_REJECTED`: the evidence id embedded the full `evidence_type` (`render_valid`), whose underscore fails the schema id pattern `^h8ev-[a-z]+-…$`. |
+| Root cause | Used `evidence_type` verbatim in the id "type" segment. |
+| Corrective action | Use the short type slug (`render`/`drive`) in the id. |
+| Verification | `_evidence_id`; provider suite 41/41; smoke test produced `h8ev-render-sfork00-3234` / `h8ev-drive-sfork00-5487`. |
+| Status | **Resolved** |
