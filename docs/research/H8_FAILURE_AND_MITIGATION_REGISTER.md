@@ -289,3 +289,23 @@ Status legend: **Open / Mitigated / Accepted / Closed.**
 | Corrective action | Use the short type slug (`render`/`drive`) in the id. |
 | Verification | `_evidence_id`; provider suite 41/41; smoke test produced `h8ev-render-sfork00-3234` / `h8ev-drive-sfork00-5487`. |
 | Status | **Resolved** |
+
+## Provider independent-review findings — dispositions (trust-boundary remediation, 2026-07-16)
+
+Findings raised by the independent review (`docs/research/H8_EVIDENCE_PROVIDER_INDEPENDENT_REVIEW.md`) and
+their remediation-gate dispositions (`docs/research/H8_EVIDENCE_PROVIDER_REMEDIATION.md`). Original findings
+are preserved in the review report; nothing is erased.
+
+| Finding | Severity | Root cause | Disposition | Control (decision) |
+| --- | --- | --- | --- | --- |
+| `H8-PREV-F-001` | High | production trust = absence of a single fixture marker | **CLOSED** | positive producer-trust (deny-by-default) + 10-signal defence-in-depth (`H8-DCP-029/030/031`) |
+| `H8-PREV-F-002` | Medium | runtime observer was a truthiness check | **CLOSED** | typed observer capability contract (`H8-DCP-032`) |
+| `H8-PREV-F-003` | Medium | dirty-tree check opt-in when `tree_state` absent | **CLOSED** | mandatory fail-closed dirty-tree (`H8-DCP-033`) |
+| `H8-PREV-F-004` | Low | 4 unused/unreachable reason codes | **CLOSED (1 reserved)** | 3 wired+tested; `PROVIDER_MODE_INVALID` reserved (`H8-DCP-034`) |
+| `H8-PREV-F-005` | Low | docs overstated fixture-detection depth | **CLOSED** | implementation-doc §11 corrected to positive-trust wording |
+
+Reproduction before fix, corrective controls, adversarial tests, and verification (165 tests, dry-run
+25/25, Level-1 5/5) are recorded in the remediation report. Overall remediation verdict:
+**`PASS WITH DOCUMENTED LIMITATIONS`** — all findings CLOSED; a focused independent re-review is required
+before the backend gate. Real capture remains blocked; Levels 3–5 unproven. Ruff remains Open
+(`H8-C-006`/`H8-C-013`).

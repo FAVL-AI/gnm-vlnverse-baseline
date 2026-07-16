@@ -62,9 +62,13 @@ boundary helper `preflight_satisfies_capture_gate`.
   write to any non-`fixture` namespace.
 - **preflight** — reads real artefacts, computes real bindings/digests, emits `status="indeterminate"`
   non-runtime evidence; cannot assert runtime validity; no Isaac/capture.
-- **production** — rejects fixture sentinels; with no runtime observer, **blocks**
-  (`PROVIDER_BLOCKED_RUNTIME_OBSERVER_MISSING`); never creates `valid` render/drive evidence; never falls
-  back to fixture/preflight semantics.
+- **production** — with no runtime observer, **blocks** (`PROVIDER_BLOCKED_RUNTIME_OBSERVER_MISSING`); never
+  creates `valid` render/drive evidence; never falls back to fixture/preflight semantics.
+  > **Correction (H8-PREV-F-005, remediated 2026-07-16):** the original text claimed production "rejects
+  > fixture sentinels", which overstated a **single-field** `producer.component` check that a rename could
+  > bypass (`H8-PREV-F-001`). After remediation: **production acceptance requires a positively authorised
+  > producer and trust profile; fixture markers provide supplementary rejection signals but are not the sole
+  > trust boundary** (see `H8_EVIDENCE_PROVIDER_REMEDIATION.md`, `H8-DCP-029..031`).
 
 ## 5. Critical evidence-status boundary (§6)
 

@@ -304,3 +304,21 @@ provider review pass may the separately authorised Isaac backend / runtime-valid
 Progression: `schema validity → non-capturing provider validity → independent provider review → provider
 remediation → Isaac runtime backend validation → explicit capture authorisation → hospital footage &
 trajectory collection`.
+
+## 18. Remediation dispositions (appended after the trust-boundary remediation gate, 2026-07-16)
+
+The findings above are preserved verbatim. Their dispositions after the bounded remediation gate (see
+[`H8_EVIDENCE_PROVIDER_REMEDIATION.md`](H8_EVIDENCE_PROVIDER_REMEDIATION.md)):
+
+| Finding | Disposition | Control |
+|---|---|---|
+| `H8-PREV-F-001` (High) | **CLOSED** | Positive producer-trust policy (deny-by-default; default authorises no production producer) + 10-signal fixture defence-in-depth. Removing/renaming any fixture indicator no longer permits production acceptance. `H8-DCP-029/030/031`. |
+| `H8-PREV-F-002` (Medium) | **CLOSED** | Typed `validate_runtime_observer` capability contract; truthy/partial/unauthorised observers rejected (`PROVIDER_OBSERVER_INVALID`). `H8-DCP-032`. |
+| `H8-PREV-F-003` (Medium) | **CLOSED** | Mandatory fail-closed dirty-tree enforcement (no permissive default, no override). `H8-DCP-033`. |
+| `H8-PREV-F-004` (Low) | **CLOSED (reserved code documented)** | 3 codes wired reachable+tested; `PROVIDER_MODE_INVALID` reserved. `H8-DCP-034`. |
+| `H8-PREV-F-005` (Low) | **CLOSED** | Implementation-doc §11 corrected to the positive-trust wording. |
+
+**Post-remediation verdict re-statement:** the remediation gate returned `PASS WITH DOCUMENTED
+LIMITATIONS` (all five findings CLOSED). This does **not** substitute for the required **focused
+independent re-review**, which must independently confirm `H8-PREV-F-001` closed before the backend gate.
+Real capture remains blocked; Levels 3–5 unproven.

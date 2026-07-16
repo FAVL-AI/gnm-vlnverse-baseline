@@ -65,6 +65,7 @@ PROVIDER_OUTPUT_CONFLICT = "PROVIDER_OUTPUT_CONFLICT"
 PROVIDER_SIGNATURE_REQUIRED = "PROVIDER_SIGNATURE_REQUIRED"
 PROVIDER_CLOCK_UNTRUSTED = "PROVIDER_CLOCK_UNTRUSTED"
 PROVIDER_INSTANCE_UNKNOWN = "PROVIDER_INSTANCE_UNKNOWN"
+PROVIDER_OBSERVER_INVALID = "PROVIDER_OBSERVER_INVALID"   # typed observer contract (H8-PREV-F-002)
 PROVIDER_MODE_INVALID = "PROVIDER_MODE_INVALID"
 PROVIDER_INTERNAL_ERROR = "PROVIDER_INTERNAL_ERROR"
 
@@ -73,8 +74,45 @@ PROVIDER_REASON_CODES = frozenset({
     PROVIDER_FIXTURE_REJECTED, PROVIDER_ARTIFACT_MISSING, PROVIDER_ARTIFACT_DIGEST_FAILED,
     PROVIDER_DIRTY_TREE, PROVIDER_SCHEMA_REJECTED, PROVIDER_BINDING_MISMATCH, PROVIDER_OUTPUT_CONFLICT,
     PROVIDER_SIGNATURE_REQUIRED, PROVIDER_CLOCK_UNTRUSTED, PROVIDER_INSTANCE_UNKNOWN,
-    PROVIDER_MODE_INVALID, PROVIDER_INTERNAL_ERROR,
+    PROVIDER_OBSERVER_INVALID, PROVIDER_MODE_INVALID, PROVIDER_INTERNAL_ERROR,
 })
+# Active codes are triggerable by tests; reserved codes are defensive guards not counted as coverage
+# (H8-PREV-F-004 / H8-DCP-033). PROVIDER_MODE_INVALID is unreachable — the constructor rejects bad modes.
+PROVIDER_RESERVED_CODES = frozenset({PROVIDER_MODE_INVALID})
+PROVIDER_ACTIVE_CODES = PROVIDER_REASON_CODES - PROVIDER_RESERVED_CODES
+
+# ── runtime-observer capability contract (H8-PREV-F-002) ──────────────────────────
+# A runtime observer must satisfy an explicit typed capability contract AND be authorised by policy —
+# generic truthiness is NOT proof of capability. NO observer is authorised in this gate.
+_OBSERVER_REQUIRED_ATTRS = ("observer_id", "observer_version", "supported_evidence_types",
+                            "supported_schema_versions", "available")
+_OBSERVER_REQUIRED_METHODS = ("observe_render", "observe_drive")
+AUTHORISED_OBSERVER_IDS = frozenset()   # none authorised this gate (real observer is a future gate)
+
+
+def validate_runtime_observer(obj, *, evidence_type=None, schema_version=None) -> tuple:
+    """Return (ok, reason). Rejects None/truthy-non-observer/partial/unsupported/unauthorised observers.
+    In this gate AUTHORISED_OBSERVER_IDS is empty, so every observer fails closed."""
+    if obj is None:
+        return False, "no runtime observer"
+    for a in _OBSERVER_REQUIRED_ATTRS:
+        if not hasattr(obj, a):
+            return False, f"observer missing required attribute {a!r}"
+    for m in _OBSERVER_REQUIRED_METHODS:
+        if not callable(getattr(obj, m, None)):
+            return False, f"observer missing required method {m!r}"
+    if getattr(obj, "available", False) is not True:
+        return False, "observer not marked available"
+    ev = tuple(getattr(obj, "supported_evidence_types", ()) or ())
+    if evidence_type is not None and evidence_type not in ev:
+        return False, f"observer does not support evidence_type {evidence_type!r}"
+    sv = tuple(getattr(obj, "supported_schema_versions", ()) or ())
+    if schema_version is not None and schema_version not in sv:
+        return False, "observer does not support this schema version"
+    oid = getattr(obj, "observer_id", None)
+    if oid not in AUTHORISED_OBSERVER_IDS:
+        return False, f"observer {oid!r} not authorised by policy"
+    return True, "observer authorised"
 
 # runtime checks this provider CANNOT observe (recorded explicitly in every preflight envelope)
 _RENDER_UNOBSERVED = ("scene_loaded", "camera_present", "camera_transform_matches", "frame_nonempty",
@@ -204,12 +242,12 @@ class H8EvidenceProvider:
         }
 
     # -- bindings -------------------------------------------------------------------
-    def build_subject_binding(self, instance, *, config_bytes, scene_digest, route_digest):
+    def build_subject_binding(self, instance, *, config_digest, scene_digest, route_digest):
         return {
             "dataset_plan_id": DATASET_PLAN_ID, "instance_id": instance.get("id"),
             "split": instance.get("split"), "scene_id": SCENE_ID, "scene_digest": scene_digest,
             "route_id": f"{instance.get('id')}_N", "route_plan_digest": route_digest,
-            "config_digest": self.digest_fn(config_bytes), "cl_bound_xy": es.CL_BOUND_XY,
+            "config_digest": config_digest, "cl_bound_xy": es.CL_BOUND_XY,
             "coordinate_frame": COORDINATE_FRAME,
             "sim_context": {"simulator": "none-preflight", "version": "n/a"},
         }
@@ -301,11 +339,21 @@ class H8EvidenceProvider:
     def _preflight_prechecks(self):
         """Fail-closed prechecks common to preflight/production. Returns a provider_result on failure,
         else None."""
-        if self.tree_state:
+        # H8-PREV-F-003: cleanliness enforcement is MANDATORY for preflight/production — an absent,
+        # failing, or non-affirmatively-clean tree-state resolver fails closed (no permissive default,
+        # no allow_dirty override). `dependency_dirty` must be explicitly False to proceed.
+        if self.tree_state is None:
+            return _provider_result(PROVIDER_DIRTY_TREE,
+                                    reason="no tree-state resolver — repository cleanliness cannot be "
+                                           "verified; failing closed")
+        try:
             ts = self.tree_state()
-            if ts.get("dependency_dirty"):
-                return _provider_result(PROVIDER_DIRTY_TREE,
-                                        reason="an evidence-dependency artefact is modified")
+        except Exception as e:
+            return _provider_result(PROVIDER_DIRTY_TREE, reason=f"tree-state resolver failed: {e}")
+        if not isinstance(ts, dict) or ts.get("dependency_dirty") is not False:
+            return _provider_result(PROVIDER_DIRTY_TREE,
+                                    reason="evidence-dependency cleanliness not affirmatively verified "
+                                           "(dependency_dirty must be exactly False)")
         # every dependency artefact must be readable
         for rel in EVIDENCE_DEPENDENCY_PATHS:
             try:
@@ -324,15 +372,27 @@ class H8EvidenceProvider:
             if self.mode not in (MODE_PREFLIGHT, MODE_PRODUCTION):
                 return _provider_result(PROVIDER_MODE_INVALID, reason=self.mode)
 
-            # production/preflight must never fall back to fixtures or fabricate runtime validity
+            # H8-PREV-F-002: production/preflight must never fall back to fixtures or fabricate runtime
+            # validity. A runtime-valid request requires an observer that (a) is present, (b) satisfies
+            # the typed capability contract, and (c) is authorised by policy — generic truthiness is not
+            # accepted. No observer is authorised this gate, so every runtime-valid request fails closed.
             if want_runtime_valid or self.mode == MODE_PRODUCTION:
                 if self.runtime_observer is None:
                     return _provider_result(PROVIDER_BLOCKED_RUNTIME_OBSERVER_MISSING,
                                             reason="runtime-valid status requires an authorised runtime "
                                                    "observer, which is absent in this gate")
+                obs_ok, obs_why = validate_runtime_observer(self.runtime_observer)
+                # present but invalid/unauthorised → reject explicitly (never silently accept truthiness)
+                return _provider_result(PROVIDER_OBSERVER_INVALID, reason=obs_why)
             if self.require_signature:
                 return _provider_result(PROVIDER_SIGNATURE_REQUIRED,
                                         reason="signature required but no production signer is available")
+
+            # H8-PREV-F-004: an untrusted/malformed clock fails closed as PROVIDER_CLOCK_UNTRUSTED
+            try:
+                es._parse_ts(self.clock())
+            except Exception as e:
+                return _provider_result(PROVIDER_CLOCK_UNTRUSTED, reason=f"clock unusable: {e}")
 
             pre = self._preflight_prechecks()
             if pre is not None:
@@ -352,17 +412,22 @@ class H8EvidenceProvider:
             plan = self.load_plan(cfg)
             if not plan:
                 return _provider_result(PROVIDER_ARTIFACT_MISSING, reason="empty plan")
-            plan_digest = self.digest_fn(es.canonical_bytes(plan))
             try:
                 scene_bytes = self.reader(
                     "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda")
-                scene_digest = self.digest_fn(scene_bytes)
             except Exception as e:
                 return _provider_result(PROVIDER_ARTIFACT_MISSING, reason=f"scene: {e}")
             route_rep = self.build_route_representation(instance)
-            route_digest = self.digest_fn(es.canonical_bytes(route_rep))
+            # H8-PREV-F-004: a raising digest implementation fails closed as PROVIDER_ARTIFACT_DIGEST_FAILED
+            try:
+                plan_digest = self.digest_fn(es.canonical_bytes(plan))
+                scene_digest = self.digest_fn(scene_bytes)
+                route_digest = self.digest_fn(es.canonical_bytes(route_rep))
+                config_digest = self.digest_fn(cfg_bytes)
+            except Exception as e:
+                return _provider_result(PROVIDER_ARTIFACT_DIGEST_FAILED, reason=f"digest failed: {e}")
 
-            subject = self.build_subject_binding(instance, config_bytes=cfg_bytes,
+            subject = self.build_subject_binding(instance, config_digest=config_digest,
                                                  scene_digest=scene_digest, route_digest=route_digest)
             provenance = self.build_provenance(plan_digest=plan_digest)
             expected = {k: subject[k] for k in es._SUBJECT_COMMON}

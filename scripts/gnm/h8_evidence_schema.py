@@ -70,6 +70,7 @@ FIXTURE_IN_PRODUCTION = "FIXTURE_IN_PRODUCTION"
 PAIR_INCOMPLETE = "PAIR_INCOMPLETE"
 PAIR_BINDING_MISMATCH = "PAIR_BINDING_MISMATCH"
 PAIR_WINDOW_DISJOINT = "PAIR_WINDOW_DISJOINT"
+PRODUCER_NOT_AUTHORISED = "PRODUCER_NOT_AUTHORISED"   # positive production-trust rejection (H8-PREV-F-001)
 ACCEPTED = "ACCEPTED"
 
 REASON_CODES = frozenset({
@@ -77,8 +78,88 @@ REASON_CODES = frozenset({
     STATUS_NOT_VALID, EVIDENCE_EXPIRED, EVIDENCE_NOT_YET_VALID, EVIDENCE_REVOKED, INSTANCE_MISMATCH,
     SCENE_MISMATCH, ROUTE_MISMATCH, CONFIG_MISMATCH, FRAME_MISMATCH, BOUND_MISMATCH, DIGEST_MISMATCH,
     SIGNATURE_UNVERIFIED, VALIDITY_WINDOW_MISMATCH, DUPLICATE_EVIDENCE_ID, FIXTURE_IN_PRODUCTION,
-    PAIR_INCOMPLETE, PAIR_BINDING_MISMATCH, PAIR_WINDOW_DISJOINT, ACCEPTED,
+    PAIR_INCOMPLETE, PAIR_BINDING_MISMATCH, PAIR_WINDOW_DISJOINT, PRODUCER_NOT_AUTHORISED, ACCEPTED,
 })
+
+# ── production trust boundary (H8-PREV-F-001) ─────────────────────────────────────
+# Trust classes. Production acceptance requires a POSITIVELY authorised producer (external policy),
+# NOT merely the absence of a fixture marker. A producer can never self-declare a stronger class than
+# the registry grants (H8-DCP-029).
+TRUST_FIXTURE = "fixture"
+TRUST_PREFLIGHT = "preflight"
+TRUST_RUNTIME_CANDIDATE = "runtime_candidate"
+TRUST_RUNTIME_AUTHORISED = "runtime_authorised"
+TRUST_CLASSES = frozenset({TRUST_FIXTURE, TRUST_PREFLIGHT, TRUST_RUNTIME_CANDIDATE,
+                           TRUST_RUNTIME_AUTHORISED})
+
+# Repository-controlled, static producer registry (NO secrets, NO private keys). This gate authorises
+# NO runtime producer: production acceptance therefore fails closed for every current producer.
+DEFAULT_PRODUCER_POLICY = {
+    "policy_version": "h8-producer-trust/1.0.0",
+    "producers": {
+        "synthetic-test-fixture": {
+            "trust_class": TRUST_FIXTURE, "permitted_modes": ("fixture",),
+            "permitted_evidence_types": ("render_valid", "drive_valid"),
+            "permitted_schema_versions": (SCHEMA_VERSION,), "runtime_observer_allowed": False,
+            "signature_requirement": "none", "enabled": True},
+        "h8-evidence-provider": {
+            "trust_class": TRUST_PREFLIGHT, "permitted_modes": ("preflight",),
+            "permitted_evidence_types": ("render_valid", "drive_valid"),
+            "permitted_schema_versions": (SCHEMA_VERSION,), "runtime_observer_allowed": False,
+            "signature_requirement": "none", "enabled": True},
+    },
+    # producers permitted to satisfy the PRODUCTION capture gate — empty this gate (nothing authorised).
+    "production_trust_classes": (TRUST_RUNTIME_AUTHORISED,),
+}
+
+
+def _has_fixture_provenance(env: dict) -> bool:
+    """Defence-in-depth (H8-DCP-031): True if ANY residual fixture indicator survives, so that renaming
+    or removing one marker cannot launder a fixture into production."""
+    prod = env.get("producer", {}) or {}
+    prov = env.get("provenance", {}) or {}
+    payload = env.get("payload", {}) or {}
+    ig = env.get("integrity", {}) or {}
+    signals = [
+        prod.get("component") == FIXTURE_PRODUCER,
+        prod.get("method") == "synthetic",
+        prov.get("producer_component") == FIXTURE_PRODUCER,
+        str(prov.get("run_id", "")).startswith("synthetic-"),
+        str(prov.get("method_id", "")).startswith("synthetic-"),
+        prov.get("scene_source") == "synthetic",
+        prov.get("config_source") == "synthetic",
+        str(payload.get("diagnostic_ref", "")).startswith("synthetic://"),
+        str(prod.get("key_id", "") or "").startswith("fixture"),
+        str(ig.get("key_id", "") or "").startswith("fixture"),
+    ]
+    return any(signals)
+
+
+def check_production_trust(env: dict, policy: dict) -> tuple:
+    """Positive production-trust decision (H8-DCP-029/030). Returns (ok, reason_code, detail). A record is
+    production-acceptable ONLY if its producer is registered, enabled, in a production-permitted trust
+    class, and permitted for this mode/evidence-type/schema-version — AND carries no residual fixture
+    provenance. Unknown/incomplete → fail closed."""
+    if _has_fixture_provenance(env):
+        return False, FIXTURE_IN_PRODUCTION, "residual fixture provenance present"
+    reg = (policy or {}).get("producers", {})
+    pid = (env.get("producer", {}) or {}).get("component")
+    entry = reg.get(pid)
+    if entry is None:
+        return False, PRODUCER_NOT_AUTHORISED, f"producer {pid!r} not in trust registry"
+    if not entry.get("enabled", False):
+        return False, PRODUCER_NOT_AUTHORISED, f"producer {pid!r} disabled/revoked"
+    prod_classes = (policy or {}).get("production_trust_classes", ())
+    if entry.get("trust_class") not in prod_classes:
+        return False, PRODUCER_NOT_AUTHORISED, (f"trust_class {entry.get('trust_class')!r} not "
+                                                f"production-authorised")
+    if "production" not in entry.get("permitted_modes", ()):
+        return False, PRODUCER_NOT_AUTHORISED, "producer not permitted in production mode"
+    if env.get("schema_version") not in entry.get("permitted_schema_versions", ()):
+        return False, PRODUCER_NOT_AUTHORISED, "schema_version not permitted for producer"
+    if env.get("evidence_type") not in entry.get("permitted_evidence_types", ()):
+        return False, PRODUCER_NOT_AUTHORISED, "evidence_type not permitted for producer"
+    return True, ACCEPTED, "producer positively authorised for production"
 
 _EVIDENCE_ID_RE = re.compile(r"^h8ev-[a-z]+-[a-z0-9]{2,}-[0-9]{4,}$")
 _DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
@@ -195,7 +276,8 @@ def _ok(env):
 
 # ── the conformance validator (§18) ───────────────────────────────────────────────
 def validate_envelope(envelope, *, review_time, expected=None, seen_ids=None,
-                      require_signature=False, production_mode=False, document_only=False) -> dict:
+                      require_signature=False, production_mode=False, document_only=False,
+                      trust_policy=None) -> dict:
     """Pure, side-effect-free conformance check for ONE evidence envelope. Returns a structured result
     (§19). Fails closed: any structural, identity, freshness, revocation or integrity defect → accepted
     False with a stable reason code. `review_time` (RFC 3339) is INJECTED — no wall-clock is read.
@@ -252,11 +334,16 @@ def validate_envelope(envelope, *, review_time, expected=None, seen_ids=None,
         return _result(False, DUPLICATE_EVIDENCE_ID, f"evidence_id {ev_id!r} already seen", envelope,
                        "evidence_id", "unique", "duplicate")
 
-    # 4. fixture-in-production guard
+    # 4. production trust boundary (H8-PREV-F-001): POSITIVE producer authorisation, not mere absence of
+    #    a fixture marker. Fixture provenance (any residual marker) and unregistered/unauthorised
+    #    producers both fail closed. External policy decides — evidence cannot self-declare authorisation.
     prod = envelope.get("producer", {})
-    if production_mode and prod.get("component") == FIXTURE_PRODUCER:
-        return _result(False, FIXTURE_IN_PRODUCTION, "synthetic test fixture rejected in production",
-                       envelope, "producer.component", "real producer", FIXTURE_PRODUCER)
+    if production_mode:
+        ok, code, detail = check_production_trust(envelope, trust_policy or DEFAULT_PRODUCER_POLICY)
+        if not ok:
+            return _result(False, code, f"production trust denied: {detail}", envelope,
+                           "producer.component", "positively authorised production producer",
+                           prod.get("component"))
 
     # 5. status + revocation (both must clear before any acceptance)
     rev = envelope.get("revocation", {})
@@ -368,7 +455,8 @@ _PAIR_SHARED = ("dataset_plan_id", "instance_id", "scene_digest", "route_plan_di
 
 
 def validate_pair(render_env, drive_env, *, review_time, expected=None, seen_ids=None,
-                  require_signature=False, production_mode=False, document_only=False) -> dict:
+                  require_signature=False, production_mode=False, document_only=False,
+                  trust_policy=None) -> dict:
     """Validate a render+drive evidence PAIR (§14). Both must individually pass, share all identity
     bindings, and have sufficiently overlapping validity windows. Fails closed on a missing side.
     `document_only` (H8-DCP-023) validates a preflight pair as a well-formed document pair WITHOUT
@@ -385,13 +473,13 @@ def validate_pair(render_env, drive_env, *, review_time, expected=None, seen_ids
     ids = set(seen_ids or ())
     r = validate_envelope(render_env, review_time=review_time, expected=expected, seen_ids=ids,
                           require_signature=require_signature, production_mode=production_mode,
-                          document_only=document_only)
+                          document_only=document_only, trust_policy=trust_policy)
     if not r["accepted"]:
         return r
     ids.add(render_env.get("evidence_id"))
     d = validate_envelope(drive_env, review_time=review_time, expected=expected, seen_ids=ids,
                           require_signature=require_signature, production_mode=production_mode,
-                          document_only=document_only)
+                          document_only=document_only, trust_policy=trust_policy)
     if not d["accepted"]:
         return d
     rs, ds = render_env.get("subject", {}), drive_env.get("subject", {})

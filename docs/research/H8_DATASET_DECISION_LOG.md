@@ -427,3 +427,93 @@ Status legend: **Proposed / Accepted / Superseded / Rejected.**
 | Reversibility | Reversible. |
 | Remaining risk | Trusted clock, key management, runtime observer and backend remain open, each owned by a later gate. |
 | Status | **Accepted** |
+
+### H8-DCP-029 — Positive production trust (deny-by-default), not fixture-marker absence
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | `H8-PREV-F-001` (High): production acceptance depended on the ABSENCE of a single fixture marker (`producer.component`); renaming it laundered a fixture into production. |
+| Decision | Production acceptance is POSITIVE: `check_production_trust` accepts only a producer that is registered, enabled, in a production-permitted trust class, and permitted for this mode/evidence-type/schema-version. Unknown/incomplete → `PRODUCER_NOT_AUTHORISED` (fail closed). The default policy authorises NO production producer, so everything fails closed this gate. |
+| Alternatives considered | Extend the fixture blacklist (still a negative check; new fixture markers would reopen the hole). |
+| Reason | Deny-by-default with an explicit allow-list cannot be bypassed by removing/renaming fixture markers. |
+| Evidence | `check_production_trust`, `DEFAULT_PRODUCER_POLICY`; tests `test_f001_*`. |
+| Safety effect | Fixture-to-production promotion and unknown-producer acceptance both fail closed. |
+| Reversibility | Reversible. |
+| Remaining risk | A real production producer requires a separately reviewed registration + signatures (`H8-C-009`). |
+| Status | **Accepted** |
+
+### H8-DCP-030 — External trust policy over self-declared evidence trust
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Evidence must not be able to self-promote its trust class/mode/authorisation. |
+| Decision | Trust is decided by an EXTERNAL, repository-controlled `ProducerTrustPolicy` keyed by producer id; the validator never reads a `trust_class`/authorisation field from the envelope. Schema version is unchanged — no new envelope fields. |
+| Alternatives considered | An envelope `trust_class` field (self-declarable → forgeable). |
+| Reason | External policy removes the self-promotion attack surface entirely. |
+| Evidence | `test_f001_self_declared_trust_class_ignored`; policy read from `trust_policy` arg, not the envelope. |
+| Safety effect | Trust-class self-promotion is structurally impossible. |
+| Reversibility | Reversible. |
+| Remaining risk | Policy integrity relies on VCS review; a signed policy is future work. |
+| Status | **Accepted** |
+
+### H8-DCP-031 — Fixture indicators are defence-in-depth, not the primary trust boundary
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Fixture provenance must be caught even when individual markers are stripped. |
+| Decision | `_has_fixture_provenance` inspects 10 independent indicators (producer component/method, provenance producer_component/run_id/method_id/scene_source/config_source, payload diagnostic_ref scheme, producer/integrity key_id). ANY hit → `FIXTURE_IN_PRODUCTION`. This SUPPLEMENTS the positive trust decision; it is not the sole boundary. |
+| Alternatives considered | Rely on one sentinel (the original defect). |
+| Reason | Removing one marker leaves the others; combined with deny-by-default, laundering fails. |
+| Evidence | `test_f001_single_indicator_remaining_rejected`, `_renamed_/_removed_/_run_id_only_`. |
+| Safety effect | Single-marker stripping cannot promote a fixture. |
+| Reversibility | Reversible. |
+| Remaining risk | New fixture markers must be added to the detector as fixtures evolve. |
+| Status | **Accepted** |
+
+### H8-DCP-032 — Typed runtime-observer capability contract (presence ≠ capability)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | `H8-PREV-F-002` (Medium): the runtime-observer gate was a truthiness check; any truthy object bypassed it. |
+| Decision | `validate_runtime_observer` requires observer_id/version/supported_evidence_types/supported_schema_versions/`available is True`/callable observe_render+observe_drive AND an authorised observer_id (`AUTHORISED_OBSERVER_IDS` empty this gate). Invalid/partial/unauthorised → `PROVIDER_OBSERVER_INVALID`; None → `PROVIDER_BLOCKED_RUNTIME_OBSERVER_MISSING`. No Isaac observer implemented; stubs are test-only and unauthorised. |
+| Alternatives considered | Keep the `is None` check (fail-open to truthiness). |
+| Reason | Presence is not proof of capability; a typed contract + policy authorisation is required. |
+| Evidence | `test_f002_*`. |
+| Safety effect | Arbitrary/partial observers cannot enable runtime-valid emission (none is authorised anyway). |
+| Reversibility | Reversible. |
+| Remaining risk | The real observer interface is finalised at the runtime-validity gate. |
+| Status | **Accepted** |
+
+### H8-DCP-033 — Mandatory fail-closed dirty-tree enforcement
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | `H8-PREV-F-003` (Medium): dirty-tree enforcement was skipped when `tree_state` was not injected. |
+| Decision | Protected preflight/production generation fails closed when the tree-state resolver is absent, raises, is non-dict, or does not report `dependency_dirty is False`. No `allow_dirty` override, no permissive default. Unrelated untracked files do not block (the resolver scopes `dependency_dirty` to the dependency set). |
+| Alternatives considered | Opt-in check (the defect); a broad `allow_dirty=True` production flag (explicitly forbidden). |
+| Reason | Cleanliness is a safety precondition and must not be silently omittable. |
+| Evidence | `_preflight_prechecks`; `test_f003_*`. |
+| Safety effect | Evidence cannot be generated from an unverified working tree. |
+| Reversibility | Reversible. |
+| Remaining risk | Correct scoping of `dependency_dirty` is the caller's responsibility (documented). |
+| Status | **Accepted** |
+
+### H8-DCP-034 — Active vs reserved provider reason codes
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | `H8-PREV-F-004` (Low): four provider reason codes were unused/unreachable. |
+| Decision | `PROVIDER_ARTIFACT_DIGEST_FAILED`, `PROVIDER_CLOCK_UNTRUSTED`, `PROVIDER_SCHEMA_REJECTED` are wired reachable and tested; `PROVIDER_MODE_INVALID` is a RESERVED defensive code (`PROVIDER_RESERVED_CODES`) — the constructor rejects invalid modes, so its emit-branch is unreachable — and is excluded from active-coverage accounting. |
+| Alternatives considered | Remove all four (loses defensive/future codes). |
+| Reason | Active codes must all be triggerable; a small, explicitly-reserved set avoids false coverage claims. |
+| Evidence | `test_f004_*`; `PROVIDER_ACTIVE_CODES` / `PROVIDER_RESERVED_CODES`. |
+| Safety effect | Reason-code coverage is now honest; no silent dead taxonomy. |
+| Reversibility | Reversible. |
+| Remaining risk | None. |
+| Status | **Accepted** |
