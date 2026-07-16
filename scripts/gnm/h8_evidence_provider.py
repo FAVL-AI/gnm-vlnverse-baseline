@@ -261,6 +261,10 @@ class H8EvidenceProvider:
             "method_id": "preflight-static-binding", "scene_source": "committed-usda",
             "config_source": self.config_rel, "parent_evidence_id": None,
             "generated_at": self.clock(), "review_state": "none", "plan_digest": plan_digest,
+            # additive (G1): the Git dependency-resolver closure digest, when the injected tree_state
+            # supplies one (None otherwise). Records WHICH resolved dependency closure this preflight
+            # document was bound to; never authorises capture.
+            "dependency_resolution_digest": ts.get("resolution_digest"),
         }
 
     def _evidence_id(self, kind, instance_id):

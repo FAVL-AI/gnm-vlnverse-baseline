@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "h8-dependency-manifest/1.0.0",
+  "title": "H8 Git Dependency Manifest",
+  "description": "Canonical closure of Git dependencies required for one H8 evidence decision. Consumed by scripts/gnm/h8_git_dependency_resolver.py. Design-only provenance authority; never authorises capture.",
+  "type": "object",
+  "required": ["manifest_version", "expected_repository", "dependencies"],
+  "additionalProperties": true,
+  "properties": {
+    "manifest_version": {"type": "string", "const": "h8-dependency-manifest/1.0.0"},
+    "manifest_id": {"type": "string"},
+    "description": {"type": "string"},
+    "claim_boundary": {"type": "string"},
+    "expected_repository": {
+      "type": "object",
+      "required": ["identity_policy"],
+      "properties": {
+        "canonical_name": {"type": "string"},
+        "root_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "identity_policy": {"type": "string", "enum": ["root_commit_and_name", "toplevel_only"]}
+      },
+      "description": "Repository identity MUST NOT rely on an absolute machine path. Bind by root_commit + canonical_name."
+    },
+    "default_dependency_policy": {
+      "type": "object",
+      "properties": {
+        "expected_commit_policy": {"type": "string", "enum": ["head"]},
+        "expected_object_type": {"type": "string", "enum": ["blob", "commit"]},
+        "symlink_policy": {"type": "string", "enum": ["forbidden", "allowed_bounded"]},
+        "lfs_policy": {"type": "string", "enum": ["none", "pointer_ok", "materialised_required"]},
+        "submodule_policy": {"type": "string", "enum": ["none", "pinned"]},
+        "digest_policy": {"type": "string"},
+        "provenance_requires_history": {"type": "boolean"}
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "type", "required"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1, "description": "repository-relative POSIX path; absolute/traversal rejected"},
+          "type": {"type": "string"},
+          "required": {"type": "boolean"},
+          "owning_gate": {"type": "string"},
+          "block_reason": {"type": "string"},
+          "expected_mode": {"type": "string", "pattern": "^[0-9]{6}$"},
+          "expected_blob_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "allow_symlink": {"type": "boolean"},
+          "lfs": {"type": "object"},
+          "submodule": {"type": "object"},
+          "provenance_requires_history": {"type": "boolean"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "future_dependencies": {
+      "type": "array",
+      "description": "Documentation-only: dependencies not yet implemented (signature/revocation/clock/observer/backend policies). Not resolved until the files exist.",
+      "items": {"type": "object", "required": ["id", "status"]}
+    }
+  }
+}

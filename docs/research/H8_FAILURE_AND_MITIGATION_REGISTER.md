@@ -349,3 +349,24 @@ Design-gate verdict: **`PASS WITH DOCUMENTED LIMITATIONS`**. Selected architectu
 (Option B, `H8-DCP-035`); first runtime worker owns **no** dataset writer (`H8-DCP-036`). **First
 implementation gate = G1 (Git resolver), not the Isaac backend.** Real capture remains blocked; Levels 3–5
 unproven; Ruff Open (`H8-C-006`/`H8-C-013`).
+
+## G1 — H8 Git Dependency Resolver Implementation Gate — challenges (2026-07-16)
+
+Implemented `scripts/gnm/h8_git_dependency_resolver.py` (discharges `H8-PRREV-F-002`). 56 tests pass
+(real temp Git repos + FakeGit); 31/31 active reason codes triggered; provider integration fail-closed with
+zero backend/output on blocked cases. Residual challenges (documented, not overclaimed):
+
+| ID | Challenge | Owner |
+|---|---|---|
+| `H8-C-033` | Symlink time-of-check/time-of-use races cannot be fully prevented by static inspection | G1-review / runtime |
+| `H8-C-034` | Time-based report freshness needs the not-yet-built trusted clock (`REPORT_STALE` reserved) | G2 |
+| `H8-C-035` | Manifest completeness is the author's responsibility; the resolver proves only the declared closure | G1-review |
+| `H8-C-036` | git-lfs is not installed here — LFS materialisation is unverifiable, so it fails closed | G2/env |
+| `H8-C-037` | git-version behaviour variance (rename detection, porcelain nuances) — bounded by tests on git 2.34.1 | G1-review |
+| `H8-C-038` | Detached-HEAD/linked-worktree acceptance policy is minimal; hardened rules deferred | G1-review |
+
+Verdict: **`PASS WITH DOCUMENTED LIMITATIONS`**. Establishes resolver + closure + repository-identity
+binding + fail-closed provider preflight integration + deterministic closure digest. Does NOT establish
+Level-3 runtime validity, trusted time, signatures, revocation, dataset or model validity, or capture
+authorisation. Recommend an **independent G1 review** before G2/G3. Real capture blocked; Levels 3–5
+unproven; Ruff Open.

@@ -1,0 +1,42 @@
+{
+  "manifest_version": "h8-dependency-manifest/1.0.0",
+  "manifest_id": "h8-evidence-dependency-closure",
+  "description": "Canonical Git dependency closure for H8 evidence generation/validation. Repository identity is bound by (canonical_name + root_commit), NOT by absolute path, folder name, cwd, or mere .git presence. Resolved by scripts/gnm/h8_git_dependency_resolver.py; a clean report permits ONLY non-authorising preflight document generation and NEVER authorises capture.",
+  "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+  "expected_repository": {
+    "canonical_name": "gnm-vlnverse-baseline",
+    "root_commit": "67b038385629658096ed5f656cd1a29d1592f165",
+    "identity_policy": "root_commit_and_name"
+  },
+  "default_dependency_policy": {
+    "expected_commit_policy": "head",
+    "expected_object_type": "blob",
+    "symlink_policy": "forbidden",
+    "lfs_policy": "none",
+    "submodule_policy": "none",
+    "digest_policy": "worktree_sha256",
+    "provenance_requires_history": false
+  },
+  "dependencies": [
+    {"id": "h8-dataset-config", "path": "configs/gnm/h8_synthetic_fork_recorded_mode_dataset.yaml", "type": "config", "required": true, "owning_gate": "L1", "block_reason": "evidence subject/config binding derives from this file"},
+    {"id": "h8-evidence-schema", "path": "scripts/gnm/h8_evidence_schema.py", "type": "code", "required": true, "owning_gate": "schema", "block_reason": "EvidenceEnvelope schema + canonicalisation + digest + producer trust registry + CL_BOUND_XY source"},
+    {"id": "h8-evidence-provider", "path": "scripts/gnm/h8_evidence_provider.py", "type": "code", "required": true, "owning_gate": "provider", "block_reason": "non-capturing evidence provider"},
+    {"id": "h8-recorded-mode", "path": "scripts/gnm/h8_synthetic_fork_recorded_mode.py", "type": "code", "required": true, "owning_gate": "L2", "block_reason": "dataset plan / split / manifest builder + fail-closed capture-path seam"},
+    {"id": "h8-drive-validate", "path": "scripts/gnm/h8_synthetic_fork_drive_validate.py", "type": "code", "required": true, "owning_gate": "L1", "block_reason": "scene-identity gate + CL_BOUND_XY watchdog mirror"},
+    {"id": "h8-scene-usda", "path": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda", "type": "scene", "required": true, "owning_gate": "L1", "block_reason": "scene file whose digest binds render/drive evidence"},
+    {"id": "h8-level1-drive-manifest", "path": "assets/experiments/hospital_h8_track_b_synthetic_fork_drive_validation/drive_validation_manifest.json", "type": "evidence", "required": true, "owning_gate": "L1", "block_reason": "Level-1 drive-validation evidence reference"},
+    {"id": "h8-scene-spec", "path": "assets/experiments/hospital_h8_track_b_synthetic_fork/synthetic_fork_scene_spec.json", "type": "artifact", "required": true, "owning_gate": "L1", "block_reason": "synthetic-fork scene specification"},
+    {"id": "h8-expected-routes", "path": "assets/experiments/hospital_h8_track_b_synthetic_fork/synthetic_fork_expected_routes.json", "type": "route", "required": true, "owning_gate": "L1", "block_reason": "route artefact (expected routes) bound into evidence"},
+    {"id": "h8-evidence-schema-json", "path": "docs/research/schemas/h8_evidence_envelope.schema.json", "type": "schema", "required": true, "owning_gate": "schema", "block_reason": "published evidence-envelope JSON schema"},
+    {"id": "h8-resolver", "path": "scripts/gnm/h8_git_dependency_resolver.py", "type": "code", "required": true, "owning_gate": "G1", "block_reason": "the resolver implementation itself (self-referential closure)"},
+    {"id": "h8-dependency-manifest", "path": "configs/gnm/h8_dependency_manifest.json", "type": "manifest", "required": true, "owning_gate": "G1", "block_reason": "this dependency manifest (self-referential)"},
+    {"id": "h8-manifest-schema", "path": "docs/research/schemas/h8_dependency_manifest.schema.json", "type": "schema", "required": true, "owning_gate": "G1", "block_reason": "dependency-manifest JSON schema"}
+  ],
+  "future_dependencies": [
+    {"id": "h8-signature-policy", "status": "not_yet_implemented", "owning_gate": "G2", "note": "production signature/key policy — resolver will add when the file exists"},
+    {"id": "h8-revocation-policy", "status": "not_yet_implemented", "owning_gate": "G2", "note": "operational revocation policy"},
+    {"id": "h8-clock-policy", "status": "not_yet_implemented", "owning_gate": "G2", "note": "trusted-clock policy"},
+    {"id": "h8-runtime-observer-policy", "status": "not_yet_implemented", "owning_gate": "G3", "note": "runtime-observer authorisation policy"},
+    {"id": "h8-runtime-backend", "status": "not_yet_implemented", "owning_gate": "G4", "note": "isolated Isaac worker (no dataset writer)"}
+  ]
+}

@@ -690,3 +690,108 @@ launched, or captured.
 | Reversibility | Reversible. |
 | Remaining risk | Resolver unbuilt until G1 (`H8-C-020`). |
 | Status | **Accepted** |
+
+## G1 — H8 Git Dependency Resolver Implementation Gate (2026-07-16)
+
+Decisions from `docs/research/H8_GIT_DEPENDENCY_RESOLVER.md` + `scripts/gnm/h8_git_dependency_resolver.py`.
+Non-Isaac, non-capturing; implements the concrete resolver specified by `H8-DCP-046`.
+
+### H8-DCP-047 — Git is the required provenance authority
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Every H8 evidence-defining dependency must be proven against Git (tracked, unmodified, bound to HEAD). "Could not inspect" is never treated as clean; Git unavailable/timeout/failure → reject. |
+| Reason | Filesystem state alone cannot prove provenance. |
+| Safety effect | Dirty/substituted/Git-unavailable dependencies fail closed. |
+| Status | **Accepted** |
+
+### H8-DCP-048 — Explicit, versioned dependency closure (manifest)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | The closure is a repository-tracked, versioned manifest (`configs/gnm/h8_dependency_manifest.json`, `h8-dependency-manifest/1.0.0`) with a JSON schema; it is self-referential (lists the resolver + itself + its schema). Future policies are recorded as documentation-only `future_dependencies`. |
+| Reason | The closure must be explicit, reviewable and itself provenance-bound. |
+| Status | **Accepted** |
+
+### H8-DCP-049 — Repository identity by root-commit + name (not path/cwd/.git)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Repository identity binds `(canonical_name + root_commit)` plus toplevel; it does NOT rely on absolute machine path, folder name, cwd, or mere `.git` presence. |
+| Reason | Copied/nested/other repositories must be rejected; identity must be portable and durable. |
+| Status | **Accepted** |
+
+### H8-DCP-050 — Staged AND unstaged states both forbidden
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | A protected dependency must match HEAD in both index and worktree; staged modification/addition, worktree modification, delete, rename, index-removal, mode change, `assume-unchanged` and `skip-worktree` all fail closed. |
+| Reason | Only content bound to HEAD is provenance-valid. |
+| Status | **Accepted** |
+
+### H8-DCP-051 — Mandatory resolver in protected provider modes; no bypass
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | The provider consumes the resolver only via the injected `tree_state` seam; an absent/unavailable/fixture/mismatched/stale report yields `dependency_dirty=True` → `PROVIDER_DIRTY_TREE`. There is no `assume_clean` bypass and no capture authorisation from a resolver report. |
+| Reason | The provider must never emit protected evidence without a clean, bound closure. |
+| Status | **Accepted** |
+
+### H8-DCP-052 — Explicit symlink policy (forbidden by default)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Protected dependencies must be ordinary tracked files unless explicitly `allow_symlink`; unexpected symlink, absolute target, escape-outside-repo and broken target reject. Complete symlink-TOCTOU prevention is NOT claimed (`H8-C-033`). |
+| Reason | Symlink substitution is a real redirection threat. |
+| Status | **Accepted** |
+
+### H8-DCP-053 — Explicit LFS and submodule policies (fail closed)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | LFS pointers are detected; `materialised_required` fails closed (git-lfs is not installed — materialisation is never downloaded); malformed pointers reject. Gitlinks with no submodule policy or a commit mismatch reject; submodules are never initialised/updated. |
+| Reason | Pointer/gitlink content must be proven, not assumed. |
+| Status | **Accepted** |
+
+### H8-DCP-054 — Deterministic closure digest excluding volatile metadata
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | The `closure_digest` is computed over sorted (id, path, reason, head-object, required) and EXCLUDES timestamps/host paths, so identical repo state yields an identical digest regardless of run time or manifest ordering. |
+| Reason | Determinism is required for report binding and stale detection. |
+| Status | **Accepted** |
+
+### H8-DCP-055 — Stale invalidation is content-bound (time-based deferred)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | A report is invalidated when its `closure_digest` no longer matches the caller's expected digest (any protected change alters it). Strong time-based freshness is deferred to the future trusted clock; `REPORT_STALE` is reserved (`H8-C-034`). |
+| Reason | Content binding is provable now; time freshness is not (no trusted clock yet). |
+| Status | **Accepted** |
+
+### H8-DCP-056 — Fixture resolver prohibited in protected modes
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Only an APPROVED `resolver_id` may back a protected provider mode; `h8-fixture-resolver` is rejected (`RESOLVER_FIXTURE_IN_PROTECTED`), mirroring the positive producer-authorisation design. A report cannot self-authorise through content. |
+| Reason | Test resolvers must never gate protected evidence. |
+| Status | **Accepted** |
+
+### H8-DCP-057 — Additive provenance field only; provider trust unchanged
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | The only provider change is additive: `build_provenance` records an optional `dependency_resolution_digest` (None when absent). No trust-boundary guarantee, schema version, `document_only` semantics, dual render/drive prerequisite or `CL_BOUND_XY` is altered; all prior 223 H8 tests still pass. |
+| Reason | Bind evidence to the resolved closure without weakening any existing control. |
+| Status | **Accepted** |
