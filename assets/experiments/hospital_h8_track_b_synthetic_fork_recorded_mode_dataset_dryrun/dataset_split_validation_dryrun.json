@@ -1,0 +1,122 @@
+{
+  "note": "PLANNED split validation \u2014 assignment BEFORE training; disjointness over planned records.",
+  "split_policy": {
+    "split_assignment_before_training": true,
+    "no_decision_frame_reuse_across_splits": true,
+    "no_goal_image_reuse_across_splits": true,
+    "no_coordinate_reuse_across_splits": true,
+    "no_instance_leakage_across_splits": true,
+    "allow_instance_leakage_across_splits": false,
+    "instance_leakage_justification": null
+  },
+  "instances": [
+    {
+      "id": "sfork_00",
+      "split": "train",
+      "coord_offset": [
+        0,
+        0
+      ],
+      "render_valid_required": true,
+      "drive_valid_required": true
+    },
+    {
+      "id": "sfork_01",
+      "split": "train",
+      "coord_offset": [
+        20,
+        0
+      ],
+      "render_valid_required": true,
+      "drive_valid_required": true
+    },
+    {
+      "id": "sfork_02",
+      "split": "train",
+      "coord_offset": [
+        40,
+        0
+      ],
+      "render_valid_required": true,
+      "drive_valid_required": true
+    },
+    {
+      "id": "sfork_03",
+      "split": "train",
+      "coord_offset": [
+        0,
+        20
+      ],
+      "render_valid_required": true,
+      "drive_valid_required": true
+    },
+    {
+      "id": "sfork_04",
+      "split": "val",
+      "coord_offset": [
+        20,
+        20
+      ],
+      "render_valid_required": true,
+      "drive_valid_required": true
+    },
+    {
+      "id": "sfork_05",
+      "split": "val",
+      "coord_offset": [
+        40,
+        20
+      ],
+      "render_valid_required": true,
+      "drive_valid_required": true
+    },
+    {
+      "id": "sfork_06",
+      "split": "test",
+      "coord_offset": [
+        0,
+        40
+      ],
+      "render_valid_required": true,
+      "drive_valid_required": true
+    },
+    {
+      "id": "sfork_07",
+      "split": "test",
+      "coord_offset": [
+        20,
+        40
+      ],
+      "render_valid_required": true,
+      "drive_valid_required": true
+    }
+  ],
+  "per_split_instance_counts": {
+    "train": 4,
+    "val": 2,
+    "test": 2
+  },
+  "planned_frames_per_split": {
+    "train": 3,
+    "val": 2,
+    "test": 3
+  },
+  "planned_per_split_frame_counts": {
+    "train": 12,
+    "val": 4,
+    "test": 6
+  },
+  "unique_instances": true,
+  "requirement_injection_cases": [
+    {
+      "case": "missing_render_valid_requirement",
+      "requirement_holds": false,
+      "failed_closed": true
+    },
+    {
+      "case": "missing_drive_valid_requirement",
+      "requirement_holds": false,
+      "failed_closed": true
+    }
+  ]
+}

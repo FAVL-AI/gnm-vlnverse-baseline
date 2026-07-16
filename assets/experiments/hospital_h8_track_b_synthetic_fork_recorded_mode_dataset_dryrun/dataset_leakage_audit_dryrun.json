@@ -1,0 +1,62 @@
+{
+  "note": "DRY-RUN leakage audit over the PLAN \u2014 plan validation only, NOT captured evidence; no images exist.",
+  "targets": {
+    "min_train": 12,
+    "min_val": 4,
+    "min_test": 6,
+    "min_disjoint_instances": 6
+  },
+  "valid_plan_audit": {
+    "leakage_safe": true,
+    "meets_min_scale": true,
+    "audit_pass": true,
+    "per_split_counts": {
+      "train": 12,
+      "val": 4,
+      "test": 6
+    },
+    "n_instances": 8,
+    "reasons": [],
+    "plan_validation_only_not_captured_evidence": true
+  },
+  "injected_leakage_cases": [
+    {
+      "case": "dup_decision_frame_across_splits",
+      "leakage_safe": false,
+      "audit_pass": false,
+      "reasons": [
+        "reused_decision_frame_across_splits"
+      ],
+      "failed_closed": true
+    },
+    {
+      "case": "dup_goal_image_across_splits",
+      "leakage_safe": false,
+      "audit_pass": false,
+      "reasons": [
+        "reused_goal_image_across_splits"
+      ],
+      "failed_closed": true
+    },
+    {
+      "case": "dup_coordinate_across_splits",
+      "leakage_safe": false,
+      "audit_pass": false,
+      "reasons": [
+        "reused_coordinate_across_splits"
+      ],
+      "failed_closed": true
+    },
+    {
+      "case": "single_instance_collapse",
+      "leakage_safe": false,
+      "audit_pass": false,
+      "reasons": [
+        "below_min_scale",
+        "single_instance_not_leakage_safe"
+      ],
+      "failed_closed": true
+    }
+  ],
+  "all_injected_failed_closed": true
+}

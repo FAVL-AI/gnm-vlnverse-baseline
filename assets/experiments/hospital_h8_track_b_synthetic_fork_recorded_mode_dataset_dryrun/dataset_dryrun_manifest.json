@@ -1,0 +1,47 @@
+{
+  "note": "DRY-RUN \u2014 dataset config validation only. No Isaac, no capture, no images, no datasets.",
+  "mode": "dataset-dry-run",
+  "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+  "config": "configs/gnm/h8_synthetic_fork_recorded_mode_dataset.yaml",
+  "config_valid": true,
+  "overall": "PASS",
+  "checks_passed": "25/25",
+  "gate_history": {
+    "drive_validation_pass": "935ed85",
+    "recorded_mode_plan": "905ea50",
+    "recorded_mode_harness": "6ad131e",
+    "dry_run_emitter": "6123ba6",
+    "cli_dry_run_evidence": "03ed7f4",
+    "pilot_plan": "aa7de13",
+    "pilot_config": "c646225",
+    "executable_pilot_capture_path": "82f60f9",
+    "pilot_capture_evidence": 2659168,
+    "full_dataset_plan": "ba2bd58"
+  },
+  "planned_instance_count": 8,
+  "planned_split_instance_counts": {
+    "train": 4,
+    "val": 2,
+    "test": 2
+  },
+  "planned_frames_per_split": {
+    "train": 3,
+    "val": 2,
+    "test": 3
+  },
+  "cl_bound_xy_readonly": 6.0,
+  "allowed_dataset_dryrun_artifacts": [
+    "dataset_dryrun_manifest.json",
+    "dataset_plan_schema.json",
+    "dataset_split_validation_dryrun.json",
+    "dataset_leakage_audit_dryrun.json",
+    "dataset_dryrun_report.md"
+  ],
+  "no_isaac": true,
+  "no_capture": true,
+  "no_images": true,
+  "no_datasets": true,
+  "no_policy_inference": true,
+  "no_training": true,
+  "no_rollout_metrics": true
+}
