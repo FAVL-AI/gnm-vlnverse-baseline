@@ -489,6 +489,195 @@ def test_dataset_dry_run_requires_config():
     assert rm.main(["--mode", "dataset-dry-run"]) != 0
 
 
+# ── dataset capture-path wiring: routing + fail-closed plan + per-instance validity gate ──
+DATASET_INSTANCE_IDS = ["sfork_00", "sfork_01", "sfork_02", "sfork_03",
+                        "sfork_04", "sfork_05", "sfork_06", "sfork_07"]
+
+
+class _SpyBackend:
+    """No-Isaac injected capture backend. Records the validated plan it receives and returns a code;
+    it launches nothing and writes nothing."""
+    def __init__(self, rc=0):
+        self.calls = []
+        self.rc = rc
+
+    def __call__(self, cfg, plan, readiness):
+        self.calls.append({"plan": plan, "readiness": readiness})
+        return self.rc
+
+
+def _good_evidence(cfg):
+    scene = cfg["scene_base"]
+
+    def prov(iid):
+        def rec():
+            return {"passed": True, "instance_id": iid, "scene": scene, "stale": False}
+        return {"render_valid": rec(), "drive_valid": rec()}
+    return prov
+
+
+def _capture_args(config_path):
+    return rm.build_parser().parse_args(["--mode", "capture", "--config", str(config_path)])
+
+
+def test_A_valid_dataset_config_accepted_by_dataset_validator():
+    cfg = rm.load_dataset_config(DATASET_CFG_PATH)
+    ok, issues = rm.validate_dataset_capture_config(cfg)
+    assert ok, f"committed dataset config must validate: {issues}"
+
+
+def test_B_dataset_mode_routes_to_build_dataset_plan_not_pilot():
+    cfg = rm.load_dataset_config(DATASET_CFG_PATH)
+    spy = _SpyBackend(rc=0)
+    rc = rm.run_capture(_capture_args(DATASET_CFG_PATH), evidence_provider=_good_evidence(cfg),
+                        capture_backend=spy)
+    assert rc == 0 and len(spy.calls) == 1
+    plan = spy.calls[0]["plan"]
+    assert sorted({r["instance_id"] for r in plan}) == DATASET_INSTANCE_IDS
+    # dataset-style ids prove build_dataset_plan produced this, NOT pilot_capture_plan
+    assert all(r["decision_frame_id"].startswith(tuple(DATASET_INSTANCE_IDS)) for r in plan)
+    assert not any(str(r["decision_frame_id"]).startswith("pilot_inst") for r in plan)
+
+
+def test_C_routed_dataset_plan_has_exact_scale():
+    cfg = rm.load_dataset_config(DATASET_CFG_PATH)
+    spy = _SpyBackend()
+    rm.run_capture(_capture_args(DATASET_CFG_PATH), evidence_provider=_good_evidence(cfg),
+                   capture_backend=spy)
+    plan = spy.calls[0]["plan"]
+    assert len({r["instance_id"] for r in plan}) == 8
+    per_split_inst = {}
+    for r in plan:
+        per_split_inst.setdefault(r["split"], set()).add(r["instance_id"])
+    assert {k: len(v) for k, v in per_split_inst.items()} == {"train": 4, "val": 2, "test": 2}
+    assert len(plan) == 22
+    assert rm._plan_per_split(plan) == {"train": 12, "val": 4, "test": 6}
+
+
+def test_D_missing_render_valid_fails_closed_before_output():
+    cfg = rm.load_dataset_config(DATASET_CFG_PATH)
+    scene = cfg["scene_base"]
+
+    def prov(iid):
+        d = {"drive_valid": {"passed": True, "instance_id": iid, "scene": scene, "stale": False}}
+        if iid != "sfork_03":   # sfork_03 has NO render-valid evidence
+            d["render_valid"] = {"passed": True, "instance_id": iid, "scene": scene, "stale": False}
+        return d
+    readiness = rm.plan_dataset_capture(cfg, evidence_provider=prov)
+    assert readiness["ready"] is False
+    assert any(r["instance_id"] == "sfork_03" and r["prerequisite"] == "render_valid"
+               and r["reason"] == "absent" for r in readiness["blocking_reasons"])
+    # and end-to-end: backend never invoked, return 2
+    spy = _SpyBackend()
+    rc = rm.run_capture(_capture_args(DATASET_CFG_PATH), evidence_provider=prov, capture_backend=spy)
+    assert rc == 2 and spy.calls == []
+
+
+def test_E_missing_drive_valid_fails_closed_before_output():
+    cfg = rm.load_dataset_config(DATASET_CFG_PATH)
+    scene = cfg["scene_base"]
+
+    def prov(iid):
+        d = {"render_valid": {"passed": True, "instance_id": iid, "scene": scene, "stale": False}}
+        if iid != "sfork_05":   # sfork_05 has NO drive-valid evidence
+            d["drive_valid"] = {"passed": True, "instance_id": iid, "scene": scene, "stale": False}
+        return d
+    readiness = rm.plan_dataset_capture(cfg, evidence_provider=prov)
+    assert readiness["ready"] is False
+    assert any(r["instance_id"] == "sfork_05" and r["prerequisite"] == "drive_valid"
+               and r["reason"] == "absent" for r in readiness["blocking_reasons"])
+    spy = _SpyBackend()
+    rc = rm.run_capture(_capture_args(DATASET_CFG_PATH), evidence_provider=prov, capture_backend=spy)
+    assert rc == 2 and spy.calls == []
+
+
+def test_F_defective_validity_evidence_fails_closed():
+    cfg = rm.load_dataset_config(DATASET_CFG_PATH)
+    scene = cfg["scene_base"]
+
+    def good(iid):
+        return {"passed": True, "instance_id": iid, "scene": scene, "stale": False}
+    cases = {
+        "false": lambda iid: {"passed": False, "instance_id": iid, "scene": scene, "stale": False},
+        "malformed": lambda iid: "not-a-dict",
+        "stale": lambda iid: {"passed": True, "instance_id": iid, "scene": scene, "stale": True},
+        "instance_mismatch": lambda iid: {"passed": True, "instance_id": "WRONG", "scene": scene,
+                                          "stale": False},
+        "scene_mismatch": lambda iid: {"passed": True, "instance_id": iid, "scene": "other.usda",
+                                       "stale": False},
+    }
+    for reason, bad in cases.items():
+        def prov(iid, bad=bad):
+            rv = bad(iid) if iid == "sfork_00" else good(iid)
+            return {"render_valid": rv, "drive_valid": good(iid)}
+        readiness = rm.plan_dataset_capture(cfg, evidence_provider=prov)
+        assert readiness["ready"] is False, reason
+        assert any(r["instance_id"] == "sfork_00" and r["prerequisite"] == "render_valid"
+                   and r["reason"] == reason for r in readiness["blocking_reasons"]), \
+            (reason, readiness["blocking_reasons"])
+
+
+def test_G_dataset_validator_rejects_forbidden_authorizations():
+    base = rm.load_dataset_config(DATASET_CFG_PATH)
+    for mut in ("authorizes_capture", "authorizes_training"):
+        cfg = copy.deepcopy(base); cfg[mut] = True
+        ok, issues = rm.validate_dataset_capture_config(cfg)
+        assert not ok and any(mut in i for i in issues)
+    for k in ("policy_inference", "model_inference", "closed_loop_policy_execution", "action_probe",
+              "training"):
+        cfg = copy.deepcopy(base); cfg["capture_controls"][k] = True
+        ok, issues = rm.validate_dataset_capture_config(cfg)
+        assert not ok and any(k in i for i in issues), f"{k}=true must be rejected"
+    cfg = copy.deepcopy(base); cfg["forbidden_outputs"].remove("checkpoints")
+    ok, issues = rm.validate_dataset_capture_config(cfg)
+    assert not ok and any("checkpoints" in i for i in issues)
+    cfg = copy.deepcopy(base); cfg["SR"] = 0.9   # a rollout metric key must not appear
+    ok, issues = rm.validate_dataset_capture_config(cfg)
+    assert not ok and any("rollout metric" in i for i in issues)
+
+
+def test_H_unknown_capture_mode_fails_closed(tmp_path):
+    import yaml as _yaml
+    cfg = rm.load_dataset_config(DATASET_CFG_PATH); cfg["mode"] = "bogus_mode"
+    p = tmp_path / "bad_mode.yaml"; p.write_text(_yaml.safe_dump(cfg))
+    spy = _SpyBackend()
+    rc = rm.run_capture(_capture_args(p), evidence_provider=None, capture_backend=spy)
+    assert rc == 2 and spy.calls == []
+    assert rm.select_capture_mode(cfg) == "unknown"
+    assert rm.select_capture_mode({}) == "unknown"
+
+
+def test_I_pilot_path_unchanged_and_routes_pilot():
+    pcfg = rm.load_pilot_config(PILOT_CFG_PATH)
+    assert rm.select_capture_mode(pcfg) == "pilot"
+    ok, issues = rm.validate_pilot_config(pcfg)
+    assert ok, issues
+    plan = rm.pilot_capture_plan(pcfg)
+    assert len({u["instance_id"] for u in plan}) <= 2   # pilot planner still tiny + unchanged
+
+
+def test_J_cl_bound_xy_readonly_six_in_dataset_path():
+    # the dataset validator enforces cl_bound_xy == 6.0 and the harness mirror is unchanged
+    assert rm.CL_BOUND_XY == 6.0
+    cfg = rm.load_dataset_config(DATASET_CFG_PATH)
+    bad = copy.deepcopy(cfg); bad["cl_bound_xy"] = 7.0
+    ok, issues = rm.validate_dataset_capture_config(bad)
+    assert not ok and any("cl_bound_xy" in i for i in issues)
+
+
+def test_L_dataset_wiring_creates_no_artifacts_and_no_isaac():
+    import sys as _sys
+    cfg = rm.load_dataset_config(DATASET_CFG_PATH)
+    spy = _SpyBackend()
+    rm.run_capture(_capture_args(DATASET_CFG_PATH), evidence_provider=_good_evidence(cfg),
+                   capture_backend=spy)
+    assert "isaacsim" not in _sys.modules and "omni" not in _sys.modules
+    # ready-but-not-authorized production path: no backend -> return 3, nothing captured
+    rc = rm.run_capture(_capture_args(DATASET_CFG_PATH), evidence_provider=_good_evidence(cfg))
+    assert rc == 3
+    assert not (REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_dataset").exists()
+
+
 if __name__ == "__main__":
     import pytest as _pt
     raise SystemExit(_pt.main([__file__, "-q"]))

@@ -902,7 +902,211 @@ def pilot_verdict(records, contact_log, audit) -> tuple:
 
 
 # ── the gated Isaac capture: REAL, config-driven (DEFERRED imports; NOT run here) ──
-def run_capture(args) -> int:  # pragma: no cover - requires Isaac + explicit approval
+# ── dataset capture path: explicit routing + fail-closed planning + per-instance validity gate ──
+# All of this is NO-ISAAC and creates NOTHING. Real dataset capture is NOT authorized at this wiring
+# gate: the production dataset branch refuses to launch; a no-Isaac backend may be INJECTED for tests.
+
+def null_evidence_provider(instance_id):  # noqa: ARG001 - deliberately returns no evidence
+    """Default evidence provider: NO recorded render/drive-valid evidence exists, so every instance
+    fails the validity gate closed. Tests inject a real provider through the DI seam."""
+    return {}
+
+
+def _validity_record_status(rec, instance_id, scene) -> str:
+    """Classify one render/drive-valid evidence record. Returns 'ok' ONLY if the record is present,
+    well-formed, `passed is True`, its instance id matches, its scene matches `scene`, and it is not
+    stale. Otherwise a structured reason: absent / malformed / false / instance_mismatch /
+    scene_mismatch / stale."""
+    if rec is None:
+        return "absent"
+    if not isinstance(rec, dict) or "passed" not in rec:
+        return "malformed"
+    if rec.get("passed") is not True:
+        return "false"
+    if rec.get("instance_id") != instance_id:
+        return "instance_mismatch"
+    if scene is not None and rec.get("scene") != scene:
+        return "scene_mismatch"
+    if rec.get("stale") is True:
+        return "stale"
+    return "ok"
+
+
+def dataset_instance_validity_gate(cfg: dict, evidence_provider=None) -> tuple:
+    """Fail-closed per-instance render-valid + drive-valid EVIDENCE gate. For every planned instance it
+    requires recorded render_valid AND drive_valid evidence that is present, well-formed, passed, matches
+    the instance id + config `scene_base`, and is not stale. Returns (ok, gate_report, reasons). A
+    reason names the blocking instance and prerequisite. NO Isaac, NO images, NO outputs."""
+    if evidence_provider is None:
+        evidence_provider = null_evidence_provider
+    scene = cfg.get("scene_base")
+    instances = (cfg.get("instance_plan", {}) or {}).get("instances", []) or []
+    reasons, per_instance = [], []
+    for inst in instances:
+        iid = inst.get("id")
+        try:
+            ev = evidence_provider(iid) or {}
+        except Exception as e:  # a provider error is a fail-closed condition, never a pass
+            ev = {"_provider_error": str(e)}
+        row = {"instance_id": iid, "render_valid": None, "drive_valid": None, "ok": True}
+        for prereq in ("render_valid", "drive_valid"):
+            rec = ev.get(prereq) if isinstance(ev, dict) else None
+            status = _validity_record_status(rec, iid, scene)
+            row[prereq] = status
+            if status != "ok":
+                row["ok"] = False
+                reasons.append({"instance_id": iid, "prerequisite": prereq, "reason": status})
+        per_instance.append(row)
+    if not instances:
+        reasons.append({"instance_id": None, "prerequisite": "instances", "reason": "no_planned_instances"})
+    ok = bool(instances) and all(r["ok"] for r in per_instance)
+    return ok, {"n_instances": len(instances), "per_instance": per_instance,
+                "all_instances_gated_pass": ok}, reasons
+
+
+def _plan_per_split(plan: list) -> dict:
+    d = {}
+    for r in plan:
+        d[r.get("split")] = d.get(r.get("split"), 0) + 1
+    return d
+
+
+def validate_dataset_capture_config(cfg: dict) -> tuple:
+    """Fail-closed validator for a DATASET capture config at the wiring gate. It reuses the existing
+    25-check `dataset_dry_run_checks` as the SINGLE source of plan validity and adds the capture-gate
+    safety declarations. `authorizes_capture` MUST remain false here — this validator never authorizes
+    capture. Malformed/missing/contradictory safety fields are rejected. Returns (ok, issues)."""
+    if not isinstance(cfg, dict):
+        return False, ["config is not a mapping"]
+    issues = []
+    if cfg.get("mode") != "dataset_capture_config_only":
+        issues.append("mode != dataset_capture_config_only")
+    if cfg.get("claim_boundary") != CLAIM_BOUNDARY:
+        issues.append("claim_boundary != SYNTHETIC_DIAGNOSTIC_ONLY")
+    if cfg.get("authorizes_capture") is not False:
+        issues.append("authorizes_capture must be false at this wiring gate")
+    if cfg.get("authorizes_training") is not False:
+        issues.append("authorizes_training must be false")
+    scene = cfg.get("scene_base")
+    if not scene or not isinstance(scene, str):
+        issues.append("scene_base missing or not a string")
+    out = str(cfg.get("output_dir", "")).rstrip("/")
+    if not out.endswith("_recorded_mode_dataset"):
+        issues.append(f"output_dir not dataset-only: {out}")
+    if out in (str(OUT_DIR.relative_to(REPO)), str(DRYRUN_DIR.relative_to(REPO)),
+               str(PILOT_DIR.relative_to(REPO)), str(DATASET_DRYRUN_DIR.relative_to(REPO))):
+        issues.append("output_dir collides with a non-dataset directory")
+    if cfg.get("cl_bound_xy") != CL_BOUND_XY:
+        issues.append(f"cl_bound_xy != {CL_BOUND_XY}")
+    cc = cfg.get("capture_controls", {}) or {}
+    for k in ("policy_inference", "model_inference", "closed_loop_policy_execution", "action_probe",
+              "training"):
+        if cc.get(k) is not False:
+            issues.append(f"capture_controls.{k} must be false")
+    forb = cfg.get("forbidden_outputs", []) or []
+    for x in _REQUIRED_FORBIDDEN_OUTPUTS:
+        if x not in forb:
+            issues.append(f"forbidden_outputs missing {x}")
+    instances = (cfg.get("instance_plan", {}) or {}).get("instances", []) or []
+    if not instances:
+        issues.append("instance_plan has no instances")
+    for i in instances:
+        if i.get("render_valid_required") is not True:
+            issues.append(f"instance {i.get('id')} missing render_valid_required")
+        if i.get("drive_valid_required") is not True:
+            issues.append(f"instance {i.get('id')} missing drive_valid_required")
+    for key in _all_config_keys(cfg):
+        if key in FORBIDDEN_METRIC_KEYS:
+            issues.append(f"rollout metric key {key} present in config")
+    # the dataset plan must pass the existing 25 dry-run checks (single source of plan validity)
+    try:
+        res = dataset_dry_run_checks(cfg)
+        if not res["all_pass"]:
+            issues.append("dataset dry-run checks failed: "
+                          + ",".join(c["name"] for c in res["checks"] if not c["pass"]))
+    except Exception as e:
+        issues.append(f"dataset dry-run checks error: {e}")
+    return (len(issues) == 0, issues)
+
+
+def select_capture_mode(cfg: dict) -> str:
+    """EXPLICIT capture routing decision by config mode. No implicit default: an unknown/absent mode
+    returns 'unknown' (the caller fails closed)."""
+    m = (cfg or {}).get("mode")
+    if m == "pilot_capture_config_only":
+        return "pilot"
+    if m == "dataset_capture_config_only":
+        return "dataset"
+    return "unknown"
+
+
+def plan_dataset_capture(cfg: dict, evidence_provider=None) -> dict:
+    """PURE, no-Isaac dataset capture PLANNING + fail-closed gating. (1) validate the dataset capture
+    config via `validate_dataset_capture_config` (reuses the 25 dry-run checks), (2) build the leakage-
+    safe plan via `build_dataset_plan` + `cfg["scene_base"]`, (3) run the per-instance render/drive-valid
+    evidence gate. Returns a structured readiness dict. Creates NO images, NO trajectories, NO dataset
+    files, launches NO Isaac. `ready` requires config-valid AND a non-empty plan AND the gate passing."""
+    cfg_ok, cfg_issues = validate_dataset_capture_config(cfg)
+    plan = build_dataset_plan(cfg) if cfg_ok else []          # in-memory plan only (null rgb paths)
+    gate_ok, gate_report, gate_reasons = dataset_instance_validity_gate(cfg, evidence_provider)
+    ready = bool(cfg_ok and gate_ok and plan)
+    blocking = []
+    if not cfg_ok:
+        blocking.append({"reason": "dataset_config_invalid", "detail": cfg_issues})
+    blocking.extend(gate_reasons)
+    return {"ready": ready, "config_valid": cfg_ok, "config_issues": cfg_issues,
+            "scene_base": cfg.get("scene_base"),
+            "n_instances": len({r["instance_id"] for r in plan}), "n_records": len(plan),
+            "per_split_counts": _plan_per_split(plan), "validity_gate_pass": gate_ok,
+            "validity_gate": gate_report, "blocking_reasons": blocking, "plan": plan}
+
+
+def run_dataset_capture(args, cfg=None, evidence_provider=None, capture_backend=None) -> int:
+    """Dataset capture entrypoint. Fail-closed PLAN + per-instance render/drive-valid gate (no Isaac).
+    Never falls through to the pilot planner. Return codes: 2 = not ready (config invalid or a validity
+    gate blocked) — nothing created; 3 = ready but real dataset capture is NOT authorized at this wiring
+    gate (no `capture_backend` injected) — nothing captured; otherwise the injected no-Isaac backend's
+    return code. An injected backend receives the VALIDATED plan and must not launch Isaac."""
+    if cfg is None:
+        cfg = load_dataset_config(args.config)
+    readiness = plan_dataset_capture(cfg, evidence_provider=evidence_provider)
+    if not readiness["ready"]:
+        print(json.dumps({"dataset_capture_ready": False,
+                          "blocking_reasons": readiness["blocking_reasons"]}, indent=2), file=sys.stderr)
+        return 2   # fail closed: no Isaac, no images, no dataset files
+    if capture_backend is None:
+        print(json.dumps({"dataset_capture_ready": True, "authorized": False,
+                          "note": "dataset plan + per-instance validity gate PASSED; real dataset "
+                                  "capture is gated and requires separate approval — no capture initiated",
+                          "n_instances": readiness["n_instances"], "n_records": readiness["n_records"],
+                          "per_split_counts": readiness["per_split_counts"]}, indent=2))
+        return 3   # ready-but-not-authorized: distinct nonzero code, nothing captured
+    return int(capture_backend(cfg, readiness["plan"], readiness))   # injected no-Isaac backend (tests)
+
+
+def run_capture(args, evidence_provider=None, capture_backend=None) -> int:
+    """Route the gated capture by EXPLICIT config mode (`select_capture_mode`). No implicit default.
+    pilot -> the unchanged pilot capture path; dataset -> the fail-closed dataset path (no-Isaac plan +
+    validity gate; real capture gated); unknown/absent mode -> fail closed (return 2). The dataset-only
+    DI hooks (`evidence_provider`, `capture_backend`) never touch the pilot path."""
+    try:
+        cfg = load_dataset_config(args.config)   # generic YAML load, only to read the declared mode
+    except Exception as e:
+        print(json.dumps({"capture_config_load_error": str(e)}, indent=2), file=sys.stderr)
+        return 2
+    sel = select_capture_mode(cfg)
+    if sel == "pilot":
+        return _run_pilot_capture(args)
+    if sel == "dataset":
+        return run_dataset_capture(args, cfg, evidence_provider=evidence_provider,
+                                   capture_backend=capture_backend)
+    print(json.dumps({"unknown_capture_config_mode": cfg.get("mode"),
+                      "reason": "config mode must be pilot_capture_config_only or "
+                                "dataset_capture_config_only"}, indent=2), file=sys.stderr)
+    return 2   # fail closed on unknown/absent mode
+
+
+def _run_pilot_capture(args) -> int:  # pragma: no cover - requires Isaac + explicit approval
     """REAL, config-driven tiny pilot capture. Loads + fail-closed validates the pilot config (no Isaac
     yet), builds the config-driven capture plan, then — behind the explicit `capture` mode — launches
     Isaac, loads the synthetic fork scene, applies/counts colliders (fail-closed if zero), sets up a
@@ -1185,6 +1389,14 @@ def main(argv=None) -> int:
                           "artifacts": [p.name for p in paths], "out_dir": str(out_dir)}, indent=2))
         return 0 if all_pass else 1
 
+    # capture: route by EXPLICIT config mode inside run_capture (pilot vs dataset). Do NOT run the
+    # pilot-only pre-validation here — that would wrongly reject a dataset config before routing.
+    if args.mode == "capture":
+        if not args.config:
+            print("capture requires --config <capture yaml>; refusing.", file=sys.stderr)
+            return 2
+        return run_capture(args)
+
     ok, issues, summary = validate_config()
     # if a pilot config is supplied, load + fail-closed validate it too (no Isaac)
     pilot = {}
@@ -1214,11 +1426,6 @@ def main(argv=None) -> int:
         else:
             print("dry-run OK (no files written; pass --emit-schema to write the dry-run artifacts)")
         return 0
-    if args.mode == "capture":
-        if not args.config:
-            print("capture requires --config <pilot yaml>; refusing.", file=sys.stderr)
-            return 2
-        return run_capture(args)
     return 1
 
 
