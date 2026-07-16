@@ -1,0 +1,58 @@
+[
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "branch": "N",
+    "action_class": "STRAIGHT",
+    "route_family": "N_vs_W_90",
+    "policy_driven": false
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "branch": "W",
+    "action_class": "TURN_LEFT_90",
+    "route_family": "N_vs_W_90",
+    "policy_driven": false
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "branch": "N",
+    "action_class": "STRAIGHT",
+    "route_family": "N_vs_E_90",
+    "policy_driven": false
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "branch": "E",
+    "action_class": "TURN_RIGHT_90",
+    "route_family": "N_vs_E_90",
+    "policy_driven": false
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "branch": "N",
+    "action_class": "STRAIGHT",
+    "route_family": "N_vs_W_90",
+    "policy_driven": false
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "branch": "W",
+    "action_class": "TURN_LEFT_90",
+    "route_family": "N_vs_W_90",
+    "policy_driven": false
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "branch": "N",
+    "action_class": "STRAIGHT",
+    "route_family": "N_vs_E_90",
+    "policy_driven": false
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "branch": "E",
+    "action_class": "TURN_RIGHT_90",
+    "route_family": "N_vs_E_90",
+    "policy_driven": false
+  }
+]

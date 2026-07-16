@@ -1,0 +1,465 @@
+{
+  "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+  "mode": "pilot_capture",
+  "cl_bound_xy_readonly": 6.0,
+  "contact_classification_rule": "robot self-subtree hits excluded; floor/ground leaf-name -> support (allowed); every other collider hit -> obstacle (failure)",
+  "support_contact_allowed": true,
+  "targets": {
+    "min_train": 12,
+    "min_val": 4,
+    "min_test": 6,
+    "min_disjoint_instances": 6
+  },
+  "route_families": {
+    "N_vs_W_90": "primary",
+    "N_vs_E_90": "primary",
+    "W_vs_E_180": "secondary",
+    "same_start_diff_goal": "primary",
+    "hard_negative_mismatched_goal": "hard_negative",
+    "near_far_stop_distance": "secondary"
+  },
+  "base_scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+  "instances": [
+    "pilot_inst0"
+  ],
+  "examples": [
+    {
+      "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+      "instance_id": "pilot_inst0",
+      "decision_frame_id": "pilot_inst0_df0",
+      "goal_image_id": "pilot_inst0_df0_N_vs_W_90_N",
+      "route_family": "N_vs_W_90",
+      "branch": "N",
+      "action_class": "STRAIGHT",
+      "branch_choice": {
+        "branch": "N",
+        "action_class": "STRAIGHT",
+        "turn_deg": 0.0,
+        "policy_driven": false
+      },
+      "decision_xy": [
+        0.0,
+        0.0
+      ],
+      "goal_xy": [
+        0.0,
+        3.0
+      ],
+      "decision_heading_deg": 90.0,
+      "camera_height_m": 0.47,
+      "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0.png",
+      "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0_N_vs_W_90_N.png",
+      "contact_status": {
+        "obstacle_contacts_count": 0,
+        "support_contacts_count": 3,
+        "ambiguous": false
+      },
+      "split": null,
+      "provenance": {
+        "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+        "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+        "gate_history": {
+          "drive_validation_pass": "935ed85",
+          "recorded_mode_plan": "905ea50",
+          "recorded_mode_harness": "6ad131e",
+          "dry_run_emitter": "6123ba6",
+          "cli_dry_run_evidence": "03ed7f4",
+          "tiny_pilot_plan": "aa7de13"
+        },
+        "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+      },
+      "decision_rgb_nonempty": true,
+      "goal_rgb_nonempty": true
+    },
+    {
+      "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+      "instance_id": "pilot_inst0",
+      "decision_frame_id": "pilot_inst0_df0",
+      "goal_image_id": "pilot_inst0_df0_N_vs_W_90_W",
+      "route_family": "N_vs_W_90",
+      "branch": "W",
+      "action_class": "TURN_LEFT_90",
+      "branch_choice": {
+        "branch": "W",
+        "action_class": "TURN_LEFT_90",
+        "turn_deg": 90.0,
+        "policy_driven": false
+      },
+      "decision_xy": [
+        0.0,
+        0.0
+      ],
+      "goal_xy": [
+        -3.0,
+        0.0
+      ],
+      "decision_heading_deg": 90.0,
+      "camera_height_m": 0.47,
+      "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0.png",
+      "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0_N_vs_W_90_W.png",
+      "contact_status": {
+        "obstacle_contacts_count": 0,
+        "support_contacts_count": 3,
+        "ambiguous": false
+      },
+      "split": null,
+      "provenance": {
+        "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+        "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+        "gate_history": {
+          "drive_validation_pass": "935ed85",
+          "recorded_mode_plan": "905ea50",
+          "recorded_mode_harness": "6ad131e",
+          "dry_run_emitter": "6123ba6",
+          "cli_dry_run_evidence": "03ed7f4",
+          "tiny_pilot_plan": "aa7de13"
+        },
+        "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+      },
+      "decision_rgb_nonempty": true,
+      "goal_rgb_nonempty": true
+    },
+    {
+      "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+      "instance_id": "pilot_inst0",
+      "decision_frame_id": "pilot_inst0_df0",
+      "goal_image_id": "pilot_inst0_df0_N_vs_E_90_N",
+      "route_family": "N_vs_E_90",
+      "branch": "N",
+      "action_class": "STRAIGHT",
+      "branch_choice": {
+        "branch": "N",
+        "action_class": "STRAIGHT",
+        "turn_deg": 0.0,
+        "policy_driven": false
+      },
+      "decision_xy": [
+        0.0,
+        0.0
+      ],
+      "goal_xy": [
+        0.0,
+        3.0
+      ],
+      "decision_heading_deg": 90.0,
+      "camera_height_m": 0.47,
+      "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0.png",
+      "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0_N_vs_E_90_N.png",
+      "contact_status": {
+        "obstacle_contacts_count": 0,
+        "support_contacts_count": 3,
+        "ambiguous": false
+      },
+      "split": null,
+      "provenance": {
+        "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+        "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+        "gate_history": {
+          "drive_validation_pass": "935ed85",
+          "recorded_mode_plan": "905ea50",
+          "recorded_mode_harness": "6ad131e",
+          "dry_run_emitter": "6123ba6",
+          "cli_dry_run_evidence": "03ed7f4",
+          "tiny_pilot_plan": "aa7de13"
+        },
+        "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+      },
+      "decision_rgb_nonempty": true,
+      "goal_rgb_nonempty": true
+    },
+    {
+      "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+      "instance_id": "pilot_inst0",
+      "decision_frame_id": "pilot_inst0_df0",
+      "goal_image_id": "pilot_inst0_df0_N_vs_E_90_E",
+      "route_family": "N_vs_E_90",
+      "branch": "E",
+      "action_class": "TURN_RIGHT_90",
+      "branch_choice": {
+        "branch": "E",
+        "action_class": "TURN_RIGHT_90",
+        "turn_deg": -90.0,
+        "policy_driven": false
+      },
+      "decision_xy": [
+        0.0,
+        0.0
+      ],
+      "goal_xy": [
+        3.0,
+        0.0
+      ],
+      "decision_heading_deg": 90.0,
+      "camera_height_m": 0.47,
+      "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0.png",
+      "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0_N_vs_E_90_E.png",
+      "contact_status": {
+        "obstacle_contacts_count": 0,
+        "support_contacts_count": 3,
+        "ambiguous": false
+      },
+      "split": null,
+      "provenance": {
+        "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+        "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+        "gate_history": {
+          "drive_validation_pass": "935ed85",
+          "recorded_mode_plan": "905ea50",
+          "recorded_mode_harness": "6ad131e",
+          "dry_run_emitter": "6123ba6",
+          "cli_dry_run_evidence": "03ed7f4",
+          "tiny_pilot_plan": "aa7de13"
+        },
+        "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+      },
+      "decision_rgb_nonempty": true,
+      "goal_rgb_nonempty": true
+    },
+    {
+      "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+      "instance_id": "pilot_inst0",
+      "decision_frame_id": "pilot_inst0_df1",
+      "goal_image_id": "pilot_inst0_df1_N_vs_W_90_N",
+      "route_family": "N_vs_W_90",
+      "branch": "N",
+      "action_class": "STRAIGHT",
+      "branch_choice": {
+        "branch": "N",
+        "action_class": "STRAIGHT",
+        "turn_deg": 0.0,
+        "policy_driven": false
+      },
+      "decision_xy": [
+        0.0,
+        0.0
+      ],
+      "goal_xy": [
+        0.0,
+        3.0
+      ],
+      "decision_heading_deg": 90.0,
+      "camera_height_m": 0.47,
+      "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1.png",
+      "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1_N_vs_W_90_N.png",
+      "contact_status": {
+        "obstacle_contacts_count": 0,
+        "support_contacts_count": 3,
+        "ambiguous": false
+      },
+      "split": null,
+      "provenance": {
+        "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+        "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+        "gate_history": {
+          "drive_validation_pass": "935ed85",
+          "recorded_mode_plan": "905ea50",
+          "recorded_mode_harness": "6ad131e",
+          "dry_run_emitter": "6123ba6",
+          "cli_dry_run_evidence": "03ed7f4",
+          "tiny_pilot_plan": "aa7de13"
+        },
+        "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+      },
+      "decision_rgb_nonempty": true,
+      "goal_rgb_nonempty": true
+    },
+    {
+      "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+      "instance_id": "pilot_inst0",
+      "decision_frame_id": "pilot_inst0_df1",
+      "goal_image_id": "pilot_inst0_df1_N_vs_W_90_W",
+      "route_family": "N_vs_W_90",
+      "branch": "W",
+      "action_class": "TURN_LEFT_90",
+      "branch_choice": {
+        "branch": "W",
+        "action_class": "TURN_LEFT_90",
+        "turn_deg": 90.0,
+        "policy_driven": false
+      },
+      "decision_xy": [
+        0.0,
+        0.0
+      ],
+      "goal_xy": [
+        -3.0,
+        0.0
+      ],
+      "decision_heading_deg": 90.0,
+      "camera_height_m": 0.47,
+      "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1.png",
+      "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1_N_vs_W_90_W.png",
+      "contact_status": {
+        "obstacle_contacts_count": 0,
+        "support_contacts_count": 3,
+        "ambiguous": false
+      },
+      "split": null,
+      "provenance": {
+        "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+        "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+        "gate_history": {
+          "drive_validation_pass": "935ed85",
+          "recorded_mode_plan": "905ea50",
+          "recorded_mode_harness": "6ad131e",
+          "dry_run_emitter": "6123ba6",
+          "cli_dry_run_evidence": "03ed7f4",
+          "tiny_pilot_plan": "aa7de13"
+        },
+        "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+      },
+      "decision_rgb_nonempty": true,
+      "goal_rgb_nonempty": true
+    },
+    {
+      "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+      "instance_id": "pilot_inst0",
+      "decision_frame_id": "pilot_inst0_df1",
+      "goal_image_id": "pilot_inst0_df1_N_vs_E_90_N",
+      "route_family": "N_vs_E_90",
+      "branch": "N",
+      "action_class": "STRAIGHT",
+      "branch_choice": {
+        "branch": "N",
+        "action_class": "STRAIGHT",
+        "turn_deg": 0.0,
+        "policy_driven": false
+      },
+      "decision_xy": [
+        0.0,
+        0.0
+      ],
+      "goal_xy": [
+        0.0,
+        3.0
+      ],
+      "decision_heading_deg": 90.0,
+      "camera_height_m": 0.47,
+      "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1.png",
+      "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1_N_vs_E_90_N.png",
+      "contact_status": {
+        "obstacle_contacts_count": 0,
+        "support_contacts_count": 3,
+        "ambiguous": false
+      },
+      "split": null,
+      "provenance": {
+        "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+        "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+        "gate_history": {
+          "drive_validation_pass": "935ed85",
+          "recorded_mode_plan": "905ea50",
+          "recorded_mode_harness": "6ad131e",
+          "dry_run_emitter": "6123ba6",
+          "cli_dry_run_evidence": "03ed7f4",
+          "tiny_pilot_plan": "aa7de13"
+        },
+        "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+      },
+      "decision_rgb_nonempty": true,
+      "goal_rgb_nonempty": true
+    },
+    {
+      "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+      "instance_id": "pilot_inst0",
+      "decision_frame_id": "pilot_inst0_df1",
+      "goal_image_id": "pilot_inst0_df1_N_vs_E_90_E",
+      "route_family": "N_vs_E_90",
+      "branch": "E",
+      "action_class": "TURN_RIGHT_90",
+      "branch_choice": {
+        "branch": "E",
+        "action_class": "TURN_RIGHT_90",
+        "turn_deg": -90.0,
+        "policy_driven": false
+      },
+      "decision_xy": [
+        0.0,
+        0.0
+      ],
+      "goal_xy": [
+        3.0,
+        0.0
+      ],
+      "decision_heading_deg": 90.0,
+      "camera_height_m": 0.47,
+      "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1.png",
+      "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1_N_vs_E_90_E.png",
+      "contact_status": {
+        "obstacle_contacts_count": 0,
+        "support_contacts_count": 3,
+        "ambiguous": false
+      },
+      "split": null,
+      "provenance": {
+        "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+        "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+        "gate_history": {
+          "drive_validation_pass": "935ed85",
+          "recorded_mode_plan": "905ea50",
+          "recorded_mode_harness": "6ad131e",
+          "dry_run_emitter": "6123ba6",
+          "cli_dry_run_evidence": "03ed7f4",
+          "tiny_pilot_plan": "aa7de13"
+        },
+        "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+      },
+      "decision_rgb_nonempty": true,
+      "goal_rgb_nonempty": true
+    }
+  ],
+  "leakage_audit": {
+    "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+    "n_examples": 8,
+    "per_split_counts": {
+      "train": 0,
+      "val": 0,
+      "test": 0
+    },
+    "n_instances": 1,
+    "single_instance_not_leakage_safe": true,
+    "reused_decision_frames_across_splits": [],
+    "reused_goal_images_across_splits": [],
+    "reused_coordinates_across_splits": [],
+    "leakage_safe": false,
+    "meets_min_scale": false,
+    "audit_pass": false,
+    "reasons": [
+      "below_min_scale",
+      "single_instance_not_leakage_safe"
+    ]
+  },
+  "no_policy_inference": true,
+  "no_training": true,
+  "no_rollout_metrics": true,
+  "expected_artifacts": [
+    "recorded_mode_manifest",
+    "image_index",
+    "action_label_table",
+    "split_manifest",
+    "leakage_audit_report",
+    "contact_collision_log",
+    "recording_report"
+  ],
+  "pilot_pass": true,
+  "pilot_fail_reasons": [],
+  "allowed_pilot_artifacts": [
+    "pilot_manifest",
+    "pilot_image_index",
+    "pilot_action_label_table",
+    "pilot_contact_log",
+    "pilot_provenance_table",
+    "pilot_leakage_audit_report",
+    "pilot_recording_report"
+  ],
+  "forbidden_pilot_outputs": [
+    "checkpoints",
+    "weights",
+    "wandb",
+    "rollout_metrics",
+    "benchmark_tables",
+    "model_outputs",
+    "action_probe_outputs",
+    "train_val_test_dataset_files"
+  ]
+}

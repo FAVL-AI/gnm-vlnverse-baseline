@@ -1,0 +1,66 @@
+[
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "goal_image_id": "pilot_inst0_df0_N_vs_W_90_N",
+    "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0.png",
+    "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0_N_vs_W_90_N.png",
+    "decision_rgb_nonempty": true,
+    "goal_rgb_nonempty": true
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "goal_image_id": "pilot_inst0_df0_N_vs_W_90_W",
+    "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0.png",
+    "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0_N_vs_W_90_W.png",
+    "decision_rgb_nonempty": true,
+    "goal_rgb_nonempty": true
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "goal_image_id": "pilot_inst0_df0_N_vs_E_90_N",
+    "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0.png",
+    "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0_N_vs_E_90_N.png",
+    "decision_rgb_nonempty": true,
+    "goal_rgb_nonempty": true
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "goal_image_id": "pilot_inst0_df0_N_vs_E_90_E",
+    "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0.png",
+    "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df0_N_vs_E_90_E.png",
+    "decision_rgb_nonempty": true,
+    "goal_rgb_nonempty": true
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "goal_image_id": "pilot_inst0_df1_N_vs_W_90_N",
+    "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1.png",
+    "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1_N_vs_W_90_N.png",
+    "decision_rgb_nonempty": true,
+    "goal_rgb_nonempty": true
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "goal_image_id": "pilot_inst0_df1_N_vs_W_90_W",
+    "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1.png",
+    "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1_N_vs_W_90_W.png",
+    "decision_rgb_nonempty": true,
+    "goal_rgb_nonempty": true
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "goal_image_id": "pilot_inst0_df1_N_vs_E_90_N",
+    "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1.png",
+    "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1_N_vs_E_90_N.png",
+    "decision_rgb_nonempty": true,
+    "goal_rgb_nonempty": true
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "goal_image_id": "pilot_inst0_df1_N_vs_E_90_E",
+    "decision_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1.png",
+    "goal_rgb_path": "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot/images/pilot_inst0_df1_N_vs_E_90_E.png",
+    "decision_rgb_nonempty": true,
+    "goal_rgb_nonempty": true
+  }
+]

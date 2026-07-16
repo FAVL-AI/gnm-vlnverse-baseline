@@ -1,0 +1,250 @@
+[
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "pose": "decision",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 1,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 31.72
+  },
+  {
+    "goal_image_id": "pilot_inst0_df0_N_vs_W_90_N",
+    "pose": "goal",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 2,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/N_floor_strip",
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 20.21
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "pose": "decision",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 1,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 37.27
+  },
+  {
+    "goal_image_id": "pilot_inst0_df0_N_vs_W_90_W",
+    "pose": "goal",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 2,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/Floor",
+      "/World/Scene/Structure/W_floor_strip"
+    ],
+    "in_bounds": true,
+    "mean_luma": 20.77
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "pose": "decision",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 1,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 38.91
+  },
+  {
+    "goal_image_id": "pilot_inst0_df0_N_vs_E_90_N",
+    "pose": "goal",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 2,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/N_floor_strip",
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 27.67
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df0",
+    "pose": "decision",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 1,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 40.04
+  },
+  {
+    "goal_image_id": "pilot_inst0_df0_N_vs_E_90_E",
+    "pose": "goal",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 2,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/E_floor_strip",
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 44.1
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "pose": "decision",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 1,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 40.47
+  },
+  {
+    "goal_image_id": "pilot_inst0_df1_N_vs_W_90_N",
+    "pose": "goal",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 2,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/N_floor_strip",
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 29.38
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "pose": "decision",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 1,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 41.27
+  },
+  {
+    "goal_image_id": "pilot_inst0_df1_N_vs_W_90_W",
+    "pose": "goal",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 2,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/Floor",
+      "/World/Scene/Structure/W_floor_strip"
+    ],
+    "in_bounds": true,
+    "mean_luma": 23.71
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "pose": "decision",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 1,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 41.57
+  },
+  {
+    "goal_image_id": "pilot_inst0_df1_N_vs_E_90_N",
+    "pose": "goal",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 2,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/N_floor_strip",
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 30.68
+  },
+  {
+    "decision_frame_id": "pilot_inst0_df1",
+    "pose": "decision",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 1,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 41.92
+  },
+  {
+    "goal_image_id": "pilot_inst0_df1_N_vs_E_90_E",
+    "pose": "goal",
+    "obstacle_contacts_count": 0,
+    "support_contacts_count": 2,
+    "support_contact_allowed": true,
+    "obstacle_contact_failure": false,
+    "ambiguous": false,
+    "hit_prims": [],
+    "support_prims": [
+      "/World/Scene/Structure/E_floor_strip",
+      "/World/Scene/Structure/Floor"
+    ],
+    "in_bounds": true,
+    "mean_luma": 53.35
+  }
+]

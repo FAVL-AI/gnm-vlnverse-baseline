@@ -1,0 +1,210 @@
+[
+  {
+    "instance_id": "pilot_inst0",
+    "decision_frame_id": "pilot_inst0_df0",
+    "goal_image_id": "pilot_inst0_df0_N_vs_W_90_N",
+    "decision_xy": [
+      0.0,
+      0.0
+    ],
+    "goal_xy": [
+      0.0,
+      3.0
+    ],
+    "provenance": {
+      "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+      "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+      "gate_history": {
+        "drive_validation_pass": "935ed85",
+        "recorded_mode_plan": "905ea50",
+        "recorded_mode_harness": "6ad131e",
+        "dry_run_emitter": "6123ba6",
+        "cli_dry_run_evidence": "03ed7f4",
+        "tiny_pilot_plan": "aa7de13"
+      },
+      "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+    }
+  },
+  {
+    "instance_id": "pilot_inst0",
+    "decision_frame_id": "pilot_inst0_df0",
+    "goal_image_id": "pilot_inst0_df0_N_vs_W_90_W",
+    "decision_xy": [
+      0.0,
+      0.0
+    ],
+    "goal_xy": [
+      -3.0,
+      0.0
+    ],
+    "provenance": {
+      "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+      "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+      "gate_history": {
+        "drive_validation_pass": "935ed85",
+        "recorded_mode_plan": "905ea50",
+        "recorded_mode_harness": "6ad131e",
+        "dry_run_emitter": "6123ba6",
+        "cli_dry_run_evidence": "03ed7f4",
+        "tiny_pilot_plan": "aa7de13"
+      },
+      "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+    }
+  },
+  {
+    "instance_id": "pilot_inst0",
+    "decision_frame_id": "pilot_inst0_df0",
+    "goal_image_id": "pilot_inst0_df0_N_vs_E_90_N",
+    "decision_xy": [
+      0.0,
+      0.0
+    ],
+    "goal_xy": [
+      0.0,
+      3.0
+    ],
+    "provenance": {
+      "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+      "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+      "gate_history": {
+        "drive_validation_pass": "935ed85",
+        "recorded_mode_plan": "905ea50",
+        "recorded_mode_harness": "6ad131e",
+        "dry_run_emitter": "6123ba6",
+        "cli_dry_run_evidence": "03ed7f4",
+        "tiny_pilot_plan": "aa7de13"
+      },
+      "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+    }
+  },
+  {
+    "instance_id": "pilot_inst0",
+    "decision_frame_id": "pilot_inst0_df0",
+    "goal_image_id": "pilot_inst0_df0_N_vs_E_90_E",
+    "decision_xy": [
+      0.0,
+      0.0
+    ],
+    "goal_xy": [
+      3.0,
+      0.0
+    ],
+    "provenance": {
+      "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+      "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+      "gate_history": {
+        "drive_validation_pass": "935ed85",
+        "recorded_mode_plan": "905ea50",
+        "recorded_mode_harness": "6ad131e",
+        "dry_run_emitter": "6123ba6",
+        "cli_dry_run_evidence": "03ed7f4",
+        "tiny_pilot_plan": "aa7de13"
+      },
+      "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+    }
+  },
+  {
+    "instance_id": "pilot_inst0",
+    "decision_frame_id": "pilot_inst0_df1",
+    "goal_image_id": "pilot_inst0_df1_N_vs_W_90_N",
+    "decision_xy": [
+      0.0,
+      0.0
+    ],
+    "goal_xy": [
+      0.0,
+      3.0
+    ],
+    "provenance": {
+      "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+      "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+      "gate_history": {
+        "drive_validation_pass": "935ed85",
+        "recorded_mode_plan": "905ea50",
+        "recorded_mode_harness": "6ad131e",
+        "dry_run_emitter": "6123ba6",
+        "cli_dry_run_evidence": "03ed7f4",
+        "tiny_pilot_plan": "aa7de13"
+      },
+      "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+    }
+  },
+  {
+    "instance_id": "pilot_inst0",
+    "decision_frame_id": "pilot_inst0_df1",
+    "goal_image_id": "pilot_inst0_df1_N_vs_W_90_W",
+    "decision_xy": [
+      0.0,
+      0.0
+    ],
+    "goal_xy": [
+      -3.0,
+      0.0
+    ],
+    "provenance": {
+      "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+      "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+      "gate_history": {
+        "drive_validation_pass": "935ed85",
+        "recorded_mode_plan": "905ea50",
+        "recorded_mode_harness": "6ad131e",
+        "dry_run_emitter": "6123ba6",
+        "cli_dry_run_evidence": "03ed7f4",
+        "tiny_pilot_plan": "aa7de13"
+      },
+      "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+    }
+  },
+  {
+    "instance_id": "pilot_inst0",
+    "decision_frame_id": "pilot_inst0_df1",
+    "goal_image_id": "pilot_inst0_df1_N_vs_E_90_N",
+    "decision_xy": [
+      0.0,
+      0.0
+    ],
+    "goal_xy": [
+      0.0,
+      3.0
+    ],
+    "provenance": {
+      "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+      "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+      "gate_history": {
+        "drive_validation_pass": "935ed85",
+        "recorded_mode_plan": "905ea50",
+        "recorded_mode_harness": "6ad131e",
+        "dry_run_emitter": "6123ba6",
+        "cli_dry_run_evidence": "03ed7f4",
+        "tiny_pilot_plan": "aa7de13"
+      },
+      "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+    }
+  },
+  {
+    "instance_id": "pilot_inst0",
+    "decision_frame_id": "pilot_inst0_df1",
+    "goal_image_id": "pilot_inst0_df1_N_vs_E_90_E",
+    "decision_xy": [
+      0.0,
+      0.0
+    ],
+    "goal_xy": [
+      3.0,
+      0.0
+    ],
+    "provenance": {
+      "scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+      "config": "configs/gnm/h8_synthetic_fork_recorded_mode_pilot.yaml",
+      "gate_history": {
+        "drive_validation_pass": "935ed85",
+        "recorded_mode_plan": "905ea50",
+        "recorded_mode_harness": "6ad131e",
+        "dry_run_emitter": "6123ba6",
+        "cli_dry_run_evidence": "03ed7f4",
+        "tiny_pilot_plan": "aa7de13"
+      },
+      "harness": "scripts/gnm/h8_synthetic_fork_recorded_mode.py"
+    }
+  }
+]
