@@ -391,6 +391,104 @@ def test_run_capture_requires_config():
     assert rm.main(["--mode", "capture"]) != 0
 
 
+# ── dataset-config DRY-RUN emitter (no Isaac, no capture) ─────────────────────
+DATASET_CFG_PATH = REPO / "configs/gnm/h8_synthetic_fork_recorded_mode_dataset.yaml"
+FIVE_DATASET_DRYRUN_FILES = ["dataset_dryrun_manifest.json", "dataset_dryrun_report.md",
+                             "dataset_leakage_audit_dryrun.json", "dataset_plan_schema.json",
+                             "dataset_split_validation_dryrun.json"]
+
+
+def _emit_dataset_dryrun(tmp_path):
+    rc = rm.main(["--mode", "dataset-dry-run", "--config", str(DATASET_CFG_PATH),
+                  "--out-dir", str(tmp_path)])
+    return rc
+
+
+def test_dataset_dry_run_cli_emits_the_five_named_files(tmp_path):
+    assert _emit_dataset_dryrun(tmp_path) == 0
+    names = sorted(p.name for p in tmp_path.iterdir())
+    assert names == sorted(FIVE_DATASET_DRYRUN_FILES)
+
+
+def test_dataset_dry_run_emits_no_capture_image_or_dataset_extensions(tmp_path):
+    _emit_dataset_dryrun(tmp_path)
+    for p in tmp_path.iterdir():
+        assert p.suffix not in (".png", ".jpg", ".jpeg", ".npy", ".bag", ".pt", ".ckpt", ".pth",
+                                ".pkl", ".bin"), f"forbidden capture/model artifact emitted: {p.name}"
+        assert "checkpoint" not in p.name and "wandb" not in p.name
+
+
+def test_dataset_dry_run_emits_no_rollout_metric_keys(tmp_path):
+    _emit_dataset_dryrun(tmp_path)
+    blob = "".join(p.read_text() for p in tmp_path.iterdir())
+    for metric in rm.FORBIDDEN_METRIC_KEYS:
+        assert f'"{metric}"' not in blob, f"rollout metric {metric} must not appear in dataset dry-run"
+
+
+def test_dataset_dry_run_all_25_checks_pass(tmp_path):
+    import json
+    _emit_dataset_dryrun(tmp_path)
+    manifest = json.loads((tmp_path / "dataset_dryrun_manifest.json").read_text())
+    assert manifest["overall"] == "PASS"
+    assert manifest["checks_passed"] == "25/25"
+    assert manifest["no_isaac"] is True and manifest["no_capture"] is True and manifest["no_images"] is True
+
+
+def test_dataset_dry_run_valid_plan_passes_as_plan_validation_only(tmp_path):
+    import json
+    _emit_dataset_dryrun(tmp_path)
+    audit = json.loads((tmp_path / "dataset_leakage_audit_dryrun.json").read_text())
+    v = audit["valid_plan_audit"]
+    assert v["leakage_safe"] is True and v["meets_min_scale"] is True and v["audit_pass"] is True
+    # explicitly a PLAN, not captured evidence
+    assert v["plan_validation_only_not_captured_evidence"] is True
+    assert v["per_split_counts"]["train"] >= 12 and v["per_split_counts"]["val"] >= 4
+    assert v["per_split_counts"]["test"] >= 6
+
+
+def test_dataset_dry_run_injected_reuse_fails_closed(tmp_path):
+    import json
+    _emit_dataset_dryrun(tmp_path)
+    audit = json.loads((tmp_path / "dataset_leakage_audit_dryrun.json").read_text())
+    cases = {c["case"]: c for c in audit["injected_leakage_cases"]}
+    for req in ("dup_decision_frame_across_splits", "dup_goal_image_across_splits",
+                "dup_coordinate_across_splits", "single_instance_collapse"):
+        assert req in cases, f"missing injected case {req}"
+        assert cases[req]["failed_closed"] is True
+        assert cases[req]["leakage_safe"] is False and cases[req]["audit_pass"] is False
+    assert audit["all_injected_failed_closed"] is True
+
+
+def test_dataset_dry_run_single_instance_collapse_fails_closed():
+    plan = rm.build_dataset_plan(rm.load_dataset_config(DATASET_CFG_PATH))
+    collapsed = [dict(r, instance_id="only_one") for r in plan]
+    a = rm.audit_examples(collapsed)
+    assert a["single_instance_not_leakage_safe"] is True
+    assert a["leakage_safe"] is False and a["audit_pass"] is False
+
+
+def test_dataset_dry_run_missing_validity_requirement_fails_closed(tmp_path):
+    import json
+    _emit_dataset_dryrun(tmp_path)
+    split = json.loads((tmp_path / "dataset_split_validation_dryrun.json").read_text())
+    reqs = {c["case"]: c for c in split["requirement_injection_cases"]}
+    for name in ("missing_render_valid_requirement", "missing_drive_valid_requirement"):
+        assert name in reqs and reqs[name]["failed_closed"] is True
+
+
+def test_dataset_dry_run_plan_is_leakage_safe_and_at_target_scale():
+    plan = rm.build_dataset_plan(rm.load_dataset_config(DATASET_CFG_PATH))
+    a = rm.audit_examples(plan)
+    assert a["audit_pass"] is True and a["leakage_safe"] is True and a["meets_min_scale"] is True
+    # the plan carries NO captured images (rgb-path fields are null) — plan validation only
+    assert all(r.get("decision_rgb_path") is None and r.get("goal_rgb_path") is None for r in plan)
+
+
+def test_dataset_dry_run_requires_config():
+    # dataset-dry-run without --config must refuse (nonzero) WITHOUT Isaac
+    assert rm.main(["--mode", "dataset-dry-run"]) != 0
+
+
 if __name__ == "__main__":
     import pytest as _pt
     raise SystemExit(_pt.main([__file__, "-q"]))

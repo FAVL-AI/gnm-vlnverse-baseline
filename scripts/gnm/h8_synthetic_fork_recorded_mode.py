@@ -62,6 +62,7 @@ CLAIM_BOUNDARY = "SYNTHETIC_DIAGNOSTIC_ONLY"
 OUT_DIR = REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode"
 DRYRUN_DIR = REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_dryrun"
 PILOT_DIR = REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_pilot"
+DATASET_DRYRUN_DIR = REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_dataset_dryrun"
 
 # the ONLY artifacts a pilot capture may emit, and the outputs it must never emit
 ALLOWED_PILOT_ARTIFACTS = ("pilot_manifest", "pilot_image_index", "pilot_action_label_table",
@@ -438,6 +439,316 @@ def write_dry_run_artifacts(out_dir: Path) -> list:
         p.write_text(content)
         paths.append(p)
     return paths
+
+
+# ── dataset-config DRY-RUN: validate the full dataset capture config + emit artifacts (NO capture) ──
+ALLOWED_DATASET_DRYRUN_ARTIFACTS = ("dataset_dryrun_manifest.json", "dataset_plan_schema.json",
+                                    "dataset_split_validation_dryrun.json",
+                                    "dataset_leakage_audit_dryrun.json", "dataset_dryrun_report.md")
+_REQUIRED_DATASET_ARTIFACTS = ("full_recorded_mode_manifest", "image_index", "action_label_table",
+                               "split_manifest", "contact_log", "provenance_table",
+                               "leakage_audit_report", "recording_report")
+_REQUIRED_FORBIDDEN_OUTPUTS = ("checkpoints", "weights", "wandb", "rollout_metrics", "benchmark_tables",
+                               "model_outputs", "action_probe_outputs")
+
+
+def load_dataset_config(path) -> dict:
+    """Load the full dataset capture config (YAML; lazy import). Raises FileNotFoundError on a missing
+    path and ValueError on a non-mapping. No Isaac, no capture."""
+    import yaml  # lazy — keeps module-level imports free of extra deps
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"dataset config not found: {path}")
+    cfg = yaml.safe_load(p.read_text())
+    if not isinstance(cfg, dict):
+        raise ValueError(f"dataset config is not a mapping: {path}")
+    return cfg
+
+
+def _dataset_split_layout(cfg: dict) -> tuple:
+    """(instances, by_split, frames_per_split) for the config. frames_per_split is the per-instance
+    frame count each split needs to reach its per-split minimum (ceil division)."""
+    ms = cfg.get("minimum_scale", {}) or {}
+    targets = {"train": int(ms.get("min_train", MIN_TRAIN_FRAMES)),
+               "val": int(ms.get("min_val", MIN_VAL_FRAMES)),
+               "test": int(ms.get("min_test", MIN_TEST_FRAMES))}
+    instances = (cfg.get("instance_plan", {}) or {}).get("instances", []) or []
+    by_split = {}
+    for i in instances:
+        by_split.setdefault(i.get("split"), []).append(i)
+    frames = {sp: max(1, -(-targets[sp] // max(1, len(by_split.get(sp, []))))) for sp in targets}
+    return instances, by_split, frames
+
+
+def build_dataset_plan(cfg: dict) -> list:
+    """Build PLANNED (not captured) example records from the dataset config's instance_plan + split
+    assignments at the config's minimum-scale target. Coordinates are namespaced by each instance's
+    coord_offset + frame index so the leakage audit sees disjoint decision/goal coordinates. These
+    records are a PLAN only — NO Isaac, NO capture, NO images (rgb-path fields stay null); they exist
+    solely to exercise the fail-closed leakage audit before any real capture."""
+    instances, _by_split, frames = _dataset_split_layout(cfg)
+    recs = []
+    for i in instances:
+        sp = i.get("split")
+        off = i.get("coord_offset") or [0, 0]
+        ox, oy = float(off[0]), float(off[1])
+        for k in range(frames.get(sp, 1)):
+            recs.append({
+                "claim_boundary": CLAIM_BOUNDARY, "instance_id": i.get("id"),
+                "decision_frame_id": f"{i.get('id')}_df{k}", "goal_image_id": f"{i.get('id')}_df{k}_g",
+                "split": sp, "decision_xy": [ox + 0.5 * k, oy], "goal_xy": [ox + 0.5 * k, oy + 3.0],
+                "branch": "N", "action_class": scripted_action_for_branch("N"),
+                "route_family": "N_vs_W_90", "decision_rgb_path": None, "goal_rgb_path": None})
+    return recs
+
+
+def _cross_split_pair(recs: list) -> tuple:
+    """Two records from DIFFERENT splits (falls back to first/last if only one split is present)."""
+    a = recs[0]
+    b = next((r for r in recs if r.get("split") != a.get("split")), recs[-1])
+    return a, b
+
+
+def dataset_injected_leakage_cases(valid_plan: list) -> list:
+    """Record-level injected leakage failures that MUST fail closed: duplicate decision-frame id across
+    splits, duplicate goal-image id across splits, duplicate coordinate across splits, and single-
+    instance collapse. Each result records the audit outcome + whether it failed closed as expected."""
+    def cp(recs):
+        return [dict(r) for r in recs]
+    specs = []
+    p = cp(valid_plan); a, b = _cross_split_pair(p); b["decision_frame_id"] = a["decision_frame_id"]
+    specs.append(("dup_decision_frame_across_splits", p))
+    p = cp(valid_plan); a, b = _cross_split_pair(p); b["goal_image_id"] = a["goal_image_id"]
+    specs.append(("dup_goal_image_across_splits", p))
+    p = cp(valid_plan); a, b = _cross_split_pair(p); b["decision_xy"] = list(a["decision_xy"])
+    specs.append(("dup_coordinate_across_splits", p))
+    p = cp(valid_plan)
+    for r in p:
+        r["instance_id"] = "only_one"
+    specs.append(("single_instance_collapse", p))
+    out = []
+    for name, recs in specs:
+        au = audit_examples(recs)
+        out.append({"case": name, "leakage_safe": au["leakage_safe"], "audit_pass": au["audit_pass"],
+                    "reasons": au["reasons"],
+                    "failed_closed": (au["leakage_safe"] is False and au["audit_pass"] is False)})
+    return out
+
+
+def dataset_requirement_injection_cases(cfg: dict) -> list:
+    """Optional config-level injected failures: removing render-valid or drive-valid from one instance
+    must make the per-instance validity-requirement check fail closed."""
+    import copy
+    out = []
+    for field, name in (("render_valid_required", "missing_render_valid_requirement"),
+                        ("drive_valid_required", "missing_drive_valid_requirement")):
+        c = copy.deepcopy(cfg)
+        insts = (c.get("instance_plan", {}) or {}).get("instances", []) or []
+        if insts:
+            insts[0][field] = False   # inject the missing requirement
+        holds = bool(insts) and all(i.get(field) is True for i in insts)
+        out.append({"case": name, "requirement_holds": holds, "failed_closed": holds is False})
+    return out
+
+
+def dataset_dry_run_checks(cfg: dict) -> dict:
+    """Run the 25 dataset-config dry-run checks over `cfg` (config fields + planned split + fail-closed
+    leakage-audit logic). Returns the check list, the valid-plan audit, and the injected-failure results.
+    No Isaac, no capture, no images."""
+    instances, by_split, frames = _dataset_split_layout(cfg)
+    valid_plan = build_dataset_plan(cfg)
+    valid_audit = audit_examples(valid_plan)
+    injected = dataset_injected_leakage_cases(valid_plan)
+    req_inject = dataset_requirement_injection_cases(cfg)
+
+    ms = cfg.get("minimum_scale", {}) or {}
+    sp = cfg.get("split_policy", {}) or {}
+    rf = cfg.get("route_families", {}) or {}
+    cc = cfg.get("capture_controls", {}) or {}
+    forb = cfg.get("forbidden_outputs", []) or []
+    arts = cfg.get("required_future_dataset_artifacts", []) or []
+    out = str(cfg.get("output_dir", "")).rstrip("/")
+    offsets = {}
+    for i in instances:
+        offsets.setdefault(tuple(i.get("coord_offset") or []), []).append(i.get("split"))
+    cross_split_offsets = sum(1 for _o, s in offsets.items() if len(set(s)) > 1)
+    inst_ids = [i.get("id") for i in instances]
+
+    C = []
+
+    def chk(n, name, passed, detail=""):
+        C.append({"n": n, "name": name, "pass": bool(passed), "detail": detail})
+
+    chk(1, "config_parses", isinstance(cfg, dict), f"top_keys={len(cfg)}")
+    chk(2, "claim_boundary_synthetic_only", cfg.get("claim_boundary") == CLAIM_BOUNDARY,
+        str(cfg.get("claim_boundary")))
+    chk(3, "authorizes_capture_false", cfg.get("authorizes_capture") is False)
+    chk(4, "authorizes_training_false", cfg.get("authorizes_training") is False)
+    chk(5, "output_dataset_only",
+        out.endswith("_recorded_mode_dataset")
+        and out not in (str(OUT_DIR.relative_to(REPO)), str(DRYRUN_DIR.relative_to(REPO)),
+                        str(PILOT_DIR.relative_to(REPO))), out)
+    chk(6, "cl_bound_xy_6_readonly",
+        cfg.get("cl_bound_xy") == CL_BOUND_XY and cfg.get("cl_bound_xy_readonly") is True
+        and CL_BOUND_XY == 6.0, f"cfg={cfg.get('cl_bound_xy')} harness={CL_BOUND_XY}")
+    chk(7, "min_scale_targets",
+        int(ms.get("min_train", 0)) >= 12 and int(ms.get("min_val", 0)) >= 4
+        and int(ms.get("min_test", 0)) >= 6 and int(ms.get("min_disjoint_instances", 0)) >= 6,
+        f"train>={ms.get('min_train')} val>={ms.get('min_val')} test>={ms.get('min_test')} "
+        f"inst>={ms.get('min_disjoint_instances')}")
+    chk(8, "planned_instance_count_ge_6",
+        int((cfg.get("instance_plan", {}) or {}).get("min_planned_instances", 0)) >= 6
+        and len(instances) >= 6, f"listed={len(instances)}")
+    chk(9, "split_before_training", sp.get("split_assignment_before_training") is True)
+    chk(10, "no_instance_reuse_across_splits",
+        sp.get("no_instance_leakage_across_splits") is True
+        and sp.get("allow_instance_leakage_across_splits") is False
+        and len(set(inst_ids)) == len(inst_ids), f"unique={len(set(inst_ids))}/{len(inst_ids)}")
+    chk(11, "no_coordinate_reuse_across_splits",
+        sp.get("no_coordinate_reuse_across_splits") is True
+        and len(set(offsets)) == len(instances) and cross_split_offsets == 0
+        and not valid_audit["reused_coordinates_across_splits"],
+        f"disjoint_offsets={len(set(offsets))}/{len(instances)} cross_split={cross_split_offsets}")
+    chk(12, "no_decision_frame_reuse_across_splits",
+        sp.get("no_decision_frame_reuse_across_splits") is True
+        and not valid_audit["reused_decision_frames_across_splits"])
+    chk(13, "no_goal_image_reuse_across_splits",
+        sp.get("no_goal_image_reuse_across_splits") is True
+        and not valid_audit["reused_goal_images_across_splits"])
+    chk(14, "each_instance_render_valid_required",
+        bool(instances) and all(i.get("render_valid_required") is True for i in instances))
+    chk(15, "each_instance_drive_valid_required",
+        bool(instances) and all(i.get("drive_valid_required") is True for i in instances))
+    chk(16, "route_family_N_vs_W_primary", rf.get("N_vs_W_90") == "primary")
+    chk(17, "same_start_diff_goal_present", rf.get("same_start_diff_goal") == "primary")
+    chk(18, "hard_negative_mismatched_goal_present",
+        rf.get("hard_negative_mismatched_goal") == "hard_negative")
+    chk(19, "secondaries_marked_secondary",
+        all(rf.get(k) == "secondary" for k in ("N_vs_E_90", "W_vs_E_180", "near_far_stop_distance")))
+    chk(20, "scripted_config_driven_only",
+        cc.get("config_driven") is True and cc.get("scripted_poses_only") is True)
+    chk(21, "no_policy_model_action_probe_training",
+        all(cc.get(k) is False for k in ("policy_inference", "model_inference",
+            "closed_loop_policy_execution", "action_probe", "training")))
+    chk(22, "forbidden_outputs_block_all", all(x in forb for x in _REQUIRED_FORBIDDEN_OUTPUTS),
+        "missing=" + ",".join(x for x in _REQUIRED_FORBIDDEN_OUTPUTS if x not in forb))
+    chk(23, "eight_required_artifacts_present",
+        all(a in arts for a in _REQUIRED_DATASET_ARTIFACTS) and len(_REQUIRED_DATASET_ARTIFACTS) == 8,
+        f"{sum(a in arts for a in _REQUIRED_DATASET_ARTIFACTS)}/8")
+    chk(24, "injected_reuse_fails_closed",
+        bool(injected) and all(c["failed_closed"] for c in injected)
+        and all(c["failed_closed"] for c in req_inject),
+        f"{sum(c['failed_closed'] for c in injected)}/{len(injected)} leakage + "
+        f"{sum(c['failed_closed'] for c in req_inject)}/{len(req_inject)} requirement")
+    chk(25, "valid_plan_passes_as_plan_validation",
+        valid_audit["leakage_safe"] is True and valid_audit["meets_min_scale"] is True
+        and valid_audit["audit_pass"] is True
+        and all(r.get("decision_rgb_path") is None and r.get("goal_rgb_path") is None
+                for r in valid_plan),
+        f"per_split={valid_audit['per_split_counts']} n_inst={valid_audit['n_instances']} no_images=True")
+
+    C.sort(key=lambda c: c["n"])
+    n_pass = sum(1 for c in C if c["pass"])
+    return {"checks": C, "n_pass": n_pass, "n_total": len(C), "all_pass": n_pass == len(C),
+            "valid_audit": valid_audit, "injected_leakage": injected, "requirement_injection": req_inject,
+            "instances": instances, "by_split": {k: len(v) for k, v in by_split.items()},
+            "frames_per_split": frames}
+
+
+def write_dataset_dry_run_artifacts(cfg_path, out_dir) -> tuple:
+    """Emit the five named dataset-config dry-run artifacts from the committed checks + audit functions.
+    CONFIG/SCHEMA/AUDIT ONLY — no Isaac, no capture, no images, no datasets. Returns (all_pass, paths)."""
+    cfg = load_dataset_config(cfg_path)
+    res = dataset_dry_run_checks(cfg)
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    overall = "PASS" if res["all_pass"] else "FAIL"
+    va = res["valid_audit"]
+    rel_cfg = str(cfg_path)
+    try:
+        rel_cfg = str(Path(cfg_path).resolve().relative_to(REPO))
+    except Exception:
+        pass
+
+    manifest = {
+        "note": "DRY-RUN — dataset config validation only. No Isaac, no capture, no images, no datasets.",
+        "mode": "dataset-dry-run", "claim_boundary": CLAIM_BOUNDARY, "config": rel_cfg,
+        "config_valid": res["all_pass"], "overall": overall,
+        "checks_passed": f"{res['n_pass']}/{res['n_total']}", "gate_history": cfg.get("gate_history"),
+        "planned_instance_count": len(res["instances"]),
+        "planned_split_instance_counts": res["by_split"],
+        "planned_frames_per_split": res["frames_per_split"],
+        "cl_bound_xy_readonly": CL_BOUND_XY,
+        "allowed_dataset_dryrun_artifacts": list(ALLOWED_DATASET_DRYRUN_ARTIFACTS),
+        "no_isaac": True, "no_capture": True, "no_images": True, "no_datasets": True,
+        "no_policy_inference": True, "no_training": True, "no_rollout_metrics": True,
+    }
+    schema = {
+        "note": "SCHEMA/PLAN ONLY — null-template record shape + dataset structural expectations; no capture.",
+        "example_record_schema": example_record_schema(),
+        "recorded_mode_manifest_schema": recorded_mode_manifest_schema(),
+        "leakage_audit_schema": leakage_audit_schema(),
+        "minimum_scale_targets": cfg.get("minimum_scale"),
+        "required_future_dataset_artifacts": cfg.get("required_future_dataset_artifacts"),
+        "forbidden_outputs": cfg.get("forbidden_outputs"),
+        "route_families": cfg.get("route_families"),
+    }
+    split_doc = {
+        "note": "PLANNED split validation — assignment BEFORE training; disjointness over planned records.",
+        "split_policy": cfg.get("split_policy"),
+        "instances": [{"id": i.get("id"), "split": i.get("split"), "coord_offset": i.get("coord_offset"),
+                       "render_valid_required": i.get("render_valid_required"),
+                       "drive_valid_required": i.get("drive_valid_required")} for i in res["instances"]],
+        "per_split_instance_counts": res["by_split"],
+        "planned_frames_per_split": res["frames_per_split"],
+        "planned_per_split_frame_counts": va["per_split_counts"],
+        "unique_instances": len({i.get("id") for i in res["instances"]}) == len(res["instances"]),
+        "requirement_injection_cases": res["requirement_injection"],
+    }
+    audit_doc = {
+        "note": "DRY-RUN leakage audit over the PLAN — plan validation only, NOT captured evidence; no images exist.",
+        "targets": {"min_train": MIN_TRAIN_FRAMES, "min_val": MIN_VAL_FRAMES,
+                    "min_test": MIN_TEST_FRAMES, "min_disjoint_instances": MIN_DISJOINT_INSTANCES},
+        "valid_plan_audit": {
+            "leakage_safe": va["leakage_safe"], "meets_min_scale": va["meets_min_scale"],
+            "audit_pass": va["audit_pass"], "per_split_counts": va["per_split_counts"],
+            "n_instances": va["n_instances"], "reasons": va["reasons"],
+            "plan_validation_only_not_captured_evidence": True},
+        "injected_leakage_cases": res["injected_leakage"],
+        "all_injected_failed_closed": all(c["failed_closed"] for c in res["injected_leakage"]),
+    }
+    check_lines = [f"  - [{'PASS' if c['pass'] else 'FAIL'}] {c['n']:>2}. {c['name']}"
+                   + (f"  ({c['detail']})" if c["detail"] else "") for c in res["checks"]]
+    inj_lines = [f"  - {c['case']}: {'FAIL-CLOSED' if c['failed_closed'] else 'DID NOT FAIL'} "
+                 f"(reasons={c['reasons']})" for c in res["injected_leakage"]]
+    report = (
+        "# H8 Synthetic Fork — Dataset-Config DRY-RUN Report\n\n"
+        f"**Status: DRY-RUN (config/schema/audit only) — `{CLAIM_BOUNDARY}`.** No Isaac launched, no "
+        "capture, no camera images, no datasets, no policy/model inference, no rollout metrics. "
+        f"`CL_BOUND_XY` unchanged (read-only mirror = {CL_BOUND_XY}).\n\n"
+        f"- **DRY-RUN: {overall}**  ({res['n_pass']}/{res['n_total']} checks)\n"
+        f"- config: {rel_cfg}\n"
+        f"- planned instances: {len(res['instances'])}  split instance counts: {res['by_split']}\n"
+        f"- valid-plan audit (PLAN validation only, NOT captured evidence): leakage_safe="
+        f"{va['leakage_safe']} meets_min_scale={va['meets_min_scale']} audit_pass={va['audit_pass']} "
+        f"per_split={va['per_split_counts']}\n\n"
+        "## 25 dataset dry-run checks\n" + "\n".join(check_lines) + "\n\n"
+        "## Injected leakage failures (must fail closed)\n" + "\n".join(inj_lines) + "\n\n"
+        "Claim boundary: SYNTHETIC_DIAGNOSTIC_ONLY; config/schema/audit dry-run only; no capture; no "
+        "images; no datasets; no policy/model inference; no training; no rollout metrics "
+        "(TL/NE/SR/OSR/SPL/nDTW/CR); no action-probe; no promotion; no autonomy; not training "
+        "authorization; CL_BOUND_XY unchanged.\n")
+
+    paths = []
+    for fname, content in (("dataset_dryrun_manifest.json", json.dumps(manifest, indent=2)),
+                           ("dataset_plan_schema.json", json.dumps(schema, indent=2)),
+                           ("dataset_split_validation_dryrun.json", json.dumps(split_doc, indent=2)),
+                           ("dataset_leakage_audit_dryrun.json", json.dumps(audit_doc, indent=2)),
+                           ("dataset_dryrun_report.md", report)):
+        p = out_dir / fname
+        p.write_text(content)
+        paths.append(p)
+    return res["all_pass"], paths
 
 
 # ── pilot capture config: load + fail-closed validate + capture plan (no Isaac) ──
@@ -829,11 +1140,14 @@ def finalize_pilot(records, contact_log, audit, passed, fail_reasons, out_dir: P
 # ── CLI ───────────────────────────────────────────────────────────────────────
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description="H8 synthetic fork recorded-mode harness (capture is gated)")
-    ap.add_argument("--mode", choices=["validate-config", "dry-run", "capture"],
+    ap.add_argument("--mode", choices=["validate-config", "dry-run", "dataset-dry-run", "capture"],
                     default="validate-config",
-                    help="validate-config (default, no Isaac) | dry-run (schema only) | capture "
-                         "(the gated recorded-mode capture — separate approval)")
-    ap.add_argument("--out-dir", default=str(OUT_DIR))
+                    help="validate-config (default, no Isaac) | dry-run (schema only) | dataset-dry-run "
+                         "(validate the full dataset capture config + emit dataset dry-run artifacts; no "
+                         "Isaac) | capture (the gated recorded-mode capture — separate approval)")
+    ap.add_argument("--out-dir", default=None,
+                    help="output dir; defaults per mode (dry-run -> DRYRUN_DIR, dataset-dry-run -> "
+                         "DATASET_DRYRUN_DIR)")
     ap.add_argument("--config", default=None,
                     help="pilot capture config (YAML); required for --mode capture, optional to "
                          "validate under --mode validate-config")
@@ -853,7 +1167,23 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
     refuse_forbidden_modes(args)   # nonzero exit if a forbidden flag was requested
-    out_dir = Path(args.out_dir)
+
+    # dataset-config dry-run: validate the full dataset capture config + emit the five dry-run
+    # artifacts. CONFIG/SCHEMA/AUDIT ONLY — no Isaac, no capture, no images, no datasets.
+    if args.mode == "dataset-dry-run":
+        if not args.config:
+            print("dataset-dry-run requires --config <dataset yaml>; refusing.", file=sys.stderr)
+            return 2
+        out_dir = Path(args.out_dir) if args.out_dir else DATASET_DRYRUN_DIR
+        try:
+            all_pass, paths = write_dataset_dry_run_artifacts(args.config, out_dir)
+        except Exception as e:
+            print(json.dumps({"dataset_dry_run": False, "error": str(e)}, indent=2), file=sys.stderr)
+            return 2
+        print(json.dumps({"mode": "dataset-dry-run", "claim_boundary": CLAIM_BOUNDARY,
+                          "config": str(args.config), "all_checks_pass": all_pass,
+                          "artifacts": [p.name for p in paths], "out_dir": str(out_dir)}, indent=2))
+        return 0 if all_pass else 1
 
     ok, issues, summary = validate_config()
     # if a pilot config is supplied, load + fail-closed validate it too (no Isaac)
@@ -877,6 +1207,7 @@ def main(argv=None) -> int:
     if args.mode == "validate-config":
         return 0
     if args.mode == "dry-run":
+        out_dir = Path(args.out_dir) if args.out_dir else DRYRUN_DIR
         if args.emit_schema:
             paths = write_dry_run_artifacts(out_dir)
             print(f"dry-run artifacts written to {out_dir}: {[p.name for p in paths]}")
