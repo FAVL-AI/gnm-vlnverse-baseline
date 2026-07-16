@@ -374,3 +374,40 @@ binding + fail-closed provider preflight integration + deterministic closure dig
 Level-3 runtime validity, trusted time, signatures, revocation, dataset or model validity, or capture
 authorisation. Recommend an **independent G1 review** before G2/G3. Real capture blocked; Levels 3–5
 unproven; Ruff Open.
+
+## G2 — H8 Cryptographic Trust Architecture & Design Gate — challenges (2026-07-16)
+
+**Design / specification / threat-model only** — no key, signature, certificate, token, signing/verification/
+revocation/timestamp service, observer, Isaac, ROS 2, render, drive or capture was created. The G2 design is
+recorded in `docs/research/H8_G2_CRYPTOGRAPHIC_TRUST_ARCHITECTURE.md`; every "control" below is a **design
+requirement**, not an operational capability. All items remain OPEN pending future bounded implementation +
+independent review gates (G2A–G2H). This gate does not change any implementation file and is not Level 3.
+
+| ID | Challenge | Owner |
+|---|---|---|
+| `H8-C-043` | Signed resolver-report envelope (`h8-trust-envelope/1.0.0`, §8) is designed but not implemented; report authenticity is still the G1R in-process marker (not cryptographic) | G2A |
+| `H8-C-044` | Canonicalisation (JCS, §9/`H8-DCP-067`) is specified but has no implementation or cross-language test vectors yet | G2A |
+| `H8-C-045` | Signature algorithm (Ed25519, §10/`H8-DCP-068`) is selected on paper; no signing/verification code, no keys | G2A/G2B |
+| `H8-C-046` | Key hierarchy + single-purpose usage binding (§11/`H8-DCP-069`) is designed; no keys, certificates or usage-policy enforcement exist | G2B |
+| `H8-C-047` | Key storage policy (§12/`H8-DCP-070`, repository-stored private keys rejected) is unenforced until a signing implementation exists | G2B |
+| `H8-C-048` | Trusted-time architecture (§14/`H8-DCP-072`) is designed; no TSA/transparency-time is available, so report freshness cannot be claimed (extends `H8-C-026`/`H8-C-034`; `REPORT_STALE` still reserved) | G2C |
+| `H8-C-049` | Revocation architecture (§15/`H8-DCP-073`) is designed; no revocation data, distribution or fail-closed verifier exists (extends `H8-C-028`) | G2D |
+| `H8-C-050` | Repository/release attestation (§16/`H8-DCP-074`) is designed; no signed tags / in-toto / SLSA / Sigstore integration exists — copied-history impersonation (`H8-C-041`) is only *designed* to be closed at *organisationally authorised* assurance and above | G2E |
+| `H8-C-051` | Physical/organisational origin assurance (§17/`H8-DCP-075`) requires host/workload attestation infrastructure not present; a signature alone still does not prove physical origin | G2E |
+| `H8-C-052` | Semantic per-dependency identity (§18/`H8-DCP-076`) is a curated design; `H8-G1RREV-F-002` path-substitution acceptance remains a live residual until commitments are implemented + reviewed, and it does not claim discovery of unknown future dependencies | G2F |
+| `H8-C-053` | `.gitattributes`/filter binding (§19/`H8-DCP-077`) is designed (raw-blob + attributes-closure digest); committed local `.gitattributes`/clean-smudge filters (the `H8-C-040` residual) remain unbound until implemented; LFS materialised-object verification stays a documented limitation | G2G |
+| `H8-C-054` | Anti-replay (§20/`H8-DCP-078`) and consumption registry are designed but not implemented; persisted reports are not yet replay-protected | G2A/G2D |
+| `H8-C-055` | Transparency/audit ledger (§21/`H8-DCP-079`) is designed only; split-view/equivocation risk unmitigated without inclusion-proof monitoring | G2H |
+| `H8-C-056` | Independent trust verifier (§22/§23/`H8-DCP-080`) and the `TRUST_*` reason-code taxonomy (§24, 25 design-only names) are specified but not added to `REASON_CODES` or implemented | G2H |
+| `H8-C-057` | Architecture migration A→C (§26/`H8-DCP-081`) and envelope/version migration (§30/`H8-DCP-082`) are designed; dual-trust-root acceptance and no-unknown-version enforcement are unimplemented | G2H |
+
+**Standing invariant unchanged by this gate:** a signed resolver report, once implemented, reaches at most
+assurance level 3 (*resolver-authenticated*) and remains **preflight-only**; it never authorises runtime
+(Level 3) or capture. Real capture remains **blocked**; Levels 3–5 unproven; Ruff Open (`H8-C-006`/
+`H8-C-013`).
+
+Design-gate verdict: **`PASS WITH DOCUMENTED LIMITATIONS`** — complete cryptographic-trust architecture with
+explicit signer/verifier separation, key/time/revocation/attestation/semantic-identity/`.gitattributes`
+designs and a full G2A–G2H implementation decomposition; **no cryptographic or runtime operation performed.**
+Recommended first implementation gate = **G2A** (canonical signed-envelope schema + fixture-only cross-
+language test vectors; no real key, no signing, no external service).

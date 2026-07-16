@@ -876,3 +876,163 @@ Non-Isaac, non-capturing; implements the concrete resolver specified by `H8-DCP-
 | Decision | The mandatory-set control enforces presence + exact-required + known categories for a fixed id set; it does NOT prove the set captures every future semantic dependency, nor bind each entry's content identity (path-substitution to another expected-type tracked file is still accepted — `H8-G1RREV-F-002`). A dedicated test keeps this residual visible. Per-dependency expected-digest binding and semantic discovery are deferred to G2. Documentation (G1R remediation report clarification) states the caller-manifest boundary precisely (closes `H8-G1RREV-F-004`). |
 | Reason | Honest scoping: do not disguise semantic-identity as solved through category presence. |
 | Status | **Accepted — with documented limitation** |
+
+## G2 — H8 Cryptographic Trust Architecture & Design Gate — decisions (2026-07-16)
+
+**Design / specification / threat-model only.** No key, signature, certificate, token, signing/verification/
+revocation/timestamp service, observer, Isaac, ROS 2, render, drive or capture is created. Every decision
+below is a **design requirement for a future bounded implementation gate**, not an operational control.
+Primary document: `docs/research/H8_G2_CRYPTOGRAPHIC_TRUST_ARCHITECTURE.md`.
+
+### H8-DCP-067 — Canonicalisation = JCS (RFC 8785), floats prohibited (G2 §9)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Signed bytes are produced by JSON Canonicalization Scheme (RFC 8785): UTF-8, lexicographic keys, shortest-decimal integers, **no floats in the signed payload**, NFC, POSIX repo-relative paths, RFC 3339 UTC `Z` times, duplicate keys rejected, unknown/extra fields rejected, explicit `extensions` object, schema-version bound in. Evaluated JCS vs deterministic CBOR (RFC 8949 §4.2) vs Protobuf; CBOR documented as migration option; Protobuf rejected for signing. |
+| Reason | Cross-language reproducibility + JSON continuity + auditability; float ambiguity removed by prohibition. |
+| Status | **Design-only** |
+
+### H8-DCP-068 — Signature algorithm = Ed25519 initial, ECDSA P-256 (RFC 6979) migration (G2 §10)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Initial Ed25519 (deterministic, 64-byte, misuse-resistant, no per-signature nonce); documented migration to ECDSA P-256 with RFC 6979 deterministic nonces for FIPS/KMS/HSM; RSA-PSS legacy-interop only. `signature_algorithm` is an explicit signed field; downgrade to an unlisted/weaker algorithm fails closed. **No key created.** |
+| Reason | Strongest misuse-resistance for research; NIST-curve path preserved for regulated environments. |
+| Status | **Design-only** |
+
+### H8-DCP-069 — Single-purpose key hierarchy with usage binding (G2 §11)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Offline root/policy → intermediate → single-purpose leaf keys (release-attestation, resolver-report, timestamp, runtime-observer [G3+], capture-authorisation [G9+]); fixture keys namespaced `h8-fixture-*` and excluded from production trust roots. A resolver-report key must not sign runtime-observer or capture evidence (usage binding + `TRUST_KEY_USAGE_INVALID`). |
+| Reason | Least privilege; a resolver signature can never authorise runtime or capture. |
+| Status | **Design-only** |
+
+### H8-DCP-070 — Key storage: repository-stored private keys REJECTED for all tiers (G2 §12)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Research-dev = OS keystore / TPM (local encrypted age/sops file **outside the repo** as fallback); production = HSM (PKCS#11) or cloud KMS, with workload-identity keyless signing preferred in CI. **Repository-stored private keys are rejected for research-dev, CI and production.** Fixture keys structurally cannot authorise production evidence. |
+| Reason | Private keys must never live in tracked repository content. |
+| Status | **Design-only** |
+
+### H8-DCP-071 — Resolver never accepts a caller-selected key; unsigned = preflight-unauthenticated (G2 §13)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Trust policy (not the caller/report) maps `resolver_id` → permitted `key_id`; the resolver holds no raw private key in production (external KMS/HSM signing); signing failure yields an unsigned/blocked report, never a silent accept; no report field self-declares an authorised key; persisted reports are re-verified (signature+time+revocation) before use. Extends the G1R no-injection principle. |
+| Reason | Prevents self-declaration forgery (F-001 class) and caller key substitution. |
+| Status | **Design-only** |
+
+### H8-DCP-072 — Trusted time staged; Git/sim time NEVER a freshness proof (G2 §14)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Separate untrusted wall clock / monotonic ordering clock / Git commit time / sim time / signed TSA time / verification time. Research = local monotonic + explicitly-untrusted time (freshness NOT claimed); CI = transparency-log inclusion time; production = RFC 3161 TSA and/or attested workload clock. `max_report_age`, `allowable_clock_skew`, backward-clock detection, authority-unavailable → deny. **Git commit time and simulator time are never trusted for freshness.** |
+| Reason | Freshness requires an external trusted time source; internal clocks are attacker-influenced. |
+| Status | **Design-only** |
+
+### H8-DCP-073 — Fail-closed revocation architecture (G2 §15)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Revocable subjects: signing key, resolver identity, producer identity, repository/release attestation, report id, policy version, dependency manifest, runtime observer, capture token (9). Signed revocation records `{subject_type, subject_id, effective_time, reason_code, supersedes, authority_sig}` distributed as signed bundles with `max_cache_age`; unavailable or stale-beyond-policy status → **deny** (`TRUST_REVOCATION_STATUS_UNAVAILABLE`); emergency channel + supersession + audit. |
+| Reason | Compromise must be revocable and unknown revocation state must never fail open. |
+| Status | **Design-only** |
+
+### H8-DCP-074 — Repository/release attestation = signed tags + in-toto/SLSA, migrate to Sigstore (G2 §16)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Initial model: signed Git tags (Ed25519/SSH-sig) marking approved commits/closures + CI-issued in-toto/SLSA provenance binding the release; production migration to Sigstore + Rekor transparency. **Stated limitation:** this proves an authorised release key approved a commit, NOT the physical origin of a given clone (deferred to §17). Remote URL and folder path are each insufficient. |
+| Reason | Distinguishes copied history / approved repository / approved release / authorised org source. |
+| Status | **Design-only** |
+
+### H8-DCP-075 — Physical/organisational origin assurance ladder (G2 §17, extends H8-DCP-062)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Content identity ≠ signing ≠ workload ≠ host ≠ network ≠ org ≠ physical-machine identity. A signature alone does NOT prove physical origin. Minimum H8-research claim = *organisationally authorised* (resolver-report key + release attestation both chain to the H8 research trust root, no physical-machine claim); stronger enterprise claim = host TPM/workload attestation bound into the envelope. Copied-history impersonation (`H8-C-041`) is addressed only at *organisationally authorised* and above. |
+| Reason | Honest scoping of what a signature can and cannot prove about origin. |
+| Status | **Design-only — supersedes the G2-deferral of H8-DCP-062 at the design level** |
+
+### H8-DCP-076 — Curated semantic per-dependency identity commitments (G2 §18, addresses H8-G1RREV-F-002)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | The envelope carries `per_dependency_identity_commitments[]` — a bounded, curated rule per mandatory class (schema-id+digest, policy-id+version+digest, canonical route digest with `coord_offset`/start/goal, scene-id+digests, `CL_BOUND_XY` field+value `6.0`, canonicalisation algo-id+test-vector digest, etc.). Substituting a same-type tracked file changes the semantic commitment → `TRUST_SEMANTIC_IDENTITY_MISMATCH`. This is a curated control; it does **not** claim whole-program semantic discovery of unknown future dependencies. |
+| Reason | Narrow, honest correction of F-002 without over-claiming semantic completeness. |
+| Status | **Design-only — F-002 remains a documented residual until implemented + reviewed** |
+
+### H8-DCP-077 — `.gitattributes`/filter binding via raw-blob + attributes-closure digest (G2 §19, addresses H8-C-040)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Signed payload commits to **raw Git blob bytes** per dependency (independent of clean/smudge filters) plus a digest of the effective `.gitattributes` closure and filter/EOL/encoding/LFS policy; any attribute/filter change invalidates the report (`TRUST_ATTRIBUTES_POLICY_MISMATCH`). Representation distinction fixed: Git identity = raw blob bytes, semantic identity = canonical parsed content, worktree identity = diagnostic only. LFS materialised-object verification remains a documented limitation. |
+| Reason | Committed local `.gitattributes`/filters (the H8-C-040 residual) must be bound, not just system/global neutralised. |
+| Status | **Design-only** |
+
+### H8-DCP-078 — Anti-replay: report_id + nonce + repo/HEAD/instance binding + consumption registry (G2 §20)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Unique `report_id` + `nonce` + `intended_use` (e.g. `preflight-document`) + repository/HEAD/instance binding + validity window + append-only consumption registry for one-time reports + revocation lookup at verification. **A resolver report authorises preflight verification, not capture.** |
+| Reason | Prevents reuse of old/valid/revoked/cross-repo/cross-instance reports. |
+| Status | **Design-only** |
+
+### H8-DCP-079 — Transparency/audit: append-only journal (research) → transparency log (production) (G2 §21)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Research = append-only local journal (+ optional research-only evidence dir); production = transparency log with inclusion proofs; define append semantics, retention, privacy, conflict handling; split-view/equivocation noted as a threat. No ledger implemented this gate. |
+| Reason | Independent auditability without introducing an operational ledger now. |
+| Status | **Design-only** |
+
+### H8-DCP-080 — Independent verifier holds only public roots, unknown exception → deny (G2 §22)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | `verify_resolver_envelope(...)` is distinct from the signer, holds only public trust roots (no signing key), returns structured dimensions, is version-pinned, and treats any unknown exception as **deny**. |
+| Reason | Separation of duties + fail-closed verification. |
+| Status | **Design-only** |
+
+### H8-DCP-081 — Architecture: Option A (TPM/OS, research) → Option C (keyless workload identity, production) (G2 §26)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Evaluated A (local detached/TPM), B (remote signing service), C (workload identity + transparency-backed keyless, e.g. Sigstore Fulcio+Rekor). Selected research-dev = A; future production = C; migration A→C via the versioned envelope + pluggable key-policy so verifiers accept both trust roots during transition. |
+| Reason | Simplest validatable design now; keyless transparent signing for production later. |
+| Status | **Design-only** |
+
+### H8-DCP-082 — Versioned envelope, no "accept unknown version" fallback (G2 §30)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Envelope/algorithm/key/trust-root/policy versioning with a bounded verifier backward-compat window, archived-roots verification of historical reports, fixture↔production separation, emergency algorithm disablement; deprecated schema rejected; **no accept-unknown-version fallback.** |
+| Reason | Safe evolution without silent acceptance of unrecognised formats. |
+| Status | **Design-only** |
+
+### H8-DCP-083 — Privacy/data-minimisation in signed reports (G2 §31)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Decision | Signed/shared reports exclude absolute paths, usernames, hostnames, internal addresses, secret ids, private URLs and raw environment variables; use stable pseudonymous policy ids. Signing does not make unnecessary personal/infrastructure data safe to disclose. Consistent with the deterministic `closure_digest` already excluding host paths. |
+| Reason | Signing must not become a channel for leaking infrastructure/personal data. |
+| Status | **Design-only** |
