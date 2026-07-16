@@ -1,0 +1,126 @@
+# H8 Synthetic Fork — Full Recorded-Mode Dataset CAPTURE CONFIG (config only).
+#
+# This file DEFINES what the full leakage-safe SYNTHETIC_DIAGNOSTIC_ONLY dataset would capture. It does
+# NOT authorize or run capture: `authorizes_capture: false`. It is consumed later, under a SEPARATE
+# approval, by the committed recorded-mode harness (scripts/gnm/h8_synthetic_fork_recorded_mode.py).
+# No capture, no Isaac, no images, no datasets, no policy/model inference, no training. `CL_BOUND_XY` is
+# a read-only reference (6.0) mirrored from the drive-validation watchdog — this config never modifies
+# it. Built from the committed full dataset plan (docs/.../H8_SYNTHETIC_FORK_RECORDED_MODE_DATASET_PLAN).
+#
+# Gate history (all committed on h23-execfix): drive-validation PASS 935ed85, recorded-mode plan
+# 905ea50, recorded-mode harness 6ad131e, dry-run emitter 6123ba6, CLI dry-run evidence 03ed7f4, pilot
+# plan aa7de13, pilot config c646225, executable pilot capture path 82f60f9, pilot capture evidence
+# 2659168, full dataset plan ba2bd58. Claim boundary: SYNTHETIC_DIAGNOSTIC_ONLY.
+
+claim_boundary: SYNTHETIC_DIAGNOSTIC_ONLY
+mode: dataset_capture_config_only
+authorizes_capture: false
+authorizes_training: false
+
+scene_base: assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda
+harness: scripts/gnm/h8_synthetic_fork_recorded_mode.py
+# planned FULL DATASET output directory ONLY (dataset-specific; NOT the pilot dir, NOT the dry-run dir)
+output_dir: assets/experiments/hospital_h8_track_b_synthetic_fork_recorded_mode_dataset/
+
+cl_bound_xy: 6.0            # read-only reference mirrored from the drive-validation watchdog
+cl_bound_xy_readonly: true
+
+gate_history:
+  drive_validation_pass: 935ed85
+  recorded_mode_plan: 905ea50
+  recorded_mode_harness: 6ad131e
+  dry_run_emitter: 6123ba6
+  cli_dry_run_evidence: 03ed7f4
+  pilot_plan: aa7de13
+  pilot_config: c646225
+  executable_pilot_capture_path: 82f60f9
+  pilot_capture_evidence: 2659168
+  full_dataset_plan: ba2bd58
+
+# 8. minimum scale (committed target)
+minimum_scale:
+  min_train: 12
+  min_val: 4
+  min_test: 6
+  min_disjoint_instances: 6
+
+# 9. split policy
+split_policy:
+  split_assignment_before_training: true
+  no_decision_frame_reuse_across_splits: true
+  no_goal_image_reuse_across_splits: true
+  no_coordinate_reuse_across_splits: true
+  no_instance_leakage_across_splits: true
+  allow_instance_leakage_across_splits: false     # only if explicitly justified AND marked unsafe
+  instance_leakage_justification: null
+
+# 10. instance plan — at least 6 disjoint instances; each re-passes render + drive validity before
+#     its capture evidence is accepted. `coord_offset` namespaces each instance's coordinates so the
+#     leakage audit sees disjoint coordinates; physical poses per instance stay within CL_BOUND_XY.
+instance_plan:
+  min_planned_instances: 6
+  camera_height_m: 0.47
+  variants_controlled_only: true
+  instances:
+    - {id: sfork_00, branch_layout: cross_4way,        floor_cue: stripes,   goal_marker: sphere_disc, camera_lighting: default, coord_offset: [0, 0],   split: train, render_valid_required: true, drive_valid_required: true}
+    - {id: sfork_01, branch_layout: cross_4way_rot90,  floor_cue: chevrons,  goal_marker: cone_pylon,  camera_lighting: default, coord_offset: [20, 0],  split: train, render_valid_required: true, drive_valid_required: true}
+    - {id: sfork_02, branch_layout: cross_4way_wideN,  floor_cue: tiles,     goal_marker: cube_crate,  camera_lighting: default, coord_offset: [40, 0],  split: train, render_valid_required: true, drive_valid_required: true}
+    - {id: sfork_03, branch_layout: cross_4way_narrowW,floor_cue: bars,      goal_marker: cylinder,    camera_lighting: default, coord_offset: [0, 20],  split: train, render_valid_required: true, drive_valid_required: true}
+    - {id: sfork_04, branch_layout: cross_4way_longarm, floor_cue: stripes2, goal_marker: disc_ring,   camera_lighting: default, coord_offset: [20, 20], split: val,   render_valid_required: true, drive_valid_required: true}
+    - {id: sfork_05, branch_layout: cross_4way_shortarm,floor_cue: chevrons2,goal_marker: cone2,       camera_lighting: default, coord_offset: [40, 20], split: val,   render_valid_required: true, drive_valid_required: true}
+    - {id: sfork_06, branch_layout: cross_4way_altcolor, floor_cue: tiles2,  goal_marker: crate2,      camera_lighting: default, coord_offset: [0, 40],  split: test,  render_valid_required: true, drive_valid_required: true}
+    - {id: sfork_07, branch_layout: cross_4way_altmark, floor_cue: bars2,    goal_marker: cylinder2,   camera_lighting: default, coord_offset: [20, 40], split: test,  render_valid_required: true, drive_valid_required: true}
+
+# 11. route families (primary = angular branch choice; secondary = control only)
+route_families:
+  N_vs_W_90: primary
+  N_vs_E_90: secondary
+  same_start_diff_goal: primary
+  hard_negative_mismatched_goal: hard_negative
+  W_vs_E_180: secondary
+  near_far_stop_distance: secondary
+
+# 12. capture controls — scripted only, no policy/model/closed-loop/action-probe/training
+capture_controls:
+  config_driven: true
+  scripted_poses_only: true
+  policy_inference: false
+  model_inference: false
+  closed_loop_policy_execution: false
+  action_probe: false
+  training: false
+
+# 13. required future dataset artifacts (produced only when capture is later approved)
+required_future_dataset_artifacts:
+  - full_recorded_mode_manifest
+  - image_index
+  - action_label_table
+  - split_manifest
+  - contact_log
+  - provenance_table
+  - leakage_audit_report
+  - recording_report
+
+# 14. forbidden outputs (never produced)
+forbidden_outputs:
+  - checkpoints
+  - weights
+  - wandb
+  - rollout_metrics
+  - benchmark_tables
+  - model_outputs
+  - action_probe_outputs
+
+# 15. pass/fail checks (evaluated later on the real dataset; listed here as the acceptance contract)
+pass_fail_checks:
+  - minimum_scale_met
+  - planned_disjoint_instances_present
+  - images_non_empty
+  - labels_populated
+  - provenance_present
+  - obstacle_contacts_zero_or_explicitly_excluded
+  - ambiguous_contacts_zero
+  - leakage_audit_passes
+  - no_policy_model_inference
+  - no_training_fields
+  - no_rollout_metrics
