@@ -1,0 +1,73 @@
+{
+  "note": "SCHEMA ONLY \u2014 every data field is a null template; no capture was run.",
+  "manifest_schema": {
+    "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+    "mode": "recorded_mode_capture",
+    "cl_bound_xy_readonly": 6.0,
+    "contact_classification_rule": "robot self-subtree hits excluded; floor/ground leaf-name -> support (allowed); every other collider hit -> obstacle (failure)",
+    "support_contact_allowed": true,
+    "targets": {
+      "min_train": 12,
+      "min_val": 4,
+      "min_test": 6,
+      "min_disjoint_instances": 6
+    },
+    "route_families": {
+      "N_vs_W_90": "primary",
+      "N_vs_E_90": "primary",
+      "W_vs_E_180": "secondary",
+      "same_start_diff_goal": "primary",
+      "hard_negative_mismatched_goal": "hard_negative",
+      "near_far_stop_distance": "secondary"
+    },
+    "base_scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+    "instances": null,
+    "examples": null,
+    "leakage_audit": null,
+    "no_policy_inference": true,
+    "no_training": true,
+    "no_rollout_metrics": true,
+    "expected_artifacts": [
+      "recorded_mode_manifest",
+      "image_index",
+      "action_label_table",
+      "split_manifest",
+      "leakage_audit_report",
+      "contact_collision_log",
+      "recording_report"
+    ]
+  },
+  "example_record_schema": {
+    "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+    "instance_id": null,
+    "decision_frame_id": null,
+    "goal_image_id": null,
+    "route_family": null,
+    "branch": null,
+    "action_class": null,
+    "branch_choice": null,
+    "decision_xy": null,
+    "goal_xy": null,
+    "decision_heading_deg": null,
+    "camera_height_m": 0.47,
+    "decision_rgb_path": null,
+    "goal_rgb_path": null,
+    "contact_status": null,
+    "split": null,
+    "provenance": null
+  },
+  "leakage_audit_schema": {
+    "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+    "n_examples": null,
+    "per_split_counts": null,
+    "n_instances": null,
+    "single_instance_not_leakage_safe": null,
+    "reused_decision_frames_across_splits": null,
+    "reused_goal_images_across_splits": null,
+    "reused_coordinates_across_splits": null,
+    "leakage_safe": null,
+    "meets_min_scale": null,
+    "audit_pass": null,
+    "reasons": null
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "note": "DRY-RUN synthetic/dummy audit cases only \u2014 no real data.",
+  "targets": {
+    "min_train": 12,
+    "min_val": 4,
+    "min_test": 6,
+    "min_disjoint_instances": 6
+  },
+  "all_cases_pass": true,
+  "cases": [
+    {
+      "case": "one_instance_dataset_fails",
+      "expected": {
+        "leakage_safe": false,
+        "audit_pass": false
+      },
+      "observed": {
+        "leakage_safe": false,
+        "meets_min_scale": false,
+        "audit_pass": false
+      },
+      "reasons": [
+        "below_min_scale",
+        "single_instance_not_leakage_safe"
+      ],
+      "n_instances": 1,
+      "per_split_counts": {
+        "train": 3,
+        "val": 0,
+        "test": 0
+      },
+      "case_pass": true
+    },
+    {
+      "case": "reused_decision_frame_id_fails",
+      "expected": {
+        "leakage_safe": false,
+        "audit_pass": false
+      },
+      "observed": {
+        "leakage_safe": false,
+        "meets_min_scale": false,
+        "audit_pass": false
+      },
+      "reasons": [
+        "below_min_scale",
+        "reused_decision_frame_across_splits"
+      ],
+      "n_instances": 2,
+      "per_split_counts": {
+        "train": 1,
+        "val": 0,
+        "test": 1
+      },
+      "case_pass": true
+    },
+    {
+      "case": "reused_goal_image_id_fails",
+      "expected": {
+        "leakage_safe": false,
+        "audit_pass": false
+      },
+      "observed": {
+        "leakage_safe": false,
+        "meets_min_scale": false,
+        "audit_pass": false
+      },
+      "reasons": [
+        "below_min_scale",
+        "reused_goal_image_across_splits"
+      ],
+      "n_instances": 2,
+      "per_split_counts": {
+        "train": 1,
+        "val": 1,
+        "test": 0
+      },
+      "case_pass": true
+    },
+    {
+      "case": "reused_coordinate_fails",
+      "expected": {
+        "leakage_safe": false,
+        "audit_pass": false
+      },
+      "observed": {
+        "leakage_safe": false,
+        "meets_min_scale": false,
+        "audit_pass": false
+      },
+      "reasons": [
+        "below_min_scale",
+        "reused_coordinate_across_splits"
+      ],
+      "n_instances": 2,
+      "per_split_counts": {
+        "train": 1,
+        "val": 0,
+        "test": 1
+      },
+      "case_pass": true
+    },
+    {
+      "case": "insufficient_scale_fails",
+      "expected": {
+        "meets_min_scale": false,
+        "audit_pass": false
+      },
+      "observed": {
+        "leakage_safe": true,
+        "meets_min_scale": false,
+        "audit_pass": false
+      },
+      "reasons": [
+        "below_min_scale"
+      ],
+      "n_instances": 2,
+      "per_split_counts": {
+        "train": 1,
+        "val": 0,
+        "test": 1
+      },
+      "case_pass": true
+    },
+    {
+      "case": "valid_multi_instance_plan_passes",
+      "expected": {
+        "leakage_safe": true,
+        "meets_min_scale": true,
+        "audit_pass": true
+      },
+      "observed": {
+        "leakage_safe": true,
+        "meets_min_scale": true,
+        "audit_pass": true
+      },
+      "reasons": [],
+      "n_instances": 22,
+      "per_split_counts": {
+        "train": 12,
+        "val": 4,
+        "test": 6
+      },
+      "case_pass": true
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "note": "DRY-RUN \u2014 schema/logic only. No Isaac, no capture, no images, no datasets.",
+  "mode": "dry-run",
+  "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+  "config_valid": true,
+  "config_issues": [],
+  "config_summary": {
+    "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+    "base_scene_exists": true,
+    "scene_identity_pass": true,
+    "targets_leakage_safe_family_required": true,
+    "cl_bound_xy_readonly": 6.0
+  },
+  "manifest_schema": {
+    "claim_boundary": "SYNTHETIC_DIAGNOSTIC_ONLY",
+    "mode": "recorded_mode_capture",
+    "cl_bound_xy_readonly": 6.0,
+    "contact_classification_rule": "robot self-subtree hits excluded; floor/ground leaf-name -> support (allowed); every other collider hit -> obstacle (failure)",
+    "support_contact_allowed": true,
+    "targets": {
+      "min_train": 12,
+      "min_val": 4,
+      "min_test": 6,
+      "min_disjoint_instances": 6
+    },
+    "route_families": {
+      "N_vs_W_90": "primary",
+      "N_vs_E_90": "primary",
+      "W_vs_E_180": "secondary",
+      "same_start_diff_goal": "primary",
+      "hard_negative_mismatched_goal": "hard_negative",
+      "near_far_stop_distance": "secondary"
+    },
+    "base_scene": "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda",
+    "instances": null,
+    "examples": null,
+    "leakage_audit": null,
+    "no_policy_inference": true,
+    "no_training": true,
+    "no_rollout_metrics": true,
+    "expected_artifacts": [
+      "recorded_mode_manifest",
+      "image_index",
+      "action_label_table",
+      "split_manifest",
+      "leakage_audit_report",
+      "contact_collision_log",
+      "recording_report"
+    ]
+  },
+  "cl_bound_xy_readonly": 6.0
+}
