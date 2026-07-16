@@ -517,3 +517,176 @@ Status legend: **Proposed / Accepted / Superseded / Rejected.**
 | Reversibility | Reversible. |
 | Remaining risk | None. |
 | Status | **Accepted** |
+
+## H8 Isaac Backend & Runtime-Validity Architecture Design Gate (2026-07-16)
+
+Decisions from `docs/research/H8_ISAAC_BACKEND_RUNTIME_ARCHITECTURE.md`. Design-only; nothing implemented,
+launched, or captured.
+
+### H8-DCP-035 — Isolated Isaac worker architecture (Option B)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Three patterns evaluated: in-process (A), isolated worker (B), separate service (C). |
+| Decision | Select **Option B** — a Capture Orchestrator drives a constrained Isaac worker over a typed local protocol; strong process isolation, restartability, controller-side policy, boundary signing. |
+| Alternatives considered | A (crash propagation, low isolation/auditability); C (deployment/network-trust/latency overhead, unneeded for one-instance validation). |
+| Reason | Isolation and auditability dominate for a first runtime-validity gate. |
+| Safety effect | An Isaac crash cannot corrupt the capture controller or its audit trail. |
+| Reversibility | Reversible (C remains a future scaling option). |
+| Remaining risk | Local-protocol integrity must be designed (owned G4). |
+| Status | **Accepted** |
+
+### H8-DCP-036 — First runtime worker owns NO dataset writer
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Runtime testing must not silently become unauthorised capture. |
+| Decision | The initial Isaac worker has **no dataset-writer capability**; the writer stays the existing separable `capture_backend` DI slot and is connected only at a later gate (G9), after runtime evidence is independently reviewed (G8). |
+| Alternatives considered | Worker owns writer (couples testing to capture — rejected). |
+| Reason | Capability separation prevents capture-before-authorisation. |
+| Safety effect | `capture_backend=None → rc3, captures nothing` already holds; the worker cannot write frames/trajectories/rosbags. |
+| Reversibility | Reversible under explicit later gate. |
+| Remaining risk | Writer-bypass must be tested (G4/G9). |
+| Status | **Accepted** |
+
+### H8-DCP-037 — Two-phase capture authorisation + one-time token
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Capture must not begin on a truthy status. |
+| Decision | Phase A establishes signed runtime render/drive evidence (no writer); Phase B activates capture only after a one-time, expiring, revocable `CaptureAuthToken` bound to the exact `runtime_identity_digest`. |
+| Alternatives considered | Single-phase gate (no TOCTOU protection — rejected). |
+| Reason | Separates evidence establishment from capture activation; enables re-inspection (H8-DCP-042). |
+| Safety effect | Preflight/document_only evidence can never authorise capture. |
+| Reversibility | Reversible. |
+| Remaining risk | Token infra unbuilt (`H8-C-030`, G10). |
+| Status | **Accepted** |
+
+### H8-DCP-038 — Positive runtime-observer authorisation (reuse existing contract)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Observers must be authenticated, not merely present. |
+| Decision | `RenderValidityObserver`/`DriveValidityObserver` must satisfy the existing typed `validate_runtime_observer` contract AND the external producer trust policy; `AUTHORISED_OBSERVER_IDS` is extended only via a reviewed policy (empty today). |
+| Alternatives considered | New parallel observer scheme (rejected — reuse the reviewed contract). |
+| Reason | No weaker parallel path; single reviewed trust surface. |
+| Safety effect | Truthy/partial/unauthorised observers already fail closed. |
+| Reversibility | Reversible. |
+| Remaining risk | Real observer unbuilt (`H8-C-029`, G3/G6/G7). |
+| Status | **Accepted** |
+
+### H8-DCP-039 — Trusted-clock separation (sim time ≠ trusted wall time)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Isaac simulation time is not trusted wall time. |
+| Decision | Record `ts_sim` (simulation ordering) and `ts_wall` (trusted freshness) separately; freshness/validity windows evaluate `ts_wall` only; monotonic+wall cross-check detects backward clocks; unavailable trusted time → `CLOCK_UNTRUSTED`, capture blocked. |
+| Alternatives considered | Use sim time for freshness (rejected — forgeable/unbounded). |
+| Reason | Freshness must derive from a trusted external clock. |
+| Safety effect | Stale/replayed evidence cannot pass as fresh. |
+| Reversibility | Reversible. |
+| Remaining risk | Trusted clock unavailable (`H8-C-026`, G2). |
+| Status | **Accepted** |
+
+### H8-DCP-040 — Signature & key-management model (no repo secrets)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Production runtime evidence needs authenticity without committing secrets. |
+| Decision | Detached signatures over canonical envelope bytes; keys stored external to the repo; rotation+revocation via policy; unsigned/unknown/expired/revoked → deny. Synthetic keys, if ever created, are fixture-only and rejected by production trust. No secret/placeholder-key is ever committed. |
+| Alternatives considered | In-repo keys (rejected — secret exposure). |
+| Reason | Authenticity with least secret exposure. |
+| Safety effect | Forged/unsigned runtime evidence denied in production. |
+| Reversibility | Reversible. |
+| Remaining risk | Key mgmt unavailable (`H8-C-027`, G2). |
+| Status | **Accepted** |
+
+### H8-DCP-041 — Revocation dependency fail-closed
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | Revocation status may be offline or stale. |
+| Decision | Revocation covers producer/observer/key/evidence-id/token/scene/route/config/backend-version; offline or cache-older-than-max-age → `REVOCATION_STATUS_UNAVAILABLE`, capture blocked. |
+| Alternatives considered | Fail-open when offline (rejected). |
+| Reason | Unknown revocation status must not authorise capture. |
+| Safety effect | Capture blocked without current revocation evidence. |
+| Reversibility | Reversible. |
+| Remaining risk | Revocation service unavailable (`H8-C-028`, G2). |
+| Status | **Accepted** |
+
+### H8-DCP-042 — Runtime-change (TOCTOU) invalidation
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | State can change between authorisation and capture. |
+| Decision | Re-inspect `runtime_identity_digest` between authorisation and each capture step; any delta (scene/asset/robot/camera/route/offset/frame/config/restart/policy/key/revocation) → `RUNTIME_STATE_CHANGED`, stop + quarantine. |
+| Alternatives considered | One-shot check at authorisation (rejected — TOCTOU window). |
+| Reason | Closes time-of-check/time-of-use gap. |
+| Safety effect | Post-authorisation mutation halts capture. |
+| Reversibility | Reversible. |
+| Remaining risk | Re-inspection cost/impl (G10). |
+| Status | **Accepted** |
+
+### H8-DCP-043 — Partial-output quarantine (never auto-admit)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | A failure mid-capture may leave partial frames/trajectories. |
+| Decision | Partial artefacts are quarantined to an invalid/forensic namespace, never auto-deleted and never auto-admitted; failure evidence is generated; admission requires the transactional gate + human review. |
+| Alternatives considered | Auto-delete (loses forensics) / auto-retain-as-valid (contaminates dataset) — both rejected. |
+| Reason | Forensic value without dataset contamination. |
+| Safety effect | Partial data cannot enter training data automatically. |
+| Reversibility | Reversible. |
+| Remaining risk | Output transaction unbuilt (`H8-C-031`, G9). |
+| Status | **Accepted** |
+
+### H8-DCP-044 — One-instance-first progression; review before capture connectivity
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | The backend must not be one monolithic "implement" step. |
+| Decision | 13 explicit future gates G1–G13; runtime evidence is independently reviewed (G8) before any writer is connected (G9); a single instance (G10/G11) precedes the 8-instance approval (G13). |
+| Alternatives considered | Single "implement backend" phase (rejected). |
+| Reason | Bounded, reviewable increments; no capture on green tests alone. |
+| Safety effect | Each capability is gated and reviewed. |
+| Reversibility | Reversible. |
+| Remaining risk | None (process control). |
+| Status | **Accepted** |
+
+### H8-DCP-045 — Interfaces are specifications, not committed code, this gate
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | This is an architecture/design gate; the first implementation must be the Git resolver. |
+| Decision | Runtime interfaces (`H8RuntimeBackend`, observers, resolver, authoriser) are specified as design pseudocode only; no runtime `.py` is committed here. The first implementation gate is `G1` (Git resolver). |
+| Alternatives considered | Commit non-operational stubs now (deferred to avoid backend scope-creep before G1). |
+| Reason | Keep the boundary crisp; resolver-first ordering. |
+| Safety effect | No new importable runtime/Isaac code enters the tree this gate. |
+| Reversibility | Reversible (stubs may be added at G3/G4). |
+| Remaining risk | None. |
+| Status | **Accepted** |
+
+### H8-DCP-046 — Concrete Git dependency resolver (discharges H8-PRREV-F-002)
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | The re-review found no concrete git resolver exists; the provider trusts an injected `dependency_dirty` bool. |
+| Decision | Specify a deterministic `GitDependencyResolver` with an explicit fail-closed decision for every dependency state (staged/unstaged/deleted/renamed/untracked-replacement/ignored/symlink/submodule/LFS/detached/shallow/no-git/command-failure/repo-mismatch/outside-repo/commit-mismatch/indeterminate) over a named closure, emitting a `closure_digest` bound into runtime identity. Implementation + independent review is gate `G1`. |
+| Alternatives considered | Keep trusting an injected boolean (rejected — the re-review's key deferred dependency). |
+| Reason | A real, reviewed resolver is prerequisite to any runtime evidence. |
+| Safety effect | Any unresolved/ambiguous dependency state blocks capture. |
+| Reversibility | Reversible. |
+| Remaining risk | Resolver unbuilt until G1 (`H8-C-020`). |
+| Status | **Accepted** |

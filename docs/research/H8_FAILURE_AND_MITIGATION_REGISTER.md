@@ -309,3 +309,43 @@ Reproduction before fix, corrective controls, adversarial tests, and verificatio
 **`PASS WITH DOCUMENTED LIMITATIONS`** — all findings CLOSED; a focused independent re-review is required
 before the backend gate. Real capture remains blocked; Levels 3–5 unproven. Ruff remains Open
 (`H8-C-006`/`H8-C-013`).
+
+## Provider trust-boundary independent re-review (dae2bee, 2026-07-16)
+
+Independent re-review (`docs/research/H8_EVIDENCE_PROVIDER_TRUST_BOUNDARY_REREVIEW.md`) verified all five
+`H8-PREV-F-*` findings **INDEPENDENTLY VERIFIED CLOSED** (F-001 reproduced pre-`97781ad`/rejected-post;
+23/23 fixture-laundering rejection; positive allow-list proven usable; observer 11/11 and dirty-tree 7/7
+fail-closed; 223 H8 tests, dry-run 25/25, Level-1 5/5). Overall **`PASS WITH DOCUMENTED LIMITATIONS`**;
+**ELIGIBLE FOR BACKEND/RUNTIME DESIGN GATE**. New LOW/informational re-review findings:
+
+| ID | Severity | Summary | Owner |
+|---|---|---|---|
+| `H8-PRREV-F-001` | Low (info) | producer *software* version not a modelled trust control (schema-version IS gated) | design note |
+| `H8-PRREV-F-002` | Low (info) | no concrete git dirty-tree resolver exists — provider trusts an injected `dependency_dirty` bool | **backend gate G1** |
+| `H8-PRREV-F-003` | Info | provider `MODE_PRODUCTION` returns at the observer gate before the schema positive-trust path (stricter, not a defect) | design note |
+
+## H8 Isaac Backend & Runtime-Validity Architecture Design Gate — open challenges (2026-07-16)
+
+Design-only (`docs/research/H8_ISAAC_BACKEND_RUNTIME_ARCHITECTURE.md`). These are design targets, **not
+implemented controls**; each has an owning future gate (G1–G13).
+
+| ID | Challenge | Owner gate |
+|---|---|---|
+| `H8-C-020` | Concrete Git dependency resolver not implemented (discharges `H8-PRREV-F-002`) | G1 |
+| `H8-C-021` | Isaac APIs / version compatibility untested | G4/G5 |
+| `H8-C-022` | Simulator startup time & stability unknown | G5 |
+| `H8-C-023` | Runtime scene-content identity unresolved for proprietary/generated assets | G6 |
+| `H8-C-024` | Camera validity thresholds unresolved | G6 |
+| `H8-C-025` | Route clearance thresholds unresolved | G7 |
+| `H8-C-026` | Trusted clock unavailable | G2 |
+| `H8-C-027` | Key management unavailable | G2 |
+| `H8-C-028` | Revocation service unavailable | G2 |
+| `H8-C-029` | Runtime observer unavailable | G3/G6/G7 |
+| `H8-C-030` | Capture-authorisation token infrastructure unavailable | G10 |
+| `H8-C-031` | Output-transaction implementation unavailable | G9 |
+| `H8-C-032` | No Level-3 runtime evidence exists | G6–G8 |
+
+Design-gate verdict: **`PASS WITH DOCUMENTED LIMITATIONS`**. Selected architecture = isolated Isaac worker
+(Option B, `H8-DCP-035`); first runtime worker owns **no** dataset writer (`H8-DCP-036`). **First
+implementation gate = G1 (Git resolver), not the Isaac backend.** Real capture remains blocked; Levels 3–5
+unproven; Ruff Open (`H8-C-006`/`H8-C-013`).
