@@ -157,3 +157,19 @@ Status legend: **Open / Mitigated / Accepted / Closed.**
 | Next mitigation | Run Ruff in the canonical project environment before any later promotion or capture approval. |
 
 > "Ruff unavailable" is explicitly **not** converted into "lint passed."
+
+### H8-C-007 — Dry-run evidence commit provenance mismatch (raised, audited, resolved)
+
+| Field | Content |
+| --- | --- |
+| Stage | Audit (documentation provenance) |
+| Expected | Documentation identifies the exact commit containing the generated 25/25 dry-run evidence, distinct from the emitter commit. |
+| Observed | A cross-report review questioned whether Level 1 was correctly attributed to `66fd81e`, since a prior readiness-analysis report described the state at `66fd81e` as "analysis-only" and associated the emitter with `ecae4cd`. The committed gate record's prose already labelled `ecae4cd` as *emitter* and `66fd81e` as *evidence (25/25)*, but it lacked an explicit canonical provenance table separating the two. |
+| Detection method | Cross-report consistency review + read-only Git audit (`git show --name-status`, `git log --diff-filter=A`, `git log -S`, `git merge-base --is-ancestor`). |
+| Impact | Reproducibility/provenance clarity: without an explicit table a reviewer could inspect the wrong repository state. No technical/capture-path impact. |
+| Root cause | The emitter (`ecae4cd`, harness+tests, contains a `"25/25"` **test assertion**) and the generated evidence (`66fd81e`, the five files, contains the generated `"checks_passed": "25/25"` **result**) are distinct commits that both mention the `25/25` token; the documentation did not tabulate that distinction, and a separate readiness-analysis *activity* (uncommitted, HEAD at `66fd81e`) was phrased as "analysis-only". |
+| Corrective action | Added a **canonical provenance table** (full hashes) to the gate record; added `H8-DCP-013`; recorded this reconciliation. **No commit hash in the documentation was found to be wrong; no hash was changed.** |
+| Verification | `git log --diff-filter=A -- <dryrun dir>` → all five files first added in `66fd81e`; `git log -S'"checks_passed": "25/25"'` → only `66fd81e`; `ecae4cd` `-S'25/25'` hit = test assertion; timestamps `ecae4cd` 04:41:53 < `66fd81e` 04:46:11; `git log 66fd81e..bd6168a` → only `bd6168a` (no readiness-analysis commit). |
+| Regression protection | Canonical provenance table with full hashes in the gate record; `H8-DCP-013` mandates distinct baseline/emitter/evidence hashes. |
+| Residual risk | None for this attribution. Verdict: **A — `66fd81e` is correct.** |
+| Status | **Closed** (Verdict A; documentation hardened; no hash correction was required) |

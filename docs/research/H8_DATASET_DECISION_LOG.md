@@ -186,3 +186,18 @@ Status legend: **Proposed / Accepted / Superseded / Rejected.**
 | Safety effect | Preserves provenance integrity. |
 | Reversibility | N/A. |
 | Status | **Accepted** |
+
+### H8-DCP-013 — Separate baseline, implementation, and evidence provenance
+
+| Field | Content |
+| --- | --- |
+| Date | 2026-07-16 |
+| Context | A cross-report review questioned whether Level 1 (25/25) was attributed to the correct commit. A read-only Git audit (`H8-C-007`) confirmed the attribution was correct but that the docs lacked an explicit provenance table separating the emitter from the generated evidence. |
+| Decision | Each research milestone records **distinct** full hashes for: (1) analysis baseline, (2) implementation/emitter, (3) generated evidence, (4) capture-path implementation, (5) documentation. A baseline/emitter hash must not be used as the evidence hash unless the evidence artefacts are demonstrably contained in that commit. |
+| Alternatives considered | (a) Leave prose-only references; (b) collapse emitter + evidence into one reported hash. |
+| Reason | (a) permits the exact ambiguity raised; (b) is factually wrong here — emitter (`ecae4cd`) and evidence (`66fd81e`) are different commits. A canonical table with full hashes is auditable and prevents recurrence. |
+| Evidence | Canonical provenance table in `H8_DATASET_CAPTURE_PATH_GATE.md` §A2; Git audit in `H8-C-007`. |
+| Safety effect | Strengthens reproducibility; a reviewer inspects the correct repository state. |
+| Reversibility | Reversible (documentation only). |
+| Remaining risk | None identified. |
+| Status | **Accepted** |

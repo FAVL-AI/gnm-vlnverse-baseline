@@ -40,7 +40,35 @@ Files changed in `bd6168a` (both non-documentation):
 Gate history leading here (all local, branch `h23-execfix`):
 `82f60f9` pilot capture path → `2659168` pilot capture evidence → `ba2bd58` dataset plan →
 `7a73c9f` dataset capture config → `ecae4cd` dataset dry-run emitter → `66fd81e` dataset dry-run
-evidence (25/25) → **`bd6168a` capture-path wiring** → *(this documentation commit)*.
+evidence (25/25) → **`bd6168a` capture-path wiring** → `db70ce3` documentation → *(this provenance
+reconciliation commit)*.
+
+## A2. Canonical provenance table
+
+Verified by a read-only Git provenance audit on 2026-07-16 (see `H8-C-007`). Full commit hashes; the
+**emitter** and the **generated evidence** are distinct commits and must not be conflated.
+
+| Milestone | Full commit | Evidence contained | Evidence level |
+| --- | --- | --- | --- |
+| Dataset capture config | `7a73c9fc012b97ee1bf94fe829a3c59eb915ff9f` | `configs/gnm/h8_synthetic_fork_recorded_mode_dataset.yaml` | Supporting config |
+| Dataset dry-run **emitter** (implementation) | `ecae4cdd5de4082184fc65881cc836c612231bf8` | harness `dataset-dry-run` mode, planner/checks/emitter + tests (incl. the `assert manifest["checks_passed"] == "25/25"` **test assertion** — not generated evidence) | Supporting implementation |
+| Dataset dry-run **evidence** (generated files) | `66fd81e62bc0d6c100e7b562b22fc8cc8a0d061e` | the five generated files + the generated `"checks_passed": "25/25"` result, 8 instances, 4/2/2 split, 22 records, 12/4/6, `leakage_safe=True`, `meets_min_scale=True`, `audit_pass=True` | **Level 1 (plan validity)** |
+| Readiness analysis | *no commit* (ran on HEAD `66fd81e`) | analysis report only; created no commit and no files (`git log 66fd81e..bd6168a` shows only `bd6168a`) | None |
+| Capture-path implementation | `bd6168ab5ead2aa5724a6d9df1b7e52222fbf0b7` | fail-closed routing + no-Isaac tests | **Level 2 (capture-path validity)** |
+| Documentation completion | `db70ce39c0d99300ec4f4d2c0010f6cbe036cade` | decisions, failures, traceability, boundaries | Documentation evidence |
+| Provenance reconciliation | *(this documentation-only commit; hash in the final report)* | this table + `H8-C-007` + `H8-DCP-013`; no hash was changed | Documentation correction |
+
+**Provenance verdict: A — `66fd81e` is correct.** Git evidence: all five evidence files were first
+added (status `A`) in `66fd81e` and never modified since; the generated JSON key/value
+`"checks_passed": "25/25"` appears in history **only** in `66fd81e`; `ecae4cd` is the emitter/test
+commit (its `25/25` token is a test assertion, and its timestamp `04:41:53` precedes the evidence
+`04:46:11`). Ancestry is linear: `ecae4cd` → `66fd81e` → `bd6168a` → `db70ce3`.
+
+**Reconciliation of the earlier "analysis-only" phrasing.** A later readiness-analysis gate ran with
+HEAD sitting at `66fd81e` and committed nothing — that gate's *activity* was analysis-only. This does
+**not** make `66fd81e` an analysis baseline: `66fd81e` is itself the generated-evidence commit. The two
+statements are consistent once the *activity* (uncommitted) is distinguished from the *commit* it ran
+on top of.
 
 ## B. Purpose
 
