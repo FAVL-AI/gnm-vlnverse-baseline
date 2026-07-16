@@ -1290,6 +1290,62 @@ The strongest claim is not that the robot is already the best live-motion system
 
 ---
 
+## Chapter 30A — H8 Synthetic-Fork Dataset Capture-Path Wiring Gate (2026-07-16 addendum)
+
+This addendum records, for the manuscript trail, the H8 Track-B synthetic-fork recorded-mode dataset
+work. It is a `SYNTHETIC_DIAGNOSTIC_ONLY` diagnostic of the model/objective — **not** hospital,
+real-scene, or benchmark evidence, and **not** training authorisation.
+
+**What this gate is.** I validated the software path that would eventually execute the H8 dataset plan,
+without executing it. I did not launch Isaac, did not capture data, did not run inference, and did not
+train. Concretely, I wired the committed recorded-mode harness so that a dataset-capture configuration
+is routed by explicit mode to the dataset planner (`build_dataset_plan`) rather than the pilot planner,
+validated by a dedicated fail-closed validator that reuses the canonical 25-check dry-run logic, and
+gated per instance on render-valid **and** drive-valid evidence before any output could be created. The
+dataset branch is executable in tests only through an injected no-Isaac backend; the production path
+returns a "ready but not authorised" code and captures nothing.
+
+**Evidence boundary (five levels).** (1) Plan validity — established by a 25/25 dataset dry-run
+(evidence commit `66fd81e`). (2) Capture-path validity — established by implementation commit `bd6168a`
+under an injected no-Isaac backend. (3) Runtime validity, (4) dataset validity, and (5) model validity —
+**not established and not authorised.** No real dataset exists.
+
+**Verified plan scale (planned, not captured).** 8 disjoint instances; split 4 train / 2 validation / 2
+test instances; 22 planned frame records; record split 12 / 4 / 6. These are planned records with null
+image paths, never captured frames.
+
+**Verification.** `py_compile` passed; the relevant test suites passed (82 tests) including a pilot-path
+regression and the 25-check dry-run audit; negative-artifact audits confirmed no dataset directory and
+no forbidden artefacts were created; `CL_BOUND_XY` remained fixed at 6.0. Ruff was unavailable in the
+environment, so lint evidence is incomplete — this is recorded as an open verification limitation, not a
+lint pass.
+
+**Full research trail.** Gate record, decision log, failure/mitigation register, implementation journal,
+and requirements traceability are in `docs/research/`:
+`H8_DATASET_CAPTURE_PATH_GATE.md`, `H8_DATASET_DECISION_LOG.md`,
+`H8_FAILURE_AND_MITIGATION_REGISTER.md`, `H8_CAPTURE_PATH_IMPLEMENTATION_JOURNAL.md`,
+`H8_CAPTURE_PATH_TRACEABILITY.md`.
+
+**Manuscript-ready evidence-boundary paragraph** (for transfer to the external paper; make no
+performance, dataset, or benchmark claim beyond it):
+
+> For the H8 synthetic-fork diagnostic, I separated plan validity from capture-path validity. A dataset
+> plan of eight disjoint junction instances (twenty-two planned observation/goal/action records, split
+> leakage-safely into 12/4/6 train/validation/test) passed a twenty-five-check static dry-run. I then
+> validated the software capture path — explicit configuration-mode routing to a dataset planner,
+> fail-closed configuration validation reusing the dry-run invariants, and per-instance render-valid and
+> drive-valid prerequisite gating — under an injected no-simulation backend, with the production path
+> deliberately inert. This establishes that the plan is well-formed and that the path that would execute
+> it routes and gates correctly; it does not establish that any scene was rendered, any route driven,
+> any frame captured, or any model trained. Those remain separately gated.
+
+The remaining blockers before real dataset capture can be considered are a reviewed render/drive-valid
+evidence schema and provider, a reviewed real dataset capture backend, a live Isaac/ROS 2
+runtime-validity gate, independent review of `bd6168a` and this documentation, and explicit capture
+authorisation.
+
+---
+
 ## Chapter 31 — IEEE-Style References
 
 [1] P. Anderson et al., "Vision-and-Language Navigation: Interpreting Visually-Grounded Navigation Instructions in Real Environments," in CVPR, 2018. URL: https://arxiv.org/abs/1711.07280
