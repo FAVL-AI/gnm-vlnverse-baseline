@@ -80,6 +80,19 @@ SCENE_BOUND_ABS = 4.5           # |coord| bound of the authored interior (well i
 # and curves are intentionally excluded (not solid collision geometry).
 GPRIM_COLLIDER_TYPES = ("Mesh", "Cube", "Sphere", "Cone", "Cylinder", "Capsule", "Plane")
 
+# Contact discrimination: a grounded robot resting on the floor produces an expected SUPPORT contact
+# with the ground slab, which is NOT an obstacle collision. Once every Gprim (incl. the `Cube "Floor"`)
+# is a collider, the footprint overlap box — which dips just below z=0 — hits the floor at every pose;
+# without this exclusion that support contact is mis-scored as a collision, and static-precheck + both
+# probes fail on the ground. Prim leaf-names matched here (case-insensitive substring) are treated as
+# ground/support and excluded from the collision count. Walls, end panels, props, stripes, and markers
+# are NOT excluded — they remain real obstacles that must fail the check if the body overlaps them.
+SUPPORT_CONTACT_NAMES = ("floor", "ground")
+SUPPORT_CONTACT_ALLOWED = True   # a floor/ground (support) contact is expected and is NOT a failure
+CONTACT_CLASSIFICATION_RULE = (
+    "robot self-subtree hits excluded; floor/ground leaf-name -> support (allowed); "
+    "every other collider hit -> obstacle (failure)")
+
 # modes/behaviours the harness REFUSES — this step is PHYSICAL DRIVABILITY ONLY.
 REFUSED_MODES = ("train", "record", "collect", "action_probe", "rollout", "closed_loop", "twenty_five_ten")
 # rollout metrics that must NEVER be emitted by this harness
@@ -112,6 +125,29 @@ def verdict_exit_code(passed) -> int:
     None / DEFER / False -> 1 (fail-closed). Used to force the exit status even when Isaac's app
     shutdown would otherwise leave the process at 0."""
     return 0 if passed is True else 1
+
+
+def is_support_contact(prim_path: str) -> bool:
+    """True if an overlap-hit prim is a ground/support surface (the floor), which is EXPECTED support
+    contact for a grounded robot and must not be scored as an obstacle collision. Matched by leaf-name
+    substring against SUPPORT_CONTACT_NAMES. Walls/panels/props/markers return False (real obstacles)."""
+    if not prim_path:
+        return False
+    leaf = prim_path.rstrip("/").rsplit("/", 1)[-1].lower()
+    return any(tok in leaf for tok in SUPPORT_CONTACT_NAMES)
+
+
+def classify_contacts(paths, robot_prefix) -> tuple:
+    """Split raw overlap-hit prim paths into (support_paths, obstacle_paths) per
+    CONTACT_CLASSIFICATION_RULE. Robot self-subtree hits (under `robot_prefix`) and empty paths are
+    dropped from both; floor/ground -> support (allowed); every other collider hit -> obstacle
+    (failure). Pure/testable so the isaac-only overlap query stays a thin wrapper around this rule."""
+    support, obstacle = [], []
+    for p in paths:
+        if not p or p.startswith(robot_prefix):
+            continue
+        (support if is_support_contact(p) else obstacle).append(p)
+    return support, obstacle
 
 
 def compute_verdict(result: dict) -> tuple:
@@ -222,6 +258,8 @@ def output_schema() -> dict:
             "CL_BOUND_XY unchanged"],
         "cl_bound_xy_readonly": CL_BOUND_XY,
         "prim_type_counts": None, "collider_provenance": None,
+        "contact_classification_rule": CONTACT_CLASSIFICATION_RULE,
+        "support_contact_allowed": SUPPORT_CONTACT_ALLOWED,
         "scene_identity": None, "scene_load": None, "spawn_pose_check": None,
         "camera_pose_check": None, "static_collision_precheck": None,
         "north_probe": None, "west_probe": None,
@@ -311,8 +349,11 @@ def run_isaac(out_dir: Path) -> int:  # pragma: no cover - requires Isaac + expl
         return abs(x) < CL_BOUND_XY and abs(y) < CL_BOUND_XY
 
     def _overlap_contacts(query, half, pos, quat, exclude_prefix):
-        """PhysX box overlap at `pos`; count hits NOT under the robot's own prim subtree."""
-        hits = {"n": 0}
+        """PhysX box overlap at `pos`. Collects EVERY hit prim path, then classifies via
+        classify_contacts into SUPPORT (floor/ground — allowed) vs OBSTACLE (walls/panels/props/markers
+        — failure); robot self-subtree hits are dropped. Returns obstacle_n/support_n and both path
+        lists so any contact is identifiable in the log (no guessing which prim). `n` == obstacle_n."""
+        raw = {"paths": []}
 
         def _report(hit):
             path = ""
@@ -323,17 +364,23 @@ def run_isaac(out_dir: Path) -> int:  # pragma: no cover - requires Isaac + expl
                         break
                 except Exception:
                     continue
-            if path and not path.startswith(exclude_prefix):
-                hits["n"] += 1
+            if path:
+                raw["paths"].append(path)
             return True  # keep scanning
+        err = None
         try:
             query.overlap_box(np.asarray(half, dtype=float),
                               np.asarray([pos[0], pos[1], pos[2]], dtype=float),
                               np.asarray([quat[1], quat[2], quat[3], quat[0]], dtype=float),
                               _report, False)
         except Exception as e:
-            hits["err"] = str(e)
-        return hits
+            err = str(e)
+        support, obstacle = classify_contacts(raw["paths"], exclude_prefix)
+        out = {"n": len(obstacle), "obstacle_n": len(obstacle), "support_n": len(support),
+               "obstacle_paths": obstacle, "support_paths": support}
+        if err is not None:
+            out["err"] = err
+        return out
 
     try:
         # 1) scene load
@@ -422,8 +469,16 @@ def run_isaac(out_dir: Path) -> int:  # pragma: no cover - requires Isaac + expl
         query = get_physx_scene_query_interface()
         half = list(FOOTPRINT_HALF_DEFAULT)
         st = _overlap_contacts(query, half, [sx, sy, ROBOT_Z], _yaw_quat(SPAWN_HEADING_DEG), "/World/Robot")
-        result["static_collision_precheck"] = {"queried": True, "scene_collider_count": collider_n,
-                                               "contacts": st["n"], "clear": st["n"] == 0}
+        result["static_collision_precheck"] = {
+            "queried": True, "scene_collider_count": collider_n,
+            "contacts": st["obstacle_n"],                 # `contacts` == obstacle contacts (support excluded)
+            "obstacle_contacts_count": st["obstacle_n"],
+            "support_contacts_count": st["support_n"],
+            "support_contact_allowed": SUPPORT_CONTACT_ALLOWED,
+            "obstacle_contact_failure": st["obstacle_n"] > 0,
+            "contact_classification_rule": CONTACT_CLASSIFICATION_RULE,
+            "clear": st["obstacle_n"] == 0,
+            "hit_prims": st["obstacle_paths"], "support_prims": st["support_paths"]}
 
         # 5) bounded low-speed scripted probes (no policy) from the decision point
         step_len = MAX_PROBE_SPEED_MPS * PROBE_DT_S           # metres advanced per physics step
@@ -450,10 +505,15 @@ def run_isaac(out_dir: Path) -> int:  # pragma: no cover - requires Isaac + expl
                 robot.set_world_pose(position=np.array([dx, dy, ROBOT_Z]), orientation=_yaw_quat(yaw))
                 world.step(render=False)
                 hit = _overlap_contacts(query, half, [dx, dy, ROBOT_Z], _yaw_quat(yaw), "/World/Robot")
-                if hit["n"] > 0:
-                    contacts += hit["n"]
+                if hit["obstacle_n"] > 0:              # only real OBSTACLE contact halts the probe; floor support does not
+                    contacts += hit["obstacle_n"]
                     result["contacts"].append({"probe": name, "step": i,
-                                               "xy": [round(dx, 3), round(dy, 3)], "n": hit["n"]})
+                                               "xy": [round(dx, 3), round(dy, 3)],
+                                               "n": hit["obstacle_n"],
+                                               "obstacle_contacts_count": hit["obstacle_n"],
+                                               "support_contacts_count": hit["support_n"],
+                                               "hit_prims": hit["obstacle_paths"],
+                                               "support_prims": hit["support_paths"]})
                     reached = False
                     break
                 samples.append([round(dx, 3), round(dy, 3)])
@@ -501,12 +561,11 @@ def run_isaac(out_dir: Path) -> int:  # pragma: no cover - requires Isaac + expl
             sys.stdout.flush(); sys.stderr.flush()
         except Exception:
             pass
-        try:
-            app.close()
-        except Exception:
-            pass
-        # Isaac's app shutdown can force the process to exit 0 regardless of the return value. Force
-        # the intended exit code AFTER cleanup so the process status reflects the manifest verdict.
+        # Force the intended exit code BEFORE any Isaac shutdown. The prior attempt closed the Isaac
+        # app first and exited 0 despite a `pass: False` manifest: Isaac's app shutdown hard-exits the
+        # process with 0 and masked the failing verdict. finalize() already wrote the manifest/report
+        # (the source of truth) with closed file handles, and stdout/stderr are flushed above, so no
+        # output is lost by skipping the graceful Isaac shutdown — os._exit here cannot be preempted.
         os._exit(exit_code)
     return verdict_exit_code(result.get("pass"))   # unreachable (os._exit above); kept for clarity
 
@@ -539,6 +598,8 @@ def finalize(result: dict, out_dir: Path) -> int:
         f"- scene load: {result.get('scene_load')}",
         f"- prim type counts: {result.get('prim_type_counts')}",
         f"- collider provenance: {result.get('collider_provenance')}",
+        f"- contact classification: {result.get('contact_classification_rule')} "
+        f"(support_contact_allowed={result.get('support_contact_allowed')})",
         f"- spawn: {result.get('spawn_pose_check')}",
         f"- camera: {result.get('camera_pose_check')}",
         f"- static collision pre-check: {result.get('static_collision_precheck')}",

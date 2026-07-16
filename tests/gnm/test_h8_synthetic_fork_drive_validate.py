@@ -145,16 +145,60 @@ def test_verdict_exit_code_mapping():
     assert dv.verdict_exit_code(None) != 0   # DEFER / incomplete -> nonzero (fail-closed)
 
 
-def test_run_isaac_forces_exit_code_after_shutdown():
-    # the harness must force the intended exit code after app.close() so Isaac's shutdown cannot
-    # mask a failure by leaving the process at 0.
+def test_run_isaac_forces_exit_code_before_shutdown_can_mask_it():
+    # REGRESSION: the first fix called app.close() BEFORE os._exit and the run exited 0 despite a
+    # `pass: False` manifest — Isaac's app.close() hard-exits 0 and masked the failing verdict. The
+    # corrected invariant: force the intended exit code BEFORE any app.close(); if app.close() is
+    # present at all it must come strictly after os._exit (i.e. it can never preempt the exit code).
     start = HARNESS_SRC.index("def run_isaac(")
     end = HARNESS_SRC.index("\ndef finalize(", start)
     src = HARNESS_SRC[start:end]
     assert "verdict_exit_code(" in src, "run_isaac must derive exit code from the verdict"
-    assert "os._exit(" in src, "run_isaac must force the exit code after cleanup"
-    # os._exit must come AFTER app.close() in the source
-    assert src.index("app.close(") < src.rindex("os._exit("), "force exit must be after app.close()"
+    assert "os._exit(" in src, "run_isaac must force the exit code"
+    if "app.close(" in src:
+        assert src.index("os._exit(") < src.index("app.close("), \
+            "os._exit must be forced BEFORE app.close() (which hard-exits 0 and masks failure)"
+
+
+# ── FIX 3: floor/ground support contact is not scored as an obstacle collision ─
+def test_floor_ground_contacts_are_support_not_collision():
+    # the second DEFER cause: once the `Cube \"Floor\"` became a collider, the footprint overlap hit
+    # the ground at every pose and every check failed. Floor/ground = expected support, not collision.
+    for support in ("/World/Scene/Structure/Floor", "/World/Scene/ground_plane", "/World/Scene/FLOOR"):
+        assert dv.is_support_contact(support) is True, f"{support} must be treated as support"
+    # walls, end panels, stripes, props, and markers are REAL obstacles — never excluded
+    for obstacle in ("/World/Scene/Structure/N_wall_W", "/World/Scene/End_N_blue",
+                     "/World/Scene/Marker_E_square", "/World/Scene/N_stripe_1",
+                     "/World/Robot/base"):
+        assert dv.is_support_contact(obstacle) is False, f"{obstacle} must NOT be treated as support"
+    assert dv.is_support_contact("") is False
+
+
+def test_classify_contacts_splits_support_obstacle_and_drops_robot_self():
+    paths = ["/World/Scene/Structure/Floor",      # support
+             "/World/Scene/Structure/N_wall_W",   # obstacle
+             "/World/Robot/base_link",            # robot self -> dropped
+             "/World/Scene/ground",               # support
+             "/World/Scene/End_N_blue",           # obstacle
+             ""]                                  # empty -> dropped
+    support, obstacle = dv.classify_contacts(paths, "/World/Robot")
+    assert support == ["/World/Scene/Structure/Floor", "/World/Scene/ground"]
+    assert obstacle == ["/World/Scene/Structure/N_wall_W", "/World/Scene/End_N_blue"]
+    # robot self-hit and empty path appear in neither list
+    for dropped in ("/World/Robot/base_link", ""):
+        assert dropped not in support and dropped not in obstacle
+    # a scene of ONLY floor support yields zero obstacle contacts (the drivable-clear case)
+    s2, o2 = dv.classify_contacts(["/World/Scene/Floor", "/World/Scene/ground_plane"], "/World/Robot")
+    assert len(o2) == 0 and len(s2) == 2
+
+
+def test_output_schema_carries_contact_classification_metadata():
+    schema = dv.output_schema()
+    assert schema["contact_classification_rule"] == dv.CONTACT_CLASSIFICATION_RULE
+    assert schema["support_contact_allowed"] is True
+    # the rule must name both support and obstacle handling
+    rule = dv.CONTACT_CLASSIFICATION_RULE.lower()
+    assert "support" in rule and "obstacle" in rule and "floor" in rule
 
 
 # ── config / modes / probes / safety (no Isaac) ───────────────────────────────
