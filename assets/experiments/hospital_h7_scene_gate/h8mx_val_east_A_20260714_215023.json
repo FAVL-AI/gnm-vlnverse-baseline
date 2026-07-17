@@ -1,0 +1,46 @@
+{
+  "run_kind": "m3pro_bringup_episode",
+  "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+  "asset_is_hospital_usd": true,
+  "scene_identity_pass": true,
+  "checks": {
+    "hospital_reference_authored": true,
+    "prim_count_ok": true,
+    "scene_mode_hospital": true,
+    "no_procedural_landmarks": true,
+    "front_camera_exists": true,
+    "resolution_declared": true
+  },
+  "failed_reasons": [],
+  "observed": {
+    "hospital_reference_asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+    "hospital_prim_count": 1909,
+    "scene_mode": "hospital",
+    "procedural_landmark_prims": [],
+    "front_camera_path": "/World/M3Pro/camera_link/rgb_camera",
+    "resolution": [
+      640,
+      480
+    ]
+  },
+  "min_hospital_prims": 1000,
+  "forbidden_landmark_fragments": [
+    "Pillar_Red",
+    "Pillar_Blue",
+    "Pillar_Green",
+    "Wall_Yellow",
+    "Landmark",
+    "Ground_Cube",
+    "StageGround"
+  ],
+  "expected_resolution": [
+    1280,
+    720
+  ],
+  "robot_camera_height_m": 0.35,
+  "isaac_sim_version": "5.1.0.0",
+  "locked_rule": "Procedural-stage H6 = diagnostic route-family coverage experiment. Real hospital USD = official target scene for future hospital ImageNav data, demos, and professor visuals.",
+  "timestamp": "2026-07-14T21:50:23",
+  "episode_id": "h8mx_val_east_A_20260714_215023",
+  "scene_arg": "hospital"
+}

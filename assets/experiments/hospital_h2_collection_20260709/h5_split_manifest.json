@@ -1,0 +1,142 @@
+{
+  "experiment": "H5-run-1 mixed-family replay (H4 + H2.4-clean)",
+  "status": "BUILT \u2014 NOT TRAINED (awaiting Frank's approval of this manifest)",
+  "counts": {
+    "train": 24,
+    "val": 4,
+    "test_h4": 6,
+    "test_prior": 6,
+    "test_combined": 12
+  },
+  "train_episodes": [
+    "h24_90turn_a_20260710_194950",
+    "h24_90turn_b_20260710_200643",
+    "h24_I_a_20260710_212851",
+    "h24_J_a_20260710_205331",
+    "h24_J_b_20260710_211036",
+    "h24_scurve_a_20260710_202257",
+    "h24_straight_a_20260710_192309",
+    "h24_straight_b_20260710_193626",
+    "h4rec_h4_navgen_31_000_a_20260711_062032",
+    "h4rec_h4_navgen_31_000_b_20260711_063635",
+    "h4rec_h4_navgen_31_001_a_20260711_065059",
+    "h4rec_h4_navgen_31_001_b_20260711_072642",
+    "h4rec_h4_navgen_31_002_a_20260711_074612",
+    "h4rec_h4_navgen_31_002_b_20260711_080010",
+    "h4rec_h4_navgen_31_005_a_20260711_081529",
+    "h4rec_h4_navgen_31_005_b_20260711_083211",
+    "h4rec_h4_navgen_31_007_a_20260711_084715",
+    "h4rec_h4_navgen_31_007_b_20260711_090144",
+    "h4rec_h4_navgen_31_009_a_20260711_091557",
+    "h4rec_h4_navgen_31_009_b_20260711_093348",
+    "h4rec_h4_navgen_31_011_a_20260711_095129",
+    "h4rec_h4_navgen_31_011_b_20260711_100853",
+    "h4rec_h4_navgen_31_013_a_20260711_102623",
+    "h4rec_h4_navgen_31_013_b_20260711_104420"
+  ],
+  "validation_episodes": [
+    "h24_I_b_20260710_214602",
+    "h24_scurve_b_20260710_203800",
+    "h4rec_h4_navgen_31_015_a_20260711_110153",
+    "h4rec_h4_navgen_31_017_a_20260711_111916"
+  ],
+  "validation_composition": {
+    "h4_val_families": [
+      "h4rec_h4_navgen_31_015_a_20260711_110153",
+      "h4rec_h4_navgen_31_017_a_20260711_111916"
+    ],
+    "older_h24_val_holdout": [
+      "h24_scurve_b_20260710_203800",
+      "h24_I_b_20260710_214602"
+    ],
+    "note": "spans both distributions; H2.4 val is the b-variant of scurve+corridor_I so all 5 H2.4 families remain in train"
+  },
+  "heldout_h4_test_episodes": [
+    "h4rec_h4_navgen_31_008_a_20260711_113523",
+    "h4rec_h4_navgen_31_008_b_20260711_115029",
+    "h4rec_h4_navgen_31_012_a_20260711_120600",
+    "h4rec_h4_navgen_31_012_b_20260711_122325",
+    "h4rec_h4_navgen_31_016_a_20260711_123934",
+    "h4rec_h4_navgen_31_016_b_20260711_125743"
+  ],
+  "heldout_prior_family_test_episodes": [
+    "h24_test_chain_a_20260710_223718",
+    "h24_test_chain_b_20260710_225447",
+    "h24_test_uturn_a_20260710_220326",
+    "h24_test_uturn_b_20260710_222002",
+    "h2_ft_L_solo2_20260710_011212",
+    "h2_td_L_20260709_213517"
+  ],
+  "heldout_combined_test_episodes": [
+    "h24_test_chain_a_20260710_223718",
+    "h24_test_chain_b_20260710_225447",
+    "h24_test_uturn_a_20260710_220326",
+    "h24_test_uturn_b_20260710_222002",
+    "h2_ft_L_solo2_20260710_011212",
+    "h2_td_L_20260709_213517",
+    "h4rec_h4_navgen_31_008_a_20260711_113523",
+    "h4rec_h4_navgen_31_008_b_20260711_115029",
+    "h4rec_h4_navgen_31_012_a_20260711_120600",
+    "h4rec_h4_navgen_31_012_b_20260711_122325",
+    "h4rec_h4_navgen_31_016_a_20260711_123934",
+    "h4rec_h4_navgen_31_016_b_20260711_125743"
+  ],
+  "excluded_episodes": {
+    "H1_corpus_isaac_hospital_split": [
+      "authcmp_D_baseline_20260708_145214",
+      "authcmp_D_stopauth_20260708_145306",
+      "authcmp_E_baseline_20260708_145441",
+      "authcmp_E_stopauth_20260708_145535",
+      "dash_hospital_goal_A_214942_20260708_215025",
+      "hospital_low_curvature_C_20260708_143004",
+      "hospital_straight_medium_B_20260708_142905",
+      "hospital_straight_short_A_20260708_142512",
+      "hospital_straight_short_A_20260708_142753",
+      "livefinal_low_curvature_20260708_180949",
+      "livefinal_straight_medium_20260708_180855",
+      "livefinal_straight_short_20260708_180802",
+      "normcmp_F_baseline_20260708_153134",
+      "normcmp_F_stopauth_20260708_153225",
+      "normcmp_G_baseline_20260708_153849",
+      "normcmp_G_stopauth_20260708_153944",
+      "physeval_base_A_20260708_172420",
+      "physeval_base_D_20260708_172509",
+      "physeval_base_F_20260708_172559",
+      "physeval_collision_control2_20260708_173407",
+      "physeval_collision_control_20260708_173041",
+      "physeval_ema_A_20260708_172649",
+      "physeval_ema_D_20260708_172739",
+      "physeval_ema_F_20260708_172828"
+    ],
+    "H1_era_h3clean_val_not_used_as_H5_val": [
+      "hospital_low_curvature_C_20260708_143004",
+      "hospital_straight_medium_B_20260708_142905",
+      "livefinal_low_curvature_20260708_180949",
+      "livefinal_straight_medium_20260708_180855"
+    ],
+    "reason": "run-1 excludes H1 (physeval_collision_control*/physeval_*/authcmp/normcmp/dash/livefinal etc. are not clean imitation demos); H1 is a later ablation only after a clean inventory"
+  },
+  "leakage_proof": {
+    "train_disjoint_val": true,
+    "train_disjoint_test": true,
+    "val_disjoint_test": true,
+    "no_heldout_test_in_train_or_val": true,
+    "allowlist_enforced": true,
+    "no_h1_episode_present": true
+  },
+  "forced_data_root_eval_rule": "every eval passes --data-root explicitly for BOTH candidate and incumbent; never rely on checkpoint-embedded data_root. Planned evals: (1) --data-root datasets/isaac_hospital_h5 --split test_h4  (2) --split test_prior  (3) --split test_combined \u2014 for BOTH checkpoints; verify printed data=\u2026 and n before trusting numbers",
+  "claim_boundary": "Internal Isaac-Hospital-ImageNav-v0 simulation evidence; fixed placeholder goal image \u21d2 evidence about route-family-diverse scripted imitation under the current pipeline, NOT stronger goal-image conditioning; not real-robot, not a public benchmark.",
+  "planned_training": {
+    "config": "configs/gnm/gnm_h5_mixed_replay.yaml (to be written on approval)",
+    "init_ckpt": "checkpoints/hospital_front_rgb_finetune/best.pt (H1 incumbent, weights-only)",
+    "action_std": [
+      0.115528,
+      0.115528
+    ],
+    "seed": 42,
+    "epochs": 50,
+    "batch_size": 128,
+    "lr": 0.0001,
+    "select_on": "H5 val (both distributions)"
+  }
+}

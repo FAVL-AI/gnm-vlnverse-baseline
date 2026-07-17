@@ -1,0 +1,14 @@
+{
+  "action": "promote_model",
+  "candidate": "h5_mixed_replay",
+  "scope": "internal Isaac-Hospital-ImageNav-v0 line only",
+  "verdict": "deny",
+  "matched_rule": {
+    "match": {
+      "tool": "model.promote",
+      "args.driftguard_net_gate": "hold"
+    },
+    "decision": "deny"
+  },
+  "reason": "dual-guard not satisfied: prior-heldout SR/SPL regression blocks auto-promotion despite preserved H4 gain and improved NE / combined aggregate"
+}

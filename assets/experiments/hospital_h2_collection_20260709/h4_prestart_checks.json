@@ -1,0 +1,35 @@
+{
+  "gate": "H4 diagnostic route-family-diversity fine-tune — pre-start checks",
+  "framed_as": "diagnostic, not a promotion run",
+  "checks": {
+    "1_disk_free_ge_100gb": {"status": "PASS", "free_gb": 104, "floor_gb": 100,
+      "note": "reclaimed ~10.5 GB of re-downloadable HF Coder model cache only; no bags/logs/evidence deleted"},
+    "2_validator_ok": {"status": "PASS", "verdict": "VALIDATOR_OK",
+      "source": "h4_counts.json"},
+    "3_train_only_16_imitation_eligible": {"status": "PASS",
+      "count": 16, "families": 8,
+      "note": "asserted in build_h4_dataset_root.py from h4_quality_table.csv"},
+    "4_val_only_015_017": {"status": "PASS", "families": ["h4_navgen_31_015", "h4_navgen_31_017"], "episodes": 2},
+    "5_test_only_008_012_016_x2": {"status": "PASS",
+      "families": ["h4_navgen_31_008", "h4_navgen_31_012", "h4_navgen_31_016"], "episodes": 6},
+    "6_prior_heldout_uturn_chain_ftL_remain_heldout": {"status": "PASS",
+      "note": "not present in any H4 split; live in datasets/isaac_hospital_h3clean/test; evaluated separately as prior-held-out, never in train"},
+    "7_no_failed_superseded_deleted_in_train": {"status": "PASS",
+      "note": "9 superseded attempts have no converted episode; build asserts rc0 + artifact_integrity=complete + contacts=0 for every train row"},
+    "8_no_policy_rollouts_in_train": {"status": "PASS",
+      "note": "build asserts collector_type=scripted_reference_path and demonstration_source=expert_scripted_executor for all 24; GNM was shadow-only (no control) during collection"},
+    "9_author_committer_frank_only_if_committing": {"status": "HONORED_AT_COMMIT",
+      "identity": "Frank Asante Van Laarhoven <frankleroyvan@gmail.com>"}
+  },
+  "training": {
+    "config": "configs/gnm/gnm_h4_navgen_diversity.yaml",
+    "init_ckpt": "checkpoints/hospital_front_rgb_finetune/best.pt",
+    "init_mode": "weights_only_fresh_optimizer",
+    "data_root": "datasets/isaac_hospital_h4",
+    "select_on": "H4 validation (015, 017) only",
+    "eval_once_on": "H4 held-out test (008, 012, 016 x2)",
+    "prior_heldout_reported_separately": "h3clean/test (uturn, chain, ft_L)",
+    "action_std": [0.115528, 0.115528],
+    "seed": 42, "epochs": 50, "batch_size": 128, "lr": 1e-4, "patience": 10
+  }
+}

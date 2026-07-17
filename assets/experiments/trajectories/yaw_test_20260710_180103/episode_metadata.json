@@ -1,0 +1,141 @@
+{
+  "episode_id": "yaw_test_20260710_180103",
+  "git_commit": "2b3cbb8",
+  "git_branch": "h23-execfix",
+  "scene_stage_path": "procedural bring-up stage (physics ground plane)",
+  "robot_asset_path": "assets/robots/yahboom_m3_pro/yahboom_m3pro.usd",
+  "rosbag_path": "assets/experiments/rosbags/yaw_test_20260710_180103",
+  "trajectory_jsonl": "assets/experiments/trajectories/yaw_test_20260710_180103/trajectory.jsonl",
+  "trajectory_csv": "assets/experiments/trajectories/yaw_test_20260710_180103/trajectory.csv",
+  "command_profile": "scripted yaw-authority phases",
+  "policy_mode": "yaw_test_scripted",
+  "start_wall_time": 1783702863.2910388,
+  "end_wall_time": 1783702993.1652815,
+  "wall_duration_s": 129.874,
+  "sim_duration_s": 68.983,
+  "steps_logged": 3600,
+  "total_distance_m": 1.6093,
+  "max_abs_z_drift_m": 0.00036,
+  "max_yaw_rate_rad_s": 0.5308,
+  "topics_recorded": [
+    "/odom",
+    "/tf",
+    "/clock"
+  ],
+  "yaw_phases": [
+    {
+      "phase": "cal_w_0.2",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.2,
+      "mean_measured_yaw_rate": -0.0001,
+      "mean_odom_yaw_rate": 0.0263,
+      "yaw_tracking_ratio": -0.0,
+      "sign_correct": false,
+      "xy_drift_m": 0.0021,
+      "z_drift_m": 0.0
+    },
+    {
+      "phase": "cal_w_0.4",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.4,
+      "mean_measured_yaw_rate": 0.0375,
+      "mean_odom_yaw_rate": -0.0115,
+      "yaw_tracking_ratio": 0.094,
+      "sign_correct": true,
+      "xy_drift_m": 0.0063,
+      "z_drift_m": 2e-06
+    },
+    {
+      "phase": "cal_w_0.6",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.6,
+      "mean_measured_yaw_rate": 0.1499,
+      "mean_odom_yaw_rate": 0.0773,
+      "yaw_tracking_ratio": 0.25,
+      "sign_correct": true,
+      "xy_drift_m": 0.0031,
+      "z_drift_m": 0.0
+    },
+    {
+      "phase": "cal_w_0.8",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.8,
+      "mean_measured_yaw_rate": 0.3049,
+      "mean_odom_yaw_rate": 0.2245,
+      "yaw_tracking_ratio": 0.381,
+      "sign_correct": true,
+      "xy_drift_m": 0.0109,
+      "z_drift_m": 0.0
+    },
+    {
+      "phase": "cal_w_1.0",
+      "cmd_vx": 0.0,
+      "cmd_wz": 1.0,
+      "mean_measured_yaw_rate": 0.4654,
+      "mean_odom_yaw_rate": 0.3898,
+      "yaw_tracking_ratio": 0.465,
+      "sign_correct": true,
+      "xy_drift_m": 0.0145,
+      "z_drift_m": 2e-06
+    },
+    {
+      "phase": "cal_r_v0.05",
+      "cmd_vx": 0.05,
+      "cmd_wz": 0.4,
+      "mean_measured_yaw_rate": 0.1162,
+      "mean_odom_yaw_rate": 0.1123,
+      "yaw_tracking_ratio": 0.291,
+      "sign_correct": true,
+      "xy_drift_m": 0.1746,
+      "z_drift_m": 0.0
+    },
+    {
+      "phase": "cal_r_v0.08",
+      "cmd_vx": 0.08,
+      "cmd_wz": 0.4,
+      "mean_measured_yaw_rate": 0.1815,
+      "mean_odom_yaw_rate": 0.1956,
+      "yaw_tracking_ratio": 0.454,
+      "sign_correct": true,
+      "xy_drift_m": 0.2802,
+      "z_drift_m": 0.0
+    },
+    {
+      "phase": "cal_r_v0.10",
+      "cmd_vx": 0.1,
+      "cmd_wz": 0.4,
+      "mean_measured_yaw_rate": 0.19,
+      "mean_odom_yaw_rate": 0.2164,
+      "yaw_tracking_ratio": 0.475,
+      "sign_correct": true,
+      "xy_drift_m": 0.3749,
+      "z_drift_m": 4.5e-05
+    },
+    {
+      "phase": "cal_r_v0.15",
+      "cmd_vx": 0.15,
+      "cmd_wz": 0.4,
+      "mean_measured_yaw_rate": 0.2405,
+      "mean_odom_yaw_rate": 0.2723,
+      "yaw_tracking_ratio": 0.601,
+      "sign_correct": true,
+      "xy_drift_m": 0.6093,
+      "z_drift_m": 6.1e-05
+    },
+    {
+      "phase": "zero_hold",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.0,
+      "mean_measured_yaw_rate": -0.0001,
+      "mean_odom_yaw_rate": 0.0051,
+      "yaw_tracking_ratio": null,
+      "sign_correct": true,
+      "xy_drift_m": 0.005,
+      "z_drift_m": 9.1e-05
+    }
+  ],
+  "post_zero_hold": {
+    "hold_disp_m": 0.00171,
+    "hold_yaw_delta_rad": 6e-05
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "project": "gnm-vlnverse-baseline",
+  "case_study": "h4_navgen_diversity",
+  "run_name": "h1_hospital_front_rgb_finetune_on_h4_and_prior",
+  "seed": 42,
+  "model": {
+    "name": "MobileNetV2-GNM",
+    "condition": "incumbent",
+    "checkpoint_path": "checkpoints/hospital_front_rgb_finetune/best.pt",
+    "checkpoint_sha256": "d269a0fb0c6d8bd74c31f764574def223984f21f17b5ad275707139fcdc35c23",
+    "selected_by": "H4 validation goals only (015, 017)"
+  },
+  "dataset": {
+    "name": "Isaac-Hospital-ImageNav-v0 / H4 route-family corpus",
+    "camera": "Yahboom front-facing RGB (Isaac Sim)",
+    "train_episodes": 16,
+    "val_episodes": 2,
+    "test_episodes": 6,
+    "train_families": 8,
+    "heldout_primary": "families_008_012_016 (navgen route style)",
+    "heldout_prior": "families_uturn_chain_ftL (reported separately)",
+    "holdout_type": "route-family-level",
+    "leakage_check": "PASS"
+  },
+  "metrics_h4_heldout": {
+    "sr": 0.0,
+    "osr": 1.0,
+    "spl": 0.0,
+    "ne_m": 14.0356,
+    "ndtw": 0.1671,
+    "tl_m": 14.4552,
+    "cls": 0.2437,
+    "n_test_episodes": 6,
+    "collision_rate": "N/A offline"
+  },
+  "metrics_prior_heldout": {
+    "sr": 0.1667,
+    "osr": 0.6667,
+    "spl": 0.1667,
+    "ne_m": 12.7611,
+    "ndtw": 0.276,
+    "tl_m": 13.4467,
+    "cls": 0.4114,
+    "n_test_episodes": 6,
+    "collision_rate": "N/A offline"
+  },
+  "gates": {
+    "cuda_verified": true,
+    "wandb_logged": true,
+    "dataset_manifest_exists": true,
+    "route_family_holdout_leakage_check": "PASS",
+    "checkpoint_hashed": true,
+    "offline_cr_not_reported_numeric": true,
+    "artifact_hygiene_clean": true,
+    "no_full_benchmark_claim": true,
+    "no_robust_navigation_claim": true,
+    "no_language_instruction_claim": true,
+    "fixed_placeholder_goal_image_disclosed": true
+  },
+  "driftguard": {
+    "promotion_candidate": false,
+    "incumbent": null,
+    "decision": "incumbent_reference"
+  },
+  "claim_boundary": "Internal Isaac-Hospital-ImageNav-v0 simulation evidence; not real-robot evidence; not a public benchmark claim; not a general hospital-navigation solution. Improvement is within-navgen route distribution cross-family transfer only."
+}

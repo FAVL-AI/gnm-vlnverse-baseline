@@ -51,10 +51,12 @@ def poly_mask(poly):
 def build_grids():
     sem = json.loads((D / "scene_semantics.json").read_text())
     zon = json.loads((D / "safety_zones.json").read_text())
-    obstacle = np.zeros((H, W), bool)
-    for lm in sem["landmarks"]:
-        if lm["kind"] == "furniture":
-            obstacle |= poly_mask(lm["polygon"])
+    # H4: MEASURED occupancy replaces hand-authored furniture polygons
+    # (the polygons were proven wrong in H2.2/H2.3; semantics remain for
+    # landmark naming and zone costs only).
+    measured = np.load(D / "measured_occupancy.npy")
+    assert measured.shape == (H, W), measured.shape
+    obstacle = measured.astype(bool)
     obstacle[:2] = obstacle[-2:] = True
     obstacle[:, :2] = obstacle[:, -2:] = True
     zone = np.full((H, W), "green", dtype=object)

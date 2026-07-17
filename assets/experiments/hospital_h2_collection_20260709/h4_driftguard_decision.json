@@ -1,0 +1,54 @@
+{
+  "net_gate": "hold_regression_on_prior_heldout",
+  "primary_heldout": {
+    "decision": "promote",
+    "checks": {
+      "sr": {
+        "incumbent": 0.0,
+        "candidate": 0.3333,
+        "pass": true
+      },
+      "spl": {
+        "incumbent": 0.0,
+        "candidate": 0.3333,
+        "pass": true
+      },
+      "ne_m": {
+        "incumbent": 14.0356,
+        "candidate": 5.0231,
+        "pass": true,
+        "material_worsening_threshold_m": 0.1
+      }
+    },
+    "test": "h4_heldout_families_008_012_016",
+    "n_test_episodes": 6,
+    "rule": "promote only if SR and SPL improve or match and NE does not materially worsen on the same held-out test; recovery (val loss) is not safety"
+  },
+  "regression_guard_prior_heldout": {
+    "decision": "block",
+    "checks": {
+      "sr": {
+        "incumbent": 0.1667,
+        "candidate": 0.0,
+        "pass": false
+      },
+      "spl": {
+        "incumbent": 0.1667,
+        "candidate": 0.0,
+        "pass": false
+      },
+      "ne_m": {
+        "incumbent": 12.7611,
+        "candidate": 8.1503,
+        "pass": true,
+        "material_worsening_threshold_m": 0.1
+      }
+    },
+    "test": "prior_heldout_uturn_chain_ftL",
+    "n_test_episodes": 6,
+    "rule": "promote only if SR and SPL improve or match and NE does not materially worsen on the same held-out test; recovery (val loss) is not safety"
+  },
+  "incumbent_run": "h1_hospital_front_rgb_finetune",
+  "candidate_run": "h4_navgen_diversity_seed42",
+  "note": "mechanical DriftGuard PROMOTES on the primary H4 held-out (SR 0.000->0.333, SPL 0.000->0.333, NE 14.04->5.02 m) but BLOCKS on the prior held-out (SR 0.167->0.000, SPL 0.167->0.000). Net gate is HOLD: a cross-distribution regression, not a clean promotion."
+}

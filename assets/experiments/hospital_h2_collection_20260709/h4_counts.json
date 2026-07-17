@@ -1,0 +1,22 @@
+{
+  "total_episodes": 24,
+  "imitation_eligible": 16,
+  "evaluation_eligible": 8,
+  "episodes_by_split": {
+    "train": 16,
+    "validation": 2,
+    "held_out_test": 6
+  },
+  "families_by_split": {
+    "train": 8,
+    "held_out_test": 3,
+    "validation": 2
+  },
+  "held_out_test_families": 3,
+  "held_out_test_episodes": 6,
+  "all_recording_integrity_ok": true,
+  "all_artifact_complete": true,
+  "all_contacts_zero": true,
+  "all_rc_zero": true,
+  "re_recorded_count": 9
+}

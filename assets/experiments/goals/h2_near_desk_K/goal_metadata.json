@@ -1,0 +1,35 @@
+{
+  "goal_id": "h2_near_desk_K",
+  "goal_image": "assets/experiments/goals/h2_near_desk_K/goal_image.png",
+  "goal_image_sha256": "e2811b45a977ea4af764b2d2aeac3b05d26fc64fbc4b6b777d7ae3e16a5c1f5a",
+  "capture_source": "isaac_live_annotator",
+  "capture_command": "scripts/robots/m3pro_ros2_bringup.py --capture-goal --scene hospital --goal-id h2_near_desk_K --start-pose 0.0,-5.0,1.5708 --goal-pose 2.5,0.5,0.9",
+  "captured_at": "2026-07-09T00:23:08.483660",
+  "sim_time": 4.033,
+  "scene_stage_path": "isaac hospital environment (standard scene, docs/ISAAC_HOSPITAL_ENVIRONMENT.md)",
+  "robot_asset_path": "assets/robots/yahboom_m3_pro/yahboom_m3pro.usd",
+  "camera_prim": "/World/M3Pro/camera_link/rgb_camera",
+  "camera_frame_id": "camera_link",
+  "image_resolution": [
+    640,
+    480
+  ],
+  "robot_pose_at_capture": {
+    "x": 2.4999,
+    "y": 0.4998,
+    "z": -0.0
+  },
+  "camera_pose_note": "camera rigidly mounted on camera_link of the robot posed at the goal",
+  "start_pose": {
+    "x": 0.0,
+    "y": -5.0,
+    "yaw_rad": 1.5708
+  },
+  "goal_pose": {
+    "x": 2.5,
+    "y": 0.5,
+    "yaw_rad": 0.9
+  },
+  "git_commit": "ba0bf16",
+  "git_branch": "data-expansion-scene-holdout"
+}

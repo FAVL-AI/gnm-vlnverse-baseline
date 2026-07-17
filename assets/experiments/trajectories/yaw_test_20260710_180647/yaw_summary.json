@@ -1,0 +1,118 @@
+{
+  "phases": [
+    {
+      "phase": "cal_w_0.2",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.2,
+      "mean_measured_yaw_rate": 0.1989,
+      "mean_odom_yaw_rate": 0.1962,
+      "yaw_tracking_ratio": 0.994,
+      "sign_correct": true,
+      "xy_drift_m": 0.0008,
+      "z_drift_m": 9e-06
+    },
+    {
+      "phase": "cal_w_0.4",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.4,
+      "mean_measured_yaw_rate": 0.3938,
+      "mean_odom_yaw_rate": 0.3906,
+      "yaw_tracking_ratio": 0.984,
+      "sign_correct": true,
+      "xy_drift_m": 0.002,
+      "z_drift_m": 1e-06
+    },
+    {
+      "phase": "cal_w_0.6",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.6,
+      "mean_measured_yaw_rate": 0.5945,
+      "mean_odom_yaw_rate": 0.5922,
+      "yaw_tracking_ratio": 0.991,
+      "sign_correct": true,
+      "xy_drift_m": 0.0003,
+      "z_drift_m": 4e-06
+    },
+    {
+      "phase": "cal_w_0.8",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.8,
+      "mean_measured_yaw_rate": 0.791,
+      "mean_odom_yaw_rate": 0.7952,
+      "yaw_tracking_ratio": 0.989,
+      "sign_correct": true,
+      "xy_drift_m": 0.0023,
+      "z_drift_m": 7e-06
+    },
+    {
+      "phase": "cal_w_1.0",
+      "cmd_vx": 0.0,
+      "cmd_wz": 1.0,
+      "mean_measured_yaw_rate": 0.9838,
+      "mean_odom_yaw_rate": 0.9866,
+      "yaw_tracking_ratio": 0.984,
+      "sign_correct": true,
+      "xy_drift_m": 0.0016,
+      "z_drift_m": 0.000107
+    },
+    {
+      "phase": "cal_r_v0.05",
+      "cmd_vx": 0.05,
+      "cmd_wz": 0.4,
+      "mean_measured_yaw_rate": 0.3956,
+      "mean_odom_yaw_rate": 0.3898,
+      "yaw_tracking_ratio": 0.989,
+      "sign_correct": true,
+      "xy_drift_m": 0.2349,
+      "z_drift_m": 0.0
+    },
+    {
+      "phase": "cal_r_v0.08",
+      "cmd_vx": 0.08,
+      "cmd_wz": 0.4,
+      "mean_measured_yaw_rate": 0.3914,
+      "mean_odom_yaw_rate": 0.3831,
+      "yaw_tracking_ratio": 0.979,
+      "sign_correct": true,
+      "xy_drift_m": 0.3741,
+      "z_drift_m": 3.3e-05
+    },
+    {
+      "phase": "cal_r_v0.10",
+      "cmd_vx": 0.1,
+      "cmd_wz": 0.4,
+      "mean_measured_yaw_rate": 0.3941,
+      "mean_odom_yaw_rate": 0.3914,
+      "yaw_tracking_ratio": 0.985,
+      "sign_correct": true,
+      "xy_drift_m": 0.4683,
+      "z_drift_m": 7.4e-05
+    },
+    {
+      "phase": "cal_r_v0.15",
+      "cmd_vx": 0.15,
+      "cmd_wz": 0.4,
+      "mean_measured_yaw_rate": 0.3986,
+      "mean_odom_yaw_rate": 0.3923,
+      "yaw_tracking_ratio": 0.996,
+      "sign_correct": true,
+      "xy_drift_m": 0.6974,
+      "z_drift_m": 7.6e-05
+    },
+    {
+      "phase": "zero_hold",
+      "cmd_vx": 0.0,
+      "cmd_wz": 0.0,
+      "mean_measured_yaw_rate": -0.0002,
+      "mean_odom_yaw_rate": 0.0018,
+      "yaw_tracking_ratio": null,
+      "sign_correct": true,
+      "xy_drift_m": 0.0025,
+      "z_drift_m": 2e-06
+    }
+  ],
+  "post_zero_hold": {
+    "hold_disp_m": 0.02527,
+    "hold_yaw_delta_rad": 0.0168
+  }
+}

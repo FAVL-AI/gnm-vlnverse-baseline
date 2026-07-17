@@ -1,0 +1,21 @@
+{
+  "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+  "scene_identity_pass": true,
+  "x_min": -7.0,
+  "x_max": 7.0,
+  "y_min": -7.0,
+  "y_max": 7.0,
+  "res_m": 0.05,
+  "nx": 280,
+  "ny": 280,
+  "z_slab": [
+    0.08,
+    0.55
+  ],
+  "robot_camera_height_m": 0.35,
+  "gprim_total": 2073,
+  "gprim_in_slab": 56,
+  "occupied_cells": 66080,
+  "free_cells": 12320,
+  "note": "occupancy_raw.npy: 1=occupied by hospital geometry in robot slab, 0=free. Inflate by robot radius before authoring routes."
+}

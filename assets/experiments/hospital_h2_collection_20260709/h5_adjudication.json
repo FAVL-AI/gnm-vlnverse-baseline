@@ -1,0 +1,22 @@
+{
+  "h5_final_adjudication": "HOLD_NOT_PROMOTED_OUTCOME_B",
+  "hypothesis": "mixing H4 diversity with H2.4 older-family replay preserves H4 gains while removing the prior-family regression",
+  "hypothesis_result": "PARTIALLY supported: H4 gain preserved and NE / combined aggregate improved, but prior-heldout SR/SPL regression NOT removed",
+  "h4_heldout_result": "PRESERVED \u2014 candidate SR 0.333 / SPL 0.333 / NE 5.02 m vs incumbent 0.000 / 0.000 / 14.04 m (improvement guard PASS)",
+  "prior_heldout_result": "SR/SPL still regress (0.167->0.000) though NE improves 12.76->7.19 m; regression guard FAIL; the SR gap is a single episode (1/6->0/6) at n=6",
+  "combined_aggregate_result": "candidate better on SR 0.083->0.167, SPL 0.083->0.167, NE 13.40->6.10 m, nDTW 0.222->0.336; OSR worse 0.833->0.667 (n=12)",
+  "driftguard_net": "hold",
+  "verdictplane_verdict": "deny",
+  "collision_regression": "none (CR 0.000 offline on all sets; physics CR N/A)",
+  "final_promotion_decision": "NOT PROMOTED",
+  "incumbent": "h1_hospital_front_rgb_finetune RETAINED",
+  "candidate": "h5_mixed_replay retained as diagnostic evidence (strongest so far)",
+  "reason": "Outcome B: H4 improvement preserved but prior-family SR/SPL non-regression not achieved. Per the pre-registered rule, promotion needs BOTH guards; do not promote on H4 improvement alone, on combined-aggregate improvement alone, or on a small-n tie. Reading: replaying older TRAIN families (H2.4) does not by itself restore SUCCESS on older HELD-OUT families of route types no training set covers (uturn/chain/ftL) \u2014 a coverage gap, not just a balance gap; NE improved broadly.",
+  "small_n_caveat": "n=6 per held-out set; prior-heldout SR regression = 1 episode",
+  "claim_boundary": "evidence about route-family-diverse scripted imitation under the current pipeline; fixed placeholder goal image => NOT stronger goal-image conditioning",
+  "next_options": [
+    "H5-run-2: rebalance older-family sampling toward parity",
+    "H6: add uturn/chain/ftL-type route families to TRAINING (reassign via new split manifest, fresh held-out) to test the coverage hypothesis directly",
+    "accept H5 as diagnostic-only"
+  ]
+}

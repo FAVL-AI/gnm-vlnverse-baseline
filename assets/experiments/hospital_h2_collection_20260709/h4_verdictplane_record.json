@@ -1,0 +1,14 @@
+{
+  "action": "promote_model",
+  "candidate": "h4_navgen_diversity",
+  "scope": "internal Isaac-Hospital-ImageNav-v0 line only",
+  "verdict": "deny",
+  "matched_rule": {
+    "match": {
+      "tool": "model.promote",
+      "args.driftguard_decision": "hold_regression_on_prior_heldout"
+    },
+    "decision": "deny"
+  },
+  "reason": "net DriftGuard gate is not a clean promote; prior-held-out navigation regression blocks auto-promotion"
+}

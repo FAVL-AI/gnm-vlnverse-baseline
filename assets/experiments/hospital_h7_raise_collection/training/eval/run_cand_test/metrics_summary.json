@@ -1,0 +1,18 @@
+{
+  "SR": 1.0,
+  "OSR": 1.0,
+  "SPL": 0.9078,
+  "NE": 2.5411,
+  "TL": 2.8423,
+  "nDTW": 0.6458,
+  "CLS": 0.769,
+  "CR": 0.0,
+  "SRn": 0.0,
+  "n_episodes": 2,
+  "checkpoint": "/home/favl/robotics/gnm-vlnverse-baseline/checkpoints/h7r_hospital_pilot_finetune/best.pt",
+  "split": "test",
+  "track": "A",
+  "data_root": "/home/favl/robotics/gnm-vlnverse-baseline/datasets/isaac_hospital_h7r",
+  "stop_threshold": 0.15,
+  "success_threshold": 3.0
+}

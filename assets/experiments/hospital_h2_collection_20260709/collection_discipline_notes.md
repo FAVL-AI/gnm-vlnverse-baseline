@@ -166,3 +166,36 @@ approves the acceptance suite. ExecFix passes only if all five hospital
 validation tasks complete within thresholds, artifacts are complete,
 front-RGB is preserved, hygiene barriers stay clean, and the decider
 re-gates the route families under the new continuous-yaw model.
+
+## Disk-guard rule and incident classification (locked 2026-07-11)
+
+Rule: every recording chain must have a disk guard before each episode.
+If free space is below the threshold (30 GB), abort cleanly before
+recording starts. Do not allow mid-episode disk exhaustion. Crash and
+debris bags are deleted at the point of failure.
+
+Incident classification for the 9 lost H4 episodes:
+failure_stage = disk_exhaustion;
+recording_integrity = excluded_partial_recording;
+artifact_integrity = failed_bag_unavailable;
+training_eligible = false; evaluation_eligible = false;
+re_record_required = true (chain restarted from scratch).
+
+Quality-table columns added for H4: disk_guard_status,
+free_space_before_gb, free_space_after_gb, bag_size_gb,
+recording_integrity, artifact_integrity, re_recorded_from.
+
+## Process-kill hard ban (locked 2026-07-11, fourth strike)
+
+Never kill by broad command pattern. Never run pkill/grep patterns that
+can match the kill command itself. Never kill by ambiguous script name.
+Allowed methods only: (1) exact PID captured at launch; (2) process
+group ID owned by the wrapper; (3) wrapper-managed child process tree
+cleanup; (4) dry-run process listing before kill, if manual
+intervention is needed.
+
+H4 quality-table columns extended with process-control evidence:
+process_control_method, kill_method_if_any, runtime_degradation_event
+(joining the disk columns: disk_guard_status, free_space_before_gb,
+free_space_after_gb, bag_size_gb, recording_integrity,
+artifact_integrity, re_recorded_from).

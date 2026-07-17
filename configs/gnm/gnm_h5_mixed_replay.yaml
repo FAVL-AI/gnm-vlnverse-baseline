@@ -1,0 +1,50 @@
+# H5-run-1 mixed-family replay fine-tune.
+# Controlled: identical to H3-clean/H4 pipeline except the training data (24 =
+# 16 H4 NavGen demos + 8 H2.4 older-family demos). Weights-only init from the
+# retained H1 hospital incumbent. NOT a promotion run.
+# Selection caveat (recorded per Frank 2026-07-11): the H2.4 validation episodes
+# are b-variants of families also in train (a-variants). Acceptable for model
+# selection under limited data, but this is NOT older-family held-out
+# generalisation — that is measured ONLY on the preserved prior held-out test set.
+model:
+  context_size: 5
+  goal_conditioned: true
+  action_dim: 2
+  hidden_dim: 256
+  encoder: mobilenet
+  out_dim: 512
+  pretrained: true
+data:
+  data_root: datasets/isaac_hospital_h5
+  image_size: [96, 96]
+  max_goal_dist: 20
+  action_std: [0.115528, 0.115528]   # same normalization as incumbent/H3-clean/H4
+  augment: true
+  num_workers: 4
+  pin_memory: true
+training:
+  epochs: 50
+  batch_size: 128
+  lr: 1e-4
+  weight_decay: 1e-4
+  warmup_frac: 0.05
+  max_grad_norm: 1.0
+  action_weight: 0.5
+  loss_type: mse
+  patience: 10
+  seed: 42
+  init_ckpt: checkpoints/hospital_front_rgb_finetune/best.pt   # H1 incumbent, weights only, fresh optimizer
+checkpoint:
+  output_dir: checkpoints/h5_mixed_replay_finetune
+  log_every: 50
+wandb:
+  project: fleetsafe-gnm-vlnverse
+  entity: null
+  name: h5_mixed_replay_seed42
+  tags: [gnm, track_A, hospital, h5, mixed_family_replay, diagnostic]
+  notes: "H5-run-1 mixed-family replay (16 H4 NavGen + 8 H2.4 older demos); init weights-only from H1 incumbent; select on H5 val (both distributions); not a promotion run."
+evaluation:
+  success_threshold: 3.0
+  stop_threshold: 0.15
+  max_steps: 500
+  track: A

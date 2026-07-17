@@ -1,0 +1,97 @@
+{
+  "purpose": "visual validation that the intended Isaac hospital asset loads and renders from a front-facing camera at robot height",
+  "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+  "asset_is_hospital_usd": true,
+  "hospital_reference_authored": true,
+  "hospital_descendant_prim_count": 1909,
+  "isaac_sim_version": "5.1.0.0",
+  "camera_resolution": [
+    1280,
+    720
+  ],
+  "camera_height_m": 0.35,
+  "render_mode": "RaytracedLighting",
+  "renderer": "RTX (headless, Replicator render_product, rgb annotator)",
+  "synthetic": false,
+  "placeholder": false,
+  "timestamp": "2026-07-13T03:50:08",
+  "cameras": [
+    {
+      "name": "corridor",
+      "camera_path": "/World/SmokeCam_corridor",
+      "eye_xyz": [
+        -2.2,
+        0.0,
+        0.35
+      ],
+      "target_xyz": [
+        3.2,
+        0.0,
+        0.3
+      ],
+      "focal_length_mm": 18.0,
+      "file": "hospital_smoke_corridor.png",
+      "array_file": "hospital_smoke_corridor.npy",
+      "captured": true,
+      "mean_luma": 45.3
+    },
+    {
+      "name": "turn_intersection",
+      "camera_path": "/World/SmokeCam_turn_intersection",
+      "eye_xyz": [
+        0.0,
+        1.2,
+        0.35
+      ],
+      "target_xyz": [
+        3.2,
+        -1.6,
+        0.3
+      ],
+      "focal_length_mm": 18.0,
+      "file": "hospital_smoke_turn_intersection.png",
+      "array_file": "hospital_smoke_turn_intersection.npy",
+      "captured": true,
+      "mean_luma": 59.2
+    },
+    {
+      "name": "near_goal",
+      "camera_path": "/World/SmokeCam_near_goal",
+      "eye_xyz": [
+        1.6,
+        0.2,
+        0.35
+      ],
+      "target_xyz": [
+        4.6,
+        -0.4,
+        0.3
+      ],
+      "focal_length_mm": 18.0,
+      "file": "hospital_smoke_near_goal.png",
+      "array_file": "hospital_smoke_near_goal.npy",
+      "captured": true,
+      "mean_luma": 44.6
+    },
+    {
+      "name": "wider_context",
+      "camera_path": "/World/SmokeCam_wider_context",
+      "eye_xyz": [
+        -2.8,
+        1.7,
+        1.2
+      ],
+      "target_xyz": [
+        1.0,
+        -0.4,
+        0.35
+      ],
+      "focal_length_mm": 18.0,
+      "file": "hospital_smoke_wider_context.png",
+      "array_file": "hospital_smoke_wider_context.npy",
+      "captured": true,
+      "mean_luma": 75.9
+    }
+  ],
+  "note": "front RGB camera at robot height in the real Isaac 5.1 hospital.usd; replaces the earlier grey procedural-stage frames (--scene stage) that were rejected as not matching the hospital asset."
+}

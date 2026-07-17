@@ -1,0 +1,1091 @@
+[
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1300",
+    "seed": 13,
+    "n_frames": 30,
+    "path_length_m": 3.082842712474619,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.25,
+      "goal_frame_std": 50.95035421289882,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1301",
+    "seed": 13,
+    "n_frames": 21,
+    "path_length_m": 2.124264068711929,
+    "route_quality": {
+      "clearance_min_m": 0.6000000000000001,
+      "clearance_median_m": 0.8,
+      "goal_frame_std": 36.732980813226874,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1302",
+    "seed": 13,
+    "n_frames": 46,
+    "path_length_m": 4.665685424949237,
+    "route_quality": {
+      "clearance_min_m": 0.45,
+      "clearance_median_m": 0.6403124237432849,
+      "goal_frame_std": 38.17642173807434,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1303",
+    "seed": 13,
+    "n_frames": 27,
+    "path_length_m": 2.7955844122715727,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.45,
+      "goal_frame_std": 45.70485576070804,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1304",
+    "seed": 13,
+    "n_frames": 33,
+    "path_length_m": 3.3499999999999996,
+    "route_quality": {
+      "clearance_min_m": 0.30000000000000004,
+      "clearance_median_m": 0.4,
+      "goal_frame_std": 40.528960753455515,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1305",
+    "seed": 13,
+    "n_frames": 54,
+    "path_length_m": 5.461269837220812,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.35000000000000003,
+      "goal_frame_std": 47.92937000558122,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1306",
+    "seed": 13,
+    "n_frames": 42,
+    "path_length_m": 4.2935028842544405,
+    "route_quality": {
+      "clearance_min_m": 0.4609772228646444,
+      "clearance_median_m": 0.7000000000000001,
+      "goal_frame_std": 38.651386782115075,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1307",
+    "seed": 13,
+    "n_frames": 30,
+    "path_length_m": 3.0949747468305837,
+    "route_quality": {
+      "clearance_min_m": 0.55,
+      "clearance_median_m": 0.6224820240748663,
+      "goal_frame_std": 52.888744008369464,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1308",
+    "seed": 13,
+    "n_frames": 40,
+    "path_length_m": 4.039949493661167,
+    "route_quality": {
+      "clearance_min_m": 0.316227766016838,
+      "clearance_median_m": 0.5170005358463885,
+      "goal_frame_std": 46.1620566837349,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1309",
+    "seed": 13,
+    "n_frames": 46,
+    "path_length_m": 4.65918830920368,
+    "route_quality": {
+      "clearance_min_m": 0.32015621187164245,
+      "clearance_median_m": 0.6041522986797286,
+      "goal_frame_std": 44.93989148216282,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1310",
+    "seed": 13,
+    "n_frames": 23,
+    "path_length_m": 2.3828427124746185,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.45,
+      "goal_frame_std": 37.18988364235988,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1311",
+    "seed": 13,
+    "n_frames": 24,
+    "path_length_m": 2.470710678118654,
+    "route_quality": {
+      "clearance_min_m": 0.304138126514911,
+      "clearance_median_m": 0.55,
+      "goal_frame_std": 43.774109262407734,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1312",
+    "seed": 13,
+    "n_frames": 23,
+    "path_length_m": 2.381370849898476,
+    "route_quality": {
+      "clearance_min_m": 0.28284271247461906,
+      "clearance_median_m": 0.6863406011768428,
+      "goal_frame_std": 36.90791478877546,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1313",
+    "seed": 13,
+    "n_frames": 20,
+    "path_length_m": 2.0414213562373096,
+    "route_quality": {
+      "clearance_min_m": 0.30000000000000004,
+      "clearance_median_m": 0.7280109889280518,
+      "goal_frame_std": 46.31075364217207,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1314",
+    "seed": 13,
+    "n_frames": 58,
+    "path_length_m": 5.829898987322334,
+    "route_quality": {
+      "clearance_min_m": 0.4,
+      "clearance_median_m": 0.608276253029822,
+      "goal_frame_std": 48.47610285293694,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1315",
+    "seed": 13,
+    "n_frames": 26,
+    "path_length_m": 2.6192388155425115,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.5485963577929853,
+      "goal_frame_std": 42.47217971455105,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1316",
+    "seed": 13,
+    "n_frames": 38,
+    "path_length_m": 3.8828427124746194,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.3905124837953327,
+      "goal_frame_std": 46.80859746277417,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1317",
+    "seed": 13,
+    "n_frames": 39,
+    "path_length_m": 3.9485281374238563,
+    "route_quality": {
+      "clearance_min_m": 0.35000000000000003,
+      "clearance_median_m": 0.38078865529319544,
+      "goal_frame_std": 39.40438656787914,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1318",
+    "seed": 13,
+    "n_frames": 23,
+    "path_length_m": 2.3828427124746203,
+    "route_quality": {
+      "clearance_min_m": 0.45,
+      "clearance_median_m": 0.45,
+      "goal_frame_std": 57.527141751581595,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1319",
+    "seed": 13,
+    "n_frames": 23,
+    "path_length_m": 2.352081528017131,
+    "route_quality": {
+      "clearance_min_m": 0.5,
+      "clearance_median_m": 0.7433034373659253,
+      "goal_frame_std": 39.89223617967965,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1320",
+    "seed": 13,
+    "n_frames": 20,
+    "path_length_m": 2.0207106781186557,
+    "route_quality": {
+      "clearance_min_m": 0.30000000000000004,
+      "clearance_median_m": 0.36055512754639896,
+      "goal_frame_std": 38.33584129342603,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1321",
+    "seed": 13,
+    "n_frames": 26,
+    "path_length_m": 2.672792206135785,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.45,
+      "goal_frame_std": 41.25344912615183,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1322",
+    "seed": 13,
+    "n_frames": 37,
+    "path_length_m": 3.7071067811865483,
+    "route_quality": {
+      "clearance_min_m": 0.4,
+      "clearance_median_m": 0.5,
+      "goal_frame_std": 36.78353938424195,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1323",
+    "seed": 13,
+    "n_frames": 27,
+    "path_length_m": 2.782842712474619,
+    "route_quality": {
+      "clearance_min_m": 0.6000000000000001,
+      "clearance_median_m": 0.6000000000000001,
+      "goal_frame_std": 46.40843702507583,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1324",
+    "seed": 13,
+    "n_frames": 60,
+    "path_length_m": 6.053553390593274,
+    "route_quality": {
+      "clearance_min_m": 0.30000000000000004,
+      "clearance_median_m": 0.4,
+      "goal_frame_std": 48.67721506618926,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1325",
+    "seed": 13,
+    "n_frames": 36,
+    "path_length_m": 3.6121320343559638,
+    "route_quality": {
+      "clearance_min_m": 0.4,
+      "clearance_median_m": 0.4,
+      "goal_frame_std": 43.72326951793223,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1326",
+    "seed": 13,
+    "n_frames": 61,
+    "path_length_m": 6.124873734152918,
+    "route_quality": {
+      "clearance_min_m": 0.45,
+      "clearance_median_m": 0.5099019513592785,
+      "goal_frame_std": 44.45389433089506,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1327",
+    "seed": 13,
+    "n_frames": 33,
+    "path_length_m": 3.36066017177982,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.5590169943749475,
+      "goal_frame_std": 48.941986494973776,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1328",
+    "seed": 13,
+    "n_frames": 36,
+    "path_length_m": 3.6328427124746203,
+    "route_quality": {
+      "clearance_min_m": 0.45,
+      "clearance_median_m": 0.6000000000000001,
+      "goal_frame_std": 53.227029771225126,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1329",
+    "seed": 13,
+    "n_frames": 31,
+    "path_length_m": 3.1500000000000004,
+    "route_quality": {
+      "clearance_min_m": 0.30000000000000004,
+      "clearance_median_m": 0.4,
+      "goal_frame_std": 44.739686392095315,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1330",
+    "seed": 13,
+    "n_frames": 26,
+    "path_length_m": 2.6656854249492383,
+    "route_quality": {
+      "clearance_min_m": 0.30000000000000004,
+      "clearance_median_m": 0.8139410298049854,
+      "goal_frame_std": 45.323220220703504,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1331",
+    "seed": 13,
+    "n_frames": 32,
+    "path_length_m": 3.207106781186549,
+    "route_quality": {
+      "clearance_min_m": 0.25,
+      "clearance_median_m": 0.5220153254455275,
+      "goal_frame_std": 34.56657510615864,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  },
+  {
+    "generator": "scripts/gnm/generate_vlntube_batch.py",
+    "scene": "kujiale_0203",
+    "episode": "gen_kujiale_0203_1332",
+    "seed": 13,
+    "n_frames": 23,
+    "path_length_m": 2.3121320343559644,
+    "route_quality": {
+      "clearance_min_m": 0.45,
+      "clearance_median_m": 0.5,
+      "goal_frame_std": 35.94885584217824,
+      "goal_frame_ok": true
+    },
+    "camera": {
+      "z_m": 2.4,
+      "focal_mm": 16.0,
+      "rotation": "rotateXYZ(0,0,deg(yaw))",
+      "image": [
+        224,
+        224
+      ]
+    },
+    "policy": {
+      "min_path_m": 2.0,
+      "max_path_m": 6.0,
+      "max_curvature_ratio": 1.5,
+      "safety_erosion_px": 3,
+      "min_clearance_m": 0.25,
+      "min_goal_frame_std": 15.0,
+      "step_m": 0.1,
+      "dedup_cell_px": 6
+    }
+  }
+]

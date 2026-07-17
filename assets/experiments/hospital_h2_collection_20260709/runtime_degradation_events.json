@@ -60,5 +60,26 @@
       "training_eligibility": false,
       "lesson": "bounded timeouts must clean up CHILD processes too; episode hygiene = kill orphan recorders + purge DDS shm between every automated recording run"
     }
+  },
+  {
+    "runtime_degradation_event": {
+      "type": "disk_exhaustion_during_h4_recording",
+      "detected": "root filesystem hit 100% (152 KB free of 916 GB) after 9 of 24 H4 demonstration episodes; every new write failing (ENOSPC), including harness output capture",
+      "root_cause_chain": "full-topic rosbags at ~2 GB/episode stacked on 84 GB of unmanifested debris bags from crashed or superseded runs (a 27 GB runaway closed-loop bag; three 19 GB crashed physeval attempts) that were never cleaned",
+      "action_taken": "recording chain stopped by exact PID; emergency deletion of the 9 partial H4 bags plus all excluded-partial and debris bags (~137 GB recovered; 116 GB free). Trajectory logs, metadata and the attempt ledger remain for every deleted bag.",
+      "data_impact": "the 9 recorded H4 episodes lost their bags before conversion (frames come from bags) and are therefore unusable for the dataset; they will be re-recorded. No committed evidence affected; bags were gitignored and unmanifested.",
+      "training_eligibility": false,
+      "lesson": "add a disk-space guard to every recording chain (abort cleanly below a free-space floor) and delete crashed-run bags at the point of failure, not later"
+    }
+  },
+  {
+    "runtime_degradation_event": {
+      "type": "self_match_process_kill",
+      "detected": "during the H4 pause for CashAegis, the pausing command embedded its own kill pattern (ALL_H4REC_DONE) and killed the invoking shell (exit 144) - the fourth self-match strike of the campaign",
+      "impact": "chain pause/recovery required",
+      "recovery": "exact_PID_kill (wrapper and episode killed by PIDs resolved in a separate prior command)",
+      "policy_update": "broad_pattern_process_kills_forbidden - HARD BAN. Allowed methods only: (1) exact PID captured at launch; (2) process-group ID owned by the wrapper; (3) wrapper-managed child-tree cleanup; (4) dry-run listing before any manual kill.",
+      "training_eligibility": null
+    }
   }
 ]

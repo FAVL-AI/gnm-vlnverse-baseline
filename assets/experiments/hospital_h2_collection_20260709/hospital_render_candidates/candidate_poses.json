@@ -1,0 +1,285 @@
+{
+  "asset_path": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments/Hospital/hospital.usd",
+  "isaac_sim_version": "5.1.0.0",
+  "resolution": [
+    1280,
+    720
+  ],
+  "robot_camera_height_m": 0.35,
+  "focal_length_mm": 18.0,
+  "render_mode": "RaytracedLighting",
+  "hospital_prim_count": 1909,
+  "synthetic": false,
+  "candidates": [
+    {
+      "name": "r01",
+      "eye": [
+        0.0,
+        1.2,
+        0.35
+      ],
+      "target": [
+        3.2,
+        -1.6,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 55.3
+    },
+    {
+      "name": "r02",
+      "eye": [
+        -1.0,
+        1.5,
+        0.35
+      ],
+      "target": [
+        2.5,
+        -1.5,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 72.5
+    },
+    {
+      "name": "r03",
+      "eye": [
+        1.0,
+        1.0,
+        0.35
+      ],
+      "target": [
+        3.5,
+        -1.2,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 50.3
+    },
+    {
+      "name": "r04",
+      "eye": [
+        -2.5,
+        0.5,
+        0.35
+      ],
+      "target": [
+        3.0,
+        1.0,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 56.6
+    },
+    {
+      "name": "r05",
+      "eye": [
+        -2.5,
+        -0.5,
+        0.35
+      ],
+      "target": [
+        3.0,
+        -1.0,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 69.0
+    },
+    {
+      "name": "r06",
+      "eye": [
+        -1.5,
+        0.0,
+        0.35
+      ],
+      "target": [
+        3.5,
+        0.0,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 51.9
+    },
+    {
+      "name": "r07",
+      "eye": [
+        0.5,
+        -0.5,
+        0.35
+      ],
+      "target": [
+        3.5,
+        -2.5,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 65.5
+    },
+    {
+      "name": "r08",
+      "eye": [
+        -2.0,
+        1.0,
+        0.35
+      ],
+      "target": [
+        1.0,
+        -1.0,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 78.9
+    },
+    {
+      "name": "r09",
+      "eye": [
+        1.5,
+        1.2,
+        0.35
+      ],
+      "target": [
+        1.5,
+        -1.5,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 103.0
+    },
+    {
+      "name": "r10",
+      "eye": [
+        -2.5,
+        1.5,
+        0.35
+      ],
+      "target": [
+        2.0,
+        -1.0,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 77.9
+    },
+    {
+      "name": "r11",
+      "eye": [
+        0.0,
+        -1.0,
+        0.35
+      ],
+      "target": [
+        3.0,
+        -3.0,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 80.8
+    },
+    {
+      "name": "r12",
+      "eye": [
+        -1.0,
+        -1.5,
+        0.35
+      ],
+      "target": [
+        2.5,
+        0.5,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 52.8
+    },
+    {
+      "name": "r13",
+      "eye": [
+        2.0,
+        1.0,
+        0.35
+      ],
+      "target": [
+        4.0,
+        -1.0,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 45.0
+    },
+    {
+      "name": "r14",
+      "eye": [
+        -3.0,
+        0.0,
+        0.35
+      ],
+      "target": [
+        2.0,
+        0.0,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 62.8
+    },
+    {
+      "name": "r15",
+      "eye": [
+        0.0,
+        2.0,
+        0.35
+      ],
+      "target": [
+        2.0,
+        -1.0,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 80.0
+    },
+    {
+      "name": "r16",
+      "eye": [
+        1.0,
+        -0.5,
+        0.35
+      ],
+      "target": [
+        4.0,
+        -2.0,
+        0.6
+      ],
+      "is_context": false,
+      "mean_luma": 51.4
+    },
+    {
+      "name": "ctx1",
+      "eye": [
+        -3.0,
+        2.0,
+        1.4
+      ],
+      "target": [
+        1.0,
+        -0.5,
+        0.4
+      ],
+      "is_context": true,
+      "mean_luma": 79.2
+    },
+    {
+      "name": "ctx2",
+      "eye": [
+        -3.0,
+        -1.5,
+        1.5
+      ],
+      "target": [
+        2.0,
+        0.5,
+        0.4
+      ],
+      "is_context": true,
+      "mean_luma": 61.0
+    }
+  ]
+}

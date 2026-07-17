@@ -1,0 +1,33 @@
+{
+  "h4_final_adjudication": "HOLD_AS_POSITIVE_DIAGNOSTIC_NOT_PROMOTED",
+  "hypothesis": "route-family-diverse scripted-expert demonstrations yield measurable held-out transfer that H3-clean's per-family volume did not",
+  "hypothesis_result": "SUPPORTED within the navgen route distribution",
+  "primary_heldout_result": "candidate BEATS incumbent on H4 held-out families: SR 0.000->0.333, SPL 0.000->0.333, NE 14.04->5.02 m, nDTW 0.167->0.411 (n=6)",
+  "prior_heldout_result": "candidate REGRESSES vs incumbent on prior held-out uturn/chain/ftL: SR 0.167->0.000, OSR 0.667->0.333, SPL 0.167->0.000; NE improves 12.76->8.15 m (n=6)",
+  "driftguard_mechanical_result": "hold_regression_on_prior_heldout",
+  "verdictplane_verdict": "deny",
+  "collision_regression": "none (CR 0.000 offline on both sets; physics CR N/A)",
+  "final_promotion_decision": "NOT PROMOTED",
+  "incumbent": "h1_hospital_front_rgb_finetune RETAINED",
+  "candidate": "h4_navgen_diversity retained as non-promoted positive evidence",
+  "reason": "This is the H-track's first measurable held-out transfer (not the H3-clean tie), but it is within-navgen-distribution cross-family transfer with a regression on the older held-out families. Promotion requires resolving the cross-distribution regression (e.g. joint/mixed-family training or replay) and a combined held-out non-regression, plus human adjudication.",
+  "small_n_caveat": "n=6 per held-out set; SR 0.333 = 2/6 episodes",
+  "claim_boundary": "Because H4 uses a fixed placeholder goal image, this result is not evidence of stronger goal-image conditioning. It is evidence about route-family-diverse scripted imitation under the current hospital pipeline.",
+  "human_adjudication_recommendation": "DO NOT PROMOTE; hold as positive diagnostic; decide next: mixed-family retrain vs accept as diagnostic-only",
+  "human_confirmation": {
+    "confirmed_by": "Frank Asante Van Laarhoven",
+    "date": "2026-07-11",
+    "decision": "do not promote H4; hold as positive diagnostic; incumbent retained"
+  },
+  "final_adjudication_text": "H4 is a positive diagnostic result, not a promoted model. It supports the hypothesis that route-family diversity matters, because the candidate improves strongly on the new held-out H4 families. It also shows that fine-tuning only on the new H4 family distribution causes older-family regression. Therefore, the incumbent remains the H1 hospital fine-tune. The H4 candidate is retained as non-promoted evidence.",
+  "final_board": {
+    "H2.4": "passed",
+    "H3-clean": "held as tie",
+    "H4": "positive diagnostic, not promoted",
+    "incumbent": "H1 hospital fine-tune retained",
+    "candidate": "retained as diagnostic evidence",
+    "next": "H5 mixed-family replay / joint-family fine-tune planning"
+  },
+  "methodology_lock": "Evaluator data-root must always be forced explicitly with --data-root; never rely on checkpoint-embedded data_root for cross-corpus evaluation (a full embedded cfg makes 06_evaluate.py ignore --cfg wholesale).",
+  "next_experiment": "H5 mixed-family replay (NOT more H4-only training, NOT H4 promotion)"
+}

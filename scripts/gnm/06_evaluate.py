@@ -79,8 +79,9 @@ def main() -> None:
     parser.add_argument(
         "--split",
         default="val",
-        choices=["train", "val", "test"],
-        help="Which split to evaluate on",
+        help="Which split subdir under data_root to evaluate on (e.g. train, "
+             "val, test, or custom held-out splits like test_h4/test_prior/"
+             "test_combined). Validated by directory existence.",
     )
     parser.add_argument(
         "--track",
@@ -182,7 +183,21 @@ def main() -> None:
     )
 
     # ── Data root ─────────────────────────────────────────────────────────────
+    # METHODOLOGY LOCK (2026-07-11): when a checkpoint embeds a full config it is
+    # used wholesale and --cfg is ignored, so each checkpoint otherwise points at
+    # its OWN training corpus. For cross-corpus / incumbent-vs-candidate
+    # evaluation you MUST pass --data-root explicitly. Never rely on the
+    # checkpoint-embedded data_root for cross-corpus evaluation.
     data_root_str = args.data_root or cfg["data"]["data_root"]
+    if args.data_root is None:
+        src = ("checkpoint-embedded config"
+               if (isinstance(embedded, dict) and "model" in embedded)
+               else f"YAML {args.cfg}")
+        logger.warning(
+            "data_root=%s taken from %s; --data-root NOT set. For cross-corpus "
+            "evaluation pass --data-root explicitly (checkpoint-embedded configs "
+            "point each checkpoint at its own training corpus).",
+            data_root_str, src)
     data_root     = Path(data_root_str)
     if not data_root.is_absolute():
         data_root = REPO_ROOT / data_root

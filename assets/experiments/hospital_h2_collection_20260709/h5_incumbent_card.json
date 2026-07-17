@@ -1,0 +1,52 @@
+{
+  "project": "gnm-vlnverse-baseline",
+  "case_study": "h5_mixed_replay",
+  "run_name": "h1_hospital_front_rgb_finetune_on_h5_heldouts",
+  "seed": 42,
+  "model": {
+    "name": "MobileNetV2-GNM",
+    "condition": "incumbent",
+    "checkpoint_path": "checkpoints/hospital_front_rgb_finetune/best.pt",
+    "checkpoint_sha256": "d269a0fb0c6d8bd74c31f764574def223984f21f17b5ad275707139fcdc35c23",
+    "selected_by": "H5 validation (both distributions) only"
+  },
+  "dataset": {
+    "name": "Isaac-Hospital-ImageNav-v0 / H5 mixed-replay",
+    "camera": "Yahboom front-facing RGB (Isaac Sim)",
+    "train_episodes": 24,
+    "val_episodes": 4,
+    "train_mix": "16 H4 NavGen + 8 H2.4 older demos",
+    "heldout_h4": "008/012/016 (n=6)",
+    "heldout_prior": "uturn/chain/ftL (n=6)",
+    "leakage_check": "PASS",
+    "h1_included": false
+  },
+  "metrics_h4_heldout": {
+    "sr": 0.0,
+    "osr": 1.0,
+    "spl": 0.0,
+    "ne_m": 14.0356,
+    "ndtw": 0.1671
+  },
+  "metrics_prior_heldout": {
+    "sr": 0.1667,
+    "osr": 0.6667,
+    "spl": 0.1667,
+    "ne_m": 12.7611,
+    "ndtw": 0.276
+  },
+  "metrics_combined": {
+    "sr": 0.0833,
+    "osr": 0.8333,
+    "spl": 0.0833,
+    "ne_m": 13.3983,
+    "ndtw": 0.2215
+  },
+  "collision_rate": "N/A offline",
+  "driftguard": {
+    "promotion_candidate": false,
+    "incumbent": null,
+    "decision": "incumbent_reference"
+  },
+  "claim_boundary": "Internal Isaac-Hospital-ImageNav-v0 simulation evidence; fixed placeholder goal image => NOT goal-image-conditioning evidence; not real-robot, not a public benchmark. H2.4 val are b-variants of trained families => model-selection only, NOT older-family held-out generalisation."
+}

@@ -89,6 +89,7 @@ json.dump({"dataset": "Isaac-Hospital-ImageNav-v0",
            "claim": "internal simulation dataset; not real-robot evidence"},
           open(out / "metadata.json", "w"), indent=2)
 sha = "\n".join(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}"
-                for p in sorted(out.iterdir()))
+                for p in sorted(out.iterdir())
+                if p.name != "checksums.sha256")
 (out / "checksums.sha256").write_text(sha + "\n")
 print(f"converted {ep}: {len(frames)} frames, goal={meta.get('goal_id')}")

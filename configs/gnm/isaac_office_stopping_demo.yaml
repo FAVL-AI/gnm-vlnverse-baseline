@@ -1,0 +1,74 @@
+demo:
+  title: "GNM-VLNVerse Stopping-Reliability Visual Demo"
+  version: "v2.8"
+  description: >
+    Visual progress demo showing the baseline GNM stopping gap on a real
+    Track A episode where the robot enters the goal region (OSR=True) but
+    does not stop correctly (SR=False).  This is evidence visualisation only.
+  claim_boundary:
+    visual_evidence_only: true
+    no_physical_yahboom_deployment: true
+    no_track_b_completion: true
+    no_global_superiority: true
+    oracle_diagnostic_only: true
+
+episode_selection:
+  default_mode: auto_osr_not_sr
+  default_method: baseline_gnm
+  provenance_csv: "results/research_audit/tracka_all_methods_per_episode_metric_provenance.csv"
+  fallback_episode_id: "kujiale_0203_kujiale_0203_25_0"
+
+scene:
+  type: office_primitives
+  room1_bounds: [0.0, 10.0, 0.0, 8.0]    # [x_min, x_max, y_min, y_max]
+  corridor_bounds: [10.0, 14.0, 3.0, 5.0]
+  room2_bounds: [14.0, 28.0, 0.0, 8.0]
+  wall_height: 2.8
+  floor_color: [0.38, 0.38, 0.38]
+  wall_color: [0.72, 0.72, 0.72]
+  desk_color: [0.55, 0.35, 0.15]
+  chair_color: [0.20, 0.20, 0.60]
+
+markers:
+  goal_radius_m: 3.0
+  start_color: [0.10, 0.80, 0.10]
+  goal_color: [0.90, 0.15, 0.10]
+  robot_color: [1.00, 0.80, 0.10]
+  breadcrumb_color: [0.15, 0.50, 0.95]
+  closest_to_goal_color: [0.00, 0.90, 0.90]
+  final_stop_color: [0.95, 0.30, 0.00]
+  goal_radius_color: [0.10, 0.70, 0.10]
+  goal_radius_opacity: 0.18
+
+cameras:
+  names:
+    - overview
+    - start_state
+    - robot_pov
+    - goal_state
+  overview:
+    translate: [14.0, -10.0, 16.0]
+    rotate: [52.0, 0.0, 0.0]
+  start_state:
+    translate: [2.0, -4.0, 5.0]
+    rotate: [48.0, 0.0, 0.0]
+  goal_state:
+    translate: [22.0, -5.0, 5.0]
+    rotate: [48.0, 0.0, 0.0]
+  robot_pov:
+    height_offset: 0.55
+    pitch_deg: -10.0
+    follow_robot: true
+
+overlays:
+  temporal_stop_head:
+    color: [0.20, 0.90, 0.20]
+    label: "temporal_stop_head (would-stop position)"
+    traces_csv: "results/bo_reviewer_packet/temporal_stop_head/22_temporal_stop_head_details.csv"
+  geometry_oracle:
+    color: [0.90, 0.60, 0.10]
+    label: "geometry_aware_oracle (DIAGNOSTIC ONLY — not deployable)"
+
+replay:
+  frame_delay_s: 0.05
+  breadcrumb_stride: 3

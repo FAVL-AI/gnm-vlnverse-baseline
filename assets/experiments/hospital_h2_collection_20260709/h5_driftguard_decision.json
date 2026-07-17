@@ -1,0 +1,76 @@
+{
+  "net_gate": "hold",
+  "rule": "net PROMOTE requires BOTH the H4-heldout improvement guard AND the prior-heldout non-regression guard to pass (SR & SPL >= incumbent, NE not materially worse); combined aggregate is context, not a substitute",
+  "improvement_guard_h4_heldout": {
+    "test": "h4_heldout_families_008_012_016",
+    "n_test_episodes": 6,
+    "pass": true,
+    "checks": {
+      "sr": {
+        "incumbent": 0.0,
+        "candidate": 0.3333,
+        "pass": true
+      },
+      "spl": {
+        "incumbent": 0.0,
+        "candidate": 0.3333,
+        "pass": true
+      },
+      "ne_m": {
+        "incumbent": 14.0356,
+        "candidate": 5.0226,
+        "pass": true,
+        "material_worsening_threshold_m": 0.1
+      }
+    }
+  },
+  "regression_guard_prior_heldout": {
+    "test": "prior_heldout_uturn_chain_ftL",
+    "n_test_episodes": 6,
+    "pass": false,
+    "checks": {
+      "sr": {
+        "incumbent": 0.1667,
+        "candidate": 0.0,
+        "pass": false
+      },
+      "spl": {
+        "incumbent": 0.1667,
+        "candidate": 0.0,
+        "pass": false
+      },
+      "ne_m": {
+        "incumbent": 12.7611,
+        "candidate": 7.1864,
+        "pass": true,
+        "material_worsening_threshold_m": 0.1
+      }
+    }
+  },
+  "combined_aggregate_context": {
+    "test": "combined_heldout_n12",
+    "n_test_episodes": 12,
+    "pass": true,
+    "checks": {
+      "sr": {
+        "incumbent": 0.0833,
+        "candidate": 0.1667,
+        "pass": true
+      },
+      "spl": {
+        "incumbent": 0.0833,
+        "candidate": 0.1667,
+        "pass": true
+      },
+      "ne_m": {
+        "incumbent": 13.3983,
+        "candidate": 6.1045,
+        "pass": true,
+        "material_worsening_threshold_m": 0.1
+      }
+    }
+  },
+  "incumbent_run": "h1_hospital_front_rgb_finetune",
+  "candidate_run": "h5_mixed_replay_seed42",
+  "note": "improvement guard PASSES (SR 0.000->0.333, SPL 0.000->0.333, NE 14.04->5.02 m \u2014 H4 gain PRESERVED). regression guard FAILS on SR/SPL (0.167->0.000) though NE improves 12.76->7.19 m. The SR/SPL prior-heldout regression is a single-episode flip (1/6 -> 0/6) at n=6; combined aggregate improves (SR 0.083->0.167, SPL 0.083->0.167, NE 13.40->6.10 m, nDTW 0.222->0.336; OSR 0.833->0.667). Net gate HOLD: strict dual-guard not met."
+}

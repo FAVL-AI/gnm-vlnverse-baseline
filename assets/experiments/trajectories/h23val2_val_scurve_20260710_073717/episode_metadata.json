@@ -1,0 +1,104 @@
+{
+  "episode_id": "h23val2_val_scurve_20260710_073717",
+  "git_commit": "db014ae",
+  "git_branch": "data-expansion-scene-holdout",
+  "scene_stage_path": "isaac hospital environment",
+  "robot_asset_path": "assets/robots/yahboom_m3_pro/yahboom_m3pro.usd",
+  "rosbag_path": null,
+  "trajectory_jsonl": "assets/experiments/trajectories/h23val2_val_scurve_20260710_073717/trajectory.jsonl",
+  "trajectory_csv": "assets/experiments/trajectories/h23val2_val_scurve_20260710_073717/trajectory.csv",
+  "command_profile": "GNM closed loop, clamped to 0.2 m/s / 0.4 rad/s",
+  "policy_mode": "gnm_closed_loop",
+  "start_wall_time": 1783665437.1068997,
+  "end_wall_time": 1783665484.1990194,
+  "wall_duration_s": 47.092,
+  "sim_duration_s": 121.983,
+  "steps_logged": 7320,
+  "total_distance_m": 5.9135,
+  "max_abs_z_drift_m": 2e-06,
+  "max_yaw_rate_rad_s": 0.0733,
+  "topics_recorded": [],
+  "collector": "scripted_reference_path",
+  "route_id": "val_scurve",
+  "waypoints": [
+    [
+      2.0,
+      -4.5
+    ],
+    [
+      1.0,
+      -3.5
+    ],
+    [
+      0.0,
+      -3.3
+    ],
+    [
+      -1.5,
+      -4.2
+    ],
+    [
+      -3.0,
+      -4.4
+    ]
+  ],
+  "route_completed": false,
+  "route_infeasible_reason": null,
+  "final_waypoint_index": 3,
+  "shadow_gnm_frames_received": 2460,
+  "shadow_gnm_inference_attempts": 2399,
+  "shadow_gnm_inference_successes": 2399,
+  "shadow_gnm_inference_failures": 0,
+  "shadow_gnm_scope_note": "scripted waypoint executor v2 (arc-following) - expert reference demonstration, no learned policy in the loop",
+  "collision_reporting": "physx_contact_report_base_link",
+  "episode_had_collision": false,
+  "total_collision_count": 0,
+  "first_collision_step": null,
+  "first_collision_sim_time": null,
+  "collision_events_sample": [],
+  "experiment_id": "h23_control_validation_v31",
+  "pair_id": null,
+  "condition": "collector=scripted_reference_path_v31;phase=control_validation",
+  "stop_authority_enabled": false,
+  "stop_rule_name": null,
+  "stop_rule_threshold": null,
+  "stop_rule_ratio": null,
+  "stop_rule_k": null,
+  "initial_predicted_distance": null,
+  "stop_triggered": false,
+  "stop_trigger_step": null,
+  "stop_trigger_sim_time": null,
+  "true_distance_to_goal_at_stop": null,
+  "predicted_distance_at_stop": null,
+  "residual_motion_after_stop_m": null,
+  "closed_loop": true,
+  "goal_id": "h2_weave_J",
+  "goal_image": "assets/experiments/goals/h2_weave_J/goal_image.png",
+  "goal_scene_aligned": true,
+  "goal_pose": {
+    "x": 3.0,
+    "y": -1.0,
+    "yaw_rad": -0.2
+  },
+  "start_pose_episode": {
+    "x": 0.0,
+    "y": 0.0,
+    "yaw_rad": 0.0
+  },
+  "final_distance_to_goal_m": 4.998,
+  "cl_limits": {
+    "lin_max_ms": 0.2,
+    "ang_max_rads": 0.4,
+    "xy_bound_m": 6.0,
+    "z_drift_max_m": 0.05,
+    "watchdog_s": 0.5
+  },
+  "cl_steps_commanded": 7200,
+  "cl_applied_nonzero_steps": 7197,
+  "cl_clipped_steps": 4926,
+  "cl_emergency_stop": false,
+  "cl_stop_reason": null,
+  "cl_cmd_vel_mirror_published": true,
+  "cl_zero_hold_displacement_m": 0.00152,
+  "cl_scope_note": "control-authority smoke only: bounded, clamped, watchdog-protected; fixed non-scene goal image, no navigation-quality claim"
+}

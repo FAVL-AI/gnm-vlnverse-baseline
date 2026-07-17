@@ -1,0 +1,47 @@
+# H4 diagnostic route-family-diversity fine-tune.
+# Controlled diagnostic: identical to the H3-clean scripted-expert run except the
+# training data (16 route-family-diverse H4 scripted-expert demonstrations).
+# Weights-only init from the retained H1 hospital fine-tune incumbent.
+# NOT a promotion run.
+model:
+  context_size: 5
+  goal_conditioned: true
+  action_dim: 2
+  hidden_dim: 256
+  encoder: mobilenet
+  out_dim: 512
+  pretrained: true
+data:
+  data_root: datasets/isaac_hospital_h4
+  image_size: [96, 96]
+  max_goal_dist: 20
+  action_std: [0.115528, 0.115528]   # same normalization as incumbent + H3-clean (apples-to-apples)
+  augment: true
+  num_workers: 4
+  pin_memory: true
+training:
+  epochs: 50
+  batch_size: 128
+  lr: 1e-4
+  weight_decay: 1e-4
+  warmup_frac: 0.05
+  max_grad_norm: 1.0
+  action_weight: 0.5
+  loss_type: mse
+  patience: 10
+  seed: 42
+  init_ckpt: checkpoints/hospital_front_rgb_finetune/best.pt   # H1 incumbent, weights only
+checkpoint:
+  output_dir: checkpoints/h4_navgen_diversity_finetune
+  log_every: 50
+wandb:
+  project: fleetsafe-gnm-vlnverse
+  entity: null
+  name: h4_navgen_diversity_seed42
+  tags: [gnm, track_A, hospital, h4, route_family_diversity, diagnostic]
+  notes: "H4 diagnostic route-family-diversity fine-tune (16 scripted-expert demos, 8 families); init weights-only from H1 incumbent; not a promotion run."
+evaluation:
+  success_threshold: 3.0
+  stop_threshold: 0.15
+  max_steps: 500
+  track: A
