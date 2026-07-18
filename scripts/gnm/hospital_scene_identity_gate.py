@@ -52,12 +52,20 @@ def looks_hospital_like(rgb, min_std=10.0, lo=15.0, hi=235.0):
 
 def verify_hospital_scene(stage, *, scene_mode, hospital_root=HOSPITAL_ROOT,
                           front_cam_path=None, resolution=None,
-                          min_prims=MIN_HOSPITAL_PRIMS, front_rgb=None):
+                          min_prims=MIN_HOSPITAL_PRIMS, front_rgb=None,
+                          declared_resolution=None, enforce_resolution=False):
     """Fail-closed scene-identity check on a live USD stage.
 
     Returns a dict with `pass` (bool), per-check booleans, `reasons` (failed checks),
     and the observed values. Never raises on a normal failure — the CALLER must
     refuse to record when `pass` is False.
+
+    Resolution conformity (H8): pass `resolution` = the OBSERVED recorded stream size
+    (from the actual camera render product), `declared_resolution` = the intended
+    target, and `enforce_resolution=True`. The gate then adds a fail-closed
+    `resolution_matches_declared` check that refuses admission when observed != declared
+    and records BOTH values. This is OPT-IN: with the default `enforce_resolution=False`
+    the resolution check stays purely declarative, so the H7/H7R verdicts are unchanged.
     """
     checks, reasons, observed = {}, [], {}
 
@@ -128,6 +136,21 @@ def verify_hospital_scene(stage, *, scene_mode, hospital_root=HOSPITAL_ROOT,
         observed["resolution"] = list(resolution)
         if not res_ok:
             reasons.append(f"resolution {resolution} not declared as [W,H]")
+
+        # 6b) H8 fail-closed resolution conformity (opt-in). Compares the OBSERVED
+        #     recorded resolution against the DECLARED target and refuses admission on
+        #     mismatch, recording both. Default OFF → H7/H7R verdicts byte-identical.
+        if enforce_resolution:
+            declared = (list(declared_resolution) if declared_resolution is not None
+                        else list(EXPECTED_RESOLUTION))
+            observed["declared_resolution"] = declared
+            observed["observed_resolution"] = list(resolution)
+            match = list(resolution) == declared
+            checks["resolution_matches_declared"] = match
+            if not match:
+                reasons.append(
+                    f"observed resolution {list(resolution)} != declared {declared} "
+                    "(H8 fail-closed resolution conformity)")
 
     # 7) optional visual safety net
     if front_rgb is not None:
