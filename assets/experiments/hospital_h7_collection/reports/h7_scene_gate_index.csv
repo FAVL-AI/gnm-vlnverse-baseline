@@ -1,0 +1,9 @@
+episode_id,scene_identity_pass,asset_is_hospital_usd,hospital_prim_count,min_hospital_prims,front_camera_path,resolution,procedural_landmark_prims,failed_reasons,isaac_sim_version,timestamp,gate_manifest
+h7_reception_01_20260714_000815,True,True,1909,1000,/World/M3Pro/camera_link/rgb_camera,640x480,0,none,5.1.0.0,2026-07-14T00:08:15,assets/experiments/hospital_h7_scene_gate/h7_reception_01_20260714_000815.json
+h7_corridor_01_20260714_004338,True,True,1909,1000,/World/M3Pro/camera_link/rgb_camera,640x480,0,none,5.1.0.0,2026-07-14T00:43:38,assets/experiments/hospital_h7_scene_gate/h7_corridor_01_20260714_004338.json
+h7_turn_01_20260714_011847,True,True,1909,1000,/World/M3Pro/camera_link/rgb_camera,640x480,0,none,5.1.0.0,2026-07-14T01:18:47,assets/experiments/hospital_h7_scene_gate/h7_turn_01_20260714_011847.json
+h7_waiting_01_20260714_015109,True,True,1909,1000,/World/M3Pro/camera_link/rgb_camera,640x480,0,none,5.1.0.0,2026-07-14T01:51:09,assets/experiments/hospital_h7_scene_gate/h7_waiting_01_20260714_015109.json
+h7_reception_02_20260714_002503,True,True,1909,1000,/World/M3Pro/camera_link/rgb_camera,640x480,0,none,5.1.0.0,2026-07-14T00:25:03,assets/experiments/hospital_h7_scene_gate/h7_reception_02_20260714_002503.json
+h7_corridor_02_20260714_010145,True,True,1909,1000,/World/M3Pro/camera_link/rgb_camera,640x480,0,none,5.1.0.0,2026-07-14T01:01:45,assets/experiments/hospital_h7_scene_gate/h7_corridor_02_20260714_010145.json
+h7_turn_02_20260714_013617,True,True,1909,1000,/World/M3Pro/camera_link/rgb_camera,640x480,0,none,5.1.0.0,2026-07-14T01:36:17,assets/experiments/hospital_h7_scene_gate/h7_turn_02_20260714_013617.json
+h7_waiting_02_20260714_020630,True,True,1909,1000,/World/M3Pro/camera_link/rgb_camera,640x480,0,none,5.1.0.0,2026-07-14T02:06:30,assets/experiments/hospital_h7_scene_gate/h7_waiting_02_20260714_020630.json

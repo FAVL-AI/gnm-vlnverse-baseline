@@ -1,0 +1,74 @@
+{
+  "generated_utc": "2026-07-18T03:18:33Z",
+  "claim": "H7 and H7R: provenance-backed Isaac Sim hospital-scene pilot evidence, with a documented camera-resolution nonconformity. Covers scene identity, route identity, ROS 2 bag existence, required topic presence, recorded-message evidence, file-integrity verification and reproducible evidence generation. Does NOT cover dataset admission, training readiness, resolution conformity, goal conditioning, model performance or physical/real-robot deployment.",
+  "record_command": "timeout 1800 $ISAAC_PY -u scripts/robots/m3pro_ros2_bringup.py --scene hospital --scene-gate --camera-raise <0.0|0.12> --gnm-control --route-follow <route.json> --holonomic-base --collision-report --episode --episode-name <id> --goal-id h2_weave_J --steps 6000",
+  "orchestrators": [
+    "scripts/gnm/hospital_h7_record_campaign.sh",
+    "scripts/gnm/hospital_h7_raise_record_campaign.sh"
+  ],
+  "camera_resolution_conformity": {
+    "status": "OPEN",
+    "declared_resolution": [
+      1280,
+      720
+    ],
+    "observed_resolution": [
+      640,
+      480
+    ],
+    "gate_check_was": "declarative only (observed vs declared not compared)",
+    "impact": "does NOT affect scene identity, bag existence, checksum integrity, route identity or topic presence; means resolution conformity is NOT claimed",
+    "variance_note": "assets/experiments/hospital_h7_collection/H7_H7R_CAMERA_RESOLUTION_VARIANCE_AND_H8_MITIGATION.md",
+    "h8_mitigation": "scripts/gnm/hospital_scene_identity_gate.py verify_hospital_scene(enforce_resolution=True) fails closed on mismatch"
+  },
+  "pilots": {
+    "h7": {
+      "label": "H7 baseline (fixed camera, ~38.3% lower-third occlusion)",
+      "camera_raise_m": 0.0,
+      "n_episodes": 8,
+      "all_scene_gate_pass": true,
+      "all_image_raw_present": true,
+      "episodes": [
+        "h7_reception_01_20260714_000815",
+        "h7_corridor_01_20260714_004338",
+        "h7_turn_01_20260714_011847",
+        "h7_waiting_01_20260714_015109",
+        "h7_reception_02_20260714_002503",
+        "h7_corridor_02_20260714_010145",
+        "h7_turn_02_20260714_013617",
+        "h7_waiting_02_20260714_020630"
+      ],
+      "artifacts": {
+        "topic_proof_md": "assets/experiments/hospital_h7_collection/reports/h7_rosbag_topic_proof.md",
+        "scene_gate_index_md": "assets/experiments/hospital_h7_collection/reports/h7_scene_gate_index.md",
+        "bag_checksums": "assets/experiments/hospital_h7_collection/reports/h7_bag_checksums.sha256",
+        "evidence_checksums": "assets/experiments/hospital_h7_collection/reports/h7_evidence_checksums.sha256",
+        "quality_table": "assets/experiments/hospital_h7_collection/reports/h7_recording_quality_table.md"
+      }
+    },
+    "h7r": {
+      "label": "H7r raised-mount (+0.12 m, occlusion removed) \u2014 DATASET OF RECORD",
+      "camera_raise_m": 0.12,
+      "n_episodes": 8,
+      "all_scene_gate_pass": true,
+      "all_image_raw_present": true,
+      "episodes": [
+        "h7r_reception_01_20260714_042711",
+        "h7r_corridor_01_20260714_045626",
+        "h7r_turn_01_20260714_052544",
+        "h7r_waiting_01_20260714_060451",
+        "h7r_reception_02_20260714_044133",
+        "h7r_corridor_02_20260714_051150",
+        "h7r_turn_02_20260714_054954",
+        "h7r_waiting_02_20260714_062024"
+      ],
+      "artifacts": {
+        "topic_proof_md": "assets/experiments/hospital_h7_raise_collection/reports/h7r_rosbag_topic_proof.md",
+        "scene_gate_index_md": "assets/experiments/hospital_h7_raise_collection/reports/h7r_scene_gate_index.md",
+        "bag_checksums": "assets/experiments/hospital_h7_raise_collection/reports/h7r_bag_checksums.sha256",
+        "evidence_checksums": "assets/experiments/hospital_h7_raise_collection/reports/h7r_evidence_checksums.sha256",
+        "quality_table": "assets/experiments/hospital_h7_raise_collection/reports/h7r_recording_quality_table.md"
+      }
+    }
+  }
+}
