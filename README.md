@@ -25,6 +25,7 @@ This repository is a staged GNM-VLNVerse Track A stopping-reliability and metric
 | v2.5 | Metric provenance claim gates and ICRA stopping paper — validated for Track A paper scope | All-methods per-episode provenance (75 rows, 5 methods × 15 episodes), research claim ledger, validation split lock, bootstrap CIs, stop-head feature audit, paper claim-to-evidence map, one-command pack, ICRA paper source |
 | v2.6 | Expanded Track A robustness evidence | Per-scene SR/OSR/NE (20 rows, 5 methods × 4 scenes), paired Wilcoxon + sign test (baseline vs temporal), bootstrap seed stability (seeds 41–44), robustness summary with explicit data-availability audit and honest claim boundaries |
 | v2.7 | Expanded 253-episode Track A split (baseline + oracle) | 506-row provenance CSV (253 episodes × 2 methods), CI width narrows from ±20 pp to ±6 pp for SR, stopping-gap confirmed at N=253 (OSR−SR = 13 pp), methodology note documents why 3 methods cannot be expanded, split lock, verifier, 8 new CI-enforced tests |
+| H8-S1R | Hospital dataset admission and clean-checkout remediation | Fail-closed dataset admission, reason-code lifecycle controls, deterministic import isolation, checkout-portable synthetic-fork assets, and a clean detached-worktree regression of 605 H8 tests; no capture or training authorisation |
 | upstream | Yahboom ROSMASTER M3 Pro upstream integration | Official Yahboom repo as external hardware reference, clone/setup script, upstream inspector, Yahboom-to-canonical topic mapping, OpenClaw architecture note |
 
 ### Key Track A results
@@ -76,9 +77,41 @@ The official local verification path does **not** require Isaac Sim GUI. Isaac S
 | Work item | Status |
 |---|---|
 | Track A stopping paper (metric-provenance scope) | **Validated** |
+| H8 hospital dataset programme | **Engineering verification passed** on `h23-execfix`; Session A remains blocked pending independent closure review, written approval of the proposed `τ = 0.50 m` threshold, confirmation of at least 100 GB free storage, and explicit map-extension-only authorisation |
 | Yahboom sim-to-real recording | Blocked — requires valid `episode_001` rosbag2 |
 | Track B language grounding | Blocked — requires held-out Track B evaluation |
 | Global superiority over GNM, ViNT, NoMaD, SaferPath | Blocked — requires matched external benchmark |
+
+---
+
+## Current H8 Hospital Dataset Programme Status
+
+**Status date: 22 July 2026**
+
+H8 is the governed hospital front-camera dataset programme. It remains an engineering and
+evidence-admission programme, not an authorised capture, training or benchmark release.
+
+The clean detached-worktree verification on `h23-execfix` passed:
+
+- 605 H8 tests passed;
+- 0 tests failed;
+- checkout-relative scene and robot asset paths passed;
+- deterministic subprocess import isolation passed;
+- committed changed-line Ruff findings: 0.
+
+The hospital evidence audit currently records 157 candidate bags, 33 scene-verified hospital bags,
+zero train/validation/test-eligible episodes, 13 technically strong bags without episode-specific
+goal evidence and six entirely black recordings.
+
+Session A remains **NOT ELIGIBLE** pending independent closure verification, written Prof. Bo Wei
+approval of the proposed `τ = 0.50 m` threshold, confirmation of at least 100 GB free storage and
+explicit map-extension-only authorisation.
+
+This status does not authorise Isaac Sim, ROS 2, route capture, dataset capture, training, inference,
+tagging or promotion.
+
+Detailed H8 verification records remain on `h23-execfix`, including remediation commit
+`8706e322`, portability follow-up `0c9a7653` and verification record `ebdf456a`.
 
 ---
 
