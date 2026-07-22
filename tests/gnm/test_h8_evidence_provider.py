@@ -16,6 +16,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
+sys.path.insert(0, str(REPO / "tests" / "gnm"))
 
 from scripts.gnm import h8_evidence_provider as prov  # noqa: E402
 from scripts.gnm import h8_evidence_schema as es  # noqa: E402
@@ -323,12 +324,20 @@ def test_34_provider_reason_codes_stable():
 
 # ── 35–38 no forbidden imports ──────────────────────────────────────────────────────
 def test_35_38_no_forbidden_imports():
+    # Control A - static source scan (primary, unchanged).
     src = (REPO / "scripts/gnm/h8_evidence_provider.py").read_text()
     for token in ("import omni", "from omni", "isaacsim", "SimulationApp", "rclpy", "import torch",
                   "import cv2", "sensor_msgs"):
         assert token not in src, f"forbidden token {token!r} in provider"
-    for mod in ("omni", "isaacsim", "rclpy", "torch", "cv2"):
-        assert mod not in sys.modules, f"{mod} unexpectedly imported"
+    # Control B - runtime backstop (H8-S1REV-F-004). Previously this asserted the forbidden modules
+    # were absent from the process-global sys.modules, which failed whenever pytest COLLECTION
+    # imported unrelated suites (test_gnm_model / test_baseline_contract / test_visualnav_adapters
+    # pull in torch; test_fleetsafe_perception_node pulls in rclpy) before any test ran. The check
+    # now asks the answerable question - did THIS module introduce them? - by importing it in a
+    # fresh subprocess. The forbidden set is unchanged and the backstop is retained.
+    from h8_import_isolation import forbidden_modules_introduced_by
+    introduced = forbidden_modules_introduced_by("scripts.gnm.h8_evidence_provider", REPO)
+    assert not introduced, f"provider itself introduced forbidden module(s) {introduced}"
 
 
 # ── 39 no dataset / capture output ──────────────────────────────────────────────────

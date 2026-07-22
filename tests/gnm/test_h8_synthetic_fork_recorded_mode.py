@@ -118,6 +118,24 @@ def test_main_validate_config_returns_zero_without_isaac():
     assert rm.main(["--mode", "validate-config"]) == 0
 
 
+def test_recorded_mode_asset_paths_follow_active_checkout():
+    """Shared drive/recorded-mode asset constants must follow this checkout."""
+    from scripts.gnm import h8_synthetic_fork_drive_validate as dv
+
+    active_repo = REPO.resolve()
+
+    assert Path(dv.REPO).resolve() == active_repo
+    assert Path(rm.REPO).resolve() == active_repo
+
+    for asset_path in (
+        dv.USDA,
+        dv.ROBOT_USD,
+        rm.USDA,
+        rm.ROBOT_USD,
+    ):
+        assert Path(asset_path).resolve().is_relative_to(active_repo)
+
+
 def test_dry_run_without_emit_writes_nothing(tmp_path):
     # dry-run without --emit-schema must write no files (no capture, no schema file)
     rc = rm.main(["--mode", "dry-run", "--out-dir", str(tmp_path)])

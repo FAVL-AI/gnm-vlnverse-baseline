@@ -17,6 +17,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
+sys.path.insert(0, str(REPO / "tests" / "gnm"))
 
 from scripts.gnm import h8_evidence_schema as es  # noqa: E402
 from scripts.gnm import h8_synthetic_fork_recorded_mode as rm  # noqa: E402
@@ -210,12 +211,18 @@ def test_24_no_filesystem_output_created():
 
 # ── 25 no forbidden imports ───────────────────────────────────────────────────────
 def test_25_no_isaac_ros_model_capture_import():
+    # Control A - static source scan (primary, unchanged). Note this module's scan is stricter than
+    # the provider's: it also forbids `open(` and `Path(`, i.e. any filesystem reach at all.
     src = (REPO / "scripts/gnm/h8_evidence_schema.py").read_text()
     for token in ("import omni", "isaacsim", "from omni", "rclpy", "import torch", "SimulationApp",
                   "open(", "Path("):
         assert token not in src, f"forbidden token {token!r} in evidence schema module"
-    for mod in ("omni", "isaacsim", "rclpy", "torch"):
-        assert mod not in sys.modules, f"{mod} unexpectedly imported"
+    # Control B - runtime backstop (H8-S1REV-F-004). Scoped to the modules this target itself
+    # introduces, measured in a fresh subprocess, so unrelated pytest collection cannot decide the
+    # outcome. Forbidden set unchanged; backstop retained.
+    from h8_import_isolation import forbidden_modules_introduced_by
+    introduced = forbidden_modules_introduced_by("scripts.gnm.h8_evidence_schema", REPO)
+    assert not introduced, f"evidence schema itself introduced forbidden module(s) {introduced}"
 
 
 # ── 26 recorded-mode harness unperturbed ──────────────────────────────────────────

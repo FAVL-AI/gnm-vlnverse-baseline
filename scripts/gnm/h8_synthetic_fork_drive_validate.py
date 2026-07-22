@@ -43,7 +43,9 @@ import sys
 import time
 from pathlib import Path
 
-REPO = Path("/home/favl/robotics/gnm-vlnverse-baseline")
+# Derive the repository root from this module so all asset paths remain
+# valid in clones, detached worktrees, CI checkouts and other user environments.
+REPO = Path(__file__).resolve().parents[2]
 USDA = REPO / "assets/scenes/synthetic_diagnostic_fork/synthetic_diagnostic_fork.usda"
 ROBOT_USD = REPO / "assets/robots/yahboom_m3_pro/yahboom_m3pro.usd"
 OUT_DIR = REPO / "assets/experiments/hospital_h8_track_b_synthetic_fork_drive_validation"
