@@ -1,0 +1,9 @@
+bag,n_img,n_odom,img_hdr_dt_p50_s,img_hdr_dt_p95_s,odom_hdr_dt_p50_s,residual_p95_s,residual_p99_s,residual_max_s,no_bracket_frac,wall_over_sim,img_frame_ids,odom_frame,odom_child,resolution,clock_monotonic,img_within_clock,align_rate_at_25ms,align_rate_at_50ms
+h7r_reception_01_20260714_042711,2117,2116,0.05,0.05,0.05,0.016667,0.016667,0.116667,0.0014,5.88,camera_link,odom,base_footprint,640x480,True,True,0.9986,0.9986
+h8_d1_routeB_straight_20260714_183358,1453,1453,0.05,0.05,0.05,0.016667,0.016667,0.066667,0.0014,7.03,camera_link,odom,base_footprint,640x480,True,True,0.9986,0.9986
+h8mx_val_lobby_20260714_223318,1442,1443,0.05,0.05,0.05,0.016667,0.016667,0.016667,0.0014,7.04,camera_link,odom,base_footprint,640x480,True,True,0.9986,0.9986
+h7_reception_01_20260714_000815,2108,2108,0.05,0.05,0.05,0.016667,0.016667,0.033333,0.0014,7.27,camera_link,odom,base_footprint,640x480,True,True,0.9986,0.9986
+h2_ft_I_a_20260709_025233,744,744,0.05,0.05,0.05,0.016667,0.016667,0.066667,0.0027,146.91,camera_link,odom,base_footprint,640x480,True,True,0.9973,0.9973
+h24_straight_a_20260710_192309,1719,1718,0.05,0.05,0.05,0.016667,0.016667,0.116667,0.0017,6.54,camera_link,odom,base_footprint,640x480,True,True,0.9983,0.9983
+h8mx_val_east_A_20260714_215023,1451,1450,0.05,0.05,0.05,0.016667,0.016667,0.116667,0.0021,7.18,camera_link,odom,base_footprint,640x480,True,True,0.9979,0.9979
+h6rec_h6_uturn_01_a_20260712_195504,2125,2125,0.05,0.05,0.05,0.016667,0.016667,0.066667,0.0009,5.59,camera_link,odom,base_footprint,640x480,True,True,0.9991,0.9991

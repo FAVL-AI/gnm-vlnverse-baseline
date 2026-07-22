@@ -25,9 +25,14 @@ FleetSafe-VLN provides all three.
 
 ## 2. Related Work
 
-**VLNVerse** (Lin et al.): Isaac Sim-based VLN benchmark with 4,000+ scenes, fine/coarse grained tasks, and the IAmGoodNavigator demo runner. FleetSafe-VLN uses VLNVerse as the benchmark reference and IAmGoodNavigator as the demo loader.
+**VLNVerse** (Lin et al., arXiv:2512.19021): Isaac Sim-based VLN benchmark reporting **263 unique 3D home scenes** (177 train / 33 val / 53 test), fine/coarse grained tasks, and the IAmGoodNavigator demo runner. FleetSafe-VLN uses VLNVerse as the benchmark reference and IAmGoodNavigator as the demo loader. Two figures must be stated honestly: 263 scenes are *reported* in the paper while **262 are actually released** in the public asset set, and our local corpus holds **4 scenes (1.5 % of upstream)**.
 
-**VLNTube** (william13077/VLNTube): Data-generation pipeline converting USD scenes to scene graphs, walkable points, planned trajectories, and RGB/depth sequences via Isaac Sim rendering. FleetSafe-VLN indexes VLNTube's scene_graph, vistube, instube, and datatube modules and extends its outputs with CBF-QP safety labels.
+> *Correction, 2026-07-22.* An earlier draft of this section claimed "4,000+ scenes". That figure was
+> traced to the auto-generated row count displayed by the `Eyz/VLNVerse_scene` HuggingFace viewer,
+> which enumerates image files under a preview limit, not scenes; that repository carries no authored
+> dataset card. No VLNVerse primary source states 4,000 scenes in any unit. The claim is withdrawn.
+
+**VLNTube** (`william13077/VLNTube`, MIT): Data-generation pipeline converting USD scenes to scene graphs, walkable points, planned trajectories, and RGB/depth sequences via Isaac Sim rendering. FleetSafe-VLN indexes VLNTube's scene_graph, vistube, instube, and datatube modules and extends its outputs with CBF-QP safety labels. **VLNTube is cited here as a software dependency, not as a publication:** no peer-reviewed VLNTube paper has been verified (arXiv, DBLP, OpenAlex and Crossref all return zero records as of 2026-07-22), and it is not described by arXiv:2512.19021. See §Software for its repository, licence, revision and content digest.
 
 **GNM/ViNT/NoMaD** (Shah et al., Sridhar et al.): General navigation models that consume image sequences and produce nominal velocity commands. FleetSafe-VLN wraps these as GNMAdapter with a 5-frame ring buffer and mock fallback.
 
@@ -229,12 +234,19 @@ Hospital corridor: 5 runs per mode. Human crossings included.
 
 ## References
 
-1. VLNVerse — https://sihaoevery.github.io/vlnverse/
-2. IAmGoodNavigator — https://github.com/william13077/IAmGoodNavigator
-3. VLNTube — https://github.com/william13077/VLNTube
-4. GNM — Shah et al., General Navigation Models
-5. ViNT — Sridhar et al., ViNT: A Foundation Model for Visual Navigation
-6. NoMaD — Sridhar et al., NoMaD: Goal Masked Diffusion Policies
-7. CBF — Ames et al., Control Barrier Functions: Theory and Applications
+### Publications
+
+1. Lin et al., VLNVerse — arXiv:2512.19021 (preprint; project page https://sihaoevery.github.io/vlnverse/)
+2. Shah et al., *GNM: A General Navigation Model to Drive Any Robot* — ICRA 2023, arXiv:2210.03370
+3. Shah et al., *ViNT: A Foundation Model for Visual Navigation* — CoRL 2023, PMLR 229:711–733, arXiv:2306.14846
+4. Sridhar et al., *NoMaD: Goal Masked Diffusion Policies for Navigation and Exploration* — ICRA 2024, arXiv:2310.07896
+5. Ames et al., *Control Barrier Functions: Theory and Applications*
+
+### Software and datasets
+
+6. VLNTube — https://github.com/william13077/VLNTube — MIT (© 2026 V3A Group, Responsible AI Research Centre, The University of Adelaide); revision `7ef6afe22014f13fd97a2d4910f84fd6603e17af`; vendored at `external/VLNTube/` (36 files, byte-identical to upstream); content digest `965e4db0f8c59fa1d119de1858184bb447d954d8485cccee1db0c664b835bf75`; accessed 2026-07-22. **No peer-reviewed publication verified.**
+7. IAmGoodNavigator — https://github.com/william13077/IAmGoodNavigator
 8. Yahboom ROSMASTER M3 — https://github.com/YahboomTechnology/ROSMASTER-M3
-9. VLNVerse HuggingFace — https://huggingface.co/datasets/Eyz/VLNVerse_scene
+9. VLNVerse scene assets — https://huggingface.co/datasets/Eyz/VLNVerse_scene (accessed 2026-07-22; the viewer's displayed row count enumerates image files, not scenes — see §2)
+
+*Attribution corrections, 2026-07-22:* ViNT was previously attributed to Sridhar et al.; its first author is Shah et al. Publications and software are now listed separately so that a software dependency is not read as a peer-reviewed citation.

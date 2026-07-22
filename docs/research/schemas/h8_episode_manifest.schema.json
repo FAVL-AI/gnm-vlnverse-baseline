@@ -1,0 +1,301 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "h8-episode-manifest/2.0.0",
+  "title": "H8 Episode Manifest v2 (hospital ImageNav capture record)",
+  "description": "Per-episode manifest for the corrected H8 hospital capture. Supersedes the ad-hoc episode_metadata.json emitted by the H1-H8MX campaigns, which the 2026-07-22 forensic audit found to carry a shared placeholder goal in 93/154 episodes, a start pose disagreeing with the first logged pose in 118/140 episodes, and a controller_mode label of gnm_closed_loop on 142 episodes of which only 34 had a learned policy driving. Schema conformance is NOT dataset admission: admission additionally requires the acceptance gates in H8_HOSPITAL_DATASET_PROTOCOL_V2.md section 8, which JSON Schema cannot express (goal-image hash cross-split disjointness, start-pose tolerance, observed-vs-declared reconciliation, stop-event presence, contact-detector scope).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_version", "episode_id", "capture_authorisation_id", "commit_sha", "config_sha256",
+    "scene", "map", "route", "split", "start_pose_declared", "start_pose_observed", "start_pose_error",
+    "goal", "success_criterion", "camera", "controller", "reference_path", "stop_event",
+    "contact_telemetry", "counters", "acceptance"
+  ],
+  "properties": {
+    "manifest_version": {"const": "h8-episode-manifest/2.0.0"},
+    "episode_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+(_[A-Za-z0-9]+)*_[0-9]{8}_[0-9]{6}$",
+      "description": "Stable identifier; must equal the rosbag directory name. Mixed case is permitted because the established route-naming convention uses upper-case branch letters (e.g. h8mx_val_east_A_20260714_215023)."
+    },
+    "capture_authorisation_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifier of the written authorisation permitting this capture. FAIL-CLOSED: an episode with no authorisation id is inadmissible. Prevents unauthorised recordings entering a dataset."
+    },
+    "commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+
+    "scene": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scene_id", "scene_usd_path", "scene_usd_sha256", "prim_count", "scene_mode",
+                   "scene_identity_pass", "procedural_landmark_prims", "isaac_sim_version"],
+      "properties": {
+        "scene_id": {"const": "isaac_hospital_5_1"},
+        "scene_usd_path": {"type": "string", "format": "uri"},
+        "scene_usd_sha256": {
+          "type": "string", "pattern": "^[0-9a-f]{64}$",
+          "description": "AUDIT GAP CLOSED: no USD digest was recorded anywhere in the H1-H8MX corpus. The gate must compute and bind this before recording."
+        },
+        "prim_count": {"type": "integer", "minimum": 1000},
+        "scene_mode": {"const": "hospital"},
+        "scene_identity_pass": {"const": true},
+        "procedural_landmark_prims": {"type": "array", "maxItems": 0},
+        "isaac_sim_version": {"type": "string"}
+      }
+    },
+
+    "map": {
+      "type": "object", "additionalProperties": false,
+      "required": ["map_version", "navmesh_version", "navigable_envelope"],
+      "properties": {
+        "map_version": {"type": "string", "description": "Version of the render-confirmed navigable map produced by Session A."},
+        "navmesh_version": {"type": "string", "description": "Version of the navmesh used for geodesic distance. Required for SPL/nDTW/CLS; absent => those metrics are not computed."},
+        "navigable_envelope": {
+          "type": "object", "additionalProperties": false,
+          "required": ["x_min", "x_max", "y_min", "y_max", "frame"],
+          "properties": {
+            "x_min": {"type": "number"}, "x_max": {"type": "number"},
+            "y_min": {"type": "number"}, "y_max": {"type": "number"},
+            "frame": {"enum": ["spawn_relative", "isaac_world"]}
+          }
+        }
+      }
+    },
+
+    "route": {
+      "type": "object", "additionalProperties": false,
+      "required": ["route_instance_id", "route_family", "decision_frame_id", "leakage_group", "waypoints"],
+      "properties": {
+        "route_instance_id": {
+          "type": "string",
+          "description": "Unique per independent instance. An a/b repetition of the same route is NOT an independent instance and must share the route_instance_id, not receive a new one."
+        },
+        "route_family": {
+          "enum": ["corridor_t_junction", "same_start_fork", "shared_corridor_branch",
+                   "same_room_diff_object", "visually_similar_diff_location",
+                   "near_far_same_approach", "stop_vs_go"]
+        },
+        "decision_frame_id": {"type": "string"},
+        "leakage_group": {"type": "string"},
+        "waypoints": {
+          "type": "array", "minItems": 2,
+          "items": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "number"}}
+        }
+      }
+    },
+
+    "split": {"enum": ["train", "val", "test"]},
+
+    "start_pose_declared": {"$ref": "#/definitions/pose"},
+    "start_pose_observed": {
+      "allOf": [{"$ref": "#/definitions/pose"}],
+      "description": "Computed from the first N stable pose samples at capture time. Never back-filled from the declared value."
+    },
+    "start_pose_error": {
+      "type": "object", "additionalProperties": false,
+      "required": ["position_m", "yaw_rad", "within_tolerance", "tolerance_position_m", "tolerance_yaw_rad"],
+      "properties": {
+        "position_m": {"type": "number", "minimum": 0},
+        "yaw_rad": {"type": "number", "minimum": 0},
+        "within_tolerance": {"const": true},
+        "tolerance_position_m": {"const": 0.05},
+        "tolerance_yaw_rad": {"const": 0.0873}
+      },
+      "description": "FAIL-CLOSED: within_tolerance must be true for admission. 84% of historical episodes would fail this."
+    },
+
+    "goal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["goal_id", "goal_pose", "goal_image_path", "goal_image_sha256",
+                   "goal_capture_episode_id", "goal_capture_timestamp", "camera_intrinsics",
+                   "scene_usd_sha256", "map_version", "route_instance_id", "split"],
+      "properties": {
+        "goal_id": {
+          "type": "string",
+          "not": {"const": "h2_weave_J"},
+          "description": "FAIL-CLOSED: the placeholder goal h2_weave_J is explicitly forbidden. It appears in 93/154 historical episodes including all 33 gate-verified ones."
+        },
+        "goal_pose": {"$ref": "#/definitions/pose"},
+        "goal_image_path": {"type": "string"},
+        "goal_image_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "goal_capture_episode_id": {
+          "type": "string",
+          "description": "The goal-bank capture this image came from. Binds the image to the pose it was actually taken at; a goal from another episode cannot be substituted post hoc."
+        },
+        "goal_capture_timestamp": {"type": "string", "format": "date-time"},
+        "camera_intrinsics": {
+          "type": "object", "additionalProperties": false,
+          "required": ["fx", "fy", "cx", "cy", "width", "height"],
+          "properties": {
+            "fx": {"type": "number"}, "fy": {"type": "number"},
+            "cx": {"type": "number"}, "cy": {"type": "number"},
+            "width": {"const": 1280}, "height": {"const": 720}
+          }
+        },
+        "scene_usd_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "map_version": {"type": "string"},
+        "route_instance_id": {"type": "string"},
+        "split": {"enum": ["train", "val", "test"]}
+      }
+    },
+
+    "success_criterion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["success_radius_m", "speed_threshold_ms", "stationary_duration_s",
+                   "sensitivity_radii_m", "pose_aligned_yaw_tolerance_rad", "preregistered", "approved_by"],
+      "properties": {
+        "success_radius_m": {"const": 0.5},
+        "speed_threshold_ms": {"const": 0.05},
+        "stationary_duration_s": {"const": 1.0},
+        "sensitivity_radii_m": {"type": "array", "items": {"enum": [0.25, 0.5, 0.75, 1.0]}, "minItems": 4},
+        "pose_aligned_yaw_tolerance_rad": {"const": 0.5236},
+        "preregistered": {"const": true},
+        "approved_by": {"type": "string", "minLength": 1}
+      },
+      "description": "Pre-registered before capture. Never selected after inspecting results."
+    },
+
+    "camera": {
+      "type": "object", "additionalProperties": false,
+      "required": ["camera_prim", "camera_frame_id", "camera_mount_raise_m",
+                   "camera_resolution", "camera_encoding", "publish_rate_hz"],
+      "properties": {
+        "camera_prim": {"type": "string"},
+        "camera_frame_id": {"type": "string"},
+        "camera_mount_raise_m": {
+          "const": 0.12,
+          "description": "Provisional lock. 39/39 unraised historical bags occluded the bottom ~38% of every frame; 23/24 raised bags are clean."
+        },
+        "camera_resolution": {
+          "type": "array", "minItems": 2, "maxItems": 2, "items": [{"const": 1280}, {"const": 720}],
+          "description": "Canonical acquisition resolution. Subject to the Session B throughput check; any change requires a written protocol decision BEFORE collection."
+        },
+        "camera_encoding": {"enum": ["rgb8"]},
+        "publish_rate_hz": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+
+    "controller": {
+      "type": "object", "additionalProperties": false,
+      "required": ["controller_mode", "policy_in_loop"],
+      "properties": {
+        "controller_mode": {
+          "enum": ["scripted_waypoint_follower", "gnm_shadow", "gnm_closed_loop",
+                   "manual_control", "replay_only"],
+          "description": "Closed vocabulary. Unknown values are rejected."
+        },
+        "policy_in_loop": {"type": "boolean"},
+        "policy_checkpoint_path": {"type": "string"},
+        "policy_checkpoint_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"controller_mode": {"const": "gnm_closed_loop"}}, "required": ["controller_mode"]},
+          "then": {
+            "properties": {"policy_in_loop": {"const": true}},
+            "required": ["policy_in_loop", "policy_checkpoint_path", "policy_checkpoint_sha256"]
+          }
+        },
+        {
+          "if": {"properties": {"controller_mode": {"enum": ["scripted_waypoint_follower", "replay_only", "manual_control"]}},
+                 "required": ["controller_mode"]},
+          "then": {"properties": {"policy_in_loop": {"const": false}}}
+        }
+      ]
+    },
+
+    "reference_path": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reference_path_id", "source", "navmesh_version", "geodesic_length_m", "nodes"],
+      "properties": {
+        "reference_path_id": {"type": "string"},
+        "source": {
+          "enum": ["navmesh_geodesic", "UNAVAILABLE"],
+          "description": "An oracle path from the navmesh, NOT the commanded waypoint list. If UNAVAILABLE, SPL/nDTW/SDTW/CLS must not be reported."
+        },
+        "navmesh_version": {"type": "string"},
+        "geodesic_length_m": {"type": ["number", "null"], "minimum": 0},
+        "nodes": {"type": "array", "items": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "number"}}}
+      }
+    },
+
+    "stop_event": {
+      "type": "object", "additionalProperties": false,
+      "required": ["stop_emitted", "stop_timestamp", "stop_step", "stop_pose", "stop_source"],
+      "properties": {
+        "stop_emitted": {"type": "boolean"},
+        "stop_timestamp": {"type": ["number", "null"]},
+        "stop_step": {"type": ["integer", "null"]},
+        "stop_pose": {"oneOf": [{"$ref": "#/definitions/pose"}, {"type": "null"}]},
+        "stop_source": {"enum": ["policy_terminating_action", "stop_head", "operator", "watchdog", "none"]}
+      },
+      "description": "Anderson et al. Recommendation 1: the agent must emit an explicit terminating action, and evaluation happens at that moment, not at a favourable earlier time. stop_emitted=false means the episode is unsuccessful by definition, not excluded."
+    },
+
+    "contact_telemetry": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contact_telemetry_available", "detector", "detector_scope", "recorded_to_bag_topic"],
+      "properties": {
+        "contact_telemetry_available": {"const": true},
+        "detector": {"type": "string"},
+        "detector_scope": {
+          "type": "array", "minItems": 1, "items": {"type": "string"},
+          "description": "Historical captures used base_link only, which may miss contacts on other links. Scope must be declared explicitly."
+        },
+        "recorded_to_bag_topic": {
+          "type": "string",
+          "description": "AUDIT GAP CLOSED: contact telemetry existed only in sidecar metadata, never in the bag. It must now also be a recorded topic."
+        }
+      }
+    },
+
+    "counters": {
+      "type": "object", "additionalProperties": false,
+      "required": ["n_frames", "n_poses", "executed_path_length_m", "stationary_fraction",
+                   "total_collision_count", "return_code", "route_completed", "duration_sim_s", "duration_wall_s"],
+      "properties": {
+        "n_frames": {"type": "integer", "minimum": 1},
+        "n_poses": {"type": "integer", "minimum": 1},
+        "executed_path_length_m": {"type": "number", "minimum": 0},
+        "stationary_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+        "total_collision_count": {"type": "integer", "minimum": 0},
+        "return_code": {"type": "integer"},
+        "route_completed": {"type": "boolean"},
+        "duration_sim_s": {"type": "number", "minimum": 0},
+        "duration_wall_s": {"type": "number", "minimum": 0}
+      }
+    },
+
+    "acceptance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["time_alignment_verified", "max_image_pose_offset_s", "image_quality_pass",
+                   "black_band_fraction", "mean_luminance", "admitted", "rejection_reasons"],
+      "properties": {
+        "time_alignment_verified": {
+          "const": true,
+          "description": "Bag messages are wall-stamped, trajectory logs sim-stamped, and wall exceeded sim by >3x in 74% of historical episodes. Admission requires a verified alignment."
+        },
+        "max_image_pose_offset_s": {"type": "number", "minimum": 0},
+        "image_quality_pass": {"const": true},
+        "black_band_fraction": {"type": "number", "minimum": 0, "maximum": 0.01},
+        "mean_luminance": {"type": "number", "exclusiveMinimum": 10, "exclusiveMaximum": 200},
+        "admitted": {"type": "boolean"},
+        "rejection_reasons": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  },
+
+  "definitions": {
+    "pose": {
+      "type": "object", "additionalProperties": false,
+      "required": ["x", "y", "yaw_rad"],
+      "properties": {
+        "x": {"type": "number"},
+        "y": {"type": "number"},
+        "z": {"type": "number"},
+        "yaw_rad": {"type": "number"}
+      }
+    }
+  }
+}

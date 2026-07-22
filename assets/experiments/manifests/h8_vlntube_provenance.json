@@ -1,0 +1,181 @@
+{
+  "artifact": "VLNTube",
+  "role": "software dependency and trajectory-rendering component",
+  "vendored_path": "external/VLNTube/",
+  "audit_date": "2026-07-22",
+  "repository": "/home/favl/robotics/gnm-vlnverse-baseline",
+  "repository_branch": "h23-execfix",
+
+  "upstream_url": "https://github.com/william13077/VLNTube",
+  "upstream_url_evidence": [
+    "scripts/setup_vlntube.sh:16 — VLNTUBE_URL=\"https://github.com/william13077/VLNTube\"",
+    "fleetsafe_vln/datagen/vlntube_adapter.py:133 — \"Clone it: git clone https://github.com/william13077/VLNTube third_party/VLNTube\"",
+    "docs/paper/FleetSafe_VLN_Paper_Draft.md:234 — \"3. VLNTube — https://github.com/william13077/VLNTube\"",
+    "external/IAmGoodNavigator/README.md:8 — \"[Generaion pipeline](https://github.com/william13077/VLNTube)\"",
+    "GitHub API 2026-07-22 confirmed repo live: created_at=2026-03-29T10:27:30Z, pushed_at=2026-04-25T12:20:10Z, default_branch=main, license.spdx_id=MIT, stargazers=27"
+  ],
+
+  "licence": "MIT License",
+  "licence_spdx": "MIT",
+  "licence_holder": "Copyright (c) 2026 V3A Group, Responsible AI Research Centre, The University of Adelaide",
+  "licence_source": "external/VLNTube/LICENSE line 3 (verbatim); corroborated by GitHub API license.spdx_id = MIT",
+
+  "tree_digest": "965e4db0f8c59fa1d119de1858184bb447d954d8485cccee1db0c664b835bf75",
+  "tree_digest_algorithm": "sha256 over the LC_ALL=C-sorted `sha256sum` output stream",
+  "digest_command": "find external/VLNTube -type f -not -path '*/.git/*' | LC_ALL=C sort | xargs sha256sum | sha256sum",
+  "digest_command_cwd": "/home/favl/robotics/gnm-vlnverse-baseline",
+  "digest_raw_output": "965e4db0f8c59fa1d119de1858184bb447d954d8485cccee1db0c664b835bf75  -",
+  "digest_reproducibility_note": "Digest hashes the sha256sum output stream, which embeds the relative path text 'external/VLNTube/...'. Reproducible only when run from the repository root with that exact relative path.",
+
+  "file_count": 36,
+  "total_bytes": 341847,
+  "disk_size_human": "440K",
+  "composition": {
+    "python": 27,
+    "markdown": 6,
+    "json": 1,
+    "shell": 1,
+    "license": 1,
+    "gitignore": 1,
+    "module_dirs": ["scene_graph", "vistube", "instube", "datatube", "splits"]
+  },
+
+  "pinned_ref": null,
+  "pinned_ref_note": "No commit, tag, release, VERSION file or pinned ref is recorded anywhere in the repository. scripts/setup_vlntube.sh line 49 performs a bare `git clone` with no --branch/--depth and no follow-up checkout, so it always fetches whatever upstream main currently points at.",
+  "recovered_upstream_commit": "7ef6afe22014f13fd97a2d4910f84fd6603e17af",
+  "recovered_upstream_commit_date": "2026-04-25T12:15:17Z",
+  "recovered_upstream_commit_message": "dataset link",
+  "recovered_upstream_tree_sha": "c9a924d0b334",
+  "recovered_upstream_commit_method": "Forensic recovery by this audit: all 36 local git blob SHA-1s (git ls-files -s) compared against the GitHub recursive tree API for upstream main HEAD. All 36 matched exactly. All 15 upstream commits have distinct tree SHAs, so the match resolves to exactly one commit and is unambiguous.",
+  "recovered_upstream_commit_status": "AUDIT FINDING, NOT A REPOSITORY RECORD — becomes durable provenance only once written into the repository (gap G1).",
+  "upstream_tags": [],
+  "upstream_releases": [],
+  "upstream_version_identifier_available": "commit SHA only — upstream publishes no tags or releases",
+
+  "is_submodule": false,
+  "is_submodule_evidence": [
+    ".gitmodules does not exist at the repository root",
+    "`git submodule status` returns empty output",
+    "external/VLNTube/.git does not exist (only external/VLNTube/.gitignore matches .git*)",
+    "`git ls-files -s external/VLNTube` returns 36 regular blob entries (mode 100644/100755) and no 160000 gitlink entry"
+  ],
+
+  "modified_vs_upstream": false,
+  "modified_vs_upstream_confidence": "VERIFIED",
+  "modified_vs_upstream_evidence": {
+    "method": "git blob SHA-1 comparison — content-addressed and directly comparable between the local index and the GitHub tree API",
+    "commands": [
+      "gh api \"repos/william13077/VLNTube/git/trees/7ef6afe22014f13fd97a2d4910f84fd6603e17af?recursive=1\"",
+      "git ls-files -s external/VLNTube"
+    ],
+    "upstream_blob_count": 36,
+    "local_blob_count": 36,
+    "identical": 36,
+    "only_local": [],
+    "only_upstream": [],
+    "content_differs": [],
+    "tree_api_truncated": false,
+    "corroboration": "scripts/setup_vlntube.sh line 5 states '# Does NOT modify VLNTube source code.'"
+  },
+
+  "provenance_gaps": [
+    "G1 — CRITICAL: no commit SHA recorded in-repo. Nothing in the repository states which upstream revision was vendored; scripts/setup_vlntube.sh clones unpinned upstream main, so a reproducing reader may receive a different tree than the one our results were produced with. Recoverable now: 7ef6afe22014f13fd97a2d4910f84fd6603e17af.",
+    "G2 — no vendoring date recorded. Bounded only by inference: upstream commit 2026-04-25, vendored file mtimes 2026-06-10, first committed in 67b0383 (2026-06-10).",
+    "G3 — no content digest recorded in-repo; nothing lets a reader verify their copy offline. Closed by this audit: sha256:965e4db0f8c59fa1d119de1858184bb447d954d8485cccee1db0c664b835bf75.",
+    "G4 — upstream publishes no tag, release or version number, so the commit SHA is the only possible version identifier. This makes G1 mandatory rather than optional. Not fixable on our side.",
+    "G5 — no software citation entry exists: no CITATION.cff, no BibTeX @software entry, no reference-list entry. docs/paper/FleetSafe_VLN_Paper_Draft.md:234 lists VLNTube as a bare URL under a heading shared with peer-reviewed works, which invites the reader to assume a publication exists.",
+    "G6 — no archival snapshot or DOI. Hosted on a personal GitHub account with no institutional mirror, no Zenodo deposit and no Software Heritage archive; note the copyright holder is an institution but the host is a personal account, an elevated disappearance risk. Mitigated in practice because the full tree is vendored in-repo.",
+    "G7 — upstream provenance of VLNTube itself is unstated: the upstream repository has no description, homepage, paper link or author list, and authorship is asserted only by the MIT copyright line. The VLNTube/VLNVerse relationship is documented by neither party and must not be asserted as fact."
+  ],
+
+  "publication_verified": false,
+  "publication_finding": "No peer-reviewed, preprint, or DOI-registered VLNTube publication exists. Four independent authoritative indexes (arXiv, DBLP, OpenAlex, Crossref) each returned a hard zero. Semantic Scholar was rate-limited (HTTP 429) and is recorded as inconclusive; it does not alter the conclusion.",
+  "publication_cross_check": "The VLNVerse paper (arXiv:2512.19021) does not contain the string 'VLNTube' anywhere, nor 'IAmGoodNavigator'; it refers to its data pipeline only descriptively as a 'two-stage generation pipeline'. The VLNTube repository likewise never names the VLNVerse paper. The VLNVerse paper therefore MUST NOT be cited as the VLNTube publication.",
+
+  "search_record": [
+    {
+      "n": 1,
+      "date": "2026-07-22",
+      "source": "arXiv API",
+      "authoritative": true,
+      "query": "http://export.arxiv.org/api/query?search_query=all:VLNTube&max_results=20",
+      "result": "opensearch:totalResults = 0; zero entries returned",
+      "finding": "NEGATIVE"
+    },
+    {
+      "n": 2,
+      "date": "2026-07-22",
+      "source": "DBLP API",
+      "authoritative": true,
+      "query": "https://dblp.org/search/publ/api?q=VLNTube&format=json",
+      "result": "hits.@total = \"0\"; completions.@total = \"0\"",
+      "finding": "NEGATIVE"
+    },
+    {
+      "n": 3,
+      "date": "2026-07-22",
+      "source": "OpenAlex API",
+      "authoritative": true,
+      "query": "https://api.openalex.org/works?search=VLNTube&per-page=10",
+      "result": "meta.count = 0; zero works",
+      "finding": "NEGATIVE"
+    },
+    {
+      "n": 4,
+      "date": "2026-07-22",
+      "source": "Crossref API",
+      "authoritative": true,
+      "query": "https://api.crossref.org/works?query.bibliographic=VLNTube&rows=5",
+      "result": "message.total-results = 0; zero registered DOIs",
+      "finding": "NEGATIVE"
+    },
+    {
+      "n": 5,
+      "date": "2026-07-22",
+      "source": "Web search (Google-Scholar-style)",
+      "authoritative": false,
+      "query": "VLNTube vision-language navigation data generation pipeline paper",
+      "result": "No VLNTube paper. Returned only unrelated VLN data-generation work: arXiv 2412.09082 (NavGen), 2307.15644, 2406.02208 (VLN-MP), 2402.03561 (VLN-Video)",
+      "finding": "NEGATIVE"
+    },
+    {
+      "n": 6,
+      "date": "2026-07-22",
+      "source": "Web search (exact token)",
+      "authoritative": false,
+      "query": "\"VLNTube\" arXiv paper publication",
+      "result": "No VLNTube paper. Returned unrelated VLN papers (AgentVLN 2603.17670, StreamVLN 2507.05240, VLN-R1 2506.17221) and on fallback non-academic 'paper tube' manufacturing pages",
+      "finding": "NEGATIVE"
+    },
+    {
+      "n": 7,
+      "date": "2026-07-22",
+      "source": "Semantic Scholar API",
+      "authoritative": true,
+      "query": "https://api.semanticscholar.org/graph/v1/paper/search?query=VLNTube&fields=title,year,externalIds,venue",
+      "result": "HTTP 429 Too Many Requests on three attempts; no result obtained",
+      "finding": "INCONCLUSIVE"
+    },
+    {
+      "n": 8,
+      "date": "2026-07-22",
+      "source": "VLNVerse paper full text (cross-check)",
+      "authoritative": true,
+      "query": "https://arxiv.org/html/2512.19021v1 — search for 'VLNTube' and 'IAmGoodNavigator'",
+      "result": "Neither string appears anywhere in the paper; the data pipeline is referred to only as a 'two-stage generation pipeline'",
+      "finding": "NEGATIVE — no documented VLNVerse/VLNTube citation link in either direction"
+    }
+  ],
+
+  "approved_wording": "VLNTube is used as a software dependency and trajectory-rendering component. It is vendored under `external/VLNTube/` and is cited as software, not as a publication: upstream repository https://github.com/william13077/VLNTube, MIT License (Copyright (c) 2026 V3A Group, Responsible AI Research Centre, The University of Adelaide), upstream revision 7ef6afe22014f13fd97a2d4910f84fd6603e17af, local content digest sha256:965e4db0f8c59fa1d119de1858184bb447d954d8485cccee1db0c664b835bf75 (36 files, 341,847 bytes). The vendored tree was verified byte-identical to that upstream revision. Upstream publishes no tags or releases, so the commit hash is the only available version identifier. No peer-reviewed VLNTube publication has been verified (arXiv, DBLP, OpenAlex and Crossref each return zero results as of 2026-07-22).",
+
+  "prohibited_wording": [
+    "VLNTube (Lin et al.) — no such publication; conflates VLNTube with the VLNVerse paper",
+    "Listing VLNTube as a bare numbered URL in a reference list alongside peer-reviewed entries",
+    "'the VLNTube paper', 'as described in VLNTube', 'VLNTube et al.'",
+    "Any citation omitting the revision — upstream has no tags, so an unversioned citation is irreproducible by construction"
+  ],
+
+  "removal_required": false,
+  "removal_note": "VLNTube is a real, present, MIT-licensed, in-use vendored dependency and MUST NOT be removed. The defect is bibliographic only."
+}
