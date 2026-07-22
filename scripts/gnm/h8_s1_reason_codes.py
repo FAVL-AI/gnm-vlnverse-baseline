@@ -15,6 +15,18 @@ Naming follows the existing repository convention of an `H8_` prefix and an
 """
 from __future__ import annotations
 
+from enum import Enum
+
+
+class ReasonCodeStatus(str, Enum):
+    """Lifecycle and test-coverage status for one declared H8-S1 reason code."""
+
+    ACTIVE_REACHABLE = "ACTIVE_REACHABLE"
+    RESERVED_NOT_ACTIVE = "RESERVED_NOT_ACTIVE"
+    DEPRECATED_UNUSED = "DEPRECATED_UNUSED"
+    DEFERRED_TO_LATER_IMPLEMENTATION = "DEFERRED_TO_LATER_IMPLEMENTATION"
+
+
 # --- goal identity ---------------------------------------------------------------------------
 H8_GOAL_ID_PLACEHOLDER = "H8_GOAL_ID_PLACEHOLDER"
 H8_GOAL_ID_MISSING = "H8_GOAL_ID_MISSING"
@@ -85,6 +97,13 @@ H8_ALIGNMENT_CLOCK_RESET = "H8_ALIGNMENT_CLOCK_RESET"
 H8_ALIGNMENT_TRANSFORM_UNRESOLVED = "H8_ALIGNMENT_TRANSFORM_UNRESOLVED"
 
 # --- metric availability --------------------------------------------------------------------------
+#: DEPRECATED_UNUSED (H8-S1R, closing H8-S1REV-F-002). Never raised. It is redundant with the
+#: specific `NOT_COMPUTED_*` readiness states in h8_episode_validator, each of which names the
+#: missing input exactly (goal, success radius, reference path, navmesh, contacts, stop event,
+#: latency timestamps, alignment, untrusted metadata). A generic "some input was unavailable" code
+#: would be strictly less informative, so no code path is added to make it fire. Retained as a
+#: declaration only, for compatibility with any external reader of the taxonomy; it is excluded
+#: from the ACTIVE_REACHABLE coverage KPI. Recommend removal at the next taxonomy revision.
 H8_METRIC_INPUT_UNAVAILABLE = "H8_METRIC_INPUT_UNAVAILABLE"
 
 # --- manifest structure -----------------------------------------------------------------------------
@@ -93,6 +112,11 @@ H8_MANIFEST_VERSION_UNSUPPORTED = "H8_MANIFEST_VERSION_UNSUPPORTED"
 
 # --- contact telemetry ------------------------------------------------------------------------------
 H8_CONTACT_TELEMETRY_UNAVAILABLE = "H8_CONTACT_TELEMETRY_UNAVAILABLE"
+
+#: DEFERRED_TO_LATER_IMPLEMENTATION (H8-S1R). The current fail-closed control reports
+#: H8_CONTACT_TELEMETRY_UNAVAILABLE and marks collision metrics NOT_COMPUTED when no detector
+#: evidence exists. This more specific declaration is retained for a later detector-aware schema
+#: that can distinguish an explicit zero-collision claim from absent detector telemetry.
 H8_CONTACT_TELEMETRY_ZERO_WITHOUT_DETECTOR = "H8_CONTACT_TELEMETRY_ZERO_WITHOUT_DETECTOR"
 
 
@@ -100,6 +124,40 @@ ALL_CODES: tuple[str, ...] = tuple(
     v for k, v in sorted(globals().items())
     if k.startswith("H8_") and isinstance(v, str)
 )
+
+
+# Every declared code is active by default. The two documented exceptions are overridden below.
+# Constructing the map from ALL_CODES prevents accidental omission when the taxonomy changes.
+REASON_CODE_STATUS: dict[str, ReasonCodeStatus] = {
+    code: ReasonCodeStatus.ACTIVE_REACHABLE
+    for code in ALL_CODES
+}
+REASON_CODE_STATUS[H8_METRIC_INPUT_UNAVAILABLE] = (
+    ReasonCodeStatus.DEPRECATED_UNUSED
+)
+REASON_CODE_STATUS[H8_CONTACT_TELEMETRY_ZERO_WITHOUT_DETECTOR] = (
+    ReasonCodeStatus.DEFERRED_TO_LATER_IMPLEMENTATION
+)
+
+ACTIVE_REASON_CODES: frozenset[str] = frozenset(
+    code
+    for code, status in REASON_CODE_STATUS.items()
+    if status is ReasonCodeStatus.ACTIVE_REACHABLE
+)
+
+INACTIVE_REASON_CODES: frozenset[str] = frozenset(
+    code
+    for code, status in REASON_CODE_STATUS.items()
+    if status is not ReasonCodeStatus.ACTIVE_REACHABLE
+)
+
+REASON_CODE_STATUS_COUNTS: dict[ReasonCodeStatus, int] = {
+    status: sum(
+        assigned_status is status
+        for assigned_status in REASON_CODE_STATUS.values()
+    )
+    for status in ReasonCodeStatus
+}
 
 
 def is_valid_code(code: str) -> bool:

@@ -242,6 +242,11 @@ def run(argv: list[str] | None = None) -> tuple[int, BuildReport]:
         entry["admitted"] = bool(vres.ok and not missing_topics and alignment_ok)
         rep.episodes.append(entry)
         rep.reason_codes.extend(vres.reason_codes)
+        # H8-S1REV-F-001: an alignment rejection is a blocking condition, so its deterministic
+        # code must surface at report level and not only inside the nested alignment block.
+        # Sorted for stable ordering when several distinct alignment failures occur in one episode.
+        # This changes reporting only: whether a condition passes or fails is untouched.
+        rep.reason_codes.extend(sorted(entry["alignment"].get("rejection_reasons", {})))
 
     for s in ("scene_identity", "map_navmesh_identity", "split", "route_uniqueness",
               "resolve_goal_id", "goal_record_identity", "acquisition_resolution",

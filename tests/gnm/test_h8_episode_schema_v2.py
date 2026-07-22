@@ -43,9 +43,11 @@ from h8_s1_reason_codes import (  # noqa: E402
     H8_CAPTURE_AUTHORISATION_MISSING,
     H8_CONTACT_TELEMETRY_UNAVAILABLE,
     H8_CONTROLLER_CHECKPOINT_MISSING,
+    H8_CONTROLLER_MODE_MISSING,
     H8_CONTROLLER_MODE_UNKNOWN,
     H8_CONTROLLER_POLICY_MISMATCH,
     H8_GOAL_AMBIGUOUS,
+    H8_GOAL_CAMERA_MISMATCH,
     H8_GOAL_HASH_MISMATCH,
     H8_GOAL_HASH_MISSING,
     H8_GOAL_ID_MISSING,
@@ -53,17 +55,23 @@ from h8_s1_reason_codes import (  # noqa: E402
     H8_GOAL_IMAGE_CROSS_SPLIT_REUSE,
     H8_GOAL_MAP_MISMATCH,
     H8_GOAL_NOT_FOUND,
+    H8_GOAL_POSE_MISMATCH,
+    H8_GOAL_RESOLUTION_MISMATCH,
     H8_GOAL_SCENE_MISMATCH,
     H8_GOAL_SPLIT_MISMATCH,
+    H8_MANIFEST_SCHEMA_INVALID,
+    H8_MANIFEST_VERSION_UNSUPPORTED,
     H8_MAP_VERSION_MISSING,
     H8_NAVMESH_VERSION_MISSING,
     H8_RETRY_NOT_INDEPENDENT,
     H8_ROUTE_SPLIT_DUPLICATE,
     H8_SCENE_DIGEST_MISSING,
+    H8_SCENE_IDENTITY_FAILED,
     H8_SPLIT_UNKNOWN,
     H8_START_POSE_DECLARED_MISSING,
     H8_START_POSE_OBSERVED_MISSING,
     H8_START_POSE_TOLERANCE_EXCEEDED,
+    H8_SUCCESS_CRITERION_NOT_PREREGISTERED,
     H8_SUCCESS_RADIUS_MISMATCH,
     H8_SUCCESS_RADIUS_MISSING,
 )
@@ -431,6 +439,114 @@ def test_n33_wrong_encoding_rejected():
     m = valid_manifest()
     m["camera"]["camera_encoding"] = "bgr8"
     assert H8_ACQUISITION_ENCODING_MISMATCH in codes(m, registry=registry())
+
+
+
+
+# ======================== H8-S1R ACTIVE REASON-CODE CLOSURE ========================
+
+def _assert_only_blocking_code(
+    manifest,
+    expected_code,
+    *,
+    goal_registry=None,
+):
+    """One controlled mutation must produce one exact blocking reason code."""
+    active_registry = (
+        goal_registry
+        if goal_registry is not None
+        else registry()
+    )
+    result = validate_manifest(
+        manifest,
+        registry=active_registry,
+    )
+
+    assert result.ok is False
+    assert result.reason_codes == [expected_code]
+
+
+def test_s1r_controller_mode_missing_is_blocking():
+    m = valid_manifest()
+    m["controller"].pop("controller_mode")
+
+    _assert_only_blocking_code(
+        m,
+        H8_CONTROLLER_MODE_MISSING,
+    )
+
+
+def test_s1r_goal_camera_mismatch_is_blocking():
+    m = valid_manifest()
+    m["camera"]["camera_prim"] = "/World/M3Pro/other_camera"
+
+    _assert_only_blocking_code(
+        m,
+        H8_GOAL_CAMERA_MISMATCH,
+    )
+
+
+def test_s1r_goal_pose_mismatch_is_blocking():
+    m = valid_manifest()
+    m["goal"]["goal_pose"]["x"] += 0.01
+
+    _assert_only_blocking_code(
+        m,
+        H8_GOAL_POSE_MISMATCH,
+    )
+
+
+def test_s1r_goal_resolution_mismatch_is_blocking():
+    m = valid_manifest()
+    mismatched_registry = registry(
+        _goal_record(camera_resolution=[640, 480])
+    )
+
+    _assert_only_blocking_code(
+        m,
+        H8_GOAL_RESOLUTION_MISMATCH,
+        goal_registry=mismatched_registry,
+    )
+
+
+def test_s1r_manifest_schema_invalid_is_blocking():
+    m = valid_manifest()
+    m.pop("episode_id")
+
+    _assert_only_blocking_code(
+        m,
+        H8_MANIFEST_SCHEMA_INVALID,
+    )
+
+
+def test_s1r_manifest_version_unsupported_is_blocking():
+    m = valid_manifest()
+    m["manifest_version"] = f"{MANIFEST_VERSION}.unsupported"
+
+    _assert_only_blocking_code(
+        m,
+        H8_MANIFEST_VERSION_UNSUPPORTED,
+    )
+
+
+def test_s1r_scene_identity_failed_is_blocking():
+    m = valid_manifest()
+    m["scene"]["scene_identity_pass"] = False
+
+    _assert_only_blocking_code(
+        m,
+        H8_SCENE_IDENTITY_FAILED,
+    )
+
+
+def test_s1r_success_criterion_not_preregistered_is_blocking():
+    m = valid_manifest()
+    m["success_criterion"]["preregistered"] = False
+
+    _assert_only_blocking_code(
+        m,
+        H8_SUCCESS_CRITERION_NOT_PREREGISTERED,
+    )
 
 
 # ================================ METRIC READINESS ==========================================

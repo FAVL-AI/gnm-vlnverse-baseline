@@ -12,7 +12,7 @@ We present **FleetSafe-VLN**, a safety-certified visual-language navigation (VLN
 
 ## 1. Introduction
 
-Visual-language navigation (VLN) tasks require a robot to follow natural language instructions while navigating through a scene. VLNVerse and VLNTube have established strong simulation pipelines (USD scenes, scene graphs, walkable trajectories, instruction generation) but neither provides a certified safety layer or a physical deployment target beyond the simulation.
+Visual-language navigation (VLN) tasks require a robot to follow natural language instructions while navigating through a scene. VLNVerse provides a published simulation framework, while VLNTube is used here as a vendored software data-generation pipeline for USD scenes, scene graphs, walkable trajectories and rendered observations. Neither, as used in this project, supplies the certified execution-time safety layer or physical deployment target studied here.
 
 FleetSafe-VLN addresses three gaps:
 1. **No safety guarantee**: existing VLN systems may physically harm humans or collide with obstacles even when navigation succeeds at the VLN metric level.

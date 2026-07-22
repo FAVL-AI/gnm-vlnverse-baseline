@@ -173,9 +173,29 @@ def test_builder_detects_retry_as_non_independent(tmp_path):
 def test_builder_alignment_rejection_is_reported(tmp_path):
     m = _full_manifest()
     m["image_stamps"] = [0.05, 99.0]  # second frame far outside the pose series
+
     code, rep = _run(tmp_path, [m])
-    assert code != 0
-    assert rep.episodes[0]["alignment"]["n_rejected"] == 1
+
+    episode = rep.episodes[0]
+    alignment = episode["alignment"]
+    nested_codes = set(alignment["rejection_reasons"])
+
+    # Alignment rejection remains a blocking validation failure.
+    assert code == 3
+    assert episode["admitted"] is False
+    assert alignment["n_rejected"] == 1
+
+    # F-001: nested alignment diagnostics must also reach the report-level codes.
+    assert nested_codes
+    assert nested_codes <= set(rep.reason_codes)
+
+    # Fail-closed S1 builder: no persistent dataset artefact may be produced.
+    assert rep.dataset_created is False
+    assert rep.images_written == 0
+    assert rep.trajectories_written == 0
+    assert rep.split_manifest_written is False
+    assert rep.metrics_computed == 0
+    assert not (tmp_path / "dataset").exists()
 
 
 # ---------------------------------------------------------------------------------------------
