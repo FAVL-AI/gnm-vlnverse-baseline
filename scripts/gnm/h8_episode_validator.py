@@ -204,7 +204,7 @@ class GoalRegistry:
 
     def resolve(self, manifest: dict[str, Any]) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
         """Resolve a manifest's goal against the bank. Returns (record | None, errors)."""
-        goal = manifest.get("goal") or {}
+        goal = _as_dict(manifest.get("goal"))
         gid = goal.get("goal_id")
         errs: list[dict[str, Any]] = []
         if not gid:
@@ -224,10 +224,10 @@ class GoalRegistry:
             errs.append({"code": H8_GOAL_HASH_MISMATCH, "goal_id": gid,
                          "manifest": goal["goal_image_sha256"], "registry": rec.get("goal_image_sha256")})
 
-        scene = (manifest.get("scene") or {}).get("scene_usd_sha256")
+        scene = _as_dict(manifest.get("scene")).get("scene_usd_sha256")
         if scene and rec.get("scene_usd_sha256") and scene != rec["scene_usd_sha256"]:
             errs.append({"code": H8_GOAL_SCENE_MISMATCH, "goal_id": gid})
-        mv = (manifest.get("map") or {}).get("map_version")
+        mv = _as_dict(manifest.get("map")).get("map_version")
         if mv and rec.get("map_version") and mv != rec["map_version"]:
             errs.append({"code": H8_GOAL_MAP_MISMATCH, "goal_id": gid,
                          "manifest": mv, "registry": rec["map_version"]})
@@ -241,7 +241,7 @@ class GoalRegistry:
             if d > 1e-6:
                 errs.append({"code": H8_GOAL_POSE_MISMATCH, "goal_id": gid, "distance_m": round(d, 9)})
 
-        cam = manifest.get("camera") or {}
+        cam = _as_dict(manifest.get("camera"))
         if cam.get("camera_prim") and rec.get("camera_prim") and \
                 cam["camera_prim"] != rec["camera_prim"]:
             errs.append({"code": H8_GOAL_CAMERA_MISMATCH, "goal_id": gid})
@@ -260,6 +260,56 @@ def _pose_missing(p: Any) -> bool:
     return not isinstance(p, dict) or any(k not in p for k in ("x", "y", "yaw_rad"))
 
 
+def _as_dict(value: Any) -> dict[str, Any]:
+    """Coerce a value to a dict for safe ``.get`` access without recording anything.
+
+    Used where a type violation has already been (or will be) reported elsewhere and the only
+    remaining need is to avoid an ``AttributeError`` on a non-object value. Distinct from
+    ``_require_object`` which also emits ``H8_MANIFEST_SCHEMA_INVALID``.
+    """
+    return value if isinstance(value, dict) else {}
+
+
+def _typename(value: Any) -> str:
+    """JSON-style name of a Python value's type, for schema-violation detail."""
+    if value is None:
+        return "null"
+    if isinstance(value, bool):
+        return "boolean"
+    if isinstance(value, (int, float)):
+        return "number"
+    if isinstance(value, str):
+        return "string"
+    if isinstance(value, list):
+        return "array"
+    if isinstance(value, dict):
+        return "object"
+    return type(value).__name__
+
+
+def _require_object(res: "ValidationResult", manifest: dict[str, Any], key: str) -> dict[str, Any]:
+    """Return ``manifest[key]`` when it is an object; otherwise fail closed with an exact code.
+
+    Three cases, kept deliberately distinct:
+
+    * key absent          -> return ``{}`` so the field-specific "missing" checks downstream fire
+                             their own domain codes (e.g. ``H8_SCENE_DIGEST_MISSING``);
+    * key present, object  -> return it unchanged (valid-manifest behaviour is preserved exactly);
+    * key present, non-object -> emit ``H8_MANIFEST_SCHEMA_INVALID`` with the field path and the
+                             expected/observed types, then return ``{}`` so no later ``.get`` call
+                             raises. This is the fix for ME-021 / F-A01: a type mismatch becomes a
+                             deterministic rejection with a reason code, never an uncaught exception.
+    """
+    if key not in manifest:
+        return {}
+    value = manifest[key]
+    if not isinstance(value, dict):
+        res.fail(H8_MANIFEST_SCHEMA_INVALID, field=f"$.{key}",
+                 expected="object", observed=_typename(value))
+        return {}
+    return value
+
+
 def validate_manifest(
     manifest: dict[str, Any],
     *,
@@ -267,26 +317,35 @@ def validate_manifest(
     require_navmesh: bool = False,
 ) -> ValidationResult:
     """Validate one episode manifest fail-closed. Collects every applicable reason code."""
-    res = ValidationResult(episode_id=manifest.get("episode_id"))
+    res = ValidationResult()
+    if not isinstance(manifest, dict):
+        # A non-object root (list, string, number, boolean, null) is a schema violation, not an
+        # occasion to raise. Fail closed at path ``$`` before any field access.
+        return res.fail(H8_MANIFEST_SCHEMA_INVALID, field="$",
+                        expected="object", observed=_typename(manifest))
+    res.episode_id = manifest.get("episode_id")
     res.ok = True
 
-    if manifest.get("manifest_version") != MANIFEST_VERSION:
-        res.fail(H8_MANIFEST_VERSION_UNSUPPORTED, found=manifest.get("manifest_version"),
-                 expected=MANIFEST_VERSION)
+    mv = manifest.get("manifest_version")
+    if "manifest_version" in manifest and not isinstance(mv, str):
+        res.fail(H8_MANIFEST_SCHEMA_INVALID, field="$.manifest_version",
+                 expected="string", observed=_typename(mv))
+    elif mv != MANIFEST_VERSION:
+        res.fail(H8_MANIFEST_VERSION_UNSUPPORTED, found=mv, expected=MANIFEST_VERSION)
     if not manifest.get("episode_id"):
         res.fail(H8_MANIFEST_SCHEMA_INVALID, field="episode_id")
     if not manifest.get("capture_authorisation_id"):
         res.fail(H8_CAPTURE_AUTHORISATION_MISSING)
 
     # --- scene -------------------------------------------------------------------------------
-    scene = manifest.get("scene") or {}
+    scene = _require_object(res, manifest, "scene")
     if not scene.get("scene_usd_sha256"):
         res.fail(H8_SCENE_DIGEST_MISSING)
     if scene.get("scene_identity_pass") is not True:
         res.fail(H8_SCENE_IDENTITY_FAILED, scene_identity_pass=scene.get("scene_identity_pass"))
 
     # --- map / navmesh ------------------------------------------------------------------------
-    mp = manifest.get("map") or {}
+    mp = _require_object(res, manifest, "map")
     if not mp.get("map_version"):
         res.fail(H8_MAP_VERSION_MISSING)
     if require_navmesh and not mp.get("navmesh_version"):
@@ -297,7 +356,7 @@ def validate_manifest(
         res.fail(H8_SPLIT_UNKNOWN, split=manifest.get("split"))
 
     # --- goal ---------------------------------------------------------------------------------
-    goal = manifest.get("goal") or {}
+    goal = _require_object(res, manifest, "goal")
     gid = goal.get("goal_id")
     if not gid:
         res.fail(H8_GOAL_ID_MISSING)
@@ -311,7 +370,7 @@ def validate_manifest(
             res.fail(e.pop("code"), **e)
 
     # --- success criterion --------------------------------------------------------------------
-    sc = manifest.get("success_criterion") or {}
+    sc = _require_object(res, manifest, "success_criterion")
     if sc.get("success_radius_m") is None:
         res.fail(H8_SUCCESS_RADIUS_MISSING)
     elif abs(float(sc["success_radius_m"]) - CANONICAL_SUCCESS_RADIUS_M) > 1e-9:
@@ -322,7 +381,7 @@ def validate_manifest(
                  preregistered=sc.get("preregistered"), approved_by=sc.get("approved_by"))
 
     # --- camera -------------------------------------------------------------------------------
-    cam = manifest.get("camera") or {}
+    cam = _require_object(res, manifest, "camera")
     if not cam.get("camera_prim") or not cam.get("camera_frame_id"):
         res.fail(H8_CAMERA_IDENTITY_MISSING)
     if "camera_resolution" not in cam:
@@ -343,7 +402,7 @@ def validate_manifest(
         res.fail(H8_CAMERA_MOUNT_UNSUPPORTED, found=raise_m, expected=CANONICAL_CAMERA_RAISE_M)
 
     # --- controller ---------------------------------------------------------------------------
-    ctl = manifest.get("controller") or {}
+    ctl = _require_object(res, manifest, "controller")
     mode = ctl.get("controller_mode")
     if mode is None:
         res.fail(H8_CONTROLLER_MODE_MISSING)
@@ -378,7 +437,7 @@ def validate_manifest(
                      tolerance_yaw_rad=START_POSE_TOLERANCE_RAD)
 
     # --- contact telemetry --------------------------------------------------------------------
-    ct = manifest.get("contact_telemetry") or {}
+    ct = _require_object(res, manifest, "contact_telemetry")
     if ct.get("contact_telemetry_available") is not True:
         res.fail(H8_CONTACT_TELEMETRY_UNAVAILABLE,
                  available=ct.get("contact_telemetry_available"))
