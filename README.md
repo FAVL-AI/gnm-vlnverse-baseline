@@ -359,7 +359,7 @@ Expected result: all tests pass. Torch-dependent model tests skip only if PyTorc
 ## What This Repository Implements
 
 * VLNVerse/Kujiale dataset validation.
-* GNM visual-goal input evidence using current RGB and goal RGB.
+* GNM image-goal input evidence using current RGB and goal RGB.
 * Trajectory pose validation from `traj_data.pkl`.
 * Local waypoint/action label derivation.
 * Non-GUI live dashboard export.
@@ -663,7 +663,7 @@ This notebook can run in Colab for data profiling, EDA, trajectory plots, stop-h
 
 ```bibtex
 @misc{vanlaarhoven2026gnmvlnverse,
-  title  = {GNM-VLNVerse Baseline: Reproducible Visual Goal Navigation Pipeline},
+  title  = {GNM-VLNVerse Baseline: Reproducible Image-Goal Navigation Pipeline},
   author = {Van Laarhoven, F.},
   year   = {2026},
   note   = {Research implementation repository},

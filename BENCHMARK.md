@@ -85,6 +85,10 @@ Per-episode breakdown: `results/bo_reviewer_packet/03_success_rate_breakdown.md`
 
 SR = 20% and OSR = 46.7% differ because the GNM stop criterion uses a predicted distance-to-goal. In episodes where the distance head underestimates proximity, the robot passes through the goal zone but continues walking. This is a known limitation of the GNM stop criterion, not a trajectory quality issue.
 
+### Positioning vs the ImageNav literature
+
+This SR–OSR gap is studied as a first-class quantity in Paper 1; positioning against the image-goal navigation (ImageNav) literature — including SLING (Wasserman et al., CoRL 2022), which repairs last-mile failure as a method under depth-assisted discrete control — is documented in [`paper/imagenav_positioning.md`](paper/imagenav_positioning.md). That document also states the claim-ledger rule: **no numeric comparison** between this repository's Track A results and Habitat-based ImageNav results is permitted (different simulator, sensors, and episode distribution); permitted positioning is structural complementarity only.
+
 ---
 
 ## Reproduction
@@ -127,7 +131,7 @@ https://github.com/FAVL-AI/gnm-vlnverse-baseline
 
 ```bibtex
 @misc{vanlaarhoven2026gnmvlnverse,
-  title  = {GNM-VLNVerse Baseline: Reproducible Isaac Sim Pipeline for Visual Goal Navigation},
+  title  = {GNM-VLNVerse Baseline: Reproducible Isaac Sim Pipeline for Image-Goal Navigation},
   author = {Van Laarhoven, F.},
   year   = {2026},
   note   = {Research implementation repository},
